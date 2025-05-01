@@ -9,7 +9,6 @@ import Footer from './components/navigation/Footer'
 export default function Home() {
   return (
     <main>
-      <Navbar activePath="/" />
       <Hero />
       <AnnouncementBanner />
       <WinPrizes />
