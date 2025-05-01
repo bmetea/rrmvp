@@ -1,4 +1,3 @@
-import Navbar from './components/navigation/Navbar'
 import Hero from './components/sections/Hero'
 import AnnouncementBanner from './components/sections/AnnouncementBanner'
 import WinPrizes from './components/sections/WinPrizes'

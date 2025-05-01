@@ -17,7 +17,7 @@ export default function TermsPage() {
             <p className="text-sm text-gray-600 mb-8">These terms tell you the rules for using our website www.radiancerewards.co.uk (our site).</p>
 
             <h3 className="font-semibold mt-6 mb-3">Who we are and how to contact us</h3>
-            <p>Our site is run and operated by Radiance Ltd ("We"). We are registered in England and Wales under company number [number] and have our registered office at [address]. We are a limited company. Our VAT number is [number].</p>
+            <p>Our site is run and operated by Radiance Ltd (&quot;We&quot;). We are registered in England and Wales under company number [number] and have our registered office at [address]. We are a limited company. Our VAT number is [number].</p>
             <p>We are a limited company.</p>
             <p>By using our site you accept these terms.</p>
             <p>By using our site, you confirm that you accept these terms of use and that you agree to comply with them. If you do not agree to these terms, you must not use our site. We recommend that you print a copy of these terms for future reference.</p>
@@ -33,7 +33,7 @@ export default function TermsPage() {
             <p>We amend these terms from time to time. Every time you wish to use our site, please check these terms to ensure that you understand the terms that apply at that time.</p>
 
             <h3 className="font-semibold mt-6 mb-3">We may make changes to our site</h3>
-            <p>We may update and change our site from time to time to reflect changes to our products, services, our users' needs and our business priorities.</p>
+            <p>We may update and change our site from time to time to reflect changes to our products, services, our users&apos; needs and our business priorities.</p>
 
             <h3 className="font-semibold mt-6 mb-3">We may suspend or withdraw our site</h3>
             <p>Our site is made available free of charge. We do not guarantee that our site, or any content on it, will always be available or be uninterrupted. We may suspend or withdraw or restrict the availability of all or any part of our site for business and operational reasons.</p>
@@ -51,7 +51,7 @@ export default function TermsPage() {
             <h3 className="font-semibold mt-6 mb-3">Rules about linking to our site</h3>
             <p>You may link to our home page, provided you do so in a way that is fair and legal and does not damage our reputation or take advantage of it. You must not establish a link in such a way as to suggest any form of association, approval or endorsement on our part where none exists.</p>
 
-            <h3 className="font-semibold mt-6 mb-3">Which country's laws apply to any disputes?</h3>
+            <h3 className="font-semibold mt-6 mb-3">Which country&apos;s laws apply to any disputes?</h3>
             <p>These terms of use, their subject matter and their formation (and any non-contractual disputes or claims) are governed by English law. We both agree to the exclusive jurisdiction of the courts of England and Wales.</p>
           </div>
         </div>
