@@ -1,5 +1,3 @@
-'use client'
-
 import Navbar from '../navigation/Navbar'
 import Footer from '../navigation/Footer'
 import AnnouncementBanner from '../sections/AnnouncementBanner'
