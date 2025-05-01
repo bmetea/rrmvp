@@ -44,6 +44,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="hover:scale-110 transition-transform duration-200"
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -60,25 +61,35 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-gray-600 hover:text-gray-900 relative py-2",
+                  "text-gray-600 hover:text-gray-900 relative py-2 group transition-all duration-300",
                   activePath === link.href && [
                     "text-orange-500",
                     "after:absolute after:bottom-0 after:left-0 after:right-0",
-                    "after:h-0.5 after:bg-orange-500"
+                    "after:h-0.5 after:bg-orange-500 after:transition-all after:duration-300"
                   ]
                 )}
               >
-                {link.label}
+                <span className="relative inline-block">
+                  {link.label}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                </span>
               </Link>
             ))}
           </div>
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+            >
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700">
+            <Button 
+              variant="default" 
+              className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
+            >
               Enter now
             </Button>
           </div>
@@ -95,22 +106,32 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "block px-3 py-2 rounded-md text-base font-medium",
+                  "block px-3 py-2 rounded-md text-base font-medium group transition-all duration-300",
                   activePath === link.href
                     ? "text-orange-500 bg-orange-50"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {link.label}
+                <span className="relative inline-block">
+                  {link.label}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                </span>
               </Link>
             ))}
             <div className="pt-4 pb-3 border-t border-gray-200">
-              <div className="flex items-center px-5">
-                <Button variant="ghost" size="icon" className="mr-2">
+              <div className="flex items-center px-5 space-x-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+                >
                   <ShoppingCart className="h-5 w-5" />
                 </Button>
-                <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700 w-full">
+                <Button 
+                  variant="default" 
+                  className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
+                >
                   Enter now
                 </Button>
               </div>
