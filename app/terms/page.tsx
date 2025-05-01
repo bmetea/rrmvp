@@ -1,3 +1,5 @@
+'use client'
+
 import Navbar from '../components/navigation/Navbar'
 import AnnouncementBanner from '../components/sections/AnnouncementBanner'
 import Footer from '../components/navigation/Footer'

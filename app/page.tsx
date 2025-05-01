@@ -1,3 +1,5 @@
+'use client'
+
 import Hero from './components/sections/Hero'
 import AnnouncementBanner from './components/sections/AnnouncementBanner'
 import WinPrizes from './components/sections/WinPrizes'

@@ -1,3 +1,5 @@
+'use client'
+
 const AnnouncementBanner = () => {
   return (
     <div className="bg-orange-400 text-white overflow-hidden">
