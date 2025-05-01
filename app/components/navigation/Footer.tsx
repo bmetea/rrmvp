@@ -1,0 +1,48 @@
+import Link from 'next/link'
+
+const Footer = () => {
+  return (
+    <footer className="bg-black text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col items-center">
+          {/* Logo */}
+          <div className="mb-8">
+            <Link href="/" className="flex flex-col items-center">
+              <div className="w-12 h-12 border-2 border-white rounded-full flex items-center justify-center mb-2">
+                <span className="text-xl font-bold">RR</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Links */}
+          <div className="flex space-x-6 mb-8 text-sm text-gray-400">
+            <Link href="/terms" className="hover:text-white">
+              Terms of use
+            </Link>
+            <Link href="/terms" className="hover:text-white">
+              Terms and conditions
+            </Link>
+            <Link href="/privacy" className="hover:text-white">
+              Privacy policy
+            </Link>
+            <Link href="/acceptable-use" className="hover:text-white">
+              Acceptable use policy
+            </Link>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-xs text-gray-500">
+            <p>© 2024 Radiance Rewards. All rights reserved.</p>
+            <p className="mt-2">
+              You must be over 18 to enter. If you are under 18 your ticket will be void and refunded.
+              Prize descriptions and images are for illustration purposes only. Your prize will be as it was approved by Radiance at
+              the time of purchase.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+export default Footer 
