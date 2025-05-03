@@ -1,4 +1,4 @@
-import FaqSection from '../components/sections/FaqSection'
+import FaqSection from '@/app/components/sections/FaqSection'
 
 export default function FaqPage() {
   return (

@@ -1,8 +1,8 @@
 'use client'
 
-import Navbar from '../components/navigation/Navbar'
-import AnnouncementBanner from '../components/sections/AnnouncementBanner'
-import Footer from '../components/navigation/Footer'
+import Navbar from '@/app/components/navigation/Navbar'
+import AnnouncementBanner from '@/app/components/sections/AnnouncementBanner'
+import Footer from '@/app/components/navigation/Footer'
 
 export default function TermsPage() {
   return (
