@@ -1,4 +1,4 @@
-import WinPrizes from '../components/sections/WinPrizes'
+import WinPrizes from '@/app/components/sections/WinPrizes'
 
 export default function PrizesPage() {
   return (

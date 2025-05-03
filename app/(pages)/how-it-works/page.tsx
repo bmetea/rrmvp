@@ -1,4 +1,4 @@
-import HowItWorks from '../components/sections/HowItWorks'
+import HowItWorks from '@/app/components/sections/HowItWorks'
 
 export default function HowItWorksPage() {
   return (
