@@ -25,9 +25,9 @@ export default function AcceptableUsePolicy() {
           of website use www.radiancerewards/termsofuse.co.uk.
         </p>
         <p className="mb-4">
-          Our site is a site operated by Claravue Ltd ("We"). We are registered
-          in England and Wales under company number [INSERT] and have our
-          registered office at Oakfields Farm, Kingsland, Herefordshire, HR6
+          Our site is a site operated by Claravue Ltd (&quot;We&quot;). We are
+          registered in England and Wales under company number [INSERT] and have
+          our registered office at Oakfields Farm, Kingsland, Herefordshire, HR6
           9QU.
         </p>
         <p className="mb-4">
@@ -137,7 +137,7 @@ export default function AcceptableUsePolicy() {
           </li>
           <li>Promote any illegal activity.</li>
           <li>
-            Be threatening, abuse or invade another's privacy, or cause
+            Be threatening, abuse or invade another&apos;s privacy, or cause
             annoyance, inconvenience or needless anxiety.
           </li>
           <li>

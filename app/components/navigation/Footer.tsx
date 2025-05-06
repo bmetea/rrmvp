@@ -32,7 +32,7 @@ const Footer = () => {
 
           {/* Copyright */}
           <div className="text-xs text-gray-500">
-            <p>© 2024 Radiance Rewards. All rights reserved.</p>
+            <p>© 2025 Radiance Rewards. All rights reserved.</p>
             <p className="mt-2">
               You must be over 18 to enter. If you are under 18 your ticket will
               be void and refunded. Prize descriptions and images are for

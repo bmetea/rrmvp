@@ -6,16 +6,22 @@ export default function PrivacyPolicyPage() {
       <div className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-          <p className="text-gray-600 mb-8">Last updated: 14th April 2024</p>
+          <p className="text-sm text-gray-600 mb-8">
+            These terms tell you the rules for using our website{" "}
+            <a href="http://www.radiancerewards.co.uk">
+              www.radiancerewards.co.uk
+            </a>{" "}
+            (<strong>our site</strong>).
+          </p>
 
           <div className="prose prose-gray max-w-none">
             <h2 className="text-xl font-bold mt-8 mb-4">Introduction</h2>
             <p>
-              Welcome to Claravue Ltd.'s privacy policy. Claravue Ltd respects
-              your privacy and is committed to protecting your personal data.
-              This privacy policy will inform you as to how we process and look
-              after your personal data when you visit our website (regardless of
-              where you visit it from).
+              Welcome to Claravue Ltd&apos;s privacy policy. Claravue Ltd
+              respects your privacy and is committed to protecting your personal
+              data. This privacy policy will inform you as to how we process and
+              look after your personal data when you visit our website
+              (regardless of where you visit it from).
             </p>
             <p>
               It also tells you about your privacy rights and how the law
@@ -26,34 +32,39 @@ export default function PrivacyPolicyPage() {
               1. Important information and who we are
             </h2>
 
-            <h3 className="text-lg font-bold mt-6 mb-3">
-              Purpose of this privacy policy
+            <h3 className="font-semibold mt-6 mb-3">
+              Who we are and how to contact us
             </h3>
             <p>
-              This privacy policy aims to give you information on how Claravue
-              Ltd collects and processes your personal data through your use of
-              this website, including any data you may provide through this
-              website when you sign up to our newsletter, purchase any products
-              or services or take part in a prize draw or competition.
+              Our site is a site operated by Claravue Ltd (&quot;We&quot;). We
+              are registered in England and Wales under company number [COMPANY
+              NUMBER] and have our registered office at Oakfields Farm,
+              Kingsland, Herefordshire, HR6 9QU. Our main trading address is at
+              Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
+            </p>
+            <p>We are a limited company.</p>
+
+            <h3 className="font-semibold mt-6 mb-3">
+              By using our site you accept these terms
+            </h3>
+            <p>
+              By using our site, you confirm that you accept these terms of use
+              and that you agree to comply with them.
             </p>
             <p>
-              This website is not intended for children and we do not knowingly
-              collect data relating to children.
+              If you do not agree to these terms, you must not use our site.
             </p>
             <p>
-              It is important that you read this privacy policy together with
-              any other privacy policy or fair processing policy we may provide
-              on specific occasions when we are collecting or processing
-              personal data about you so that you are fully aware of how and why
-              we are using your data. This privacy policy supplements other
-              notices and privacy policies and is not intended to override them.
+              We recommend that you print a copy of these terms for future
+              reference.
             </p>
 
             <h3 className="text-lg font-bold mt-6 mb-3">Controller</h3>
             <p>
               Claravue Ltd is the controller and responsible for your personal
-              data (collectively referred to as "Claravue", "we", "us" or "our"
-              in this privacy policy).
+              data (collectively referred to as &quot;Claravue&quot;,
+              &quot;we&quot;, &quot;us&quot; or &quot;our&quot; in this privacy
+              policy).
             </p>
             <p>
               We have appointed a data privacy manager who is responsible for
@@ -81,7 +92,7 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>
               You have the right to make a complaint at any time to the
-              Information Commissioner's Office (ICO), the UK supervisory
+              Information Commissioner&apos;s Office (ICO), the UK supervisory
               authority for data protection issues (www.ico.org.uk). We would,
               however, appreciate the chance to deal with your concerns before
               you approach the ICO so please contact us in the first instance.

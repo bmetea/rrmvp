@@ -6,7 +6,7 @@ export default function TermsPage() {
       <div className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold mb-2">Terms of use</h1>
-          <p className="text-gray-600 mb-8">Last updated: April 2024</p>
+          <p className="text-gray-600 mb-8">Last updated: April 2025</p>
 
           <div className="prose prose-gray max-w-none">
             <h2 className="text-xl font-bold mt-8 mb-4">
