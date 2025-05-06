@@ -16,7 +16,7 @@ const Footer = () => {
 
           {/* Links */}
           <div className="flex space-x-6 mb-8 text-sm text-gray-400">
-            <Link href="/terms" className="hover:text-white">
+            <Link href="/terms-use" className="hover:text-white">
               Terms of use
             </Link>
             <Link href="/terms" className="hover:text-white">
