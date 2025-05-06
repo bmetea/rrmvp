@@ -19,10 +19,10 @@ const prizes = [
     sold: 90,
   },
   {
-    id: "fillers",
-    title: "Fillers",
-    description: "24 Month Treatment or £1,000 Cash Alternative",
-    image: "/prize-image.jpg",
+    id: "1000-cash-prize",
+    title: "£1,000 Cash Prize",
+    description: "Win £1,000 in cash, paid directly to your bank account.",
+    image: "/cash-prize.jpg",
     sold: 80,
   },
 ];

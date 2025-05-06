@@ -21,11 +21,27 @@ export default function CashPrizePage() {
                 before entering.
               </p>
               <ul className="list-disc pl-5 mb-2">
-                <li>Win £1,000 in cash, paid directly to your bank account.</li>
+                <li>✔ Step 1: Enter the competition.</li>
                 <li>
-                  If you are not eligible, you will receive a consolation prize.
+                  ✔ Step 2: If you win, we'll contact you to confirm your
+                  payment details.
                 </li>
-                <li>All taxes and reporting are your responsibility.</li>
+                <li>
+                  ✔ Step 3: Your winnings will be sent instantly after
+                  confirmation.
+                </li>
+              </ul>
+            </>
+          ),
+        },
+        {
+          label: "Payment Methods Available",
+          content: (
+            <>
+              <ul className="list-disc pl-5 mb-2">
+                <li>✔ Bank Transfer (UK & International)</li>
+                <li>✔ PayPal</li>
+                <li>✔ Revolut / Monzo / Other Digital Banking</li>
               </ul>
             </>
           ),
@@ -35,25 +51,27 @@ export default function CashPrizePage() {
           content: (
             <>
               <div className="mb-4">
-                <h3 className="font-semibold mb-1">How does it work?</h3>
-                <ul className="list-disc pl-5 mb-2">
-                  <li>
-                    Once you win, we&apos;ll contact you for your bank details.
-                  </li>
-                  <li>Payment is made within 7 days of confirmation.</li>
-                  <li>
-                    If you&apos;re not eligible, you&apos;ll receive a
-                    consolation prize.
-                  </li>
-                </ul>
-                <h3 className="font-semibold mb-1">
-                  Are there any restrictions?
-                </h3>
-                <ul className="list-disc pl-5">
-                  <li>You must be 18 years or older.</li>
-                  <li>You must be a UK or Ireland resident.</li>
-                  <li>All taxes and reporting are your responsibility.</li>
-                </ul>
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-1">
+                    1️. When will I receive my cash prize?
+                  </h3>
+                  <p>Instantly after confirming your payment details.</p>
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-1">
+                    2️. Can I receive my winnings in another currency?
+                  </h3>
+                  <p>
+                    Yes — we'll transfer the equivalent of £1,000 in your local
+                    currency at the current exchange rate.
+                  </p>
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-1">
+                    3️. Are there any restrictions on how I use my winnings?
+                  </h3>
+                  <p>None. Once received, the money is yours to use freely.</p>
+                </div>
               </div>
             </>
           ),

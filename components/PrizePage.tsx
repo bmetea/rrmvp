@@ -145,7 +145,7 @@ export default function PrizePage({
 
         {/* Prize details accordion */}
         <Accordion type="multiple" className="mt-4 border rounded-lg">
-          {accordionSections.map((section, idx) => (
+          {accordionSections.map((section) => (
             <AccordionItem
               value={section.label.toLowerCase().replace(/\s+/g, "-")}
               key={section.label}
