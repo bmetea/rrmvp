@@ -40,7 +40,7 @@ export default function PrizePage({
     <main className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto py-12 px-4">
       {/* Photo */}
       <section className="flex-1 flex flex-col gap-4">
-        <div className="relative w-full h-64 rounded-lg overflow-hidden border">
+        <div className="relative w-full aspect-[4/3] md:h-64 rounded-lg overflow-hidden border">
           <Image src={image} alt={title} fill className="object-cover" />
         </div>
       </section>
@@ -57,13 +57,14 @@ export default function PrizePage({
         {/* Ticket selection */}
         <div className="mb-2">
           <label className="block font-medium mb-1">Select tickets</label>
-          <div className="flex gap-2 mb-2">
+          <div className="grid grid-cols-2 sm:flex sm:gap-2 gap-2 mb-2">
             {[10, 20, 40, 60].map((num) => (
               <Button
                 key={num}
                 variant={ticketCount === num ? "default" : "outline"}
                 size="sm"
                 onClick={() => setTicketCount(num)}
+                className="w-full sm:w-auto"
               >
                 {num} Tickets
               </Button>
@@ -74,14 +75,16 @@ export default function PrizePage({
               size="icon"
               variant="outline"
               onClick={() => setTicketCount((c) => Math.max(1, c - 1))}
+              className="flex-shrink-0"
             >
               -
             </Button>
-            <span>{ticketCount}</span>
+            <span className="flex-1 text-center">{ticketCount}</span>
             <Button
               size="icon"
               variant="outline"
               onClick={() => setTicketCount((c) => c + 1)}
+              className="flex-shrink-0"
             >
               +
             </Button>
@@ -110,13 +113,13 @@ export default function PrizePage({
         </div>
 
         {/* Terms agreement */}
-        <div className="mb-2 flex items-center gap-2">
+        <div className="mb-2 flex items-start gap-2">
           <input
             type="radio"
             id="agree"
             checked={agreed}
             onChange={() => setAgreed((a) => !a)}
-            className="accent-indigo-600"
+            className="accent-indigo-600 mt-1"
           />
           <label htmlFor="agree" className="text-sm">
             I am a UK or Ireland resident, over 18 years of age, & agree to the
