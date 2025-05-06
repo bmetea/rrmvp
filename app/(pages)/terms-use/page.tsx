@@ -26,8 +26,7 @@ export default function TermsPage() {
             </h3>
             <p>
               Our site is a site operated by Claravue Ltd (&quot;We&quot;). We
-              are registered in England and Wales under company number [COMPANY
-              NUMBER] and have our registered office at Oakfields Farm,
+              are registered in England and Wales under company number 16388957 and have our registered office at Oakfields Farm,
               Kingsland, Herefordshire, HR6 9QU. Our main trading address is at
               Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
             </p>

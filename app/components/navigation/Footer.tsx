@@ -15,7 +15,7 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="flex space-x-6 mb-8 text-sm text-gray-400">
+          <div className="flex space-x-6 mb-8 text-sm text-gray-300">
             <Link href="/terms-use" className="hover:text-white">
               Terms of use
             </Link>
@@ -31,7 +31,7 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-300">
             <p>© 2025 Radiance Rewards. All rights reserved.</p>
             <p className="mt-2">
               You must be over 18 to enter. If you are under 18 your ticket will

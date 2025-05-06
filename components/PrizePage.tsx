@@ -50,7 +50,11 @@ export default function PrizePage({
         <div>
           <h1 className="text-2xl font-bold mb-1">{title}</h1>
           <p className="text-muted-foreground mb-2">{subtitle}</p>
-          <Progress value={ticketsSold} className="mb-2" />
+          <Progress
+            value={ticketsSold}
+            className="mb-2"
+            aria-label={`${ticketsSold}% of tickets sold for ${title}`}
+          />
           <p className="text-sm text-gray-500 mb-4">{ticketsSold}% sold</p>
         </div>
 
@@ -76,6 +80,7 @@ export default function PrizePage({
               variant="outline"
               onClick={() => setTicketCount((c) => Math.max(1, c - 1))}
               className="flex-shrink-0"
+              aria-label="Decrease ticket count"
             >
               -
             </Button>
@@ -85,6 +90,7 @@ export default function PrizePage({
               variant="outline"
               onClick={() => setTicketCount((c) => c + 1)}
               className="flex-shrink-0"
+              aria-label="Increase ticket count"
             >
               +
             </Button>
@@ -129,11 +135,17 @@ export default function PrizePage({
 
         {/* Payment buttons */}
         <div className="flex flex-col gap-2 mb-2">
-          <Button className="bg-white border text-black flex items-center justify-center gap-2">
+          <Button
+            className="bg-white border text-black flex items-center justify-center gap-2"
+            aria-label="Pay with Google Pay"
+          >
             <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />{" "}
             Pay with Google
           </Button>
-          <Button className="bg-white border text-black flex items-center justify-center gap-2">
+          <Button
+            className="bg-white border text-black flex items-center justify-center gap-2"
+            aria-label="Pay with Apple Pay"
+          >
             <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />{" "}
             Pay with Apple
           </Button>
@@ -144,6 +156,7 @@ export default function PrizePage({
           <Button
             variant="destructive"
             className="w-full text-white font-bold py-2 mt-2"
+            aria-label="Submit free postal entry"
           >
             Submit Free Postal Entry
           </Button>

@@ -25,7 +25,7 @@ const HowItWorks = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">How it works</h2>
-          <p className="text-gray-600">
+          <p className="text-gray-700">
             Three simple steps to start your Radiance Rewards journey.
           </p>
         </div>
@@ -40,7 +40,7 @@ const HowItWorks = () => {
                 {step.number}
               </div>
               <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-              <p className="text-gray-600">{step.description}</p>
+              <p className="text-gray-700">{step.description}</p>
             </div>
           ))}
         </div>

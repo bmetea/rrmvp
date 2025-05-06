@@ -46,6 +46,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="hover:scale-110 transition-transform duration-200"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -84,12 +85,14 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               variant="ghost"
               size="icon"
               className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+              aria-label="View shopping cart"
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
             <Button
               variant="default"
               className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
+              aria-label="Enter the beauty contest"
             >
               Enter now
             </Button>

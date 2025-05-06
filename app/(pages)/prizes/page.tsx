@@ -62,7 +62,11 @@ export default function PrizesPage() {
                   <p className="text-gray-600 text-sm mb-4">
                     {prize.description}
                   </p>
-                  <Progress value={prize.sold} className="mb-2" />
+                  <Progress
+                    value={prize.sold}
+                    className="mb-2"
+                    aria-label={`${prize.sold}% of tickets sold for ${prize.title}`}
+                  />
                   <p className="text-right text-sm text-gray-500">
                     {prize.sold}% sold
                   </p>

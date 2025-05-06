@@ -24,18 +24,23 @@ const Hero = () => {
             Where <span className="text-[#E19841]">Beauty</span> <br />
             Meets <span className="text-[#E19841]">Opportunity</span>
           </h1>
-          <p className="text-lg mb-8 text-gray-200">
+          <p className="text-lg mb-8 text-white">
             A new way to experience beauty - win exclusive cosmetic
             enhancements, high-end skincare & haircare
           </p>
           <div className="flex space-x-4">
-            <Button size="lg" className="bg-[#E19841] hover:bg-[#D18A33]">
+            <Button
+              size="lg"
+              className="bg-[#E19841] hover:bg-[#D18A33]"
+              aria-label="Enter the beauty contest"
+            >
               Enter now
             </Button>
             <Link href="/prizes">
               <Button
                 size="lg"
                 className="bg-transparent border-2 border-white text-white hover:bg-white/10 transition-colors"
+                aria-label="View available prizes"
               >
                 View Prizes
               </Button>
