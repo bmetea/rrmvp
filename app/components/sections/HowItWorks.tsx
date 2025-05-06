@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const steps = [
   {
@@ -45,7 +46,9 @@ const HowItWorks = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="outline">View all Prizes →</Button>
+          <Link href="/prizes">
+            <Button variant="outline">View all Prizes →</Button>
+          </Link>
         </div>
       </div>
     </div>
