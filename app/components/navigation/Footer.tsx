@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -19,13 +19,13 @@ const Footer = () => {
             <Link href="/terms-use" className="hover:text-white">
               Terms of use
             </Link>
-            <Link href="/terms" className="hover:text-white">
+            <Link href="/terms-and-conditions" className="hover:text-white">
               Terms and conditions
             </Link>
-            <Link href="/privacy" className="hover:text-white">
+            <Link href="/privacy-policy" className="hover:text-white">
               Privacy policy
             </Link>
-            <Link href="/acceptable-use" className="hover:text-white">
+            <Link href="/acceptable-use-policy" className="hover:text-white">
               Acceptable use policy
             </Link>
           </div>
@@ -34,15 +34,16 @@ const Footer = () => {
           <div className="text-xs text-gray-500">
             <p>© 2024 Radiance Rewards. All rights reserved.</p>
             <p className="mt-2">
-              You must be over 18 to enter. If you are under 18 your ticket will be void and refunded.
-              Prize descriptions and images are for illustration purposes only. Your prize will be as it was approved by Radiance at
-              the time of purchase.
+              You must be over 18 to enter. If you are under 18 your ticket will
+              be void and refunded. Prize descriptions and images are for
+              illustration purposes only. Your prize will be as it was approved
+              by Radiance at the time of purchase.
             </p>
           </div>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer 
+export default Footer;

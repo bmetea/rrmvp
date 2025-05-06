@@ -14,8 +14,11 @@ export default function TermsPage() {
               SITE
             </h2>
             <p className="text-sm text-gray-600 mb-8">
-              These terms tell you the rules for using our website
-              www.radiancerewards.co.uk (our site).
+              These terms tell you the rules for using our website{" "}
+              <a href="http://www.radiancerewards.co.uk">
+                www.radiancerewards.co.uk
+              </a>{" "}
+              (<strong>our site</strong>).
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
@@ -29,12 +32,20 @@ export default function TermsPage() {
               Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
             </p>
             <p>We are a limited company.</p>
-            <p>By using our site you accept these terms.</p>
+
+            <h3 className="font-semibold mt-6 mb-3">
+              By using our site you accept these terms
+            </h3>
             <p>
               By using our site, you confirm that you accept these terms of use
-              and that you agree to comply with them. If you do not agree to
-              these terms, you must not use our site. We recommend that you
-              print a copy of these terms for future reference.
+              and that you agree to comply with them.
+            </p>
+            <p>
+              If you do not agree to these terms, you must not use our site.
+            </p>
+            <p>
+              We recommend that you print a copy of these terms for future
+              reference.
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
@@ -46,23 +57,31 @@ export default function TermsPage() {
             </p>
             <ul className="list-disc pl-6 mb-4">
               <li>
-                Our Privacy Policy www.radiancerewards/privacypolicy.co.uk,
-                which sets out the terms on which we process any personal data
+                Our Privacy Policy{" "}
+                <a href="http://www.radiancerewards/privacypolicy.co.uk">
+                  www.radiancerewards/privacypolicy.co.uk
+                </a>
+                , which sets out the terms on which we process any personal data
                 we collect from you, or that you provide to us. By using our
                 site, you consent to such processing and you warrant that all
                 data provided by you is accurate.
               </li>
               <li>
-                Our Acceptable Use Policy
-                www.radiancerewards/acceptableusepolicy.co.uk, which sets out
-                the permitted uses and prohibited uses of our site. When using
-                our site, you must comply with this Acceptable Use Policy.
+                Our Acceptable Use Policy{" "}
+                <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
+                  www.radiancerewards/acceptableusepolicy.co.uk
+                </a>
+                , which sets out the permitted uses and prohibited uses of our
+                site. When using our site, you must comply with this Acceptable
+                Use Policy.
               </li>
               <li>
                 If you purchase goods or services from our site, participate in
                 any promotions or enter any of our competitions, other terms and
-                conditions will apply and which you must accept and abide by
-                www.radiancerewards/termsandconditions.co.uk
+                conditions will apply and which you must accept and abide by{" "}
+                <a href="http://www.radiancerewards/termsandconditions.co.uk">
+                  www.radiancerewards/termsandconditions.co.uk
+                </a>
               </li>
             </ul>
 
@@ -89,11 +108,14 @@ export default function TermsPage() {
             </h3>
             <p>
               Our site is made available free of charge but you may have to pay
-              to enter our competitions. We do not guarantee that our site, or
-              any content on it, will always be available or be uninterrupted.
-              We may suspend or withdraw or restrict the availability of all or
-              any part of our site for business and operational reasons. We will
-              try to give you reasonable notice of any suspension or withdrawal.
+              to enter our competitions.
+            </p>
+            <p>
+              We do not guarantee that our site, or any content on it, will
+              always be available or be uninterrupted. We may suspend or
+              withdraw or restrict the availability of all or any part of our
+              site for business and operational reasons. We will try to give you
+              reasonable notice of any suspension or withdrawal.
             </p>
             <p>
               You are also responsible for ensuring that all persons who access
@@ -104,10 +126,12 @@ export default function TermsPage() {
 
             <h3 className="font-semibold mt-6 mb-3">Who can use our site?</h3>
             <p>
-              Our site is only for users in the United Kingdom. Our site is
-              directed to people residing in United Kingdom. We do not represent
-              that the content available on or through our site is appropriate
-              for use or available in other locations.
+              <strong>Our site is only for users in the United Kingdom</strong>
+            </p>
+            <p>
+              Our site is directed to people residing in United Kingdom. We do
+              not represent that the content available on or through our site is
+              appropriate for use or available in other locations.
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
@@ -127,8 +151,10 @@ export default function TermsPage() {
             </p>
             <p>
               If you know or suspect that anyone other than you knows your user
-              identification code or password, you must promptly notify us at
-              hello@radiancerewards.co.uk
+              identification code or password, you must promptly notify us at{" "}
+              <a href="mailto:hello@radiancerewards.co.uk">
+                hello@radiancerewards.co.uk
+              </a>
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
@@ -211,7 +237,10 @@ export default function TermsPage() {
             </p>
             <p>
               If you wish to complain about information and materials uploaded
-              by other users please contact us at hello@radiancerewards.co.uk
+              by other users please contact us at{" "}
+              <a href="mailto:hello@radiancerewards.co.uk">
+                hello@radiancerewards.co.uk
+              </a>
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
@@ -236,31 +265,34 @@ export default function TermsPage() {
             <p>We use the following cookies:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>
-                Strictly necessary cookies. These are cookies that are required
-                for the operation of our website. They include, for example,
-                cookies that enable you to log into secure areas of our website,
-                use a shopping cart or make use of e-billing services.
+                <strong>Strictly necessary cookies.</strong> These are cookies
+                that are required for the operation of our website. They
+                include, for example, cookies that enable you to log into secure
+                areas of our website, use a shopping cart or make use of
+                e-billing services.
               </li>
               <li>
-                Analytical/performance cookies. They allow us to recognise and
-                count the number of visitors and to see how visitors move around
-                our website when they are using it. This helps us to improve the
-                way our website works, for example, by ensuring that users are
-                finding what they are looking for easily.
+                <strong>Analytical/performance cookies.</strong> They allow us
+                to recognise and count the number of visitors and to see how
+                visitors move around our website when they are using it. This
+                helps us to improve the way our website works, for example, by
+                ensuring that users are finding what they are looking for
+                easily.
               </li>
               <li>
-                Functionality cookies. These are used to recognise you when you
-                return to our website. This enables us to personalise our
-                content for you, greet you by name and remember your preferences
-                (for example, your choice of language or region).
+                <strong>Functionality cookies.</strong> These are used to
+                recognise you when you return to our website. This enables us to
+                personalise our content for you, greet you by name and remember
+                your preferences (for example, your choice of language or
+                region).
               </li>
               <li>
-                Targeting cookies. These cookies record your visit to our
-                website, the pages you have visited and the links you have
-                followed. We will use this information to make our website and
-                the advertising displayed on it more relevant to your interests.
-                We may also share this information with third parties for this
-                purpose.
+                <strong>Targeting cookies.</strong> These cookies record your
+                visit to our website, the pages you have visited and the links
+                you have followed. We will use this information to make our
+                website and the advertising displayed on it more relevant to
+                your interests. We may also share this information with third
+                parties for this purpose.
               </li>
             </ul>
             <p>
@@ -281,27 +313,31 @@ export default function TermsPage() {
             <h3 className="font-semibold mt-6 mb-3">
               Our responsibility for loss or damage suffered by you
             </h3>
-            <p>
-              We do not exclude or limit in any way our liability to you where
-              it would be unlawful to do so. This includes liability for death
-              or personal injury caused by our negligence or the negligence of
-              our employees, agents or subcontractors and for fraud or
-              fraudulent misrepresentation.
-            </p>
-            <p>
-              Different limitations and exclusions of liability will apply to
-              liability arising as a result of the supply of any products or
-              services to you or if you enter our competitions, which will be
-              set out in our Terms and Conditions.
-              www.radiancerewards/termsandconditions.co.uk
-            </p>
-            <p>
-              Please note that we only provide our site for domestic and private
-              use. You agree not to use our site for any commercial or business
-              purposes, and we have no liability to you for any loss of profit,
-              loss of business, business interruption, or loss of business
-              opportunity.
-            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>
+                We do not exclude or limit in any way our liability to you where
+                it would be unlawful to do so. This includes liability for death
+                or personal injury caused by our negligence or the negligence of
+                our employees, agents or subcontractors and for fraud or
+                fraudulent misrepresentation.
+              </li>
+              <li>
+                Different limitations and exclusions of liability will apply to
+                liability arising as a result of the supply of any products or
+                services to you or if you enter our competitions, which will be
+                set out in our Terms and Conditions.{" "}
+                <a href="http://www.radiancerewards/termsandconditions.co.uk">
+                  www.radiancerewards/termsandconditions.co.uk
+                </a>
+              </li>
+              <li>
+                Please note that we only provide our site for domestic and
+                private use. You agree not to use our site for any commercial or
+                business purposes, and we have no liability to you for any loss
+                of profit, loss of business, business interruption, or loss of
+                business opportunity.
+              </li>
+            </ul>
 
             <h3 className="font-semibold mt-6 mb-3">
               Uploading content to our site
@@ -310,8 +346,10 @@ export default function TermsPage() {
               Whenever you make use of a feature that allows you to upload
               content to our site, post to our social media accounts or to make
               contact with other users of our site, you must comply with the
-              content standards set out in our Acceptable Use Policy
-              www.radiancerewards/acceptableusepolicy.co.uk
+              content standards set out in our Acceptable Use Policy{" "}
+              <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
+                www.radiancerewards/acceptableusepolicy.co.uk
+              </a>
             </p>
             <p>
               You warrant that any such contribution does comply with those
@@ -337,8 +375,10 @@ export default function TermsPage() {
             <p>
               We have the right to remove any posting you make on our site if,
               in our opinion, your post does not comply with the content
-              standards set out in our Acceptable Use Policy
-              www.radiancerewards/acceptableusepolicy.co.uk
+              standards set out in our Acceptable Use Policy{" "}
+              <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
+                www.radiancerewards/acceptableusepolicy.co.uk
+              </a>
             </p>
             <p>
               You are solely responsible for securing and backing up your
@@ -411,13 +451,17 @@ export default function TermsPage() {
             </p>
             <p>
               The website in which you are linking must comply in all respects
-              with the content standards set out in our Acceptable Use Policy
-              www.radiancerewards/acceptableusepolicy.co.uk
+              with the content standards set out in our Acceptable Use Policy{" "}
+              <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
+                www.radiancerewards/acceptableusepolicy.co.uk
+              </a>
             </p>
             <p>
               If you wish to link to or make any use of content on our site
-              other than that set out above, please contact
-              hello@radiancerewards.co.uk
+              other than that set out above, please contact{" "}
+              <a href="mailto:hello@radiancerewards.co.uk">
+                hello@radiancerewards.co.uk
+              </a>
             </p>
 
             <h3 className="font-semibold mt-6 mb-3">
