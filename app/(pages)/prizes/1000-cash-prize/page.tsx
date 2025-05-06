@@ -1,6 +1,6 @@
 "use client";
 
-import PrizePage from "@/components/PrizePage";
+import PrizePage from "../../../../components/PrizePage";
 
 export default function CashPrizePage() {
   return (
@@ -21,13 +21,13 @@ export default function CashPrizePage() {
                 before entering.
               </p>
               <ul className="list-disc pl-5 mb-2">
-                <li>✔ Step 1: Enter the competition.</li>
+                <li>Step 1: Enter the competition.</li>
                 <li>
-                  ✔ Step 2: If you win, we'll contact you to confirm your
+                  Step 2: If you win, we&apos;ll contact you to confirm your
                   payment details.
                 </li>
                 <li>
-                  ✔ Step 3: Your winnings will be sent instantly after
+                  Step 3: Your winnings will be sent instantly after
                   confirmation.
                 </li>
               </ul>
@@ -39,9 +39,9 @@ export default function CashPrizePage() {
           content: (
             <>
               <ul className="list-disc pl-5 mb-2">
-                <li>✔ Bank Transfer (UK & International)</li>
-                <li>✔ PayPal</li>
-                <li>✔ Revolut / Monzo / Other Digital Banking</li>
+                <li>Bank Transfer (UK & International)</li>
+                <li>PayPal</li>
+                <li>Revolut / Monzo / Other Digital Banking</li>
               </ul>
             </>
           ),
@@ -51,27 +51,31 @@ export default function CashPrizePage() {
           content: (
             <>
               <div className="mb-4">
-                <div className="mb-4">
-                  <h3 className="font-semibold mb-1">
-                    1️. When will I receive my cash prize?
-                  </h3>
-                  <p>Instantly after confirming your payment details.</p>
-                </div>
-                <div className="mb-4">
-                  <h3 className="font-semibold mb-1">
-                    2️. Can I receive my winnings in another currency?
-                  </h3>
-                  <p>
-                    Yes — we'll transfer the equivalent of £1,000 in your local
-                    currency at the current exchange rate.
-                  </p>
-                </div>
-                <div className="mb-4">
-                  <h3 className="font-semibold mb-1">
-                    3️. Are there any restrictions on how I use my winnings?
-                  </h3>
-                  <p>None. Once received, the money is yours to use freely.</p>
-                </div>
+                <ul className="list-disc pl-5 mb-2">
+                  <li className="mb-4">
+                    <span className="font-semibold">
+                      When will I receive my cash prize?
+                    </span>
+                    <p>Instantly after confirming your payment details.</p>
+                  </li>
+                  <li className="mb-4">
+                    <span className="font-semibold">
+                      Can I receive my winnings in another currency?
+                    </span>
+                    <p>
+                      Yes — we&apos;ll transfer the equivalent of £1,000 in your
+                      local currency at the current exchange rate.
+                    </p>
+                  </li>
+                  <li className="mb-4">
+                    <span className="font-semibold">
+                      Are there any restrictions on how I use my winnings?
+                    </span>
+                    <p>
+                      None. Once received, the money is yours to use freely.
+                    </p>
+                  </li>
+                </ul>
               </div>
             </>
           ),
