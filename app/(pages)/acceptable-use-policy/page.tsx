@@ -26,7 +26,7 @@ export default function AcceptableUsePolicy() {
         </p>
         <p className="mb-4">
           Our site is a site operated by Claravue Ltd (&quot;We&quot;). We are
-          registered in England and Wales under company number [INSERT] and have
+          registered in England and Wales under company number 16388957 and have
           our registered office at Oakfields Farm, Kingsland, Herefordshire, HR6
           9QU.
         </p>

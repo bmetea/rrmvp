@@ -12,8 +12,8 @@ export default function TermsAndConditionsPage() {
             <h2 className="text-xl font-bold mt-8 mb-4">1. The Promoter</h2>
             <p>
               The promoter is: Claravue Ltd trading as Radiance Rewards, Company
-              Number [INSERT COMPANY NUMBER] and whose registered office is at
-              Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
+              Number 16388957 and whose registered office is at Oakfields Farm,
+              Kingsland, Herefordshire, HR6 9QU.
             </p>
 
             <h2 className="text-xl font-bold mt-8 mb-4">2. The competition</h2>
