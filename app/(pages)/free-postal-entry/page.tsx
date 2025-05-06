@@ -50,7 +50,7 @@ export default function FreePostalEntryPage() {
               <li>We do not confirm receipt of postal entries</li>
               <li>
                 Your entry is subject to our{" "}
-                <Link href="/terms" className="text-primary hover:underline">
+                <Link href="/terms-and-conditions" className="text-primary hover:underline">
                   Terms & Conditions
                 </Link>
               </li>
