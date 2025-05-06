@@ -41,7 +41,14 @@ export default function PrizePage({
       {/* Photo */}
       <section className="flex-1 flex flex-col gap-4">
         <div className="relative w-full aspect-[4/3] md:h-64 rounded-lg overflow-hidden border">
-          <Image src={image} alt={title} fill className="object-cover" />
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={75}
+          />
         </div>
       </section>
 

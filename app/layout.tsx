@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ClientLayout from './components/layout/ClientLayout'
+import ClientLayout from "./components/layout/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +16,25 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Radiance Rewards",
   description: "Beauty and cosmetics competition platform",
+  icons: {
+    icon: [
+      { rel: "icon", url: "/logo-favicon-black.svg", type: "image/svg+xml" },
+    ],
+    shortcut: [
+      {
+        rel: "shortcut icon",
+        url: "/logo-favicon-black.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: [
+      {
+        rel: "apple-touch-icon",
+        url: "/logo-favicon-black.svg",
+        type: "image/svg+xml",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -25,10 +44,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+      <head>
+        <link rel="icon" href="/logo-favicon-black.svg" type="image/svg+xml" />
+        <link
+          rel="shortcut icon"
+          href="/logo-favicon-black.svg"
+          type="image/svg+xml"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="/logo-favicon-black.svg"
+          type="image/svg+xml"
+        />
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

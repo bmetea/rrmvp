@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -8,9 +9,13 @@ const Footer = () => {
           {/* Logo */}
           <div className="mb-8">
             <Link href="/" className="flex flex-col items-center">
-              <div className="w-12 h-12 border-2 border-white rounded-full flex items-center justify-center mb-2">
-                <span className="text-xl font-bold">RR</span>
-              </div>
+              <Image
+                src="/logo-footer-white.png"
+                alt="Radiance Rewards"
+                width={48}
+                height={48}
+                className="mb-2"
+              />
             </Link>
           </div>
 
