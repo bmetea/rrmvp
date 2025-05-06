@@ -1,22 +1,22 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 const steps = [
   {
     number: "1",
-    title: "Choose your Prize",
-    description: "Find a prize you'd love to win"
+    title: "Select your prize",
+    description: "Select your prize and entries",
   },
   {
     number: "2",
-    title: "Buy your ticket",
-    description: "Purchase a ticket to be in with a chance of winning"
+    title: "Answer the question",
+    description: "Answer the question correctly",
   },
   {
     number: "3",
-    title: "Find out instantly",
-    description: "Winners are selected in our AI Automated draws"
-  }
-]
+    title: "Live Draw",
+    description: "Winner announced on Live Draw",
+  },
+];
 
 const HowItWorks = () => {
   return (
@@ -45,13 +45,11 @@ const HowItWorks = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="outline">
-            View all Prizes →
-          </Button>
+          <Button variant="outline">View all Prizes →</Button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HowItWorks 
+export default HowItWorks;
