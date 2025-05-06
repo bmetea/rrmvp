@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import Link from "next/link";
 
 interface AccordionSection {
   label: string;
@@ -136,12 +137,14 @@ export default function PrizePage({
         </div>
 
         {/* Postal entry */}
-        <Button
-          variant="destructive"
-          className="w-full text-white font-bold py-2 mt-2"
-        >
-          Submit Free Postal Entry
-        </Button>
+        <Link href="/free-postal-entry" className="w-full">
+          <Button
+            variant="destructive"
+            className="w-full text-white font-bold py-2 mt-2"
+          >
+            Submit Free Postal Entry
+          </Button>
+        </Link>
 
         {/* Prize details accordion */}
         <Accordion type="multiple" className="mt-4 border rounded-lg">

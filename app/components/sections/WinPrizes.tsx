@@ -7,6 +7,25 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
+import Link from "next/link";
+
+// Example prize data
+const prizes = [
+  {
+    id: "breast-augmentation",
+    title: "Breast Augmentation",
+    description: "+ £2,000 Aftercare or £15,000 Cash Alternative",
+    image: "/breast-augmentation.jpg",
+    sold: 90,
+  },
+  {
+    id: "1000-cash-prize",
+    title: "£1,000 Cash Prize",
+    description: "Win £1,000 in cash, paid directly to your bank account.",
+    image: "/cash-prize.jpg",
+    sold: 80,
+  },
+];
 
 const WinPrizes = () => {
   return (
@@ -24,39 +43,39 @@ const WinPrizes = () => {
           </p>
         </div>
 
-        <div className="max-w-sm mx-auto">
-          <Card>
-            <CardHeader className="text-center">
-              <div className="bg-orange-100 rounded-lg p-4 mb-4">
-                <span className="text-orange-600 font-semibold">
-                  Ends in 28 minutes
-                </span>
-              </div>
-              <div className="relative w-full h-64 mb-4">
-                <Image
-                  src="/prize-image.jpg"
-                  alt="Skincare Bundle"
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="rounded-lg object-cover"
-                />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <h3 className="text-xl font-semibold mb-2">Skincare Bundle</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                100% of prizes to be won. Win a prize every time. Prizes worth
-                over £300
-              </p>
-              <Progress value={20} className="mb-2" />
-              <p className="text-right text-sm text-gray-500">20% sold</p>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
-                Enter now →
-              </Button>
-            </CardFooter>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {prizes.map((prize) => (
+            <Card key={prize.id}>
+              <CardHeader className="text-center">
+                <div className="relative w-full h-64 mb-4">
+                  <Image
+                    src={prize.image}
+                    alt={prize.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="rounded-lg object-cover"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <h3 className="text-xl font-semibold mb-2">{prize.title}</h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  {prize.description}
+                </p>
+                <Progress value={prize.sold} className="mb-2" />
+                <p className="text-right text-sm text-gray-500">
+                  {prize.sold}% sold
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href={`/prizes/${prize.id}`} className="w-full">
+                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                    Enter now →
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
       </div>
     </div>
