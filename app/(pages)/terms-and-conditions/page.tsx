@@ -407,6 +407,65 @@ export default function TermsAndConditionsPage() {
                 </ol>
               </li>
               <li>The prize is not negotiable or transferable.</li>
+              <li>
+                <strong>
+                  If the Prize involves a cosmetic procedure or beauty product
+                  (including but not limited to cosmetic surgery, non-surgical
+                  aesthetic treatments, hair restoration, or skincare products):
+                </strong>
+                <ol
+                  className="list-decimal pl-6 mt-2"
+                  style={{ listStyleType: "lower-alpha" }}
+                >
+                  <li>
+                    The Promoter does not provide or endorse any medical advice
+                    and is not a medical provider. The Winner is solely
+                    responsible for seeking independent medical consultation
+                    before undergoing any procedure or treatment included as
+                    part of the Prize.
+                  </li>
+                  <li>
+                    All procedures or treatments are subject to the terms and
+                    conditions, and eligibility requirements of the supplier or
+                    clinic providing the service. The Promoter accepts no
+                    responsibility for refusal of service or treatment by the
+                    supplier on medical, ethical, or professional grounds.
+                  </li>
+                  <li>
+                    The Winner acknowledges and accepts the inherent risks
+                    involved with any cosmetic procedure or treatment. The
+                    Promoter shall have no liability for any complications, side
+                    effects, dissatisfaction, or injury arising from or related
+                    to the Prize.
+                  </li>
+                  <li>
+                    Where the Prize includes beauty or skincare products, the
+                    Promoter makes no guarantees regarding their suitability or
+                    effectiveness for the Winner's individual skin or health
+                    condition. It is the Winner's sole responsibility to check
+                    ingredients, conduct patch testing where appropriate, and
+                    consult with a medical professional if necessary.
+                  </li>
+                  <li>
+                    The Winner is solely responsible for arranging any follow-up
+                    consultations, aftercare, insurance, or associated costs
+                    relating to the procedure or use of the Prize.
+                  </li>
+                  <li>
+                    If the Winner is unable or unwilling to receive the Prize
+                    (e.g. fails a medical suitability check or does not meet
+                    supplier requirements), the alternative cash prize will be
+                    provided unless expressly stated in the competition details.
+                  </li>
+                  <li>
+                    Where the Prize involves attending a clinic or supplier
+                    located in a specific or limited geographical location, the
+                    Winner shall be solely responsible for all travel,
+                    accommodation, and related expenses incurred in attending
+                    the appointment or redeeming the Prize.
+                  </li>
+                </ol>
+              </li>
             </ol>
 
             <h2 className="text-xl font-bold mt-8 mb-4">7. Winners</h2>
@@ -438,8 +497,8 @@ export default function TermsAndConditionsPage() {
               <li>
                 If you object to any or all of your surname, county and winning
                 entry being published or made available, please contact the
-                Promoter at [INSERT EMAIL ADDRESS] prior to the Closing Date. In
-                such circumstances, the Promoter must still provide the
+                Promoter at hello@radiancerewards.co.uk prior to the Closing
+                Date. In such circumstances, the Promoter must still provide the
                 information to the Advertising Standards Authority on request.
               </li>
             </ol>
@@ -458,11 +517,11 @@ export default function TermsAndConditionsPage() {
                 If your personal details, including contact information, changes
                 at any time you should notify the Promoter as soon as reasonably
                 possible. Notifications should be sent to the Promoter via email
-                to [INSERT EMAIL ADDRESS]. Notifications must include details of
-                the competition you have entered, your old details and your new
-                details. If your details change within 5 days of the Closing
-                Date, the Promoter will use your old details if it needs to try
-                to contact you.
+                to hello@radiancerewards.co.uk. Notifications must include
+                details of the competition you have entered, your old details
+                and your new details. If your details change within 5 days of
+                the Closing Date, the Promoter will use your old details if it
+                needs to try to contact you.
               </li>
               <li>
                 Any Cash Prize will be transferred directly to the winners
@@ -551,8 +610,8 @@ export default function TermsAndConditionsPage() {
                 not be entitled to any refund of any entry fee if you withdraw
                 from the competition. If you do not wish any of your personal
                 details to be used by the Promoter for promotional purposes,
-                please email the Promoter at [INSERT EMAIL ADDRESS] prior to the
-                Closing Date.
+                please email the Promoter at hello@radiancerewards.co.uk prior
+                to the Closing Date.
               </li>
             </ol>
 
@@ -672,58 +731,6 @@ export default function TermsAndConditionsPage() {
                     necessary safety equipment and clothing (for example,
                     helmets, boots and gloves) and for wearing them whilst
                     operating the vehicle.
-                  </li>
-                </ol>
-              </li>
-              <li>
-                If the Prize involves a cosmetic procedure or beauty product
-                (including but not limited to cosmetic surgery, non-surgical
-                aesthetic treatments, hair restoration, or skincare products:
-                <ol
-                  className="list-decimal pl-6 mt-2"
-                  style={{ listStyleType: "lower-alpha" }}
-                >
-                  <li>
-                    The Promoter does not provide or endorse any medical advice
-                    and is not a medical provider. The Winner is solely
-                    responsible for seeking independent medical consultation
-                    before undergoing any procedure or treatment included as
-                    part of the Prize.
-                  </li>
-                  <li>
-                    All procedures or treatments are subject to the terms and
-                    conditions, and eligibility requirements of the supplier or
-                    clinic providing the service. The Promoter accepts no
-                    responsibility for refusal of service or treatment by the
-                    supplier on medical, ethical, or professional grounds.
-                  </li>
-                  <li>
-                    The Winner acknowledges and accepts the inherent risks
-                    involved with any cosmetic procedure or treatment. The
-                    Promoter shall have no liability for any complications, side
-                    effects, dissatisfaction, or injury arising from or related
-                    to the Prize.
-                  </li>
-                  <li>
-                    Where the Prize includes beauty or skincare products, the
-                    Promoter makes no guarantees regarding their suitability or
-                    effectiveness for the Winner&apos;s individual skin or
-                    health condition. It is the Winner&apos;s sole
-                    responsibility to check ingredients, conduct patch testing
-                    where appropriate, and consult with a medical professional
-                    if necessary.
-                  </li>
-                  <li>
-                    The Winner is solely responsible for arranging any follow-up
-                    consultations, aftercare, insurance, or associated costs
-                    relating to the procedure or use of the Prize.
-                  </li>
-                  <li>
-                    If the Winner is unable or unwilling to receive the Prize
-                    (e.g. fails a medical suitability check or does not meet
-                    supplier requirements), no alternative cash prize or
-                    substitute will be provided unless expressly stated in the
-                    competition details.
                   </li>
                 </ol>
               </li>

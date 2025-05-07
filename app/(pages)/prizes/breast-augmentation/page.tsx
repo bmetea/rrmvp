@@ -5,9 +5,9 @@ import PrizePage from "@/components/PrizePage";
 export default function BreastAugmentationPrizePage() {
   return (
     <PrizePage
-      image="/breast-augmentation.jpg"
+      image="/breast-augmentation.png"
       title="Breast Augmentation"
-      subtitle="+ £2,000 Aftercare or £15,000 Cash Alternative"
+      subtitle="£10,000 Cash Prize for Procedure & Aftercare"
       ticketsSold={90}
       accordionSections={[
         {
@@ -24,85 +24,22 @@ export default function BreastAugmentationPrizePage() {
               </p>
               <ul className="list-disc pl-5 mb-2">
                 <li>
-                  Includes a fully paid consultation and up to £2,000 for
-                  follow-up aftercare.
+                  Win a £10,000 cash prize to fund a breast augmentation
+                  procedure.
                 </li>
                 <li>
-                  If the clinic determines you are not medically eligible, you
-                  will receive the £15,000 cash alternative.
+                  This amount is intended to cover the surgery, aftercare,
+                  travel, accommodation, and any related expenses.
                 </li>
                 <li>
-                  Travel, accommodation, and any associated costs are your
-                  responsibility.
+                  You have full freedom to choose your own licensed clinic in
+                  the UK or abroad.
                 </li>
                 <li>
-                  All procedures are carried out by reputable, approved partner
-                  clinics (listed below).
+                  The cash prize is paid directly to you — giving you control
+                  over how and where it's spent.
                 </li>
               </ul>
-            </>
-          ),
-        },
-        {
-          label: "Approved Partner Clinics",
-          content: (
-            <>
-              <ul className="list-disc pl-5 mb-2">
-                <li>
-                  <a
-                    href="https://www.topdoctors.co.uk/doctor/plastic-surgery/breast-augmentation/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-blue-700"
-                  >
-                    Top UK Plastic Surgeons for Breast Augmentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://cosmetic.transforminglives.co.uk/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-blue-700"
-                  >
-                    Transform Cosmetic Surgery
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://harleyclinic.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-blue-700"
-                  >
-                    Harley Clinic
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.bupa.co.uk/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-blue-700"
-                  >
-                    Bupa Cosmetic Surgery
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.nuffieldhealth.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-blue-700"
-                  >
-                    Nuffield Health
-                  </a>
-                </li>
-              </ul>
-              <p className="text-xs text-gray-600 mt-2">
-                All partner clinics are selected based on their qualifications,
-                safety record, and medical reputation.
-              </p>
             </>
           ),
         },
@@ -113,61 +50,48 @@ export default function BreastAugmentationPrizePage() {
               <div className="mb-4">
                 <h3 className="font-semibold mb-1">How does it work?</h3>
                 <ul className="list-disc pl-5 mb-2">
+                  <li>If you win, you'll receive a £10,000 cash prize.</li>
                   <li>
-                    Once you win, we&apos;ll confirm your preferred clinic from
-                    our approved list.
-                  </li>
-                  <li>Your initial consultation will be fully paid by us.</li>
-                  <li>
-                    If eligible, we cover the cost of treatment up to the full
-                    prize value.
+                    This cash can be used for your procedure, aftercare, travel,
+                    accommodation, or however you choose.
                   </li>
                   <li>
-                    If you&apos;re not eligible, you&apos;ll receive the cash
-                    alternative.
+                    You are responsible for booking your consultation and
+                    treatment with a licensed provider.
                   </li>
                 </ul>
                 <h3 className="font-semibold mb-1">
-                  Where can I go for treatment?
+                  Can I choose my own clinic?
                 </h3>
                 <p className="mb-2">
-                  Treatment must take place at one of our{" "}
-                  <span className="font-semibold">
-                    approved partner clinics
-                  </span>{" "}
-                  listed above.
+                  Yes – you are completely free to choose any licensed cosmetic
+                  surgery provider (UK or international). We do not restrict
+                  your choice.
                 </p>
                 <h3 className="font-semibold mb-1">
-                  What happens if I&apos;m declined for treatment?
+                  Is there a treatment guarantee or support?
                 </h3>
                 <p className="mb-2">
-                  If you&apos;re found medically ineligible, you&apos;ll
-                  automatically receive the £15,000 cash alternative.
-                  <br />
-                  However, if you fail to disclose important medical information
-                  or do not meet the clinic&apos;s stated criteria, you may
-                  forfeit the prize without alternative.
-                </p>
-                <h3 className="font-semibold mb-1">
-                  Can I choose my own provider?
-                </h3>
-                <p className="mb-2">
-                  No. Treatment must be conducted at an approved partner clinic
-                  to ensure compliance and safety standards.
+                  We do not manage or oversee the procedure. You are responsible
+                  for selecting your provider and managing your treatment
+                  experience.
                 </p>
                 <h3 className="font-semibold mb-1">
                   Are there any restrictions?
                 </h3>
                 <ul className="list-disc pl-5">
                   <li>You must be 18 years or older.</li>
-                  <li>All procedures are subject to medical assessment.</li>
                   <li>
-                    You must follow pre-treatment and post-treatment guidance
-                    issued by the clinic.
+                    You must select a licensed medical professional to carry out
+                    the procedure.
                   </li>
                   <li>
-                    You are responsible for all travel, accommodation, and
-                    related expenses.
+                    You must follow any medical guidelines issued by your clinic
+                    before and after treatment.
+                  </li>
+                  <li>
+                    You are responsible for ensuring you meet the clinic's
+                    eligibility criteria.
                   </li>
                 </ul>
               </div>

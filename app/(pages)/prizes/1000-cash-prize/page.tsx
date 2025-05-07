@@ -5,7 +5,7 @@ import PrizePage from "../../../../components/PrizePage";
 export default function CashPrizePage() {
   return (
     <PrizePage
-      image="/cash-prize.jpg"
+      image="/cash-prize.png"
       title="£1,000 Cash Prize"
       subtitle="Win £1,000 in cash, paid directly to your bank account."
       ticketsSold={75}
