@@ -37,7 +37,7 @@ export default function BreastAugmentationPrizePage() {
                 </li>
                 <li>
                   The cash prize is paid directly to you — giving you control
-                  over how and where it's spent.
+                  over how and where it&apos;s spent.
                 </li>
               </ul>
             </>
@@ -50,7 +50,7 @@ export default function BreastAugmentationPrizePage() {
               <div className="mb-4">
                 <h3 className="font-semibold mb-1">How does it work?</h3>
                 <ul className="list-disc pl-5 mb-2">
-                  <li>If you win, you'll receive a £10,000 cash prize.</li>
+                  <li>If you win, you&apos;ll receive a £10,000 cash prize.</li>
                   <li>
                     This cash can be used for your procedure, aftercare, travel,
                     accommodation, or however you choose.
@@ -90,7 +90,7 @@ export default function BreastAugmentationPrizePage() {
                     before and after treatment.
                   </li>
                   <li>
-                    You are responsible for ensuring you meet the clinic's
+                    You are responsible for ensuring you meet the clinic&apos;s
                     eligibility criteria.
                   </li>
                 </ul>

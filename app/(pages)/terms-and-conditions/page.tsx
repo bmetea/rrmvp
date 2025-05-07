@@ -441,10 +441,11 @@ export default function TermsAndConditionsPage() {
                   <li>
                     Where the Prize includes beauty or skincare products, the
                     Promoter makes no guarantees regarding their suitability or
-                    effectiveness for the Winner's individual skin or health
-                    condition. It is the Winner's sole responsibility to check
-                    ingredients, conduct patch testing where appropriate, and
-                    consult with a medical professional if necessary.
+                    effectiveness for the Winner&apos;s individual skin or
+                    health condition. It is the Winner&apos;s sole
+                    responsibility to check ingredients, conduct patch testing
+                    where appropriate, and consult with a medical professional
+                    if necessary.
                   </li>
                   <li>
                     The Winner is solely responsible for arranging any follow-up
