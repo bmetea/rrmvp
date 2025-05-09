@@ -1,14 +1,4 @@
 import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import Image from "next/image";
-import Link from "next/link";
 
 export type Prize = {
   id: string;
