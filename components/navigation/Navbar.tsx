@@ -35,7 +35,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 width={120}
                 height={32}
                 priority
-                style={{ width: "auto", height: "auto" }}
+                className="w-auto h-auto"
               />
             </Link>
           </div>

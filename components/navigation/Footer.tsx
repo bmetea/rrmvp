@@ -14,7 +14,7 @@ const Footer = () => {
                 alt="Radiance Rewards"
                 width={48}
                 height={48}
-                className="mb-2"
+                className="mb-2 w-auto h-auto"
               />
             </Link>
           </div>
