@@ -1,6 +1,6 @@
 "use client";
 
-import PrizePage from "@/components/PrizePage";
+import PrizePage from "@/components/layout/PrizePage";
 
 export default function BreastAugmentationPrizePage() {
   return (
