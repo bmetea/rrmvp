@@ -6,7 +6,7 @@ const AboutSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8">
           {/* About Us */}
-          <div className="bg-muted text-muted-foreground p-8 rounded-lg shadow-sm">
+          <div className="bg-[#E19841]/5 text-muted-foreground p-8 rounded-lg shadow-sm border-[#E19841]/20">
             <h2 className="scroll-m-20 text-2xl font-bold tracking-tight mb-4 text-foreground">
               About us
             </h2>
@@ -29,11 +29,11 @@ const AboutSection = () => {
           </div>
 
           {/* Beauty with a Cause */}
-          <div className="bg-muted text-muted-foreground p-8 rounded-lg shadow-sm">
+          <div className="bg-[#E19841]/5 text-muted-foreground p-8 rounded-lg shadow-sm border-[#E19841]/20">
             <div className="space-y-8">
               <div>
                 <div className="flex items-center mb-4">
-                  <Heart className="text-primary mr-2" />
+                  <Heart className="text-[#E19841] mr-2" />
                   <h3 className="text-xl font-semibold text-foreground">
                     Beauty with a Cause
                   </h3>
@@ -47,7 +47,7 @@ const AboutSection = () => {
 
               <div>
                 <div className="flex items-center mb-4">
-                  <Users className="text-primary mr-2" />
+                  <Users className="text-[#E19841] mr-2" />
                   <h3 className="text-xl font-semibold text-foreground">
                     Trusted Partnerships
                   </h3>
