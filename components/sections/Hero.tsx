@@ -40,7 +40,7 @@ const Hero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white/10 transition-colors"
+                className="border-2 border-[#E19841] text-[#E19841] hover:bg-[#E19841]/20 hover:text-white transition-colors"
                 aria-label="View available prizes"
               >
                 View Prizes
