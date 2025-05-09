@@ -22,10 +22,12 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <div className="py-16">
+    <div className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">How it works</h2>
+          <h2 className="scroll-m-20 text-3xl font-bold tracking-tight mb-4">
+            How it works
+          </h2>
           <p className="text-muted-foreground">
             Three simple steps to start your Radiance Rewards journey.
           </p>
@@ -33,12 +35,17 @@ const HowItWorks = () => {
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {steps.map((step) => (
-            <Card key={step.number} className="text-center">
+            <Card
+              key={step.number}
+              className="text-center bg-[#E19841]/5 border-[#E19841]/20"
+            >
               <CardHeader>
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4 mx-auto">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#E19841]/10 text-[#E19841] text-2xl font-bold mb-4 mx-auto">
                   {step.number}
                 </div>
-                <CardTitle className="text-xl">{step.title}</CardTitle>
+                <CardTitle className="text-xl text-foreground">
+                  {step.title}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">{step.description}</p>
@@ -49,7 +56,12 @@ const HowItWorks = () => {
 
         <div className="text-center">
           <Link href="/prizes">
-            <Button variant="outline">View all Prizes →</Button>
+            <Button
+              variant="outline"
+              className="border-[#E19841]/20 hover:bg-[#E19841]/5"
+            >
+              View all Prizes →
+            </Button>
           </Link>
         </div>
       </div>
