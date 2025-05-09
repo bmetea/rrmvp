@@ -103,7 +103,8 @@ export default function PrizePage({
             </Button>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Only 50p per ticket. Most users spend £10 - £15 to get started.
+            {/* Only 50p per ticket. Most users spend £10 - £15 to get started. */}
+            Only £1 per ticket
           </p>
         </div>
 
