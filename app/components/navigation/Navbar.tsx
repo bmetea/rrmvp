@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { ShoppingCart, Menu, X } from 'lucide-react'
-import { cn } from "@/lib/utils"
-import { useState } from 'react'
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart, Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface NavbarProps {
   activePath?: string;
 }
 
 const navLinks = [
-  { href: '/prizes', label: 'Prizes' },
-  { href: '/how-it-works', label: 'How it works' },
-  { href: '/about', label: 'About us' },
-  { href: '/faq', label: 'FAQ' },
-]
+  { href: "/prizes", label: "Prizes" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/about", label: "About us" },
+  { href: "/faq", label: "FAQ" },
+];
 
-const Navbar = ({ activePath = '/' }: NavbarProps) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+const Navbar = ({ activePath = "/" }: NavbarProps) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <nav className="border-b">
@@ -34,6 +34,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
                 width={120}
                 height={32}
                 priority
+                style={{ width: "auto", height: "auto" }}
               />
             </Link>
           </div>
@@ -45,6 +46,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="hover:scale-110 transition-transform duration-200"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -65,7 +67,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
                   activePath === link.href && [
                     "text-orange-500",
                     "after:absolute after:bottom-0 after:left-0 after:right-0",
-                    "after:h-0.5 after:bg-orange-500 after:transition-all after:duration-300"
+                    "after:h-0.5 after:bg-orange-500 after:transition-all after:duration-300",
                   ]
                 )}
               >
@@ -79,16 +81,18 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+              aria-label="View shopping cart"
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <Button 
-              variant="default" 
+            <Button
+              variant="default"
               className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
+              aria-label="Enter the beauty contest"
             >
               Enter now
             </Button>
@@ -96,10 +100,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
         </div>
 
         {/* Mobile menu */}
-        <div className={cn(
-          "md:hidden",
-          isMobileMenuOpen ? "block" : "hidden"
-        )}>
+        <div className={cn("md:hidden", isMobileMenuOpen ? "block" : "hidden")}>
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -121,15 +122,15 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
             ))}
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5 space-x-2">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
                   className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
                 >
                   <ShoppingCart className="h-5 w-5" />
                 </Button>
-                <Button 
-                  variant="default" 
+                <Button
+                  variant="default"
                   className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
                 >
                   Enter now
@@ -140,7 +141,7 @@ const Navbar = ({ activePath = '/' }: NavbarProps) => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar 
+export default Navbar;

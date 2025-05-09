@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -8,41 +9,46 @@ const Footer = () => {
           {/* Logo */}
           <div className="mb-8">
             <Link href="/" className="flex flex-col items-center">
-              <div className="w-12 h-12 border-2 border-white rounded-full flex items-center justify-center mb-2">
-                <span className="text-xl font-bold">RR</span>
-              </div>
+              <Image
+                src="/logo-footer-white.png"
+                alt="Radiance Rewards"
+                width={48}
+                height={48}
+                className="mb-2"
+              />
             </Link>
           </div>
 
           {/* Links */}
-          <div className="flex space-x-6 mb-8 text-sm text-gray-400">
-            <Link href="/terms" className="hover:text-white">
+          <div className="flex space-x-6 mb-8 text-sm text-gray-300">
+            <Link href="/terms-use" className="hover:text-white">
               Terms of use
             </Link>
-            <Link href="/terms" className="hover:text-white">
+            <Link href="/terms-and-conditions" className="hover:text-white">
               Terms and conditions
             </Link>
-            <Link href="/privacy" className="hover:text-white">
+            <Link href="/privacy-policy" className="hover:text-white">
               Privacy policy
             </Link>
-            <Link href="/acceptable-use" className="hover:text-white">
+            <Link href="/acceptable-use-policy" className="hover:text-white">
               Acceptable use policy
             </Link>
           </div>
 
           {/* Copyright */}
-          <div className="text-xs text-gray-500">
-            <p>© 2024 Radiance Rewards. All rights reserved.</p>
+          <div className="text-xs text-gray-300">
+            <p>© 2025 Radiance Rewards. All rights reserved.</p>
             <p className="mt-2">
-              You must be over 18 to enter. If you are under 18 your ticket will be void and refunded.
-              Prize descriptions and images are for illustration purposes only. Your prize will be as it was approved by Radiance at
-              the time of purchase.
+              You must be over 18 to enter. If you are under 18 your ticket will
+              be void and refunded. Prize descriptions and images are for
+              illustration purposes only. Your prize will be as it was approved
+              by Radiance at the time of purchase.
             </p>
           </div>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer 
+export default Footer;

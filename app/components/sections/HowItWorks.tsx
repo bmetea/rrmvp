@@ -1,22 +1,23 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const steps = [
   {
     number: "1",
-    title: "Choose your Prize",
-    description: "Find a prize you'd love to win"
+    title: "Select your prize",
+    description: "Select your prize and entries",
   },
   {
     number: "2",
-    title: "Buy your ticket",
-    description: "Purchase a ticket to be in with a chance of winning"
+    title: "Answer the question",
+    description: "Answer the question correctly",
   },
   {
     number: "3",
-    title: "Find out instantly",
-    description: "Winners are selected in our AI Automated draws"
-  }
-]
+    title: "Live Draw",
+    description: "Winner announced on Live Draw",
+  },
+];
 
 const HowItWorks = () => {
   return (
@@ -24,7 +25,7 @@ const HowItWorks = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">How it works</h2>
-          <p className="text-gray-600">
+          <p className="text-gray-700">
             Three simple steps to start your Radiance Rewards journey.
           </p>
         </div>
@@ -39,19 +40,19 @@ const HowItWorks = () => {
                 {step.number}
               </div>
               <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-              <p className="text-gray-600">{step.description}</p>
+              <p className="text-gray-700">{step.description}</p>
             </div>
           ))}
         </div>
 
         <div className="text-center">
-          <Button variant="outline">
-            View all Prizes →
-          </Button>
+          <Link href="/prizes">
+            <Button variant="outline">View all Prizes →</Button>
+          </Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HowItWorks 
+export default HowItWorks;
