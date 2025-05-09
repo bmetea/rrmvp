@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 interface NavbarProps {
   activePath?: string;
@@ -81,6 +82,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
@@ -122,6 +124,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             ))}
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5 space-x-2">
+                <ThemeToggle />
                 <Button
                   variant="ghost"
                   size="icon"

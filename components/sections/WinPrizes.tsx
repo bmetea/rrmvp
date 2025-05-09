@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 export type Prize = {
   id: string;
@@ -19,21 +20,21 @@ const WinPrizes = ({ children }: WinPrizesProps) => {
         <div className="text-center mb-12">
           <h2 className="text-5xl font-bold mb-6">Explore our prizes</h2>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
+            <Button variant="outline" size="sm">
               All
-            </button>
-            <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
+            </Button>
+            <Button variant="outline" size="sm">
               Cosmetic Enhancement
-            </button>
-            <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
+            </Button>
+            <Button variant="outline" size="sm">
               Haircare & Skincare
-            </button>
-            <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
+            </Button>
+            <Button variant="outline" size="sm">
               Cash
-            </button>
-            <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
+            </Button>
+            <Button variant="outline" size="sm">
               Instant Win
-            </button>
+            </Button>
           </div>
         </div>
 

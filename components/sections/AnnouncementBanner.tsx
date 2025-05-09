@@ -1,6 +1,8 @@
+import { Alert } from "@/components/ui/alert";
+
 const AnnouncementBanner = () => {
   return (
-    <div className="bg-[#D18A33] text-white overflow-hidden">
+    <Alert className="bg-[#D18A33] text-white overflow-hidden rounded-none border-none">
       <div className="animate-marquee whitespace-nowrap py-2">
         <span className="mx-4 font-medium">ENTER IN ONLY 2 MINUTES</span>
         <span className="mx-4">•</span>
@@ -12,7 +14,7 @@ const AnnouncementBanner = () => {
         <span className="mx-4">•</span>
         <span className="mx-4 font-medium">ENTER IN ONLY 2 MINUTES</span>
       </div>
-    </div>
+    </Alert>
   );
 };
 
