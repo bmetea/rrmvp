@@ -1,6 +1,6 @@
 "use client";
 
-import PrizePage from "../../../../components/PrizePage";
+import PrizePage from "@/components/PrizePage";
 
 export default function CashPrizePage() {
   return (
