@@ -136,7 +136,7 @@ export default function PrizePage({
             className="accent-indigo-600 mt-1"
           />
           <label htmlFor="agree" className="text-sm">
-            I am a UK or Ireland resident, over 18 years of age, & agree to the
+            I am a UK resident, over 18 years of age, & agree to the
             terms & conditions.
           </label>
         </div>
