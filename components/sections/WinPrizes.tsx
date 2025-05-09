@@ -15,10 +15,12 @@ interface WinPrizesProps {
 
 const WinPrizes = ({ children }: WinPrizesProps) => {
   return (
-    <div className="py-16 bg-gray-50">
+    <div className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold mb-6">Explore our prizes</h2>
+          <h2 className="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl mb-6">
+            Explore our prizes
+          </h2>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Button variant="outline" size="sm">
               All

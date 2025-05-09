@@ -20,11 +20,11 @@ const Hero = () => {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
         <div className="max-w-3xl">
-          <h1 className="text-5xl font-bold mb-4">
+          <h1 className="scroll-m-20 text-5xl font-extrabold tracking-tight lg:text-6xl mb-4">
             Where <span className="text-[#E19841]">Beauty</span> <br />
             Meets <span className="text-[#E19841]">Opportunity</span>
           </h1>
-          <p className="text-lg mb-8 text-white">
+          <p className="text-xl text-muted-foreground mb-8">
             A new way to experience beauty - win exclusive cosmetic
             enhancements, high-end skincare & haircare
           </p>
@@ -39,7 +39,8 @@ const Hero = () => {
             <Link href="/prizes">
               <Button
                 size="lg"
-                className="bg-transparent border-2 border-white text-white hover:bg-white/10 transition-colors"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white/10 transition-colors"
                 aria-label="View available prizes"
               >
                 View Prizes
