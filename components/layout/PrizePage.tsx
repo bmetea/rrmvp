@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 interface AccordionSection {
@@ -145,8 +144,8 @@ export default function PrizePage({
             className="accent-indigo-600 mt-1"
           />
           <label htmlFor="agree" className="text-sm">
-            I am a UK resident, over 18 years of age, & agree to the
-            terms & conditions.
+            I am a UK resident, over 18 years of age, & agree to the terms &
+            conditions.
           </label>
         </div>
 

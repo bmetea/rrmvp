@@ -190,8 +190,8 @@ export default function AcceptableUsePolicyPage() {
                 </li>
                 <li>Promote any illegal activity.</li>
                 <li>
-                  Be threatening, abuse or invade another's privacy, or cause
-                  annoyance, inconvenience or needless anxiety.
+                  Be threatening, abuse or invade another&apos;s privacy, or
+                  cause annoyance, inconvenience or needless anxiety.
                 </li>
                 <li>
                   Be likely to harass, upset, embarrass, alarm or annoy any

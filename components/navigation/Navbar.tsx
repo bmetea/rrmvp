@@ -8,13 +8,7 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 interface NavbarProps {
   activePath?: string;
