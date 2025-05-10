@@ -5,9 +5,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 interface NavbarProps {
   activePath?: string;
@@ -23,6 +30,12 @@ const navLinks = [
 const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // After mounting, we can safely show the theme-dependent logo
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <nav className="border-b">
@@ -31,18 +44,29 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <Image
-                src={
-                  resolvedTheme === "dark"
-                    ? "/text-logo-white.svg"
-                    : "/text-logo-black.svg"
-                }
-                alt="Radiance Rewards"
-                width={150}
-                height={40}
-                priority
-                className="h-8 w-auto"
-              />
+              {mounted ? (
+                <Image
+                  src={
+                    resolvedTheme === "dark"
+                      ? "svg/text-logo-white.svg"
+                      : "svg/text-logo-black.svg"
+                  }
+                  alt="Radiance Rewards"
+                  width={150}
+                  height={40}
+                  priority
+                  className="h-8 w-auto"
+                />
+              ) : (
+                <Image
+                  src="svg/text-logo-black.svg"
+                  alt="Radiance Rewards"
+                  width={150}
+                  height={40}
+                  priority
+                  className="h-8 w-auto"
+                />
+              )}
             </Link>
           </div>
 
@@ -89,21 +113,27 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
-              aria-label="View shopping cart"
-            >
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="default"
-              className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
-              aria-label="Enter the beauty contest"
-            >
-              Enter now
-            </Button>
+            <SignedIn>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+                aria-label="View shopping cart"
+              >
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button
+                  variant="default"
+                  className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
+                >
+                  Sign in
+                </Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
 
@@ -131,19 +161,26 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5 space-x-2">
                 <ThemeToggle />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="default"
-                  className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
-                >
-                  Enter now
-                </Button>
+                <SignedIn>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                  </Button>
+                  <UserButton afterSignOutUrl="/" />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button
+                      variant="default"
+                      className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
+                    >
+                      Sign in
+                    </Button>
+                  </SignInButton>
+                </SignedOut>
               </div>
             </div>
           </div>
