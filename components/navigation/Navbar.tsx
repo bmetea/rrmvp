@@ -126,16 +126,13 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="ghost">Sign in</Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
                 <Button
                   variant="default"
                   className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
                 >
-                  Sign up
+                  Sign in
                 </Button>
-              </SignUpButton>
+              </SignInButton>
             </SignedOut>
           </div>
         </div>
@@ -176,18 +173,13 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <Button variant="ghost" className="w-full">
-                      Sign in
-                    </Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
                     <Button
                       variant="default"
                       className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
                     >
-                      Sign up
+                      Sign in
                     </Button>
-                  </SignUpButton>
+                  </SignInButton>
                 </SignedOut>
               </div>
             </div>
