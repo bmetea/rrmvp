@@ -136,19 +136,18 @@ export default function PrizePage({
         </div>
 
         {/* Terms agreement */}
-        <div className="mb-2">
-          <RadioGroup
-            value={agreed ? "agree" : ""}
-            onValueChange={(value) => setAgreed(value === "agree")}
-          >
-            <div className="flex items-start space-x-2">
-              <RadioGroupItem value="agree" id="agree" className="mt-1" />
-              <Label htmlFor="agree" className="text-sm">
-                I am a UK or Ireland resident, over 18 years of age, & agree to
-                the terms & conditions.
-              </Label>
-            </div>
-          </RadioGroup>
+        <div className="mb-2 flex items-start gap-2">
+          <input
+            type="radio"
+            id="agree"
+            checked={agreed}
+            onChange={() => setAgreed((a) => !a)}
+            className="accent-indigo-600 mt-1"
+          />
+          <label htmlFor="agree" className="text-sm">
+            I am a UK resident, over 18 years of age, & agree to the
+            terms & conditions.
+          </label>
         </div>
 
         {/* Payment buttons */}
