@@ -28,6 +28,7 @@ export default async function PrizePageRoute({ params }: PrizePageProps) {
       subtitle={prize.subtitle}
       ticketsSold={Math.round((prize.ticketsSold / prize.ticketsTotal) * 100)}
       accordionSections={prize.accordionSections || []}
+      prize={prize}
     />
   );
 }

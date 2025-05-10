@@ -18,8 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useCart } from "@/lib/context/cart-context";
+import { ShoppingCart } from "lucide-react";
+import { Prize } from "@/types/prize";
 
 interface AccordionSection {
   label: string;
@@ -32,6 +34,7 @@ interface PrizePageProps {
   subtitle: string;
   ticketsSold: number;
   accordionSections: AccordionSection[];
+  prize: Prize;
 }
 
 export default function PrizePage({
@@ -40,10 +43,24 @@ export default function PrizePage({
   subtitle,
   ticketsSold,
   accordionSections,
+  prize,
 }: PrizePageProps) {
   const [ticketCount, setTicketCount] = useState(20);
   const [dropdownValue, setDropdownValue] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    if (!agreed) {
+      alert("Please agree to the terms and conditions first");
+      return;
+    }
+    if (!dropdownValue) {
+      alert("Please answer the skill-based question first");
+      return;
+    }
+    addItem(prize, ticketCount);
+  };
 
   return (
     <main className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto py-12 px-4">
@@ -111,10 +128,7 @@ export default function PrizePage({
               +
             </Button>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
-            {/* Only 50p per ticket. Most users spend £10 - £15 to get started. */}
-            Only £1 per ticket
-          </p>
+          <p className="text-xs text-gray-500 mt-1">Only £1 per ticket</p>
         </div>
 
         {/* Skills-based question */}
@@ -145,10 +159,19 @@ export default function PrizePage({
             className="accent-indigo-600 mt-1"
           />
           <label htmlFor="agree" className="text-sm">
-            I am a UK resident, over 18 years of age, & agree to the
-            terms & conditions.
+            I am a UK resident, over 18 years of age, & agree to the terms &
+            conditions.
           </label>
         </div>
+
+        {/* Add to Cart button */}
+        <Button
+          className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2"
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="h-5 w-5" />
+          Add {ticketCount} Tickets to Cart
+        </Button>
 
         {/* Payment buttons */}
         <div className="flex flex-col gap-2 mb-2">
