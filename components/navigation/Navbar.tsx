@@ -43,8 +43,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Image
                   src={
                     resolvedTheme === "dark"
-                      ? "svg/text-logo-white.svg"
-                      : "svg/text-logo-black.svg"
+                      ? "/svg/text-logo-white.svg"
+                      : "/svg/text-logo-black.svg"
                   }
                   alt="Radiance Rewards"
                   width={150}
@@ -54,7 +54,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 />
               ) : (
                 <Image
-                  src="svg/text-logo-black.svg"
+                  src="/svg/text-logo-black.svg"
                   alt="Radiance Rewards"
                   width={150}
                   height={40}
