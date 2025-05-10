@@ -11,6 +11,15 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface AccordionSection {
   label: string;
@@ -110,20 +119,20 @@ export default function PrizePage({
 
         {/* Skills-based question */}
         <div className="mb-2">
-          <label className="block font-medium mb-1">
+          <Label className="block font-medium mb-1">
             Where is Big Ben located?
-          </label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={dropdownValue}
-            onChange={(e) => setDropdownValue(e.target.value)}
-          >
-            <option value="">Select an answer</option>
-            <option value="london">London</option>
-            <option value="paris">Paris</option>
-            <option value="rome">Rome</option>
-            <option value="berlin">Berlin</option>
-          </select>
+          </Label>
+          <Select value={dropdownValue} onValueChange={setDropdownValue}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select an answer" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="london">London</SelectItem>
+              <SelectItem value="paris">Paris</SelectItem>
+              <SelectItem value="rome">Rome</SelectItem>
+              <SelectItem value="berlin">Berlin</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Terms agreement */}
@@ -144,17 +153,19 @@ export default function PrizePage({
         {/* Payment buttons */}
         <div className="flex flex-col gap-2 mb-2">
           <Button
-            className="bg-white border text-black flex items-center justify-center gap-2"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
             aria-label="Pay with Google Pay"
           >
-            <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />{" "}
+            <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />
             Pay with Google
           </Button>
           <Button
-            className="bg-white border text-black flex items-center justify-center gap-2"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
             aria-label="Pay with Apple Pay"
           >
-            <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />{" "}
+            <span className="inline-block w-5 h-5 bg-gray-200 rounded-full" />
             Pay with Apple
           </Button>
         </div>

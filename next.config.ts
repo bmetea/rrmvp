@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
     // ...
   },
   images: {
-    domains: ["avatar.iran.liara.run"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatar.iran.liara.run",
+      },
+    ],
   },
 };
 

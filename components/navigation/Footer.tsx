@@ -10,11 +10,11 @@ const Footer = () => {
           <div className="mb-8">
             <Link href="/" className="flex flex-col items-center">
               <Image
-                src="/logo-footer-white.png"
+                src="/svg/logo-footer-white.svg"
                 alt="Radiance Rewards"
                 width={48}
-                height={48}
-                className="mb-2"
+                height={68}
+                className="mb-2 w-12 h-auto"
               />
             </Link>
           </div>

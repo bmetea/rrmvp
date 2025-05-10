@@ -1,4 +1,4 @@
-import AboutSection from '@/app/components/sections/AboutSection'
+import AboutSection from "@/components/sections/AboutSection";
 
 export default function AboutPage() {
   return (
@@ -11,5 +11,5 @@ export default function AboutPage() {
       </div>
       <AboutSection />
     </main>
-  )
-} 
+  );
+}

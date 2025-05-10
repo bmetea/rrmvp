@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const faqItems = [
   {
@@ -109,26 +110,36 @@ const faqItems = [
   },
 ];
 
-export default function FaqSection() {
+export function FaqSection() {
   return (
-    <div className="py-16">
+    <div className="py-16 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Accordion type="multiple" className="w-full space-y-4">
-          {faqItems.map((item, index) => (
-            <AccordionItem
-              key={index}
-              value={`item-${index}`}
-              className="border rounded-lg px-4 bg-white"
-            >
-              <AccordionTrigger className="text-left hover:no-underline py-4 font-semibold">
-                {item.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pb-4 whitespace-pre-line">
-                {item.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-center mb-2">
+              Frequently Asked Questions
+            </CardTitle>
+            <p className="text-muted-foreground text-center">
+              Find answers to common questions about our competitions and prizes
+            </p>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger className="text-left">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="whitespace-pre-line text-muted-foreground">
+                      {item.answer}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
