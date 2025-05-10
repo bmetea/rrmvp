@@ -11,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Prize } from "@/types/prize";
+import { useCart } from "@/lib/context/cart-context";
+import { ShoppingCart } from "lucide-react";
 
 interface PrizeCardProps {
   prize: Prize;
@@ -21,6 +23,12 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
   const soldPercentage = Math.round(
     (prize.ticketsSold / prize.ticketsTotal) * 100
   );
+  const { addItem } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem(prize, 1);
+  };
 
   return (
     <Card className="relative flex flex-col justify-between">
@@ -105,20 +113,20 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
           {soldPercentage}% sold
         </p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-2">
+        <Button
+          className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2"
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="h-5 w-5" />
+          Add to Cart
+        </Button>
         <Link href={`/prizes/${prize.slug}`} className="w-full">
-          <Button className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-              <path
-                d="M6 6h15l-1.5 9h-13z"
-                stroke="#fff"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-              <circle cx="9" cy="20" r="1" fill="#fff" />
-              <circle cx="18" cy="20" r="1" fill="#fff" />
-            </svg>
-            Enter now →
+          <Button
+            variant="outline"
+            className="w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center justify-center gap-2"
+          >
+            View Details →
           </Button>
         </Link>
       </CardFooter>

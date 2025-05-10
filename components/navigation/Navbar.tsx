@@ -3,12 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { CartDialog } from "@/components/cart/cart-dialog";
 
 interface NavbarProps {
   activePath?: string;
@@ -65,7 +66,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -79,6 +80,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
+            {/* Mobile Cart Icon */}
+            <CartDialog />
           </div>
 
           {/* Desktop Navigation Links */}
@@ -108,14 +111,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             <SignedIn>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
-                aria-label="View shopping cart"
-              >
-                <ShoppingCart className="h-5 w-5" />
-              </Button>
+              <CartDialog />
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
             <SignedOut>
@@ -156,13 +152,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <div className="flex items-center px-5 space-x-2">
                 <ThemeToggle />
                 <SignedIn>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hover:scale-110 hover:bg-orange-50 transition-all duration-200"
-                  >
-                    <ShoppingCart className="h-5 w-5" />
-                  </Button>
+                  <CartDialog />
                   <UserButton afterSignOutUrl="/" />
                 </SignedIn>
                 <SignedOut>
