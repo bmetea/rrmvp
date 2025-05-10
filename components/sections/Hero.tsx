@@ -8,7 +8,7 @@ const Hero = () => {
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
-          src="/hero-bg-optimized.jpg"
+          src="/images/hero-bg-optimized.jpg"
           alt="Hero background"
           fill
           priority
