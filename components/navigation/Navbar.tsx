@@ -7,6 +7,7 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useTheme } from "next-themes";
 
 interface NavbarProps {
   activePath?: string;
@@ -21,6 +22,7 @@ const navLinks = [
 
 const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   return (
     <nav className="border-b">
@@ -30,12 +32,16 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/text-logo-black.png"
+                src={
+                  resolvedTheme === "dark"
+                    ? "/text-logo-white.svg"
+                    : "/text-logo-black.svg"
+                }
                 alt="Radiance Rewards"
-                width={120}
-                height={32}
+                width={150}
+                height={40}
                 priority
-                className="w-auto h-auto"
+                className="h-8 w-auto"
               />
             </Link>
           </div>
