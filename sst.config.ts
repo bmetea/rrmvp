@@ -4,19 +4,52 @@
 export default $config({
   app(input) {
     return {
-      name: "rr-mvp",
+      name: "rr",
       removal: input?.stage === "production" ? "retain" : "remove",
       protect: ["production"].includes(input?.stage),
       home: "aws",
     };
   },
   async run() {
+    const vpc =
+      $app.stage === "bmetea"
+        ? sst.aws.Vpc.get("rrvpc", "vpc-07b6a471bb56dcd48")
+        : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 2 });
+    const rds = new sst.aws.Aurora("rrdb", {
+      vpc,
+      engine: "postgres",
+      scaling: {
+        min: "0 ACU",
+        max: "1 ACU",
+      },
+      // dev: {
+      //   username: "postgres",
+      //   password: "postgres",
+      //   database: "postgres",
+      //   host: "localhost",
+      //   port: 5432,
+      // },
+      proxy: true,
+    });
+
     new sst.aws.Nextjs(`rr-${$app.stage}`, {
+      link: [rds],
+      vpc: vpc,
       environment: {
         CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
           process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
+        PAYLOAD_SECRET: "RunningLocally",
       },
     });
+    return {
+      vpc: vpc.id,
+      dbArn: rds.clusterArn,
+      dbUsername: rds.username,
+      dbPassword: rds.password,
+      dbHost: rds.host,
+      dbPort: rds.port,
+      dbDatabase: rds.database,
+    };
   },
 });

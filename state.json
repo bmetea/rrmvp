@@ -1,0 +1,2724 @@
+{
+  "stack": "organization/rr/bmetea",
+  "latest": {
+    "manifest": {
+      "time": "2025-05-13T22:39:11.073315+01:00",
+      "magic": "77be084e65c763fde87b290a0a6ba5aaacad687cde41d20d76768df34b0db77a",
+      "version": "v3.146.0"
+    },
+    "secrets_providers": {
+      "type": "passphrase",
+      "state": {
+        "salt": "v1:eV0u8ZJjWp0=:v1:hyAsXt8TbPPff+yf:Y3UQsIH/fw5nqxcBPCvBkroDAxndrQ=="
+      }
+    },
+    "resources": [
+      {
+        "urn": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "custom": false,
+        "type": "pulumi:pulumi:Stack",
+        "outputs": {
+          "_protect": false
+        },
+        "created": "2025-05-13T20:22:14.056154Z",
+        "modified": "2025-05-13T20:22:14.056154Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/runtime/stack.ts#38,23"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:sst:DevCommand::rrdbDev",
+        "custom": false,
+        "type": "sst:sst:DevCommand",
+        "outputs": {
+          "_dev": {
+            "autostart": true,
+            "aws": {},
+            "command": "sst print-and-not-quit",
+            "environment": {
+              "SST_DEV_COMMAND_MESSAGE": "Make sure your local database is using:\n\n  username: \"postgres\"\n  password: \"postgres\"\n  database: \"postgres\"\n\nListening on \"localhost:5432\"..."
+            },
+            "links": [],
+            "title": "rrdb"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.583208Z",
+        "modified": "2025-05-13T20:22:16.583208Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/experimental/dev-command.ts#105,5"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:sst:LinkRef::rrvpcLinkRef",
+        "custom": false,
+        "type": "sst:sst:LinkRef",
+        "outputs": {
+          "properties": {
+            "bastion": "i-0cab3005477f03828",
+            "type": "sst.aws.Vpc"
+          },
+          "target": "rrvpc"
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.579434Z",
+        "modified": "2025-05-13T20:22:16.579434Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/link.ts#25,7"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:sst:LinkRef::rr-bmeteaLinkRef",
+        "custom": false,
+        "type": "sst:sst:LinkRef",
+        "outputs": {
+          "properties": {
+            "type": "sst.aws.Nextjs",
+            "url": "http://url-unavailable-in-dev.mode"
+          },
+          "target": "rr-bmetea"
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.576218Z",
+        "modified": "2025-05-13T20:22:16.576218Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/link.ts#25,7"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Aurora::rrdb",
+        "custom": false,
+        "type": "sst:aws:Aurora",
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.578251Z",
+        "modified": "2025-05-13T20:22:16.578251Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/aurora.ts#654,5"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2",
+        "custom": true,
+        "id": "f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "type": "pulumi:providers:aws",
+        "inputs": {
+          "__internal": {},
+          "defaultTags": "{\"tags\":{\"sst:app\":\"rr\",\"sst:stage\":\"bmetea\"}}",
+          "region": "eu-west-1",
+          "skipCredentialsValidation": "false",
+          "skipRegionValidation": "true",
+          "version": "6.66.2"
+        },
+        "outputs": {
+          "defaultTags": "{\"tags\":{\"sst:app\":\"rr\",\"sst:stage\":\"bmetea\"}}",
+          "region": "eu-west-1",
+          "skipCredentialsValidation": "false",
+          "skipRegionValidation": "true",
+          "version": "6.66.2"
+        },
+        "created": "2025-05-13T20:22:16.577362Z",
+        "modified": "2025-05-13T20:22:16.577362Z"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "custom": false,
+        "type": "sst:aws:Vpc",
+        "outputs": {
+          "_tunnel": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:u44ebYH2W7yT1/Z5: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"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.580603Z",
+        "modified": "2025-05-13T20:22:16.580603Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/vpc.ts#363,5"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:sst:LinkRef::rrdbLinkRef",
+        "custom": false,
+        "type": "sst:sst:LinkRef",
+        "outputs": {
+          "include": [],
+          "properties": {
+            "clusterArn": "placeholder",
+            "database": "postgres",
+            "host": "localhost",
+            "password": "postgres",
+            "port": 5432,
+            "reader": "localhost",
+            "secretArn": "placeholder",
+            "type": "sst.aws.Aurora",
+            "username": "postgres"
+          },
+          "target": "rrdb"
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.584168Z",
+        "modified": "2025-05-13T20:22:16.584168Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/link.ts#25,7"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs::rr-bmetea",
+        "custom": false,
+        "type": "sst:aws:Nextjs",
+        "outputs": {
+          "_dev": {
+            "autostart": true,
+            "aws": {
+              "role": "arn:aws:iam::976193254361:role/rr-bmetea-rrbmeteaDevServerRole-ktkwvczd"
+            },
+            "command": "npm run dev",
+            "directory": ".",
+            "environment": {
+              "PAYLOAD_SECRET": "RunningLocally"
+            },
+            "links": [
+              "rrdb"
+            ]
+          },
+          "_metadata": {
+            "mode": "placeholder",
+            "path": ".",
+            "server": {
+              "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+              "ciphertext": "v1:SAczLVY/x9NtIVNf:TfkpEAAqkpY0oaUiqVyLxoUxbHTy4fwY/zvdFpTLHCYCIdQTY/KcsV3/icCEgdQvH8R3k399zbp2eNxNmMu+8eFyR7bkg02W1QRu4GAgUvCb7ygJFvNivUWaB7EyKqUMFYRL/Cv2BZv/sCVEkQ=="
+            }
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "created": "2025-05-13T20:22:16.582185Z",
+        "modified": "2025-05-13T20:22:16.582185Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/ssr-site.ts#545,5"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$sst:sst:Version::rrvpcVersion",
+        "custom": false,
+        "type": "sst:sst:Version",
+        "outputs": {
+          "target": "rrvpc",
+          "version": 2
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "created": "2025-05-13T20:22:16.754764Z",
+        "modified": "2025-05-13T20:22:16.754764Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/component.ts#425,7"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::pulumi:providers:random::default_4_16_6",
+        "custom": true,
+        "id": "6cb725cd-ac8a-481e-8831-7b8711175285",
+        "type": "pulumi:providers:random",
+        "inputs": {
+          "__internal": {},
+          "version": "4.16.6"
+        },
+        "outputs": {
+          "version": "4.16.6"
+        },
+        "created": "2025-05-13T20:22:16.753336Z",
+        "modified": "2025-05-13T20:22:16.753336Z"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function::rr-bmeteaDevServer",
+        "custom": false,
+        "type": "sst:aws:Function",
+        "outputs": {
+          "_metadata": {
+            "dev": false,
+            "handler": "index.handler"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Nextjs::rr-bmetea",
+        "created": "2025-05-13T20:22:16.756238Z",
+        "modified": "2025-05-13T20:22:16.756238Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/function.ts#1528,5"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::random:index/randomBytes:RandomBytes::LambdaEncryptionKey",
+        "custom": true,
+        "id": "sY4n/QSTgwPklRnxtCheG4Rnf+3d49WHXBwB6u55E8Q=",
+        "type": "random:index/randomBytes:RandomBytes",
+        "inputs": {
+          "length": 32
+        },
+        "outputs": {
+          "base64": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:KhEuSaKw0knK66lQ:iUmWQ+nrPJ09TTRcWMALLUOuwH1kZ0fmvYjFS+qaBu+2aXcEmdlyNjoX2q+U6RZBfjAVfRVc4Bw4ZE9bVeQ="
+          },
+          "hex": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:BhMtu2gAAvToey18:5172I8CNln+BcPp/YdktfQSDSpApfDWW8mDYuBaBdWBi9LmXUTaudN7HqmkDgMiRDYVHSRlFaCb5m+k6hDb/7+jlwrrhcTMoQXQC2yU7/9dXfA=="
+          },
+          "length": 32
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:random::default_4_16_6::6cb725cd-ac8a-481e-8831-7b8711175285",
+        "propertyDependencies": {
+          "length": []
+        },
+        "additionalSecretOutputs": [
+          "base64",
+          "hex"
+        ],
+        "created": "2025-05-13T20:22:16.768949Z",
+        "modified": "2025-05-13T20:22:16.768949Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/util/lazy.ts#8,16"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc",
+        "custom": true,
+        "id": "vpc-032cd48b3b3dea788",
+        "type": "aws:ec2/vpc:Vpc",
+        "inputs": {
+          "__defaults": [],
+          "cidrBlock": "10.0.0.0/16",
+          "enableDnsHostnames": true,
+          "enableDnsSupport": true,
+          "tags": {
+            "Name": "rr-bmetea-rrvpc VPC",
+            "sst:app": "rr",
+            "sst:component-version": "2",
+            "sst:ref-version": "2",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpc VPC",
+            "sst:app": "rr",
+            "sst:component-version": "2",
+            "sst:ref-version": "2",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "__meta": "{\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:vpc/vpc-032cd48b3b3dea788",
+          "assignGeneratedIpv6CidrBlock": false,
+          "cidrBlock": "10.0.0.0/16",
+          "defaultNetworkAclId": "acl-01a1b0d93f75d7230",
+          "defaultRouteTableId": "rtb-00e7fd6d65e3a6159",
+          "defaultSecurityGroupId": "sg-08e75250b2c95eabd",
+          "dhcpOptionsId": "dopt-0f5f2e6a2db7ea156",
+          "enableDnsHostnames": true,
+          "enableDnsSupport": true,
+          "enableNetworkAddressUsageMetrics": false,
+          "id": "vpc-032cd48b3b3dea788",
+          "instanceTenancy": "default",
+          "ipv4IpamPoolId": null,
+          "ipv4NetmaskLength": null,
+          "ipv6AssociationId": "",
+          "ipv6CidrBlock": "",
+          "ipv6CidrBlockNetworkBorderGroup": "",
+          "ipv6IpamPoolId": "",
+          "ipv6NetmaskLength": 0,
+          "mainRouteTableId": "rtb-00e7fd6d65e3a6159",
+          "ownerId": "976193254361",
+          "tags": {
+            "Name": "rr-bmetea-rrvpc VPC",
+            "sst:app": "rr",
+            "sst:component-version": "2",
+            "sst:ref-version": "2",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpc VPC",
+            "sst:app": "rr",
+            "sst:component-version": "2",
+            "sst:ref-version": "2",
+            "sst:stage": "bmetea"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "cidrBlock": [],
+          "enableDnsHostnames": [],
+          "enableDnsSupport": [],
+          "tags": []
+        },
+        "created": "2025-05-13T20:22:28.324835Z",
+        "modified": "2025-05-13T20:22:28.324835Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/vpc.ts#763,14"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::pulumi:providers:tls::default_5_0_1",
+        "custom": true,
+        "id": "eae2739e-c8ee-4488-96b7-73c24d015d14",
+        "type": "pulumi:providers:tls",
+        "inputs": {
+          "__internal": {},
+          "version": "5.0.1"
+        },
+        "outputs": {
+          "version": "5.0.1"
+        },
+        "created": "2025-05-13T20:22:16.867181Z",
+        "modified": "2025-05-13T20:22:16.867181Z"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:cloudwatch/logGroup:LogGroup::rr-bmeteaDevServerLogGroup",
+        "custom": true,
+        "id": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+        "type": "aws:cloudwatch/logGroup:LogGroup",
+        "inputs": {
+          "__defaults": [
+            "skipDestroy"
+          ],
+          "name": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+          "retentionInDays": 30,
+          "skipDestroy": false,
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "arn": "arn:aws:logs:eu-west-1:976193254361:log-group:/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+          "id": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+          "kmsKeyId": "",
+          "logGroupClass": "STANDARD",
+          "name": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+          "namePrefix": "",
+          "retentionInDays": 30,
+          "skipDestroy": false,
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function::rr-bmeteaDevServer",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "name": [],
+          "retentionInDays": []
+        },
+        "created": "2025-05-13T20:22:17.238748Z",
+        "modified": "2025-05-13T20:22:17.238748Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/cloudwatch/logGroup.ts#139,9",
+        "ignoreChanges": [
+          "name"
+        ]
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$tls:index/privateKey:PrivateKey::rrvpcTlsPrivateKey",
+        "custom": true,
+        "id": "1124b3210af5786f6fe2b93de2671e5ac0e3576b",
+        "type": "tls:index/privateKey:PrivateKey",
+        "inputs": {
+          "algorithm": "RSA",
+          "rsaBits": 4096
+        },
+        "outputs": {
+          "__meta": "{\"schema_version\":\"1\"}",
+          "algorithm": "RSA",
+          "ecdsaCurve": "P224",
+          "id": "1124b3210af5786f6fe2b93de2671e5ac0e3576b",
+          "privateKeyOpenssh": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:lUy47dWxvZva6Z1/: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"
+          },
+          "privateKeyPem": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:Pq2CWkCMd5Mfs2yd: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"
+          },
+          "privateKeyPemPkcs8": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:At/54/xEVGSNZITy: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"
+          },
+          "publicKeyFingerprintMd5": "e6:78:4d:c0:22:cf:d3:6e:ce:0e:22:9a:f1:3d:11:2a",
+          "publicKeyFingerprintSha256": "SHA256:4cVF8gCDjoMfFCm/oMac/H1Aie2lXCCv87dt2eF9elA",
+          "publicKeyOpenssh": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoubyqzfGN1opZXgFTOY0s8FGSSQ7CsUYleZ0rKoSNhPUztJuptds9edixndbJZgcEB/OU1VRfodM1Egng4dQveL7B0Fdxg+5NNwp3QPgKs0Xh+WR0bPZermQjJm/EsOeXXsN9Qv7lJRls+Jg0CMmcc7JqZNzp+jfh2kOUjMtYREPM60P736bX3eFHM7exJM3JtWK/TY01/vclBCdvS3cbwm4pn03KaWb6FaARFlJqq4L3g1LlCdTXqBReyYSRHYtqnUjm1hAfqvNznmhevh1TQ9QHikg7JST2P0b6RRqdRfFTHkAR3Vaf2clcHZGznDQri28+kbv1f7MMxoG6jh8TUkSPr/AJ9ZXe4jFaYUJhgL1QzvW4CoLBeFe8hQrxD6Npcu21xb4hroJbZ+cXFBxzNYL6he16BV9U0knwIlOSZ0HfAmnNAC9dLrr+JoXO23igAX953gCvsLckkMuoATEAHHUx1u44f9vZflUYkHArbYgu/IKje+d/JoRN4ZiLKUt6Md7ab47WahFxOJ+IfvpqqN7NMjcouYNfnH32kOZ1lPIt+eqbtWjXtrSuJm/sTARsyWh+9DuHMAWOA2WNc98yQ2UhCoRV/PL5uO4sySzz1oBRhe7Mzh4BFCyNQmPN7Z3+67nX6EJP+nUT00eO628PMyThHXpJM9BH2FVq11G7cQ==\n",
+          "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAqLm8qs3xjdaKWV4BUzmN\nLPBRkkkOwrFGJXmdKyqEjYT1M7SbqbXbPXnYsZ3WyWYHBAfzlNVUX6HTNRIJ4OHU\nL3i+wdBXcYPuTTcKd0D4CrNF4flkdGz2Xq5kIyZvxLDnl17DfUL+5SUZbPiYNAjJ\nnHOyamTc6fo34dpDlIzLWERDzOtD+9+m193hRzO3sSTNybViv02NNf73JQQnb0t3\nG8JuKZ9Nymlm+hWgERZSaquC94NS5QnU16gUXsmEkR2Lap1I5tYQH6rzc55oXr4d\nU0PUB4pIOyUk9j9G+kUanUXxUx5AEd1Wn9nJXB2Rs5w0K4tvPpG79X+zDMaBuo4f\nE1JEj6/wCfWV3uIxWmFCYYC9UM71uAqCwXhXvIUK8Q+jaXLttcW+Ia6CW2fnFxQc\nczWC+oXtegVfVNJJ8CJTkmdB3wJpzQAvXS66/iaFztt4oAF/ed4Ar7C3JJDLqAEx\nABx1MdbuOH/b2X5VGJBwK22ILvyCo3vnfyaETeGYiylLejHe2m+O1moRcTifiH76\naqjezTI3KLmDX5x99pDmdZTyLfnqm7Vo17a0riZv7EwEbMlofvQ7hzAFjgNljXPf\nMkNlIQqEVfzy+bjuLMks89aAUYXuzM4eARQsjUJjze2d/uu51+hCT/p1E9NHjutv\nDzMk4R16STPQR9hVatdRu3ECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+          "rsaBits": 4096
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:tls::default_5_0_1::eae2739e-c8ee-4488-96b7-73c24d015d14",
+        "propertyDependencies": {
+          "algorithm": [],
+          "rsaBits": []
+        },
+        "additionalSecretOutputs": [
+          "privateKeyOpenssh",
+          "privateKeyPem",
+          "privateKeyPemPkcs8"
+        ],
+        "created": "2025-05-13T20:22:18.513638Z",
+        "modified": "2025-05-13T20:22:18.513638Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/privateKey.ts#118,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace::rrvpcCloudmapNamespace",
+        "custom": true,
+        "id": "ns-t5vc7gqwagyeaxiw",
+        "type": "aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace",
+        "inputs": {
+          "__defaults": [],
+          "name": "sst",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "arn": "arn:aws:servicediscovery:eu-west-1:976193254361:namespace/ns-t5vc7gqwagyeaxiw",
+          "description": "",
+          "hostedZone": "Z0874908AGB6I1FZ0UMB",
+          "id": "ns-t5vc7gqwagyeaxiw",
+          "name": "sst",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "name": [],
+          "vpc": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:23:11.949861Z",
+        "modified": "2025-05-13T20:23:11.949861Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/vpc.ts#1254,14"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/internetGateway:InternetGateway::rrvpcInternetGateway",
+        "custom": true,
+        "id": "igw-0e4f4853fb0c4b7ad",
+        "type": "aws:ec2/internetGateway:InternetGateway",
+        "inputs": {
+          "__defaults": [],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcInternetGateway",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcInternetGateway",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1200000000000,\"delete\":1200000000000,\"update\":1200000000000}}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:internet-gateway/igw-0e4f4853fb0c4b7ad",
+          "id": "igw-0e4f4853fb0c4b7ad",
+          "ownerId": "976193254361",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcInternetGateway",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcInternetGateway",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:28.805004Z",
+        "modified": "2025-05-13T20:22:28.805004Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/vpc.ts#823,14"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/defaultSecurityGroup:DefaultSecurityGroup::rrvpcSecurityGroup",
+        "custom": true,
+        "id": "sg-08e75250b2c95eabd",
+        "type": "aws:ec2/defaultSecurityGroup:DefaultSecurityGroup",
+        "inputs": {
+          "__defaults": [
+            "revokeRulesOnDelete"
+          ],
+          "egress": [
+            {
+              "__defaults": [
+                "self"
+              ],
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "fromPort": 0,
+              "protocol": "-1",
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "ingress": [
+            {
+              "__defaults": [
+                "self"
+              ],
+              "cidrBlocks": [
+                "10.0.0.0/16"
+              ],
+              "fromPort": 0,
+              "protocol": "-1",
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "revokeRulesOnDelete": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:security-group/sg-08e75250b2c95eabd",
+          "description": "default VPC security group",
+          "egress": [
+            {
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "description": "",
+              "fromPort": 0,
+              "ipv6CidrBlocks": [],
+              "prefixListIds": [],
+              "protocol": "-1",
+              "securityGroups": [],
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "id": "sg-08e75250b2c95eabd",
+          "ingress": [
+            {
+              "cidrBlocks": [
+                "10.0.0.0/16"
+              ],
+              "description": "",
+              "fromPort": 0,
+              "ipv6CidrBlocks": [],
+              "prefixListIds": [],
+              "protocol": "-1",
+              "securityGroups": [],
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "name": "default",
+          "namePrefix": "",
+          "ownerId": "976193254361",
+          "revokeRulesOnDelete": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "egress": [],
+          "ingress": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:30.219225Z",
+        "modified": "2025-05-13T20:22:30.219225Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/vpc.ts#836,14"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:iam/role:Role::rr-bmeteaDevServerRole",
+        "custom": true,
+        "id": "rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+        "type": "aws:iam/role:Role",
+        "inputs": {
+          "__defaults": [
+            "forceDetachPolicies",
+            "maxSessionDuration",
+            "path"
+          ],
+          "assumeRolePolicy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::976193254361:root\",\n        \"Service\": \"lambda.amazonaws.com\"\n      }\n    }\n  ]\n}",
+          "forceDetachPolicies": false,
+          "inlinePolicies": [],
+          "managedPolicyArns": [
+            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+          ],
+          "maxSessionDuration": 3600,
+          "name": "rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "path": "/",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "arn": "arn:aws:iam::976193254361:role/rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "assumeRolePolicy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::976193254361:root\",\"Service\":\"lambda.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+          "createDate": "2025-05-13T20:22:17Z",
+          "description": "",
+          "forceDetachPolicies": false,
+          "id": "rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "inlinePolicies": [],
+          "managedPolicyArns": [
+            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+          ],
+          "maxSessionDuration": 3600,
+          "name": "rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "namePrefix": "",
+          "path": "/",
+          "permissionsBoundary": "",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "uniqueId": "AROA6GSNG6PMQF5MW5XLL"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function::rr-bmeteaDevServer",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "assumeRolePolicy": [],
+          "inlinePolicies": [],
+          "managedPolicyArns": [],
+          "name": []
+        },
+        "created": "2025-05-13T20:22:18.035734Z",
+        "modified": "2025-05-13T20:22:18.035734Z",
+        "sourcePosition": "project:///../../../file:/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/platform/src/components/aws/function.ts#1997,14",
+        "ignoreChanges": [
+          "name"
+        ]
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ssm/parameter:Parameter::rrvpcPrivateKeyValue",
+        "custom": true,
+        "id": "/sst/vpc/vpc-032cd48b3b3dea788/private-key-value",
+        "type": "aws:ssm/parameter:Parameter",
+        "inputs": {
+          "__defaults": [
+            "tier"
+          ],
+          "description": "Bastion host private key",
+          "name": "/sst/vpc/vpc-032cd48b3b3dea788/private-key-value",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tier": "Standard",
+          "type": "SecureString",
+          "value": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:6+6sO5TfiwWp7dKc:gIsj05hR39HV4wUU/WZNpLd+ll9Asc4NrVZaNHQbMKzlztfkaZLPVpFw1TQmZKiTVC6sL/WEauZFbjpDn18GVjwKbg3UdxLL2t3/DQiJTPmX3SDMMv13RZ/ceq69pQ6L1WiryyPpxE7aDW0a3H6WVUom8KvQbXOIYlHiwdffj8G+YEI8sX8joMeKHx1sCMGN98AfhQiHqO4965BFA8rOFCCaw9NtysBFTMDBkllY5J3r7eN41IfGTIAwNt8bJvk0zWPZhVtzO3/f95EFnDpUoQR/jpRMqzZUmpnphvF9FDqCy0PJONQSLd2SxupI2xXzRWcivHpOotTDJEz9XjwuJJ8TGqr2AA6vvK2h6nNsYAXLTh+BvDj2HgJTLOby5kvowIFw4PblINUIOqWWH3nsVm777GT2YqpS6sY+JjV+3rp92K2gOadTSqNLmmDZOCvQHbjTeVVeZhf/E2a8Odm0RXyenJYBBCuOujJUFNLyf0QiJ619VcPNOfUXhr1JzHzupaSLzVJFx+pB8nv658K9VUm65CDPNf0BekFWuNuryXlItAedsq5VnCg85noKfGQCK5SunjBj1Qj4hxpkxJi2tvbA8dQEj7ejZWI4HlqEe7C6+QjCBqzY9e0jwJkNjTxCFNDRx64kVkFTUQkmdi/vF9niVFGGjjgLJ1IcomTgQ/nho3A22sbBZHPeTFMwje2awOXeX1DA72REf2NclGScUeED9HTBH/6MdhDNOT7yyyomSFhyDoHufjhfzDX6TCxmNdUpW2L6DHH7vQ9tDhFHY2Uqsmz0QL+vkA8BbkX9KMj32Xyx2j/GbKhLuZdMn06spicvq/6gclNMFtZoDe7vrRgE0wkZmvn2xiTaB/RRfMMav2i/CFCVIBgSoRml/dUURryMEaln6rQY7drhMZCWoJlyNRN+vhXbJ5t4P/n/IwrzYnDrQpZlG2OUhG7o5cnO31Nwfa1W6qFTDDP5eevILAmu1Piirz36GPEQxs4SI2yk0LWbtM0i5gV+GgQlbv1O+j1EjdJPfH1MFV9qJ63+KFs4zqULF7LHbBrr+AnPVyn9gEtKIm+Pmsd692X/XZnGszl9/aEKW5BXGMeuVB3WJgyxTDWHHEHo9hGYmYFxUuSysyRQF5J57Wzoy9qexdtGAfxhKIL3UrQzjM2wA9anK+qm4VqN1bSKybhMDDCgrsASsG/G5fwhaucDQFTcHagSklzLr2wv9EF5ql4Z+09mzWUWUcSujxn7DoteX88zf837gdd5kX6DEYOSm+bxbX5LCv4s+tBzd7nQJKJngNHFixaZ6G5S1JlmDMcXQFbEBJTqrjB9i+53ZRpkZI91OmUfA8/g5hb7+KUU49jA+SieE5aRqg97vBW4mWZHDP3zb9AMS5joIfAWnttS05JF/6JAxdRICZ99DTiFM1al+3DGMmHvZEEUeBJrrb7J1k4KX3H8OTj2MU5k6x3I3cyWKGt6r5biE5YSQQ7+rlSHByn32lwKA+XqfyvFTjeWnrJIrvdfG7pFieR3VFOYFd1x15cQ6Nr6ACPTH5x+MzGZHIH/x8tz7kieK8oqmbT7aEu6+BYYxpJHvTXC+A4KI5jkvokHLswpOf1Q3k+mJ1HZ4a22NYcDfG9psVgFK0s0vYokTZNO6nS67dPM/OdsSOUkDOWQUCTN644hPthhEYyLM5rHaisGBR3elq5uVel81xxDfBp5VU2IVfuAwoM5DMxVdbyCRedSobCdi9TcCIGf7n2kGC+PXhG4C2AsUyKc4kjI36xbR/csxQ+QRgtTPnPRU7/Sf5UGGMXQnbj4diph99BWnHXVy09E5sOGlmhtd043sF2qJcVnoka0u22GwUw3vCg1U98JbfO0dFxW+ebcu/hIPvclfxl5GBlB9/i+6aNnwqtQlBd5rm1p4Rx0X8EN3pcsA3DZR+SO5m1LMtuz/looa1vzm4iNX7aQPe+Ru6QzXt+xTd6xjL27hnzXULoiWe2UqLY3GgSj9UqsYZ5yAlRm5CWlA1frtGbfdeAVIqJEtH2KNKHEZFjV0k8My64uEmzDUe5Gal49hA37d5bgMb3DxNFrA3ZBaPVQ24DI2S0P0+hRbENt3u2tI9i4XHSsbm8NZE1taRY0W00hTSgRZEVZvtPX4f39+eldyR57lZcEzfoeMCjgLcaC40AZgZoChaaUW8B6tbJIGiIyFXfjn5dYtlF/x5Ss/zMRzeMmjHoRM2Pfp9E24acPtXJtrSKIb4sp02U2vR4GCFvvfYuLwnZMTKYCm+slXl+4ceJVKQkLpuzaKG1C5g+0j+APCIflARo694zRDAuhEtVJBvqBiKnzO8fBXHLFvHzhahwnqUrAF+fo2ZuJLFp6BVTHbhBTP460QXgn234xCLkZh6WRDgc92wYog/Xonp38JK83TGG1wcFHt2JbYixNmAvX7U9h2KswNvAEFd0DZQPzKNRZr45Gh/PS+os4dUUN1u8aRgIp3TfO0nuZ2bRlYVnbzEnCF+iLfCZQCdI9VocRPHHcMGhfQqrefJowcsL7cA8WyqdPgHvpw1M9K6gnwKLzu6NDzCqvQCGgsXbd/rrKMO6rEn0NA4nbjSA4LjLggDY5JIznYFtvJpgGlSxvT/vCNdxsX3bS4WrPs6eVoDpOA9CS3BwJgkDrtrU7z/ReMeZOzV11SZOqV2Qb73oK1mZrTtLBp6mmfxcKpCPN0mxg8WhE0Esk+i5d8CGm6kqVIU1KD2ShYFsN+X8CZ99nOU89SC9qLkRfis+8iMv2VkxJa8mhqfZqSxiwqnir68/SzxfVP7x8Gd4CKcHYlXP44VSuuaGi1gdHPl8JbaHJTQAYcwcXvT3A2qcAVLKpjVNNSxLlW5Z7SkvMy+mYfeyVZXIfOtCsMRp+2P9DPxxIP3chJtxQS0LloWzFVs5DZrqq+q5CuHQ51utFp38Cc2+4wQrfQex+7clvbMWiRAiUgdejbQPWqBDM2PAHBSJFTkNp8nQUFewy4wGiF/eA8qIuQPF1HscOSY3Snp3y66H+F1/x3wPCBURi+/SaGsNttCkVaj9ESLNy0EVvUuRO2U+YrNlk5iSo8IjQJrifuGqOSh0Hm2ESo6Xu9OXfLrgg6dZ7/yjNfAJ44D2IPytA+8VXDIJ7A8a7HKC6CyLK6R2vtT2UW7Toov9A6Fhwi9qxfq9m1pSABGVps4pbIZEfyB07Rp1cwwRYyTNwnhvDiU8zxhoyzYmXRDppOMODjh72yLiPK5L9MDgPi2Q0bgoRq7M1BAJU3J3wWvCvDaQ6n4WMIa8XZbBRok8Ryq1r0Q643rBwNeIJolGQNsBIqsSZ2xAC1ZZDkpCFbKX9Yg91fOfIl0DKR3rBytv/3f/D0HrioYBinDWccjP4AUtlnejlySuNAb9iVavw/Be9xa0Bzidh8KqPAqavqKOdPu3XO2vzoLuc7JvRK9eqguCzS86LE+0RtvDZekTKGS7SPAgDHwKJF01QnoOsPzsgDXa3eGZMNgpHsORgUYsI+yLQP+Antakh/0j8FVPH+ngYqA/BxHoutPRhKQhLPpQdU4qosh/4pH7dbNGirpBCOVMbXnJzGZz9g6fcnD2kO+jtKeYHMFjvk5bJJkuBIvTluNYMxzxPpkLXEVhpPhTyCtg/sRqZZfMvWbe2Wy0sfy73Tg+RWTvFgpzw/rbyHoJgkCssewsqxtMsNZvC/Zd4jFvebIuPg1WxdhlcdjHBlRK8MrHUShgs7yQzBykkhJGNeZ36vfx/cC3V0EE3o0mmor/cM4jIf27j0u3hP2GIIFMJLCfa/2TtevJYLtBpVQj/FJGM6cliBNmZDthGz6NgqMvAe3cue09P8QfQ9gh67PswgMaVYC+QY3kTrqDrlq9suzzcYP2Oqi7p4AWUkysvEjzyRxx0HMaerg/CKfODIR34olTi4LdpuUEsrp4votFvzooorE+NnBnZSDL7t+vOQ96BRPKuPlXbz10Iw2oZXVHRapfEGNGRXTyVHDQ7odamQGH3yJX/oWcXbmi9FeTNNOf5n3KbTAwwP4ofLge7SsbB4fmo2BAuHN9r4Bth5651nbr0CfgpwFucihaXALZwjibENQRl2f4TMcKt7d0h8phd8BVePvfZnntjh8WHbnKSaH+dL/nD/zi04jbyfiwdDUNGIcgfrVzUbyo+ARqIon7paY1Dpj+PVWORJwYpkZ7niXqKjfSVhInPqcnC3KJr7i2mgKVS96qguuG95S4koIxbKYQdiSrB0UMgvcwHHKSGYI3eSgTgbX4hHkylYBcZdOl0NAaOsdoZppQUk+lbZ87NawTvNaW6p/Lg+Wcybq/xyavSLgDl2QqJSzS0HD0iuE6bandeHEMdzUuCEghEdSX0/cQ1xGc2XxzdzXp8thKb1RW/43zBG724T/1bJg9aHh919pVqnU0HtGL0p7m3V6+KfIqCh+N+0pWpJoO0enob39DfJNr3OfByMxe5MFcTAfZTtEFFIptgJEyN/IqYCsuftQf2ZzkQda1rDxK4E+BBJZ3//ki5wlureeIyvI1uOyP3S62aoJ3yf82kohpCK8ihfuP0WSzRV/3IvyBAZ6yfGebyC/tLJYDg"
+          }
+        },
+        "outputs": {
+          "allowedPattern": "",
+          "arn": "arn:aws:ssm:eu-west-1:976193254361:parameter/sst/vpc/vpc-032cd48b3b3dea788/private-key-value",
+          "dataType": "text",
+          "description": "Bastion host private key",
+          "id": "/sst/vpc/vpc-032cd48b3b3dea788/private-key-value",
+          "insecureValue": null,
+          "keyId": "alias/aws/ssm",
+          "name": "/sst/vpc/vpc-032cd48b3b3dea788/private-key-value",
+          "overwrite": null,
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tier": "Standard",
+          "type": "SecureString",
+          "value": {
+            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+            "ciphertext": "v1:b6cVrw72bIG0Poqa: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"
+          },
+          "version": 1
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$tls:index/privateKey:PrivateKey::rrvpcTlsPrivateKey"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "description": [],
+          "name": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ],
+          "type": [],
+          "value": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$tls:index/privateKey:PrivateKey::rrvpcTlsPrivateKey"
+          ]
+        },
+        "additionalSecretOutputs": [
+          "value"
+        ],
+        "created": "2025-05-13T20:22:28.751643Z",
+        "modified": "2025-05-13T20:22:28.751643Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ssm/parameter.ts#210,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/keyPair:KeyPair::rrvpcKeyPair",
+        "custom": true,
+        "id": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+        "type": "aws:ec2/keyPair:KeyPair",
+        "inputs": {
+          "__defaults": [],
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoubyqzfGN1opZXgFTOY0s8FGSSQ7CsUYleZ0rKoSNhPUztJuptds9edixndbJZgcEB/OU1VRfodM1Egng4dQveL7B0Fdxg+5NNwp3QPgKs0Xh+WR0bPZermQjJm/EsOeXXsN9Qv7lJRls+Jg0CMmcc7JqZNzp+jfh2kOUjMtYREPM60P736bX3eFHM7exJM3JtWK/TY01/vclBCdvS3cbwm4pn03KaWb6FaARFlJqq4L3g1LlCdTXqBReyYSRHYtqnUjm1hAfqvNznmhevh1TQ9QHikg7JST2P0b6RRqdRfFTHkAR3Vaf2clcHZGznDQri28+kbv1f7MMxoG6jh8TUkSPr/AJ9ZXe4jFaYUJhgL1QzvW4CoLBeFe8hQrxD6Npcu21xb4hroJbZ+cXFBxzNYL6he16BV9U0knwIlOSZ0HfAmnNAC9dLrr+JoXO23igAX953gCvsLckkMuoATEAHHUx1u44f9vZflUYkHArbYgu/IKje+d/JoRN4ZiLKUt6Md7ab47WahFxOJ+IfvpqqN7NMjcouYNfnH32kOZ1lPIt+eqbtWjXtrSuJm/sTARsyWh+9DuHMAWOA2WNc98yQ2UhCoRV/PL5uO4sySzz1oBRhe7Mzh4BFCyNQmPN7Z3+67nX6EJP+nUT00eO628PMyThHXpJM9BH2FVq11G7cQ==\n",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "__meta": "{\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:key-pair/rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "fingerprint": "73:ce:5b:6c:8f:b2:ec:88:f6:f3:71:7e:06:f9:1e:b6",
+          "id": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "keyNamePrefix": "",
+          "keyPairId": "key-08e45921f07c904d4",
+          "keyType": "rsa",
+          "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoubyqzfGN1opZXgFTOY0s8FGSSQ7CsUYleZ0rKoSNhPUztJuptds9edixndbJZgcEB/OU1VRfodM1Egng4dQveL7B0Fdxg+5NNwp3QPgKs0Xh+WR0bPZermQjJm/EsOeXXsN9Qv7lJRls+Jg0CMmcc7JqZNzp+jfh2kOUjMtYREPM60P736bX3eFHM7exJM3JtWK/TY01/vclBCdvS3cbwm4pn03KaWb6FaARFlJqq4L3g1LlCdTXqBReyYSRHYtqnUjm1hAfqvNznmhevh1TQ9QHikg7JST2P0b6RRqdRfFTHkAR3Vaf2clcHZGznDQri28+kbv1f7MMxoG6jh8TUkSPr/AJ9ZXe4jFaYUJhgL1QzvW4CoLBeFe8hQrxD6Npcu21xb4hroJbZ+cXFBxzNYL6he16BV9U0knwIlOSZ0HfAmnNAC9dLrr+JoXO23igAX953gCvsLckkMuoATEAHHUx1u44f9vZflUYkHArbYgu/IKje+d/JoRN4ZiLKUt6Md7ab47WahFxOJ+IfvpqqN7NMjcouYNfnH32kOZ1lPIt+eqbtWjXtrSuJm/sTARsyWh+9DuHMAWOA2WNc98yQ2UhCoRV/PL5uO4sySzz1oBRhe7Mzh4BFCyNQmPN7Z3+67nX6EJP+nUT00eO628PMyThHXpJM9BH2FVq11G7cQ==",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$tls:index/privateKey:PrivateKey::rrvpcTlsPrivateKey"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "keyName": [],
+          "publicKey": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$tls:index/privateKey:PrivateKey::rrvpcTlsPrivateKey"
+          ]
+        },
+        "created": "2025-05-13T20:22:18.759849Z",
+        "modified": "2025-05-13T20:22:18.759849Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/keyPair.ts#144,9",
+        "ignoreChanges": [
+          "keyName"
+        ]
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:s3/bucketObjectv2:BucketObjectv2::rr-bmeteaDevServerCode",
+        "custom": true,
+        "id": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+        "type": "aws:s3/bucketObjectv2:BucketObjectv2",
+        "inputs": {
+          "__defaults": [
+            "forceDestroy"
+          ],
+          "bucket": "sst-asset-zfdkahebztxd",
+          "forceDestroy": false,
+          "key": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "source": {
+            "4dabf18193072939515e22adb298388d": "0def7320c3a5731c473e5ecbe6d01bc7",
+            "hash": "b7a5152b2f563a3756ecf18fdb51840159b419e242e9f712ae72c4051b130ab3",
+            "path": "/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/artifacts/rr-bmeteaDevServer/code.zip"
+          },
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "acl": null,
+          "arn": "arn:aws:s3:::sst-asset-zfdkahebztxd/assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "bucket": "sst-asset-zfdkahebztxd",
+          "bucketKeyEnabled": false,
+          "cacheControl": "",
+          "checksumAlgorithm": null,
+          "checksumCrc32": "",
+          "checksumCrc32c": "",
+          "checksumSha1": "",
+          "checksumSha256": "",
+          "content": null,
+          "contentBase64": null,
+          "contentDisposition": "",
+          "contentEncoding": "",
+          "contentLanguage": "",
+          "contentType": "application/octet-stream",
+          "etag": "d4351847980b1a8d51d3d60363b21435",
+          "forceDestroy": false,
+          "id": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "key": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "kmsKeyId": null,
+          "metadata": null,
+          "objectLockLegalHoldStatus": "",
+          "objectLockMode": "",
+          "objectLockRetainUntilDate": "",
+          "overrideProvider": null,
+          "serverSideEncryption": "AES256",
+          "source": {
+            "4dabf18193072939515e22adb298388d": "0def7320c3a5731c473e5ecbe6d01bc7",
+            "hash": "b7a5152b2f563a3756ecf18fdb51840159b419e242e9f712ae72c4051b130ab3",
+            "path": "/Users/bmetea/code/learn/shadcn-nextjs-ai-build/.sst/artifacts/rr-bmeteaDevServer/code.zip"
+          },
+          "sourceHash": null,
+          "storageClass": "STANDARD",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "versionId": "",
+          "websiteRedirect": ""
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function::rr-bmeteaDevServer",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "bucket": [],
+          "key": [],
+          "source": []
+        },
+        "created": "2025-05-13T20:22:17.588912Z",
+        "modified": "2025-05-13T20:22:17.588912Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/s3/bucketObjectv2.ts#429,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:lambda/function:Function::rr-bmeteaDevServerFunction",
+        "custom": true,
+        "id": "rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn",
+        "type": "aws:lambda/function:Function",
+        "inputs": {
+          "__defaults": [
+            "reservedConcurrentExecutions",
+            "skipDestroy"
+          ],
+          "architectures": [
+            "x86_64"
+          ],
+          "description": "rr-bmetea dev server",
+          "environment": {
+            "__defaults": [],
+            "variables": {
+              "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+              "ciphertext": "v1:IcAUgoQNxHTO3wob:bWygLt41kYe6m32DORU12uuWxi2UvtDFjqztvlKcnzaEDu3aRvPuvm3gGBN95BPI48WPIP22m8272XRvU2+vA9foeej0CserWbcEyI16zZCHwT08iV0ZErI6DOUyYmfuq7nLRCfyPfztVjl2eXxhth6Hvj8C2U0U7FP8Gy2mULC58V5NL9HEip0Cjnzai1ebBynotxL7knFk5rcEau6e76vxv19ok0jsouK/AF5qjazq+uvTDlb6ESdJx9th2ub9d5IHXbLM"
+            }
+          },
+          "ephemeralStorage": {
+            "__defaults": [],
+            "size": 512
+          },
+          "handler": "index.handler",
+          "loggingConfig": {
+            "__defaults": [
+              "applicationLogLevel",
+              "systemLogLevel"
+            ],
+            "applicationLogLevel": "",
+            "logFormat": "Text",
+            "logGroup": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+            "systemLogLevel": ""
+          },
+          "memorySize": 128,
+          "name": "rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn",
+          "packageType": "Zip",
+          "publish": false,
+          "reservedConcurrentExecutions": -1,
+          "role": "arn:aws:iam::976193254361:role/rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "runtime": "nodejs20.x",
+          "s3Bucket": "sst-asset-zfdkahebztxd",
+          "s3Key": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "skipDestroy": false,
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "timeout": 20
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":600000000000,\"update\":600000000000}}",
+          "architectures": [
+            "x86_64"
+          ],
+          "arn": "arn:aws:lambda:eu-west-1:976193254361:function:rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn",
+          "code": null,
+          "codeSha256": "t6UVKy9WOjdW7PGP21GEAVm0GeJC6fcSrnLEBRsTCrM=",
+          "codeSigningConfigArn": "",
+          "deadLetterConfig": null,
+          "description": "rr-bmetea dev server",
+          "environment": {
+            "variables": {
+              "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
+              "ciphertext": "v1:2udlMUADptj0fPIx:iEVAlvS2oWdAbIm5xVjTmS+hFtxWg1CJwlZy8M3rD9da/E6bPq5qTYiaH3+ondY+tFgY3t9/urj0ogfOZ8d7na7/iYL6YdDK4Wt00K9jaq4OSm+y5PLz/3F0Xfchn7T5kyek0g0dr+ZlhzBjwNMNrcrUoK4nzmZod42rL7x/ZA5krJOPOetSyDGAh+sRn6Uz5w4g6YixEF+aTmUOqBa09JgCOtKc9YAiOMub9ExuZCGarWG/w9a+n0eK+gWe7yVpvA+ZgG35"
+            }
+          },
+          "ephemeralStorage": {
+            "size": 512
+          },
+          "fileSystemConfig": null,
+          "handler": "index.handler",
+          "id": "rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn",
+          "imageConfig": null,
+          "imageUri": "",
+          "invokeArn": "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:976193254361:function:rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn/invocations",
+          "kmsKeyArn": "",
+          "lastModified": "2025-05-13T20:22:26.870+0000",
+          "layers": null,
+          "loggingConfig": {
+            "applicationLogLevel": "",
+            "logFormat": "Text",
+            "logGroup": "/aws/lambda/rr-bmetea-rrbmeteaDevServerFunction-erwmnnko",
+            "systemLogLevel": ""
+          },
+          "memorySize": 128,
+          "name": "rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn",
+          "packageType": "Zip",
+          "publish": false,
+          "qualifiedArn": "arn:aws:lambda:eu-west-1:976193254361:function:rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn:$LATEST",
+          "qualifiedInvokeArn": "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:976193254361:function:rr-bmetea-rrbmeteaDevServerFunction-etfxmrdn:$LATEST/invocations",
+          "replaceSecurityGroupsOnDestroy": null,
+          "replacementSecurityGroupIds": null,
+          "reservedConcurrentExecutions": -1,
+          "role": "arn:aws:iam::976193254361:role/rr-bmetea-rrbmeteaDevServerRole-ktkwvczd",
+          "runtime": "nodejs20.x",
+          "s3Bucket": "sst-asset-zfdkahebztxd",
+          "s3Key": "assets/rr-bmeteaDevServer-code-aa5a25dae36b5973eb21dead29203eb150cc972361f5f8ff5914898d0cfba19a.zip",
+          "s3ObjectVersion": null,
+          "signingJobArn": "",
+          "signingProfileVersionArn": "",
+          "skipDestroy": false,
+          "snapStart": null,
+          "sourceCodeHash": "",
+          "sourceCodeSize": 596,
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "timeout": 20,
+          "tracingConfig": {
+            "mode": "PassThrough"
+          },
+          "version": "$LATEST",
+          "vpcConfig": null
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function::rr-bmeteaDevServer",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::random:index/randomBytes:RandomBytes::LambdaEncryptionKey",
+          "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:cloudwatch/logGroup:LogGroup::rr-bmeteaDevServerLogGroup",
+          "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:iam/role:Role::rr-bmeteaDevServerRole",
+          "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:s3/bucketObjectv2:BucketObjectv2::rr-bmeteaDevServerCode"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "architectures": [],
+          "description": [],
+          "environment": [
+            "urn:pulumi:bmetea::rr::random:index/randomBytes:RandomBytes::LambdaEncryptionKey"
+          ],
+          "ephemeralStorage": [],
+          "handler": [],
+          "loggingConfig": [
+            "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:cloudwatch/logGroup:LogGroup::rr-bmeteaDevServerLogGroup"
+          ],
+          "memorySize": [],
+          "name": [],
+          "packageType": [],
+          "publish": [],
+          "role": [
+            "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:iam/role:Role::rr-bmeteaDevServerRole"
+          ],
+          "runtime": [],
+          "s3Bucket": [
+            "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:s3/bucketObjectv2:BucketObjectv2::rr-bmeteaDevServerCode"
+          ],
+          "s3Key": [
+            "urn:pulumi:bmetea::rr::sst:aws:Nextjs$sst:aws:Function$aws:s3/bucketObjectv2:BucketObjectv2::rr-bmeteaDevServerCode"
+          ],
+          "timeout": []
+        },
+        "created": "2025-05-13T20:22:32.509585Z",
+        "modified": "2025-05-13T20:22:32.509585Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/lambda/function.ts#551,9",
+        "ignoreChanges": [
+          "name"
+        ]
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet1",
+        "custom": true,
+        "id": "subnet-0afaa7d51f688d3e6",
+        "type": "aws:ec2/subnet:Subnet",
+        "inputs": {
+          "__defaults": [
+            "assignIpv6AddressOnCreation",
+            "enableDns64",
+            "enableResourceNameDnsARecordOnLaunch",
+            "enableResourceNameDnsAaaaRecordOnLaunch",
+            "ipv6Native"
+          ],
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1a",
+          "cidrBlock": "10.0.0.0/22",
+          "enableDns64": false,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "ipv6Native": false,
+          "mapPublicIpOnLaunch": true,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:subnet/subnet-0afaa7d51f688d3e6",
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1a",
+          "availabilityZoneId": "euw1-az3",
+          "cidrBlock": "10.0.0.0/22",
+          "customerOwnedIpv4Pool": "",
+          "enableDns64": false,
+          "enableLniAtDeviceIndex": 0,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "id": "subnet-0afaa7d51f688d3e6",
+          "ipv6CidrBlock": "",
+          "ipv6CidrBlockAssociationId": "",
+          "ipv6Native": false,
+          "mapCustomerOwnedIpOnLaunch": false,
+          "mapPublicIpOnLaunch": true,
+          "outpostArn": "",
+          "ownerId": "976193254361",
+          "privateDnsHostnameTypeOnLaunch": "ip-name",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "availabilityZone": [],
+          "cidrBlock": [],
+          "mapPublicIpOnLaunch": [],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:39.414725Z",
+        "modified": "2025-05-13T20:22:39.414725Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/subnet.ts#238,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet2",
+        "custom": true,
+        "id": "subnet-0bfe5db36fdad7356",
+        "type": "aws:ec2/subnet:Subnet",
+        "inputs": {
+          "__defaults": [
+            "assignIpv6AddressOnCreation",
+            "enableDns64",
+            "enableResourceNameDnsARecordOnLaunch",
+            "enableResourceNameDnsAaaaRecordOnLaunch",
+            "ipv6Native",
+            "mapPublicIpOnLaunch"
+          ],
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1b",
+          "cidrBlock": "10.0.12.0/22",
+          "enableDns64": false,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "ipv6Native": false,
+          "mapPublicIpOnLaunch": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:subnet/subnet-0bfe5db36fdad7356",
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1b",
+          "availabilityZoneId": "euw1-az1",
+          "cidrBlock": "10.0.12.0/22",
+          "customerOwnedIpv4Pool": "",
+          "enableDns64": false,
+          "enableLniAtDeviceIndex": 0,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "id": "subnet-0bfe5db36fdad7356",
+          "ipv6CidrBlock": "",
+          "ipv6CidrBlockAssociationId": "",
+          "ipv6Native": false,
+          "mapCustomerOwnedIpOnLaunch": false,
+          "mapPublicIpOnLaunch": false,
+          "outpostArn": "",
+          "ownerId": "976193254361",
+          "privateDnsHostnameTypeOnLaunch": "ip-name",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "availabilityZone": [],
+          "cidrBlock": [],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:29.015608Z",
+        "modified": "2025-05-13T20:22:29.015608Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/subnet.ts#238,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp2",
+        "custom": true,
+        "id": "eipalloc-0ae1c0fc64d9d978b",
+        "type": "aws:ec2/eip:Eip",
+        "inputs": {
+          "__defaults": [],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcElasticIp2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcElasticIp2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": true
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"delete\":180000000000,\"read\":900000000000,\"update\":300000000000}}",
+          "address": null,
+          "allocationId": "eipalloc-0ae1c0fc64d9d978b",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:elastic-ip/eipalloc-0ae1c0fc64d9d978b",
+          "associateWithPrivateIp": null,
+          "associationId": "",
+          "carrierIp": "",
+          "customerOwnedIp": "",
+          "customerOwnedIpv4Pool": "",
+          "domain": "vpc",
+          "id": "eipalloc-0ae1c0fc64d9d978b",
+          "instance": "",
+          "ipamPoolId": null,
+          "networkBorderGroup": "eu-west-1",
+          "networkInterface": "",
+          "privateDns": null,
+          "privateIp": "",
+          "ptrRecord": "",
+          "publicDns": "ec2-52-18-226-173.eu-west-1.compute.amazonaws.com",
+          "publicIp": "52.18.226.173",
+          "publicIpv4Pool": "amazon",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcElasticIp2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcElasticIp2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": true
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "tags": [],
+          "vpc": []
+        },
+        "created": "2025-05-13T20:22:17.887768Z",
+        "modified": "2025-05-13T20:22:17.887768Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/eip.ts#304,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/securityGroup:SecurityGroup::rrvpcNatInstanceSecurityGroup",
+        "custom": true,
+        "id": "sg-08a67140f4eb72512",
+        "type": "aws:ec2/securityGroup:SecurityGroup",
+        "inputs": {
+          "__defaults": [
+            "name",
+            "revokeRulesOnDelete"
+          ],
+          "description": "Managed by Pulumi",
+          "egress": [
+            {
+              "__defaults": [
+                "self"
+              ],
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "fromPort": 0,
+              "protocol": "-1",
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "ingress": [
+            {
+              "__defaults": [
+                "self"
+              ],
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "fromPort": 0,
+              "protocol": "-1",
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "name": "rrvpcNatInstanceSecurityGroup-c0b039c",
+          "revokeRulesOnDelete": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcNatInstanceSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcNatInstanceSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":900000000000},\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:security-group/sg-08a67140f4eb72512",
+          "description": "Managed by Pulumi",
+          "egress": [
+            {
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "description": "",
+              "fromPort": 0,
+              "ipv6CidrBlocks": [],
+              "prefixListIds": [],
+              "protocol": "-1",
+              "securityGroups": [],
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "id": "sg-08a67140f4eb72512",
+          "ingress": [
+            {
+              "cidrBlocks": [
+                "0.0.0.0/0"
+              ],
+              "description": "",
+              "fromPort": 0,
+              "ipv6CidrBlocks": [],
+              "prefixListIds": [],
+              "protocol": "-1",
+              "securityGroups": [],
+              "self": false,
+              "toPort": 0
+            }
+          ],
+          "name": "rrvpcNatInstanceSecurityGroup-c0b039c",
+          "namePrefix": "",
+          "ownerId": "976193254361",
+          "revokeRulesOnDelete": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcNatInstanceSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcNatInstanceSecurityGroup",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "description": [],
+          "egress": [],
+          "ingress": [],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:30.891017Z",
+        "modified": "2025-05-13T20:22:30.891017Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/securityGroup.ts#309,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp1",
+        "custom": true,
+        "id": "eipalloc-0976579a7ccc6ecfe",
+        "type": "aws:ec2/eip:Eip",
+        "inputs": {
+          "__defaults": [],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcElasticIp1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcElasticIp1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": true
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"delete\":180000000000,\"read\":900000000000,\"update\":300000000000}}",
+          "address": null,
+          "allocationId": "eipalloc-0976579a7ccc6ecfe",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:elastic-ip/eipalloc-0976579a7ccc6ecfe",
+          "associateWithPrivateIp": null,
+          "associationId": "",
+          "carrierIp": "",
+          "customerOwnedIp": "",
+          "customerOwnedIpv4Pool": "",
+          "domain": "vpc",
+          "id": "eipalloc-0976579a7ccc6ecfe",
+          "instance": "",
+          "ipamPoolId": null,
+          "networkBorderGroup": "eu-west-1",
+          "networkInterface": "",
+          "privateDns": null,
+          "privateIp": "",
+          "ptrRecord": "",
+          "publicDns": "ec2-54-74-169-251.eu-west-1.compute.amazonaws.com",
+          "publicIp": "54.74.169.251",
+          "publicIpv4Pool": "amazon",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcElasticIp1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcElasticIp1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpc": true
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "tags": [],
+          "vpc": []
+        },
+        "created": "2025-05-13T20:22:17.818306Z",
+        "modified": "2025-05-13T20:22:17.818306Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/eip.ts#304,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable2",
+        "custom": true,
+        "id": "rtb-0390cf4bc56b3986a",
+        "type": "aws:ec2/routeTable:RouteTable",
+        "inputs": {
+          "__defaults": [],
+          "routes": [
+            {
+              "__defaults": [],
+              "cidrBlock": "0.0.0.0/0",
+              "gatewayId": "igw-0e4f4853fb0c4b7ad"
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:route-table/rtb-0390cf4bc56b3986a",
+          "id": "rtb-0390cf4bc56b3986a",
+          "ownerId": "976193254361",
+          "propagatingVgws": [],
+          "routes": [
+            {
+              "carrierGatewayId": "",
+              "cidrBlock": "0.0.0.0/0",
+              "coreNetworkArn": "",
+              "destinationPrefixListId": "",
+              "egressOnlyGatewayId": "",
+              "gatewayId": "igw-0e4f4853fb0c4b7ad",
+              "ipv6CidrBlock": "",
+              "localGatewayId": "",
+              "natGatewayId": "",
+              "networkInterfaceId": "",
+              "transitGatewayId": "",
+              "vpcEndpointId": "",
+              "vpcPeeringConnectionId": ""
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/internetGateway:InternetGateway::rrvpcInternetGateway",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routes": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/internetGateway:InternetGateway::rrvpcInternetGateway"
+          ],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:29.737601Z",
+        "modified": "2025-05-13T20:22:29.737601Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTable.ts#218,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet2",
+        "custom": true,
+        "id": "subnet-081df00615d1a59b0",
+        "type": "aws:ec2/subnet:Subnet",
+        "inputs": {
+          "__defaults": [
+            "assignIpv6AddressOnCreation",
+            "enableDns64",
+            "enableResourceNameDnsARecordOnLaunch",
+            "enableResourceNameDnsAaaaRecordOnLaunch",
+            "ipv6Native"
+          ],
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1b",
+          "cidrBlock": "10.0.8.0/22",
+          "enableDns64": false,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "ipv6Native": false,
+          "mapPublicIpOnLaunch": true,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:subnet/subnet-081df00615d1a59b0",
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1b",
+          "availabilityZoneId": "euw1-az1",
+          "cidrBlock": "10.0.8.0/22",
+          "customerOwnedIpv4Pool": "",
+          "enableDns64": false,
+          "enableLniAtDeviceIndex": 0,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "id": "subnet-081df00615d1a59b0",
+          "ipv6CidrBlock": "",
+          "ipv6CidrBlockAssociationId": "",
+          "ipv6Native": false,
+          "mapCustomerOwnedIpOnLaunch": false,
+          "mapPublicIpOnLaunch": true,
+          "outpostArn": "",
+          "ownerId": "976193254361",
+          "privateDnsHostnameTypeOnLaunch": "ip-name",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicSubnet2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "availabilityZone": [],
+          "cidrBlock": [],
+          "mapPublicIpOnLaunch": [],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:39.428535Z",
+        "modified": "2025-05-13T20:22:39.428535Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/subnet.ts#238,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable1",
+        "custom": true,
+        "id": "rtb-09d42bd163e76feca",
+        "type": "aws:ec2/routeTable:RouteTable",
+        "inputs": {
+          "__defaults": [],
+          "routes": [
+            {
+              "__defaults": [],
+              "cidrBlock": "0.0.0.0/0",
+              "gatewayId": "igw-0e4f4853fb0c4b7ad"
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:route-table/rtb-09d42bd163e76feca",
+          "id": "rtb-09d42bd163e76feca",
+          "ownerId": "976193254361",
+          "propagatingVgws": [],
+          "routes": [
+            {
+              "carrierGatewayId": "",
+              "cidrBlock": "0.0.0.0/0",
+              "coreNetworkArn": "",
+              "destinationPrefixListId": "",
+              "egressOnlyGatewayId": "",
+              "gatewayId": "igw-0e4f4853fb0c4b7ad",
+              "ipv6CidrBlock": "",
+              "localGatewayId": "",
+              "natGatewayId": "",
+              "networkInterfaceId": "",
+              "transitGatewayId": "",
+              "vpcEndpointId": "",
+              "vpcPeeringConnectionId": ""
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPublicRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/internetGateway:InternetGateway::rrvpcInternetGateway",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routes": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/internetGateway:InternetGateway::rrvpcInternetGateway"
+          ],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:29.736192Z",
+        "modified": "2025-05-13T20:22:29.736192Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTable.ts#218,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet1",
+        "custom": true,
+        "id": "subnet-074e24dabbae5ede7",
+        "type": "aws:ec2/subnet:Subnet",
+        "inputs": {
+          "__defaults": [
+            "assignIpv6AddressOnCreation",
+            "enableDns64",
+            "enableResourceNameDnsARecordOnLaunch",
+            "enableResourceNameDnsAaaaRecordOnLaunch",
+            "ipv6Native",
+            "mapPublicIpOnLaunch"
+          ],
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1a",
+          "cidrBlock": "10.0.4.0/22",
+          "enableDns64": false,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "ipv6Native": false,
+          "mapPublicIpOnLaunch": false,
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:subnet/subnet-074e24dabbae5ede7",
+          "assignIpv6AddressOnCreation": false,
+          "availabilityZone": "eu-west-1a",
+          "availabilityZoneId": "euw1-az3",
+          "cidrBlock": "10.0.4.0/22",
+          "customerOwnedIpv4Pool": "",
+          "enableDns64": false,
+          "enableLniAtDeviceIndex": 0,
+          "enableResourceNameDnsARecordOnLaunch": false,
+          "enableResourceNameDnsAaaaRecordOnLaunch": false,
+          "id": "subnet-074e24dabbae5ede7",
+          "ipv6CidrBlock": "",
+          "ipv6CidrBlockAssociationId": "",
+          "ipv6Native": false,
+          "mapCustomerOwnedIpOnLaunch": false,
+          "mapPublicIpOnLaunch": false,
+          "outpostArn": "",
+          "ownerId": "976193254361",
+          "privateDnsHostnameTypeOnLaunch": "ip-name",
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateSubnet1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "availabilityZone": [],
+          "cidrBlock": [],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:28.987379Z",
+        "modified": "2025-05-13T20:22:28.987379Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/subnet.ts#238,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/role:Role::rrvpcNatInstanceRole",
+        "custom": true,
+        "id": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+        "type": "aws:iam/role:Role",
+        "inputs": {
+          "__defaults": [
+            "forceDetachPolicies",
+            "maxSessionDuration",
+            "path"
+          ],
+          "assumeRolePolicy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"Service\": \"ec2.amazonaws.com\"\n      }\n    }\n  ]\n}",
+          "forceDetachPolicies": false,
+          "managedPolicyArns": [
+            "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+          ],
+          "maxSessionDuration": 3600,
+          "name": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "path": "/",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "arn": "arn:aws:iam::976193254361:role/rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "assumeRolePolicy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+          "createDate": "2025-05-13T20:22:17Z",
+          "description": "",
+          "forceDetachPolicies": false,
+          "id": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "inlinePolicies": [],
+          "managedPolicyArns": [
+            "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+          ],
+          "maxSessionDuration": 3600,
+          "name": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "namePrefix": "",
+          "path": "/",
+          "permissionsBoundary": "",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "uniqueId": "AROA6GSNG6PM3W2HH3CVX"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "assumeRolePolicy": [],
+          "managedPolicyArns": [],
+          "name": []
+        },
+        "created": "2025-05-13T20:22:18.122477Z",
+        "modified": "2025-05-13T20:22:18.122477Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/iam/role.ts#342,9",
+        "ignoreChanges": [
+          "name"
+        ]
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTableAssociation:RouteTableAssociation::rrvpcPublicRouteTableAssociation2",
+        "custom": true,
+        "id": "rtbassoc-01fafb285ed3dd182",
+        "type": "aws:ec2/routeTableAssociation:RouteTableAssociation",
+        "inputs": {
+          "__defaults": [],
+          "routeTableId": "rtb-0390cf4bc56b3986a",
+          "subnetId": "subnet-081df00615d1a59b0"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "gatewayId": "",
+          "id": "rtbassoc-01fafb285ed3dd182",
+          "routeTableId": "rtb-0390cf4bc56b3986a",
+          "subnetId": "subnet-081df00615d1a59b0"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable2",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet2"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routeTableId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable2"
+          ],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet2"
+          ]
+        },
+        "created": "2025-05-13T20:22:39.832673Z",
+        "modified": "2025-05-13T20:22:39.832673Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTableAssociation.ts#117,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTableAssociation:RouteTableAssociation::rrvpcPublicRouteTableAssociation1",
+        "custom": true,
+        "id": "rtbassoc-03c191847054492d1",
+        "type": "aws:ec2/routeTableAssociation:RouteTableAssociation",
+        "inputs": {
+          "__defaults": [],
+          "routeTableId": "rtb-09d42bd163e76feca",
+          "subnetId": "subnet-0afaa7d51f688d3e6"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "gatewayId": "",
+          "id": "rtbassoc-03c191847054492d1",
+          "routeTableId": "rtb-09d42bd163e76feca",
+          "subnetId": "subnet-0afaa7d51f688d3e6"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet1",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable1"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routeTableId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPublicRouteTable1"
+          ],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet1"
+          ]
+        },
+        "created": "2025-05-13T20:22:39.826521Z",
+        "modified": "2025-05-13T20:22:39.826521Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTableAssociation.ts#117,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/instanceProfile:InstanceProfile::rrvpcNatInstanceProfile",
+        "custom": true,
+        "id": "rrvpcNatInstanceProfile-7dc3399",
+        "type": "aws:iam/instanceProfile:InstanceProfile",
+        "inputs": {
+          "__defaults": [
+            "name",
+            "path"
+          ],
+          "name": "rrvpcNatInstanceProfile-7dc3399",
+          "path": "/",
+          "role": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          }
+        },
+        "outputs": {
+          "arn": "arn:aws:iam::976193254361:instance-profile/rrvpcNatInstanceProfile-7dc3399",
+          "createDate": "2025-05-13T20:22:18Z",
+          "id": "rrvpcNatInstanceProfile-7dc3399",
+          "name": "rrvpcNatInstanceProfile-7dc3399",
+          "namePrefix": "",
+          "path": "/",
+          "role": "rr-bmetea-rrvpcNatInstanceRole-svuoscxd",
+          "tags": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "uniqueId": "AIPA6GSNG6PMUWDPGWR2Y"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/role:Role::rrvpcNatInstanceRole"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "role": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/role:Role::rrvpcNatInstanceRole"
+          ]
+        },
+        "created": "2025-05-13T20:22:24.634714Z",
+        "modified": "2025-05-13T20:22:24.634714Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/iam/instanceProfile.ts#151,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance1",
+        "custom": true,
+        "id": "i-0cab3005477f03828",
+        "type": "aws:ec2/instance:Instance",
+        "inputs": {
+          "__defaults": [
+            "getPasswordData",
+            "userDataReplaceOnChange"
+          ],
+          "ami": "ami-0f9f15428c9ec17db",
+          "getPasswordData": false,
+          "iamInstanceProfile": "rrvpcNatInstanceProfile-7dc3399",
+          "instanceType": "t4g.nano",
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "sourceDestCheck": false,
+          "subnetId": "subnet-0afaa7d51f688d3e6",
+          "tags": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-bastion": "true",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-bastion": "true",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "userDataReplaceOnChange": false,
+          "vpcSecurityGroupIds": [
+            "sg-08a67140f4eb72512"
+          ]
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000,\"read\":900000000000,\"update\":600000000000},\"schema_version\":\"1\"}",
+          "ami": "ami-0f9f15428c9ec17db",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:instance/i-0cab3005477f03828",
+          "associatePublicIpAddress": true,
+          "availabilityZone": "eu-west-1a",
+          "capacityReservationSpecification": {
+            "capacityReservationPreference": "open",
+            "capacityReservationTarget": null
+          },
+          "cpuCoreCount": 2,
+          "cpuOptions": {
+            "amdSevSnp": "",
+            "coreCount": 2,
+            "threadsPerCore": 1
+          },
+          "cpuThreadsPerCore": 1,
+          "creditSpecification": {
+            "cpuCredits": "unlimited"
+          },
+          "disableApiStop": false,
+          "disableApiTermination": false,
+          "ebsBlockDevices": [],
+          "ebsOptimized": false,
+          "enablePrimaryIpv6": null,
+          "enclaveOptions": {
+            "enabled": false
+          },
+          "ephemeralBlockDevices": [],
+          "getPasswordData": false,
+          "hibernation": false,
+          "hostId": "",
+          "hostResourceGroupArn": null,
+          "iamInstanceProfile": "rrvpcNatInstanceProfile-7dc3399",
+          "id": "i-0cab3005477f03828",
+          "instanceInitiatedShutdownBehavior": "stop",
+          "instanceLifecycle": "",
+          "instanceMarketOptions": null,
+          "instanceState": "running",
+          "instanceType": "t4g.nano",
+          "ipv6AddressCount": 0,
+          "ipv6Addresses": [],
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "launchTemplate": null,
+          "maintenanceOptions": {
+            "autoRecovery": "default"
+          },
+          "metadataOptions": {
+            "httpEndpoint": "enabled",
+            "httpProtocolIpv6": "disabled",
+            "httpPutResponseHopLimit": 2,
+            "httpTokens": "required",
+            "instanceMetadataTags": "disabled"
+          },
+          "monitoring": false,
+          "networkInterfaces": [],
+          "outpostArn": "",
+          "passwordData": "",
+          "placementGroup": "",
+          "placementPartitionNumber": 0,
+          "primaryNetworkInterfaceId": "eni-0bc536d2a1f8e61c0",
+          "privateDns": "ip-10-0-3-47.eu-west-1.compute.internal",
+          "privateDnsNameOptions": {
+            "enableResourceNameDnsARecord": false,
+            "enableResourceNameDnsAaaaRecord": false,
+            "hostnameType": "ip-name"
+          },
+          "privateIp": "10.0.3.47",
+          "publicDns": "ec2-108-129-126-20.eu-west-1.compute.amazonaws.com",
+          "publicIp": "108.129.126.20",
+          "rootBlockDevice": {
+            "deleteOnTermination": true,
+            "deviceName": "/dev/xvda",
+            "encrypted": false,
+            "iops": 3000,
+            "kmsKeyId": "",
+            "tags": {
+              "sst:app": "rr",
+              "sst:stage": "bmetea"
+            },
+            "tagsAll": {
+              "sst:app": "rr",
+              "sst:stage": "bmetea"
+            },
+            "throughput": 125,
+            "volumeId": "vol-0cc154df3961742f4",
+            "volumeSize": 8,
+            "volumeType": "gp3"
+          },
+          "secondaryPrivateIps": [],
+          "securityGroups": [],
+          "sourceDestCheck": false,
+          "spotInstanceRequestId": "",
+          "subnetId": "subnet-0afaa7d51f688d3e6",
+          "tags": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-bastion": "true",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-bastion": "true",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tenancy": "default",
+          "userData": null,
+          "userDataBase64": null,
+          "userDataReplaceOnChange": false,
+          "volumeTags": null,
+          "vpcSecurityGroupIds": [
+            "sg-08a67140f4eb72512"
+          ]
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/instanceProfile:InstanceProfile::rrvpcNatInstanceProfile",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/keyPair:KeyPair::rrvpcKeyPair",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet1",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/securityGroup:SecurityGroup::rrvpcNatInstanceSecurityGroup"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "ami": [],
+          "iamInstanceProfile": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/instanceProfile:InstanceProfile::rrvpcNatInstanceProfile"
+          ],
+          "instanceType": [],
+          "keyName": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/keyPair:KeyPair::rrvpcKeyPair"
+          ],
+          "sourceDestCheck": [],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet1"
+          ],
+          "tags": [],
+          "vpcSecurityGroupIds": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/securityGroup:SecurityGroup::rrvpcNatInstanceSecurityGroup"
+          ]
+        },
+        "created": "2025-05-13T20:22:52.462691Z",
+        "modified": "2025-05-13T20:22:52.462691Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/instance.ts#609,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance2",
+        "custom": true,
+        "id": "i-0d89eb2f7871fcfa8",
+        "type": "aws:ec2/instance:Instance",
+        "inputs": {
+          "__defaults": [
+            "getPasswordData",
+            "userDataReplaceOnChange"
+          ],
+          "ami": "ami-0f9f15428c9ec17db",
+          "getPasswordData": false,
+          "iamInstanceProfile": "rrvpcNatInstanceProfile-7dc3399",
+          "instanceType": "t4g.nano",
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "sourceDestCheck": false,
+          "subnetId": "subnet-081df00615d1a59b0",
+          "tags": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "userDataReplaceOnChange": false,
+          "vpcSecurityGroupIds": [
+            "sg-08a67140f4eb72512"
+          ]
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000,\"read\":900000000000,\"update\":600000000000},\"schema_version\":\"1\"}",
+          "ami": "ami-0f9f15428c9ec17db",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:instance/i-0d89eb2f7871fcfa8",
+          "associatePublicIpAddress": true,
+          "availabilityZone": "eu-west-1b",
+          "capacityReservationSpecification": {
+            "capacityReservationPreference": "open",
+            "capacityReservationTarget": null
+          },
+          "cpuCoreCount": 2,
+          "cpuOptions": {
+            "amdSevSnp": "",
+            "coreCount": 2,
+            "threadsPerCore": 1
+          },
+          "cpuThreadsPerCore": 1,
+          "creditSpecification": {
+            "cpuCredits": "unlimited"
+          },
+          "disableApiStop": false,
+          "disableApiTermination": false,
+          "ebsBlockDevices": [],
+          "ebsOptimized": false,
+          "enablePrimaryIpv6": null,
+          "enclaveOptions": {
+            "enabled": false
+          },
+          "ephemeralBlockDevices": [],
+          "getPasswordData": false,
+          "hibernation": false,
+          "hostId": "",
+          "hostResourceGroupArn": null,
+          "iamInstanceProfile": "rrvpcNatInstanceProfile-7dc3399",
+          "id": "i-0d89eb2f7871fcfa8",
+          "instanceInitiatedShutdownBehavior": "stop",
+          "instanceLifecycle": "",
+          "instanceMarketOptions": null,
+          "instanceState": "running",
+          "instanceType": "t4g.nano",
+          "ipv6AddressCount": 0,
+          "ipv6Addresses": [],
+          "keyName": "rr-bmetea-rrvpcKeyPair-hmoksvnt",
+          "launchTemplate": null,
+          "maintenanceOptions": {
+            "autoRecovery": "default"
+          },
+          "metadataOptions": {
+            "httpEndpoint": "enabled",
+            "httpProtocolIpv6": "disabled",
+            "httpPutResponseHopLimit": 2,
+            "httpTokens": "required",
+            "instanceMetadataTags": "disabled"
+          },
+          "monitoring": false,
+          "networkInterfaces": [],
+          "outpostArn": "",
+          "passwordData": "",
+          "placementGroup": "",
+          "placementPartitionNumber": 0,
+          "primaryNetworkInterfaceId": "eni-00a395d32531cc12e",
+          "privateDns": "ip-10-0-9-225.eu-west-1.compute.internal",
+          "privateDnsNameOptions": {
+            "enableResourceNameDnsARecord": false,
+            "enableResourceNameDnsAaaaRecord": false,
+            "hostnameType": "ip-name"
+          },
+          "privateIp": "10.0.9.225",
+          "publicDns": "ec2-3-249-3-154.eu-west-1.compute.amazonaws.com",
+          "publicIp": "3.249.3.154",
+          "rootBlockDevice": {
+            "deleteOnTermination": true,
+            "deviceName": "/dev/xvda",
+            "encrypted": false,
+            "iops": 3000,
+            "kmsKeyId": "",
+            "tags": {
+              "sst:app": "rr",
+              "sst:stage": "bmetea"
+            },
+            "tagsAll": {
+              "sst:app": "rr",
+              "sst:stage": "bmetea"
+            },
+            "throughput": 125,
+            "volumeId": "vol-0081c5d4bd0834f05",
+            "volumeSize": 8,
+            "volumeType": "gp3"
+          },
+          "secondaryPrivateIps": [],
+          "securityGroups": [],
+          "sourceDestCheck": false,
+          "spotInstanceRequestId": "",
+          "subnetId": "subnet-081df00615d1a59b0",
+          "tags": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rrvpc NAT Instance",
+            "sst:app": "rr",
+            "sst:is-nat": "true",
+            "sst:stage": "bmetea"
+          },
+          "tenancy": "default",
+          "userData": null,
+          "userDataBase64": null,
+          "userDataReplaceOnChange": false,
+          "volumeTags": null,
+          "vpcSecurityGroupIds": [
+            "sg-08a67140f4eb72512"
+          ]
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/instanceProfile:InstanceProfile::rrvpcNatInstanceProfile",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/keyPair:KeyPair::rrvpcKeyPair",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet2",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/securityGroup:SecurityGroup::rrvpcNatInstanceSecurityGroup"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "ami": [],
+          "iamInstanceProfile": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:iam/instanceProfile:InstanceProfile::rrvpcNatInstanceProfile"
+          ],
+          "instanceType": [],
+          "keyName": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/keyPair:KeyPair::rrvpcKeyPair"
+          ],
+          "sourceDestCheck": [],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPublicSubnet2"
+          ],
+          "tags": [],
+          "vpcSecurityGroupIds": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/securityGroup:SecurityGroup::rrvpcNatInstanceSecurityGroup"
+          ]
+        },
+        "created": "2025-05-13T20:22:52.462689Z",
+        "modified": "2025-05-13T20:22:52.462689Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/instance.ts#609,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable1",
+        "custom": true,
+        "id": "rtb-021127ea6d672685c",
+        "type": "aws:ec2/routeTable:RouteTable",
+        "inputs": {
+          "__defaults": [],
+          "routes": [
+            {
+              "__defaults": [],
+              "cidrBlock": "0.0.0.0/0",
+              "networkInterfaceId": "eni-0bc536d2a1f8e61c0"
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:route-table/rtb-021127ea6d672685c",
+          "id": "rtb-021127ea6d672685c",
+          "ownerId": "976193254361",
+          "propagatingVgws": [],
+          "routes": [
+            {
+              "carrierGatewayId": "",
+              "cidrBlock": "0.0.0.0/0",
+              "coreNetworkArn": "",
+              "destinationPrefixListId": "",
+              "egressOnlyGatewayId": "",
+              "gatewayId": "",
+              "ipv6CidrBlock": "",
+              "localGatewayId": "",
+              "natGatewayId": "",
+              "networkInterfaceId": "eni-0bc536d2a1f8e61c0",
+              "transitGatewayId": "",
+              "vpcEndpointId": "",
+              "vpcPeeringConnectionId": ""
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable1",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance1",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routes": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance1"
+          ],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:53.702105Z",
+        "modified": "2025-05-13T20:22:53.702105Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTable.ts#218,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::aws:ec2/eipAssociation:EipAssociation::rrvpcNatInstanceEipAssociation1",
+        "custom": true,
+        "id": "eipassoc-081bbf64d510bd08d",
+        "type": "aws:ec2/eipAssociation:EipAssociation",
+        "inputs": {
+          "__defaults": [],
+          "allocationId": "eipalloc-0976579a7ccc6ecfe",
+          "instanceId": "i-0cab3005477f03828"
+        },
+        "outputs": {
+          "allocationId": "eipalloc-0976579a7ccc6ecfe",
+          "allowReassociation": null,
+          "id": "eipassoc-081bbf64d510bd08d",
+          "instanceId": "i-0cab3005477f03828",
+          "networkInterfaceId": "eni-0bc536d2a1f8e61c0",
+          "privateIpAddress": "10.0.3.47",
+          "publicIp": "54.74.169.251"
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp1",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance1"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "allocationId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp1"
+          ],
+          "instanceId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance1"
+          ]
+        },
+        "created": "2025-05-13T20:22:53.829263Z",
+        "modified": "2025-05-13T20:22:53.829263Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/eipAssociation.ts#136,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable2",
+        "custom": true,
+        "id": "rtb-0d615b8b77f1de271",
+        "type": "aws:ec2/routeTable:RouteTable",
+        "inputs": {
+          "__defaults": [],
+          "routes": [
+            {
+              "__defaults": [],
+              "cidrBlock": "0.0.0.0/0",
+              "networkInterfaceId": "eni-00a395d32531cc12e"
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "arn": "arn:aws:ec2:eu-west-1:976193254361:route-table/rtb-0d615b8b77f1de271",
+          "id": "rtb-0d615b8b77f1de271",
+          "ownerId": "976193254361",
+          "propagatingVgws": [],
+          "routes": [
+            {
+              "carrierGatewayId": "",
+              "cidrBlock": "0.0.0.0/0",
+              "coreNetworkArn": "",
+              "destinationPrefixListId": "",
+              "egressOnlyGatewayId": "",
+              "gatewayId": "",
+              "ipv6CidrBlock": "",
+              "localGatewayId": "",
+              "natGatewayId": "",
+              "networkInterfaceId": "eni-00a395d32531cc12e",
+              "transitGatewayId": "",
+              "vpcEndpointId": "",
+              "vpcPeeringConnectionId": ""
+            }
+          ],
+          "tags": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "tagsAll": {
+            "Name": "rr-bmetea-rrvpcPrivateRouteTable2",
+            "sst:app": "rr",
+            "sst:stage": "bmetea"
+          },
+          "vpcId": "vpc-032cd48b3b3dea788"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance2",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routes": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance2"
+          ],
+          "tags": [],
+          "vpcId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/vpc:Vpc::rrvpcVpc"
+          ]
+        },
+        "created": "2025-05-13T20:22:53.682235Z",
+        "modified": "2025-05-13T20:22:53.682235Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTable.ts#218,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::aws:ec2/eipAssociation:EipAssociation::rrvpcNatInstanceEipAssociation2",
+        "custom": true,
+        "id": "eipassoc-0c56aba8fbeeec045",
+        "type": "aws:ec2/eipAssociation:EipAssociation",
+        "inputs": {
+          "__defaults": [],
+          "allocationId": "eipalloc-0ae1c0fc64d9d978b",
+          "instanceId": "i-0d89eb2f7871fcfa8"
+        },
+        "outputs": {
+          "allocationId": "eipalloc-0ae1c0fc64d9d978b",
+          "allowReassociation": null,
+          "id": "eipassoc-0c56aba8fbeeec045",
+          "instanceId": "i-0d89eb2f7871fcfa8",
+          "networkInterfaceId": "eni-00a395d32531cc12e",
+          "privateIpAddress": "10.0.9.225",
+          "publicIp": "52.18.226.173"
+        },
+        "parent": "urn:pulumi:bmetea::rr::pulumi:pulumi:Stack::rr-bmetea",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp2",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance2"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "allocationId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/eip:Eip::rrvpcElasticIp2"
+          ],
+          "instanceId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/instance:Instance::rrvpcNatInstance2"
+          ]
+        },
+        "created": "2025-05-13T20:22:53.827876Z",
+        "modified": "2025-05-13T20:22:53.827876Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/eipAssociation.ts#136,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTableAssociation:RouteTableAssociation::rrvpcPrivateRouteTableAssociation1",
+        "custom": true,
+        "id": "rtbassoc-056875ebae86c18e1",
+        "type": "aws:ec2/routeTableAssociation:RouteTableAssociation",
+        "inputs": {
+          "__defaults": [],
+          "routeTableId": "rtb-021127ea6d672685c",
+          "subnetId": "subnet-074e24dabbae5ede7"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "gatewayId": "",
+          "id": "rtbassoc-056875ebae86c18e1",
+          "routeTableId": "rtb-021127ea6d672685c",
+          "subnetId": "subnet-074e24dabbae5ede7"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet1",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable1"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routeTableId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable1"
+          ],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet1"
+          ]
+        },
+        "created": "2025-05-13T20:22:54.039622Z",
+        "modified": "2025-05-13T20:22:54.039622Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTableAssociation.ts#117,9"
+      },
+      {
+        "urn": "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTableAssociation:RouteTableAssociation::rrvpcPrivateRouteTableAssociation2",
+        "custom": true,
+        "id": "rtbassoc-03d7e4315897091a9",
+        "type": "aws:ec2/routeTableAssociation:RouteTableAssociation",
+        "inputs": {
+          "__defaults": [],
+          "routeTableId": "rtb-0d615b8b77f1de271",
+          "subnetId": "subnet-0bfe5db36fdad7356"
+        },
+        "outputs": {
+          "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":120000000000}}",
+          "gatewayId": "",
+          "id": "rtbassoc-03d7e4315897091a9",
+          "routeTableId": "rtb-0d615b8b77f1de271",
+          "subnetId": "subnet-0bfe5db36fdad7356"
+        },
+        "parent": "urn:pulumi:bmetea::rr::sst:aws:Vpc::rrvpc",
+        "dependencies": [
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable2",
+          "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet2"
+        ],
+        "provider": "urn:pulumi:bmetea::rr::pulumi:providers:aws::default_6_66_2::f2e2085b-36ac-4789-99ee-9c87006480a9",
+        "propertyDependencies": {
+          "routeTableId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/routeTable:RouteTable::rrvpcPrivateRouteTable2"
+          ],
+          "subnetId": [
+            "urn:pulumi:bmetea::rr::sst:aws:Vpc$aws:ec2/subnet:Subnet::rrvpcPrivateSubnet2"
+          ]
+        },
+        "created": "2025-05-13T20:22:54.047334Z",
+        "modified": "2025-05-13T20:22:54.047334Z",
+        "sourcePosition": "project:///../../platform/node_modules/@pulumi/ec2/routeTableAssociation.ts#117,9"
+      }
+    ],
+    "metadata": {}
+  }
+}
