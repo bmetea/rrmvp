@@ -4,7 +4,7 @@
 export default $config({
   app(input) {
     return {
-      name: "rr-mvp",
+      name: "rr",
       removal: input?.stage === "production" ? "retain" : "remove",
       protect: ["production"].includes(input?.stage),
       home: "aws",
