@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import PrizePage from "@/components/layout/PrizePage";
-import { fetchPrizesServer } from "@/app/services/prizeService";
+import { fetchPrizes } from "@/app/services/prizeService";
 
 interface PrizePageProps {
   params: Promise<{
@@ -10,7 +10,7 @@ interface PrizePageProps {
 
 export default async function PrizePageRoute({ params }: PrizePageProps) {
   const { slug } = await params;
-  const prizes = await fetchPrizesServer();
+  const prizes = await fetchPrizes();
   const prize = prizes.find((p) => p.slug === slug);
 
   if (!prize) {
