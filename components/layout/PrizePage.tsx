@@ -206,15 +206,19 @@ export default function PrizePage({
 
         {/* Prize details accordion */}
         <Accordion type="multiple" className="mt-4 border rounded-lg">
-          {accordionSections.map((section) => (
+          {accordionSections.length > 0 && (
             <AccordionItem
-              value={section.label.toLowerCase().replace(/\s+/g, "-")}
-              key={section.label}
+              value={accordionSections[0].label
+                .toLowerCase()
+                .replace(/\s+/g, "-")}
+              key={accordionSections[0].label}
             >
-              <AccordionTrigger>{section.label}</AccordionTrigger>
-              <AccordionContent>{section.content}</AccordionContent>
+              <AccordionTrigger>{accordionSections[0].label}</AccordionTrigger>
+              <AccordionContent>
+                {accordionSections[0].content}
+              </AccordionContent>
             </AccordionItem>
-          ))}
+          )}
         </Accordion>
       </section>
     </main>

@@ -19,11 +19,7 @@ export default async function PrizePageRoute({ params }: PrizePageProps) {
 
   return (
     <PrizePage
-      image={
-        prize.media?.[0]?.formats?.small?.url
-          ? `http://localhost:1337${prize.media[0].formats.small.url}`
-          : "/placeholder.png"
-      }
+      image={prize.media?.[0]?.formats?.small?.url}
       title={prize.title}
       subtitle={prize.subtitle}
       ticketsSold={Math.round((prize.ticketsSold / prize.ticketsTotal) * 100)}
