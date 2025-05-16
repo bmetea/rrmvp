@@ -21,13 +21,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/context/cart-context";
 import { ShoppingCart } from "lucide-react";
-import { Prize } from "@/types/prize";
-
-interface AccordionSection {
-  label: string;
-  content: string[];
-  important: string | null;
-}
+import { Prize, AccordionSection } from "@/types/prize";
 
 interface PrizePageProps {
   image: string;
@@ -219,11 +213,7 @@ export default function PrizePage({
                     {section.important}
                   </div>
                 )}
-                <ul className="list-disc pl-4 space-y-2">
-                  {section.content.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+                <div className="whitespace-pre-line">{section.content}</div>
               </AccordionContent>
             </AccordionItem>
           ))}
