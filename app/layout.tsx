@@ -10,11 +10,15 @@ import { CartProvider } from "@/lib/context/cart-context";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: true,
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: true,
+  display: "swap",
 });
 
 export const metadata: Metadata = {

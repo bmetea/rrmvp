@@ -40,3 +40,29 @@ export const fetchPrizes = async (): Promise<Prize[]> => {
   const data: PrizeResponse = await response.json();
   return data.data;
 };
+
+// Fetch single prize by slug with caching
+export const fetchPrizeBySlug = cache(
+  async (slug: string): Promise<Prize | null> => {
+    const response = await fetch(
+      `${API_URL}/prizes?filters[slug][$eq]=${slug}&populate=media`,
+      {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+          "Cache-Control":
+            "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+        next: {
+          revalidate: 3600, // Revalidate every hour
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch prize");
+    }
+
+    const data: PrizeResponse = await response.json();
+    return data.data[0] || null;
+  }
+);
