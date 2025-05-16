@@ -7,29 +7,34 @@ const API_TOKEN =
 
 // Server-side fetch with caching
 export const fetchPrizesServer = cache(async (): Promise<Prize[]> => {
-  const response = await fetch(`${API_URL}/prizes?populate=media`, {
-    headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-    },
-    next: {
-      revalidate: 3600, // Revalidate every hour
-    },
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/prizes`,
+    {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch prizes");
   }
 
-  const data: PrizeResponse = await response.json();
-  return data.data;
+  const data = await response.json();
+  return data;
 });
 
 // Client-side fetch
 export const fetchPrizes = async (): Promise<Prize[]> => {
-  const response = await fetch(`${API_URL}/prizes?populate=media`, {
+  const response = await fetch("/api/prizes", {
+    cache: "no-store",
     headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
     },
   });
 
@@ -37,8 +42,7 @@ export const fetchPrizes = async (): Promise<Prize[]> => {
     throw new Error("Failed to fetch prizes");
   }
 
-  const data: PrizeResponse = await response.json();
-  return data.data;
+  return response.json();
 };
 
 // Fetch single prize by slug with caching
@@ -49,12 +53,11 @@ export const fetchPrizeBySlug = cache(
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
-          "Cache-Control":
-            "public, s-maxage=3600, stale-while-revalidate=86400",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
-        next: {
-          revalidate: 3600, // Revalidate every hour
-        },
+        cache: "no-store",
       }
     );
 

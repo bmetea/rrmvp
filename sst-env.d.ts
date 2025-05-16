@@ -5,7 +5,7 @@
 
 declare module "sst" {
   export interface Resource {
-    "rr-ppr": {
+    "rr-bmetea": {
       "type": "sst.aws.Nextjs"
       "url": string
     }
