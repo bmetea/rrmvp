@@ -21,7 +21,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/context/cart-context";
 import { ShoppingCart } from "lucide-react";
-import { Prize, AccordionSection } from "@/types/prize";
+import { Prize } from "@/types/prize";
+
+interface AccordionSection {
+  label: string;
+  content: string;
+  important: string | null;
+}
 
 interface PrizePageProps {
   image: string;
@@ -69,6 +75,9 @@ export default function PrizePage({
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             quality={75}
+            priority
+            loading="eager"
+            unoptimized={false}
           />
         </div>
       </section>
