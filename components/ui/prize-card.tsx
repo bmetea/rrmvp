@@ -57,11 +57,7 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
       <CardHeader className="text-center pt-8 pb-0">
         <div className="relative w-full h-48 mb-4">
           <Image
-            src={
-              prize.media?.[0]?.formats?.small?.url
-                ? `http://localhost:1337${prize.media[0].formats.small.url}`
-                : "/placeholder.png"
-            }
+            src={prize.media?.[0]?.formats?.small?.url}
             alt={prize.media?.[0]?.alternativeText || prize.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

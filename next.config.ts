@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "whimsical-leader-0be11697b0.media.strapiapp.com",
+      },
+      {
+        protocol: "https",
         hostname: "avatar.iran.liara.run",
       },
     ],

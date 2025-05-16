@@ -51,11 +51,7 @@ export function CartDialog() {
                 >
                   <div className="relative h-16 w-16 flex-shrink-0">
                     <Image
-                      src={
-                        item.prize.media?.[0]?.formats?.small?.url
-                          ? `http://localhost:1337${item.prize.media[0].formats.small.url}`
-                          : "/placeholder.png"
-                      }
+                      src={item.prize.media?.[0]?.formats?.small?.url}
                       alt={item.prize.title}
                       fill
                       className="rounded-md object-cover"
