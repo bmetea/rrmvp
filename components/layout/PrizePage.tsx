@@ -25,7 +25,8 @@ import { Prize } from "@/types/prize";
 
 interface AccordionSection {
   label: string;
-  content: React.ReactNode;
+  content: string[];
+  important: string | null;
 }
 
 interface PrizePageProps {
@@ -206,19 +207,26 @@ export default function PrizePage({
 
         {/* Prize details accordion */}
         <Accordion type="multiple" className="mt-4 border rounded-lg">
-          {accordionSections.length > 0 && (
+          {accordionSections.map((section) => (
             <AccordionItem
-              value={accordionSections[0].label
-                .toLowerCase()
-                .replace(/\s+/g, "-")}
-              key={accordionSections[0].label}
+              value={section.label.toLowerCase().replace(/\s+/g, "-")}
+              key={section.label}
             >
-              <AccordionTrigger>{accordionSections[0].label}</AccordionTrigger>
+              <AccordionTrigger>{section.label}</AccordionTrigger>
               <AccordionContent>
-                {accordionSections[0].content}
+                {section.important && (
+                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                    {section.important}
+                  </div>
+                )}
+                <ul className="list-disc pl-4 space-y-2">
+                  {section.content.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
               </AccordionContent>
             </AccordionItem>
-          )}
+          ))}
         </Accordion>
       </section>
     </main>
