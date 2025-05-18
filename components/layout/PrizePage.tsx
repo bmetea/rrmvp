@@ -73,15 +73,13 @@ export default function PrizePage({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            quality={75}
+            quality={90}
             priority
-            loading="eager"
-            unoptimized={false}
-            onLoadingComplete={(img) => {
-              img.classList.remove("opacity-0");
+            className="object-cover transition-opacity duration-300"
+            onLoad={(e) => {
+              const img = e.target as HTMLImageElement;
               img.classList.add("opacity-100");
             }}
-            className="object-cover transition-opacity duration-300 opacity-0"
           />
         </div>
       </section>
