@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev --turbopack",
     "lint": "next lint",
-    "migrate": "tsx scripts/migrate.ts",
+    "migrate": "tsx db/scripts/migrate.ts",
     "sst:build": "sst build",
     "sst:deploy": "sst deploy",
     "sst:dev": "sst dev",
