@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import { PrizesProvider } from "../lib/context/prizes-context";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,6 +75,15 @@ export default async function RootLayout({
             href="/svg/logo-favicon-black.svg"
             type="image/svg+xml"
           />
+          <Script id="bfcache-handler" strategy="beforeInteractive">
+            {`
+              window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                  window.location.reload();
+                }
+              });
+            `}
+          </Script>
         </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
