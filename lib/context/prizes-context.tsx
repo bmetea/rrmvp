@@ -32,7 +32,14 @@ export function PrizesProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
+    // Load prizes immediately
     loadPrizes();
+
+    // Set up interval to refresh every 30 seconds
+    const intervalId = setInterval(loadPrizes, 300000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
