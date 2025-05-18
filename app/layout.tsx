@@ -50,7 +50,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -89,7 +88,7 @@ export default async function RootLayout({
               <CartProvider>
                 <div className="flex min-h-screen flex-col">
                   <Navbar />
-                  <main className="flex-1">{children}</main>
+                  <main className="flex-1 pt-16">{children}</main>
                   <Footer />
                 </div>
               </CartProvider>
