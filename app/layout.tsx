@@ -6,6 +6,7 @@ import Footer from "@/components/navigation/Footer";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
+import { PrizesProvider } from "../lib/context/prizes-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,26 +27,31 @@ export const metadata: Metadata = {
   description: "Beauty and cosmetics competition platform",
   icons: {
     icon: [
-      { rel: "icon", url: "/logo-favicon-black.svg", type: "image/svg+xml" },
+      {
+        rel: "icon",
+        url: "/svg/logo-favicon-black.svg",
+        type: "image/svg+xml",
+      },
     ],
     shortcut: [
       {
         rel: "shortcut icon",
-        url: "/logo-favicon-black.svg",
+        url: "/svg/logo-favicon-black.svg",
         type: "image/svg+xml",
       },
     ],
     apple: [
       {
         rel: "apple-touch-icon",
-        url: "/logo-favicon-black.svg",
+        url: "/svg/logo-favicon-black.svg",
         type: "image/svg+xml",
       },
     ],
   },
 };
 
-export default function RootLayout({
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -56,17 +62,17 @@ export default function RootLayout({
         <head>
           <link
             rel="icon"
-            href="/logo-favicon-black.svg"
+            href="/svg/logo-favicon-black.svg"
             type="image/svg+xml"
           />
           <link
             rel="shortcut icon"
-            href="/logo-favicon-black.svg"
+            href="/svg/logo-favicon-black.svg"
             type="image/svg+xml"
           />
           <link
             rel="apple-touch-icon"
-            href="/logo-favicon-black.svg"
+            href="/svg/logo-favicon-black.svg"
             type="image/svg+xml"
           />
         </head>
@@ -79,13 +85,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <CartProvider>
-              <div className="flex min-h-screen flex-col">
-                <Navbar />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
-            </CartProvider>
+            <PrizesProvider>
+              <CartProvider>
+                <div className="flex min-h-screen flex-col">
+                  <Navbar />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+              </CartProvider>
+            </PrizesProvider>
           </ThemeProvider>
         </body>
       </html>

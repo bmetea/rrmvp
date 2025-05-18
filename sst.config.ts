@@ -14,7 +14,7 @@ export default $config({
     const vpc =
       $app.stage === "bmetea"
         ? sst.aws.Vpc.get("rrvpc", "vpc-04fd98d66f5629a63")
-        : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 1 });
+        : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 2 });
     const rds = new sst.aws.Aurora("rrdb", {
       vpc,
       engine: "postgres",

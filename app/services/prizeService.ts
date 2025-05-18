@@ -10,11 +10,8 @@ export const fetchPrizesServer = cache(async (): Promise<Prize[]> => {
   const response = await fetch(`${API_URL}/prizes?populate=media`, {
     headers: {
       Authorization: `Bearer ${API_TOKEN}`,
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
     },
-    cache: "no-store",
+    next: { revalidate: 3600 }, // Revalidate every hour
   });
 
   if (!response.ok) {
@@ -27,20 +24,19 @@ export const fetchPrizesServer = cache(async (): Promise<Prize[]> => {
 
 // Client-side fetch
 export const fetchPrizes = async (): Promise<Prize[]> => {
-  const response = await fetch("/api/prizes", {
-    cache: "no-store",
+  const response = await fetch(`${API_URL}/prizes?populate=media`, {
     headers: {
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
+      Authorization: `Bearer ${API_TOKEN}`,
     },
+    credentials: "include",
   });
 
   if (!response.ok) {
     throw new Error("Failed to fetch prizes");
   }
 
-  return response.json();
+  const data: PrizeResponse = await response.json();
+  return data.data;
 };
 
 // Fetch single prize by slug with caching
@@ -51,11 +47,8 @@ export const fetchPrizeBySlug = cache(
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
         },
-        cache: "no-store",
+        next: { revalidate: 3600 }, // Revalidate every hour
       }
     );
 

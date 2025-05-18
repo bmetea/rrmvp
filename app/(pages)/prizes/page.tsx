@@ -1,9 +1,11 @@
+"use client";
+
 import WinPrizes from "@/components/sections/WinPrizes";
 import { PrizeCard } from "@/components/ui/prize-card";
-import { fetchPrizesServer } from "@/app/services/prizeService";
+import { usePrizes } from "@/lib/context/prizes-context";
 
-export default async function PrizesPage() {
-  const prizes = await fetchPrizesServer();
+export default function PrizesPage() {
+  const { prizes } = usePrizes();
 
   return (
     <main>
