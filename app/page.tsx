@@ -1,27 +1,22 @@
 import Hero from "@/components/sections/Hero";
-import WinPrizes from "@/components/sections/WinPrizes";
 import HowItWorks from "@/components/sections/HowItWorks";
 import AboutSection from "@/components/sections/AboutSection";
-import { PrizeCard } from "@/components/ui/prize-card";
-import { fetchPrizesServer } from "@/app/services/prizeService";
+import PrizesSection from "./components/PrizesSection";
+import { Suspense } from "react";
 // import { FaqSection } from "@/components/sections/FaqSection";
 // import { AnnouncementBanner } from "@/components/sections/AnnouncementBanner";
 
-export default async function Home() {
-  const prizes = await fetchPrizesServer();
-
+export default function Home() {
   return (
     <main>
       <Hero />
-      <WinPrizes>
-        {prizes.map((prize) => (
-          <PrizeCard
-            key={prize.id}
-            prize={prize}
-            category="Cosmetic Enhancement"
-          />
-        ))}
-      </WinPrizes>
+      <Suspense
+        fallback={
+          <div className="h-[60vh] w-full bg-gradient-to-b from-primary/20 to-background" />
+        }
+      >
+        <PrizesSection />
+      </Suspense>
       <HowItWorks />
       <AboutSection />
     </main>

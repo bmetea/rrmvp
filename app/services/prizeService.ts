@@ -7,24 +7,22 @@ const API_TOKEN =
 
 // Server-side fetch with caching
 export const fetchPrizesServer = cache(async (): Promise<Prize[]> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/prizes`,
-    {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/prizes?populate=media`, {
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch prizes");
   }
 
-  const data = await response.json();
-  return data;
+  const data: PrizeResponse = await response.json();
+  return data.data;
 });
 
 // Client-side fetch
