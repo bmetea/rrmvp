@@ -1,10 +1,34 @@
 ## TODO
-- Database
-- PayloadCMS
+- [x] Database
+- [x] PayloadCMS
 - Cart Page 
 - Checkout page
 - Wallet System
 - Referral system
+
+
+## Notes
+
+### DB Migrations
+
+- `sst shell --stage ppr migrate` 
+- `migrate": "tsx scripts/migrate.ts`
+
+### SSM Bastion
+
+https://medium.com/@rajputmanish061/how-to-access-aws-rds-via-bastion-host-using-ssm-plu-93d6c4f2bb08
+
+- on local machine to connect to the bastion
+    - `aws ssm start-session --target i-06f1f927361315d42 --region eu-west-1`
+    - `aws ssm start-session --target i-06f1f927361315d42 --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["5432"], "localPortNumber":["5433"]}' --region eu-west-1`
+- on bastion to do the forwarding
+  - `socat TCP-LISTEN:5432,reuseaddr,fork TCP4:rr-ppr-rrdbproxy-ufbkzhwo.proxy-c7yw6ysg4zqm.eu-west-1.rds.amazonaws.com:5432`
+
+
+### SST Tunnel
+
+- `pnpm sst shell --stage ppr sst tunnel`
+- dupa care folosesti exact detaliile din output
 
 
 

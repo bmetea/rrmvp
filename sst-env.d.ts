@@ -5,9 +5,24 @@
 
 declare module "sst" {
   export interface Resource {
-    "rr-ppr": {
+    "rr-bmetea": {
       "type": "sst.aws.Nextjs"
       "url": string
+    }
+    "rrdb": {
+      "clusterArn": string
+      "database": string
+      "host": string
+      "password": string
+      "port": number
+      "reader": string
+      "secretArn": string
+      "type": "sst.aws.Aurora"
+      "username": string
+    }
+    "rrvpc": {
+      "bastion": string
+      "type": "sst.aws.Vpc"
     }
   }
 }
