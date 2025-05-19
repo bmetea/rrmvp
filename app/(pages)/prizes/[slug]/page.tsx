@@ -13,16 +13,8 @@ interface PrizePageProps {
 
 export default function PrizePageRoute({ params }: PrizePageProps) {
   const { slug } = use(params);
-  const { prizes, isLoading, error } = usePrizes();
+  const { prizes } = usePrizes();
   const prize = prizes.find((p) => p.slug === slug);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading prize: {error.message}</div>;
-  }
 
   if (!prize) {
     notFound();
