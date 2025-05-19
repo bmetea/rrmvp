@@ -11,7 +11,8 @@
     "sst:deploy": "sst deploy",
     "sst:dev": "sst dev",
     "sst:remove": "sst remove",
-    "start": "next start"
+    "start": "next start",
+    "ppr:tunnel": "sst shell --stage ppr sst tunnel"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.19.4",
