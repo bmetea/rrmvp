@@ -13,7 +13,7 @@ export default $config({
   async run() {
     const vpc =
       $app.stage === "bmetea"
-        ? sst.aws.Vpc.get("rrvpc", "vpc-04fd98d66f5629a63")
+        ? sst.aws.Vpc.get("rrvpc", "vpc-0ffa205b568c5037e")
         : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 2 });
     const rds = new sst.aws.Aurora("rrdb", {
       vpc,
