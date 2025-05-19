@@ -79,7 +79,9 @@ export default async function RootLayout({
             {`
               window.addEventListener('pageshow', (event) => {
                 if (event.persisted) {
-                  window.location.reload();
+                  if (window.Clerk) {
+                    window.Clerk.load();
+                  }
                 }
               });
             `}

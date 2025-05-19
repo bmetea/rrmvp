@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Cache images specifically
+        // Cache images specifically with longer TTL
         source: "/images/:path*",
         headers: [
           {
@@ -62,6 +62,16 @@ const nextConfig: NextConfig = {
       {
         // Cache SVG files
         source: "/svg/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Cache Next.js image optimization results
+        source: "/_next/image/:path*",
         headers: [
           {
             key: "Cache-Control",
