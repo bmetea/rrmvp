@@ -80,7 +80,6 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
-            {/* Mobile Cart Icon */}
             <CartDialog />
           </div>
 
@@ -110,8 +109,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
+            <CartDialog />
             <SignedIn>
-              <CartDialog />
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
             <SignedOut>
