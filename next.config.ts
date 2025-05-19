@@ -49,6 +49,26 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Cache images specifically
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Cache SVG files
+        source: "/svg/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
 };

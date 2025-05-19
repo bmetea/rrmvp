@@ -75,6 +75,7 @@ export default function PrizePage({
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             quality={90}
             priority
+            fetchPriority="high"
             className="object-cover transition-opacity duration-300"
             onLoad={(e) => {
               const img = e.target as HTMLImageElement;

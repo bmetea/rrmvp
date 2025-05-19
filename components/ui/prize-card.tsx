@@ -64,7 +64,8 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="rounded-lg object-cover"
             quality={75}
-            priority
+            loading="lazy"
+            fetchPriority="low"
           />
         </div>
       </CardHeader>
@@ -84,6 +85,8 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
                 width={24}
                 height={24}
                 className="rounded-full border-2 border-white"
+                loading="lazy"
+                fetchPriority="low"
               />
             ))}
           </div>

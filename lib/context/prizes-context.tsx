@@ -36,7 +36,7 @@ export function PrizesProvider({ children }: { children: React.ReactNode }) {
     loadPrizes();
 
     // Set up interval to refresh every 30 seconds
-    const intervalId = setInterval(loadPrizes, 60000);
+    const intervalId = setInterval(loadPrizes, 180000);
 
     // Cleanup interval on unmount
     return () => clearInterval(intervalId);
