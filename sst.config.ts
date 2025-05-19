@@ -13,7 +13,7 @@ export default $config({
   async run() {
     const vpc =
       $app.stage === "bmetea"
-        ? sst.aws.Vpc.get("rrvpc", "vpc-0ffa205b568c5037e")
+        ? sst.aws.Vpc.get("rrvpc", "vpc-02bea4187a58d4356")
         : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 2 });
     const rds = new sst.aws.Aurora("rrdb", {
       vpc,
@@ -23,11 +23,11 @@ export default $config({
         max: "1 ACU",
       },
       dev: {
-        username: "postgres",
-        password: "postgres",
-        database: "postgres",
-        host: "localhost",
-        port: 5432,
+        username: process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        database: process.env.DB_NAME!,
+        host: process.env.DB_HOST!,
+        port: parseInt(process.env.DB_PORT!)|| 5432,
       },
       proxy: true,
     });

@@ -17,6 +17,17 @@ interface Database {
     updated_at: Date;
     published_at: Date | null;
   };
+  users: {
+    id: number;
+    clerk_id: string;
+    email: string;
+    first_name: string | null;
+    last_name: string | null;
+    image_url: string | null;
+    username: string | null;
+    created_at: Date;
+    updated_at: Date;
+  };
 }
 
 // Create a database instance
