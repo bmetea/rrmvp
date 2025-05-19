@@ -11,12 +11,19 @@ import Image from "next/image";
 
 // Example prize data
 const prizes = [
+  // {
+  //   id: "breast-augmentation",
+  //   title: "Breast Augmentation",
+  //   description: "£10,000 Cash Prize for Procedure & Aftercare",
+  //   image: "/breast-augmentation.png",
+  //   sold: 90,
+  // },
   {
-    id: "breast-augmentation",
-    title: "Breast Augmentation",
-    description: "£10,000 Cash Prize for Procedure & Aftercare",
-    image: "/breast-augmentation.png",
-    sold: 90,
+    id: "hair-extension",
+    title: "Beauty Works Hair Extensions",
+    description: "£1,000 Store Credit or £1,000 Cash Alternative",
+    image: "/hair-extension.jpg",
+    sold: 85,
   },
   {
     id: "1000-cash-prize",
@@ -34,7 +41,7 @@ export default function PrizesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold mb-6">Explore our prizes</h2>
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {/* <div className="flex flex-wrap justify-center gap-3 mb-8">
               <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
                 All
               </button>
@@ -50,7 +57,7 @@ export default function PrizesPage() {
               <button className="px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition">
                 Instant Win
               </button>
-            </div>
+            </div> */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
