@@ -13,8 +13,7 @@ const AboutSection = () => {
               empowered, and beautiful—without the barriers of high costs.
             </p>
             <p className="text-gray-300">
-              That&apos;s why we&apos;ve created a fair and exciting way to win life-changing cosmetic procedures and premium beauty products at a
-              fraction of their usual price.
+              That&apos;s why we&apos;ve created a fair and exciting way to win premium beauty products at a fraction of their usual price.
             </p>
             <p className="text-gray-300 mt-4">
               In our ever-changing world, luxury and self-care can feel out of reach, and we&apos;re here to change that. Whether it&apos;s the ultimate
