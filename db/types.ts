@@ -3,7 +3,11 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType, Insertable, Updateable } from "kysely";
+import type { ColumnType, Insertable, Selectable, Updateable } from "kysely";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -35,8 +39,9 @@ export interface Users {
 }
 
 export type User = Selectable<Users>
-export type NewUser = Insertable<Users>
-export type UserUpdate = Updateable<Users>
+export type NewUser= Insertable<Users>
+export type UserUpdate= Updateable<Users>
+
 
 export interface DB {
   prizes: Prizes;
