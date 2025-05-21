@@ -33,7 +33,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   }, []);
 
   return (
-    <nav className="border-b">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -80,29 +80,23 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
-            {/* Mobile Cart Icon */}
             <CartDialog />
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8 h-16">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-gray-600 hover:text-gray-900 relative py-2 group transition-all duration-300",
-                  activePath === link.href && [
-                    "text-orange-500",
-                    "after:absolute after:bottom-0 after:left-0 after:right-0",
-                    "after:h-0.5 after:bg-orange-500 after:transition-all after:duration-300",
-                  ]
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  activePath === link.href
+                    ? "text-foreground"
+                    : "text-muted-foreground"
                 )}
               >
-                <span className="relative inline-block">
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                </span>
+                {link.label}
               </Link>
             ))}
           </div>
@@ -110,8 +104,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
+            <CartDialog />
             <SignedIn>
-              <CartDialog />
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
             <SignedOut>

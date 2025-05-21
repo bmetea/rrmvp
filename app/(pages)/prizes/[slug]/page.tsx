@@ -1,7 +1,9 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import PrizePage from "@/components/layout/PrizePage";
-import { fetchPrizeBySlug } from "@/app/services/prizeService";
-import { Metadata } from "next";
+import { usePrizes } from "@/lib/context/prizes-context";
+import { use } from "react";
 
 interface PrizePageProps {
   params: Promise<{
@@ -9,34 +11,10 @@ interface PrizePageProps {
   }>;
 }
 
-// Generate metadata for the page
-export async function generateMetadata({
-  params,
-}: PrizePageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const prize = await fetchPrizeBySlug(slug);
-
-  if (!prize) {
-    return {
-      title: "Prize Not Found",
-    };
-  }
-
-  return {
-    title: prize.title,
-    description: prize.subtitle,
-    openGraph: {
-      images: [prize.media?.[0]?.formats?.small?.url || ""],
-    },
-  };
-}
-
-// Enable static generation with revalidation
-export const revalidate = 3600; // Revalidate every hour
-
-export default async function PrizePageRoute({ params }: PrizePageProps) {
-  const { slug } = await params;
-  const prize = await fetchPrizeBySlug(slug);
+export default function PrizePageRoute({ params }: PrizePageProps) {
+  const { slug } = use(params);
+  const { prizes } = usePrizes();
+  const prize = prizes.find((p) => p.slug === slug);
 
   if (!prize) {
     notFound();

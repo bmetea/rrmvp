@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Prize } from "@/types/prize";
 import { useCart } from "@/lib/context/cart-context";
 import { ShoppingCart } from "lucide-react";
+import { generateAvatar } from "@/lib/utils/avatar";
 
 interface PrizeCardProps {
   prize: Prize;
@@ -63,6 +64,8 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="rounded-lg object-cover"
             quality={75}
+            priority
+            fetchPriority="high"
           />
         </div>
       </CardHeader>
@@ -74,27 +77,18 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
         <p className="text-gray-600 text-sm mb-2 text-left">{prize.subtitle}</p>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex -space-x-2">
-            <Image
-              src={`https://avatar.iran.liara.run/public/${prize.id}-1`}
-              alt="winner1"
-              width={24}
-              height={24}
-              className="rounded-full border-2 border-white"
-            />
-            <Image
-              src={`https://avatar.iran.liara.run/public/${prize.id}-2`}
-              alt="winner2"
-              width={24}
-              height={24}
-              className="rounded-full border-2 border-white"
-            />
-            <Image
-              src={`https://avatar.iran.liara.run/public/${prize.id}-3`}
-              alt="winner3"
-              width={24}
-              height={24}
-              className="rounded-full border-2 border-white"
-            />
+            {Array.from({ length: 3 }, (_, i) => (
+              <Image
+                key={`winner-${i + 1}`}
+                src={generateAvatar(`${prize.id}-${i + 1}`)}
+                alt={`winner${i + 1}`}
+                width={24}
+                height={24}
+                className="rounded-full border-2 border-white"
+                loading="lazy"
+                fetchPriority="low"
+              />
+            ))}
           </div>
           <span className="text-xs text-gray-500">
             {prize.ticketsSold}+ tickets sold

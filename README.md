@@ -9,6 +9,10 @@
 
 ## Notes
 
+### Using Other db stage on sst dev
+- If you want to use PPR db when you run `sst dev` you need to use the PPR vpc
+- Then in the RDS dev property pass in the PPR details.
+
 ### DB Migrations
 
 - `sst shell --stage ppr migrate` 
