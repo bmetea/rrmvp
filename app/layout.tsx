@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import { PrizesProvider } from "../lib/context/prizes-context";
 import Script from "next/script";
+import SegmentProvider from "@/components/analytics/SegmentProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -90,6 +91,7 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <SegmentProvider />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
