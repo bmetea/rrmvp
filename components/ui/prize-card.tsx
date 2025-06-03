@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Prize } from "@/types/prize";
-import { useCart } from "@/lib/context/cart-context";
 import { ShoppingCart } from "lucide-react";
 import { generateAvatar } from "@/lib/utils/avatar";
 
@@ -24,18 +15,12 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
   const soldPercentage = Math.round(
     (prize.ticketsSold / prize.ticketsTotal) * 100
   );
-  const { addItem } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addItem(prize, 1);
-  };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-start items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80">
+    <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full">
       {/* Banner */}
       <div
-        className="w-full flex items-center justify-center gap-2 px-8 py-2 md:px-8 md:py-3"
+        className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
         style={{ backgroundColor: "#E19841" }}
       >
         <span className="w-5 h-5 flex items-center justify-center md:w-6 md:h-6">
@@ -74,15 +59,15 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
         />
       </div>
       {/* Content */}
-      <div className="w-full p-4 flex flex-col items-start gap-2 md:p-6 md:gap-4">
+      <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
         <span className="p-1 bg-orange-100 dark:bg-orange-900 rounded text-[10px] font-semibold text-neutral-900 dark:text-white leading-none md:px-4 md:py-1 md:text-sm md:leading-tight">
           {category}
         </span>
         <div className="w-full flex flex-col items-start gap-1 md:gap-2">
-          <div className="w-full text-neutral-900 dark:text-white text-lg font-medium md:text-4xl md:leading-10">
+          <div className="w-full text-neutral-900 dark:text-white text-base md:text-2xl font-medium leading-normal">
             {prize.title}
           </div>
-          <div className="w-full text-zinc-800 dark:text-zinc-200 text-xs font-normal leading-none md:text-lg md:leading-relaxed">
+          <div className="w-full text-zinc-800 dark:text-zinc-200 text-sm md:text-base font-normal leading-normal">
             {prize.subtitle}
           </div>
         </div>
@@ -149,8 +134,8 @@ export function PrizeCard({ prize, category }: PrizeCardProps) {
             </Link>
           </div>
         </div>
-        {/* Mobile button only */}
-        <div className="w-full pt-2 flex flex-col items-start gap-2 md:hidden">
+        {/* Button always at the bottom */}
+        <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
           <Link href={`/prizes/${prize.slug}`} className="w-full">
             <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer">
               <span className="text-white text-sm font-semibold leading-tight">

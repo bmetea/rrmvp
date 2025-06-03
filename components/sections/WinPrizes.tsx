@@ -15,7 +15,7 @@ interface WinPrizesProps {
 
 const WinPrizes = ({ children }: WinPrizesProps) => {
   return (
-    <div className="py-16 bg-background">
+    <div className="py-16 bg-[#F7F7F7] dark:bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl mb-6">
