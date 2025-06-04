@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Prize } from "@/types/prize";
+import { analytics } from "@/lib/segment";
 
 interface CartItem {
   prize: Prize;
@@ -38,11 +39,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       return [...currentItems, { prize, quantity }];
     });
+    analytics.then(([a]) =>
+      a.track("Add to Cart", {
+        prizeId: prize.id,
+        prizeTitle: prize.title,
+        quantity,
+      })
+    );
   };
 
   const removeItem = (prizeId: number) => {
     setItems((currentItems) =>
       currentItems.filter((item) => item.prize.id !== prizeId)
+    );
+    analytics.then(([a]) =>
+      a.track("Remove from Cart", {
+        prizeId: prizeId,
+      })
     );
   };
 
@@ -51,6 +64,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       currentItems.map((item) =>
         item.prize.id === prizeId ? { ...item, quantity } : item
       )
+    );
+    analytics.then(([a]) =>
+      a.track("Update Cart Quantity", {
+        prizeId: prizeId,
+        quantity,
+      })
     );
   };
 

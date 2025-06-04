@@ -12,6 +12,7 @@ import { useCart } from "@/lib/context/cart-context";
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { analytics } from "@/lib/segment";
 
 export function CartDialog() {
   const { items, removeItem, updateQuantity, totalItems } = useCart();
@@ -105,7 +106,15 @@ export function CartDialog() {
               <div className="flex justify-between items-center pt-4">
                 <span className="font-medium">Total Items: {totalItems}</span>
                 <Link href="/checkout">
-                  <Button>Proceed to Checkout</Button>
+                  <Button
+                    onClick={() =>
+                      analytics.then(([a]) =>
+                        a.track("Proceed to Checkout", { totalItems })
+                      )
+                    }
+                  >
+                    Proceed to Checkout
+                  </Button>
                 </Link>
               </div>
             </div>
