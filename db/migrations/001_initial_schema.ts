@@ -183,10 +183,16 @@ export async function down(db: Kysely<any>): Promise<void> {
   await sql`ALTER TABLE winners DROP CONSTRAINT IF EXISTS winners_competition_prize_id_fkey`.execute(
     db
   );
+  await sql`ALTER TABLE winners DROP CONSTRAINT IF EXISTS winners_wallet_transaction_id_fkey`.execute(
+    db
+  );
   await sql`ALTER TABLE tickets DROP CONSTRAINT IF EXISTS tickets_competition_id_fkey`.execute(
     db
   );
   await sql`ALTER TABLE tickets DROP CONSTRAINT IF EXISTS tickets_user_id_fkey`.execute(
+    db
+  );
+  await sql`ALTER TABLE tickets DROP CONSTRAINT IF EXISTS tickets_wallet_transaction_id_fkey`.execute(
     db
   );
   await sql`ALTER TABLE competition_prizes DROP CONSTRAINT IF EXISTS competition_prizes_competition_id_fkey`.execute(
@@ -201,6 +207,9 @@ export async function down(db: Kysely<any>): Promise<void> {
   await sql`ALTER TABLE wallets DROP CONSTRAINT IF EXISTS wallets_user_id_fkey`.execute(
     db
   );
+  await sql`ALTER TABLE wallet_transactions DROP CONSTRAINT IF EXISTS wallet_transactions_wallet_id_fkey`.execute(
+    db
+  );
 
   // Drop all indexes
   await sql`DROP INDEX IF EXISTS idx_winners_status`.execute(db);
@@ -213,14 +222,16 @@ export async function down(db: Kysely<any>): Promise<void> {
   await sql`DROP INDEX IF EXISTS idx_users_username`.execute(db);
   await sql`DROP INDEX IF EXISTS idx_users_email`.execute(db);
   await sql`DROP INDEX IF EXISTS idx_users_clerk_id`.execute(db);
+  await sql`DROP INDEX IF EXISTS idx_wallet_transactions_wallet_id`.execute(db);
+  await sql`DROP INDEX IF EXISTS idx_wallet_transactions_reference`.execute(db);
 
-  // Now drop tables in reverse order
+  // Now drop tables in reverse order of dependencies
   await sql`DROP TABLE IF EXISTS winners`.execute(db);
   await sql`DROP TABLE IF EXISTS tickets`.execute(db);
   await sql`DROP TABLE IF EXISTS competition_prizes`.execute(db);
   await sql`DROP TABLE IF EXISTS competitions`.execute(db);
   await sql`DROP TABLE IF EXISTS products`.execute(db);
-  await sql`DROP TABLE IF EXISTS wallets`.execute(db);
   await sql`DROP TABLE IF EXISTS wallet_transactions`.execute(db);
+  await sql`DROP TABLE IF EXISTS wallets`.execute(db);
   await sql`DROP TABLE IF EXISTS users`.execute(db);
 }
