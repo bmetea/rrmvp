@@ -74,6 +74,11 @@ export async function up(db: Kysely<any>): Promise<void> {
       market_value INTEGER NOT NULL CHECK (market_value >= 0),
       description TEXT,
       media_info JSONB,
+      is_wallet_credit BOOLEAN NOT NULL DEFAULT false,
+      credit_amount INTEGER CHECK (
+        (is_wallet_credit = true AND credit_amount > 0) OR 
+        (is_wallet_credit = false AND credit_amount IS NULL)
+      ),
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     )
@@ -128,6 +133,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       competition_id UUID REFERENCES competitions(id) ON DELETE RESTRICT,
       user_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+      wallet_transaction_id UUID NOT NULL REFERENCES wallet_transactions(id) ON DELETE RESTRICT,
       purchase_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'used', 'expired')),
       ticket_number VARCHAR(50) UNIQUE NOT NULL,
@@ -141,6 +147,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       ticket_id UUID REFERENCES tickets(id) ON DELETE RESTRICT,
       competition_prize_id UUID REFERENCES competition_prizes(id) ON DELETE RESTRICT,
+      wallet_transaction_id UUID REFERENCES wallet_transactions(id) ON DELETE RESTRICT,
       won_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'claimed', 'delivered')),
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
