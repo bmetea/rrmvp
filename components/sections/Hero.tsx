@@ -26,7 +26,7 @@ const Hero = () => {
             Meets <span className="text-[#E19841]">Opportunity</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            A new way to experience beauty - win exclusive cosmetic
+            A new way to experience beauty - win cash prizes for cosmetic
             enhancements, high-end skincare & haircare
           </p>
           <div className="flex space-x-4">
