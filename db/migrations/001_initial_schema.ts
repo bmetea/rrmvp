@@ -20,7 +20,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
   `.execute(db);
 
-  // Create wallet table
+  // Create wallets table
   await sql`
     CREATE TABLE wallets (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -31,6 +31,30 @@ export async function up(db: Kysely<any>): Promise<void> {
       UNIQUE(user_id)
     )
   `.execute(db);
+
+  // Create wallet_transactions table
+  await sql`
+    CREATE TABLE wallet_transactions (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      wallet_id UUID NOT NULL REFERENCES wallets(id) ON DELETE RESTRICT,
+      amount INTEGER NOT NULL,
+      type VARCHAR(50) NOT NULL CHECK (type IN ('credit', 'debit')),
+      status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
+      reference_type VARCHAR(50) NOT NULL CHECK (reference_type IN ('ticket_purchase', 'top_up', 'refund', 'prize_win')),
+      reference_id UUID,
+      description TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    )
+  `.execute(db);
+
+  // Create indexes for wallet transactions
+  await sql`CREATE INDEX idx_wallet_transactions_wallet_id ON wallet_transactions(wallet_id)`.execute(
+    db
+  );
+  await sql`CREATE INDEX idx_wallet_transactions_reference ON wallet_transactions(reference_type, reference_id)`.execute(
+    db
+  );
 
   // Add foreign key constraint for wallet_id
   await sql`
@@ -190,5 +214,6 @@ export async function down(db: Kysely<any>): Promise<void> {
   await sql`DROP TABLE IF EXISTS competitions`.execute(db);
   await sql`DROP TABLE IF EXISTS products`.execute(db);
   await sql`DROP TABLE IF EXISTS wallets`.execute(db);
+  await sql`DROP TABLE IF EXISTS wallet_transactions`.execute(db);
   await sql`DROP TABLE IF EXISTS users`.execute(db);
 }
