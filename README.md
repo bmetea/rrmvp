@@ -15,7 +15,9 @@
 
 ### DB Migrations
 
-- `sst shell --stage ppr migrate` 
+- `pnpm sst shell --stage ppr pnpm db:migrate` 
+- `pnpm sst shell --stage ppr pnpm db:revert` 
+- `pnpm sst shell --stage ppr pnpm db:revert_all` 
 - `migrate": "tsx scripts/migrate.ts`
 
 ### SSM Bastion
