@@ -65,8 +65,12 @@ export async function up(db: Kysely<any>): Promise<void> {
       end_date TIMESTAMP WITH TIME ZONE NOT NULL,
       ticket_price INTEGER NOT NULL CHECK (ticket_price >= 0),
       status VARCHAR(50) NOT NULL CHECK (status IN ('draft', 'active', 'ended', 'cancelled')),
+      type VARCHAR(50) NOT NULL CHECK (type IN ('raffle', 'instant_win')),
+      total_tickets INTEGER NOT NULL CHECK (total_tickets > 0),
+      tickets_sold INTEGER NOT NULL DEFAULT 0 CHECK (tickets_sold >= 0),
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      CHECK (tickets_sold <= total_tickets)
     )
   `.execute(db);
 
@@ -76,12 +80,21 @@ export async function up(db: Kysely<any>): Promise<void> {
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
       product_id UUID REFERENCES products(id) ON DELETE RESTRICT,
+      prize_group VARCHAR(255) NOT NULL, -- e.g., 'cash_prize', 'headline_prize', 'beauty_bundle'
       total_quantity INTEGER NOT NULL CHECK (total_quantity > 0),
       available_quantity INTEGER NOT NULL CHECK (available_quantity >= 0),
+      won_quantity INTEGER NOT NULL DEFAULT 0 CHECK (won_quantity >= 0),
       is_instant_win BOOLEAN DEFAULT false,
+      phase INTEGER NOT NULL CHECK (phase BETWEEN 1 AND 3),
+      min_ticket_percentage DECIMAL(5,2) NOT NULL CHECK (min_ticket_percentage >= 0 AND min_ticket_percentage <= 100),
+      max_ticket_percentage DECIMAL(5,2) NOT NULL CHECK (max_ticket_percentage >= 0 AND max_ticket_percentage <= 100),
+      winning_ticket_numbers TEXT[], -- Array of pre-generated winning ticket numbers for instant win
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      CHECK (available_quantity <= total_quantity)
+      CHECK (available_quantity <= total_quantity),
+      CHECK (min_ticket_percentage <= max_ticket_percentage),
+      CHECK (won_quantity + available_quantity = total_quantity),
+      UNIQUE(competition_id, product_id, prize_group, phase) -- Ensures unique combination of product in each phase
     )
   `.execute(db);
 
