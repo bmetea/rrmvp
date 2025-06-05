@@ -12,7 +12,7 @@ export default function PrizesPage() {
       <WinPrizes>
         {prizes.map((prize) => (
           <div key={prize.id}>
-            <PrizeCard prize={prize} category="Cosmetic Enhancement" />
+            <PrizeCard prize={prize} category="Cash Prize" />
           </div>
         ))}
       </WinPrizes>

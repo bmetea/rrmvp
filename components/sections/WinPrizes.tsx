@@ -26,9 +26,6 @@ const WinPrizes = ({ children }: WinPrizesProps) => {
               All
             </Button>
             <Button variant="outline" size="sm">
-              Cosmetic Enhancement
-            </Button>
-            <Button variant="outline" size="sm">
               Haircare & Skincare
             </Button>
             <Button variant="outline" size="sm">

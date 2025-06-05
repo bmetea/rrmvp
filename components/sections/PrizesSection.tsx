@@ -13,7 +13,7 @@ export default function PrizesSection() {
         <PrizeCard
           key={prize.id}
           prize={prize}
-          category="Cosmetic Enhancement"
+          category="Cash Prize"
         />
       ))}
     </WinPrizes>
