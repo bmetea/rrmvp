@@ -3,7 +3,8 @@ const nextConfig = {
   images: {
     domains: [
       'images.unsplash.com',
-      'whimsical-leader-0be11697b0.media.strapiapp.com'
+      'whimsical-leader-0be11697b0.media.strapiapp.com',
+      'store.storeimages.cdn-apple.com'
     ],
   },
 }
