@@ -3,47 +3,136 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType, Insertable, Selectable, Updateable } from "kysely";
+import type { ColumnType } from "kysely";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export type Numeric = ColumnType<string, number | string, number | string>;
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Prizes {
-  created_at: Generated<Timestamp>;
-  document_id: Generated<string>;
-  id: Generated<number>;
-  live: boolean | null;
-  published_at: Timestamp | null;
-  slug: string;
-  subtitle: string | null;
-  ticket_price: Generated<number>;
+export interface CompetitionPrizes {
+  available_quantity: number;
+  competition_id: string | null;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  is_instant_win: Generated<boolean | null>;
+  max_ticket_percentage: Numeric;
+  min_ticket_percentage: Numeric;
+  phase: number;
+  prize_group: string;
+  product_id: string | null;
+  total_quantity: number;
+  updated_at: Generated<Timestamp | null>;
+  winning_ticket_numbers: string[] | null;
+  won_quantity: Generated<number>;
+}
+
+export interface Competitions {
+  created_at: Generated<Timestamp | null>;
+  description: string | null;
+  end_date: Timestamp;
+  id: Generated<string>;
+  media_info: Json | null;
+  start_date: Timestamp;
+  status: string;
+  ticket_price: number;
   tickets_sold: Generated<number>;
-  tickets_total: number;
   title: string;
-  updated_at: Generated<Timestamp>;
+  total_tickets: number;
+  type: string;
+  updated_at: Generated<Timestamp | null>;
+}
+
+export interface Products {
+  created_at: Generated<Timestamp | null>;
+  credit_amount: number | null;
+  description: string | null;
+  id: Generated<string>;
+  is_wallet_credit: Generated<boolean>;
+  market_value: number;
+  media_info: Json | null;
+  name: string;
+  sub_name: string | null;
+  updated_at: Generated<Timestamp | null>;
+}
+
+export interface Tickets {
+  competition_id: string | null;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  purchase_date: Generated<Timestamp | null>;
+  status: string;
+  ticket_number: string;
+  user_id: string;
+  wallet_transaction_id: string;
 }
 
 export interface Users {
   clerk_id: string;
-  created_at: Generated<Timestamp>;
+  created_at: Generated<Timestamp | null>;
   email: string;
   first_name: string | null;
-  id: Generated<number>;
+  id: Generated<string>;
   image_url: string | null;
   last_name: string | null;
-  updated_at: Generated<Timestamp>;
+  updated_at: Generated<Timestamp | null>;
   username: string | null;
+  wallet_id: string;
 }
 
-export type User = Selectable<Users>
-export type NewUser= Insertable<Users>
-export type UserUpdate= Updateable<Users>
+export interface Wallets {
+  balance: Generated<number>;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string;
+}
 
+export interface WalletTransactions {
+  amount: number;
+  created_at: Generated<Timestamp | null>;
+  description: string | null;
+  id: Generated<string>;
+  reference_id: string | null;
+  reference_type: string;
+  status: string;
+  type: string;
+  updated_at: Generated<Timestamp | null>;
+  wallet_id: string;
+}
+
+export interface Winners {
+  competition_prize_id: string | null;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  status: string;
+  ticket_id: string | null;
+  wallet_transaction_id: string | null;
+  won_at: Generated<Timestamp | null>;
+}
 
 export interface DB {
-  prizes: Prizes;
+  competition_prizes: CompetitionPrizes;
+  competitions: Competitions;
+  products: Products;
+  tickets: Tickets;
   users: Users;
+  wallet_transactions: WalletTransactions;
+  wallets: Wallets;
+  winners: Winners;
 }
