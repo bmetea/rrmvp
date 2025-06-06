@@ -1,14 +1,6 @@
 import { fetchCompetitionPrizesServer } from "@/app/services/competitionService";
 import { notFound } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import CompetitionPage from "@/components/layout/CompetitionPage";
 import { DB, Competitions, CompetitionPrizes, Products } from "@/db/types";
 
 type CompetitionWithPrizesAndProducts = Competitions & {
@@ -23,86 +15,61 @@ interface PageProps {
   }>;
 }
 
-export default async function CompetitionPage({ params }: PageProps) {
+export default async function CompetitionPageWrapper({ params }: PageProps) {
   const { id } = await params;
 
   const competition = (await fetchCompetitionPrizesServer(
     id
   )) as unknown as CompetitionWithPrizesAndProducts;
 
-  console.log(competition);
-
   if (!competition) {
     notFound();
   }
 
-  return (
-    <div className="container mx-auto py-8">
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl">{competition.title}</CardTitle>
-            <CardDescription>{competition.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Ticket Price</p>
-                  <p className="text-2xl font-bold">
-                    ${Number(competition.ticket_price)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tickets Sold</p>
-                  <p className="text-2xl font-bold">
-                    {Number(competition.tickets_sold)} /{" "}
-                    {Number(competition.total_tickets)}
-                  </p>
-                </div>
-              </div>
-              <Button className="w-full">Buy Tickets</Button>
-            </div>
-          </CardContent>
-        </Card>
+  const mediaInfo = competition.media_info as {
+    images?: string[];
+    thumbnail?: string;
+  } | null;
 
-        <div className="grid gap-4">
-          <h2 className="text-2xl font-bold">Prizes</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {competition.prizes.map((prize) => {
-              const mediaInfo = prize.product.media_info as {
-                images?: string[];
-              } | null;
-              return (
-                <Card key={String(prize.id)}>
-                  <CardHeader>
-                    <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                      {mediaInfo?.images?.[0] && (
-                        <Image
-                          src={mediaInfo.images[0]}
-                          alt={prize.product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      )}
-                    </div>
-                    <CardTitle className="mt-4">{prize.product.name}</CardTitle>
-                    <CardDescription>
-                      {prize.product.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">Prize Value</p>
-                    <p className="text-xl font-bold">
-                      ${Number(prize.product.market_value)}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
+  const accordionSections = [
+    {
+      label: "How to Enter",
+      content:
+        "Purchase tickets for a chance to win this amazing prize. The more tickets you buy, the better your chances of winning!",
+      important: null,
+    },
+    {
+      label: "Prize Details",
+      content: competition.description || "No additional details available.",
+      important: null,
+    },
+    {
+      label: "Terms and Conditions",
+      content:
+        "By entering this competition, you agree to our terms and conditions. The winner will be selected at random from all valid entries.",
+      important:
+        "Please ensure you read and understand all terms before entering.",
+    },
+  ];
+
+  return (
+    <CompetitionPage
+      image={
+        mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg"
+      }
+      title={competition.title}
+      subtitle={`${competition.type} Competition`}
+      ticketsSold={Number(competition.tickets_sold)}
+      totalTickets={Number(competition.total_tickets)}
+      ticketPrice={Number(competition.ticket_price)}
+      accordionSections={accordionSections}
+      prizes={competition.prizes.map((prize) => ({
+        id: String(prize.id),
+        name: prize.product.name,
+        description: prize.product.description,
+        market_value: Number(prize.product.market_value),
+        media_info: prize.product.media_info as { images?: string[] } | null,
+      }))}
+    />
   );
 }
