@@ -18,12 +18,6 @@ const Competitions = ({ children }: CompetitionsProps) => {
               All
             </Button>
             <Button variant="outline" size="sm">
-              Raffles
-            </Button>
-            <Button variant="outline" size="sm">
-              Instant Win
-            </Button>
-            <Button variant="outline" size="sm">
               Ending Soon
             </Button>
           </div>

@@ -1,157 +1,111 @@
 import { db } from "@/db";
-import { DB, Competitions, CompetitionPrizes } from "@/db/types";
+import { DB, Competitions, CompetitionPrizes, Products } from "@/db/types";
 import { cache } from "react";
 
 type CompetitionWithPrizes = Competitions & {
   prizes: CompetitionPrizes[];
 };
 
-// Server-side fetch with caching
-export const fetchCompetitionsServer = cache(
-  async (): Promise<CompetitionWithPrizes[]> => {
-    const competitions = (await db
-      .selectFrom("competitions")
-      .selectAll()
-      .where("status", "=", "active")
-      .where("end_date", ">", new Date())
-      .execute()) as Competitions[];
-
-    // Fetch prizes for each competition
-    const competitionsWithPrizes = await Promise.all(
-      competitions.map(async (competition) => {
-        const prizes = (await db
-          .selectFrom("competition_prizes")
-          .selectAll()
-          .where("competition_id", "=", competition.id)
-          .execute()) as CompetitionPrizes[];
-
-        return {
-          ...competition,
-          prizes,
-        } as CompetitionWithPrizes;
-      })
-    );
-
-    return competitionsWithPrizes;
-  }
-);
-
-// Client-side fetch
-export const fetchCompetitions = async (): Promise<CompetitionWithPrizes[]> => {
-  const competitions = (await db
-    .selectFrom("competitions")
-    .selectAll()
-    .where("status", "=", "active")
-    .where("end_date", ">", new Date())
-    .execute()) as Competitions[];
-
-  // Fetch prizes for each competition
-  const competitionsWithPrizes = await Promise.all(
-    competitions.map(async (competition) => {
-      const prizes = (await db
-        .selectFrom("competition_prizes")
-        .selectAll()
-        .where("competition_id", "=", competition.id)
-        .execute()) as CompetitionPrizes[];
-
-      return {
-        ...competition,
-        prizes,
-      } as CompetitionWithPrizes;
-    })
-  );
-
-  return competitionsWithPrizes;
+type CompetitionWithPrizesAndProducts = Competitions & {
+  prizes: (CompetitionPrizes & {
+    product: Products;
+  })[];
 };
 
-// Fetch single competition by ID with caching
-export const fetchCompetitionById = cache(
-  async (id: string): Promise<CompetitionWithPrizes | null> => {
-    const competition = (await db
-      .selectFrom("competitions")
-      .selectAll()
-      .where("id", "=", id)
-      .executeTakeFirst()) as Competitions | undefined;
+export const fetchCompetitionsServer = cache(async () => {
+  const competitions = await db
+    .selectFrom("competitions")
+    .select([
+      "id",
+      "title",
+      "description",
+      "start_date",
+      "end_date",
+      "type",
+      "ticket_price",
+      "total_tickets",
+      "tickets_sold",
+      "status",
+      "media_info"
+    ])
+    .where("competitions.status", "=", "active")
+    .where("competitions.end_date", ">", new Date())
+    .execute();
+  return competitions;
+});
 
-    if (!competition) {
-      return null;
-    }
+// Server-side fetch with caching
+// export const fetchCompetitionPrizesServer = cache(
+//   async (): Promise<CompetitionWithPrizes[]> => {
+//     const competitions = await db
+//       .selectFrom("competitions")
+//       .leftJoin(
+//         "competition_prizes",
+//         "competitions.id",
+//         "competition_prizes.id"
+//       )
+//       .leftJoin("products", "competition_prizes.product_id", "products.id")
+//       .selectAll()
+//       .where("competitions.status", "=", "active")
+//       .where("competitions.end_date", ">", new Date())
+//       .execute();
 
-    const prizes = (await db
-      .selectFrom("competition_prizes")
-      .selectAll()
-      .where("competition_id", "=", id)
-      .execute()) as CompetitionPrizes[];
+//     return competitionsWithPrizes;
+//   }
+// );
 
-    return {
-      ...competition,
-      prizes,
-    } as CompetitionWithPrizes;
-  }
-);
+// Server-side fetch with caching
+// export const fetchCompetitionsServer = cache(
+//   async (): Promise<CompetitionWithPrizes[]> => {
+//     const competitions = await db
+//       .selectFrom("competitions")
+//       .selectAll()
+//       .where("status", "=", "active")
+//       .where("end_date", ">", new Date())
+//       .execute();
 
-// Fetch competitions by type
-export const fetchCompetitionsByType = cache(
-  async (
-    type: DB["competitions"]["type"]
-  ): Promise<CompetitionWithPrizes[]> => {
-    const competitions = (await db
-      .selectFrom("competitions")
-      .selectAll()
-      .where("type", "=", type)
-      .where("status", "=", "active")
-      .where("end_date", ">", new Date())
-      .execute()) as Competitions[];
+//     // Fetch prizes for each competition
+//     const competitionsWithPrizes = await Promise.all(
+//       competitions.map(async (competition) => {
+//         const prizes = (await db
+//           .selectFrom("competition_prizes")
+//           .selectAll()
+//           .where("competition_id", "=", competition.id)
+//           .execute()) as CompetitionPrizes[];
 
-    const competitionsWithPrizes = await Promise.all(
-      competitions.map(async (competition) => {
-        const prizes = (await db
-          .selectFrom("competition_prizes")
-          .selectAll()
-          .where("competition_id", "=", competition.id)
-          .execute()) as CompetitionPrizes[];
+//         return {
+//           ...competition,
+//           prizes,
+//         };
+//       })
+//     );
 
-        return {
-          ...competition,
-          prizes,
-        } as CompetitionWithPrizes;
-      })
-    );
+//     return competitionsWithPrizes;
+//   }
+// );
 
-    return competitionsWithPrizes;
-  }
-);
+// // Fetch single competition by ID with caching
+// export const fetchCompetitionById = cache(
+//   async (id: string): Promise<CompetitionWithPrizes | null> => {
+//     const competition = (await db
+//       .selectFrom("competitions")
+//       .selectAll()
+//       .where("id", "=", id)
+//       .executeTakeFirst()) as Competitions | undefined;
 
-// Fetch active instant win competitions with available prizes
-export const fetchActiveInstantWinCompetitions = cache(
-  async (): Promise<CompetitionWithPrizes[]> => {
-    const competitions = (await db
-      .selectFrom("competitions as c")
-      .innerJoin("competition_prizes as cp", "c.id", "cp.competition_id")
-      .selectAll("c")
-      .where("c.type", "=", "instant_win")
-      .where("c.status", "=", "active")
-      .where("c.end_date", ">", new Date())
-      .where("cp.available_quantity", ">", 0)
-      .distinct()
-      .execute()) as Competitions[];
+//     if (!competition) {
+//       return null;
+//     }
 
-    const competitionsWithPrizes = await Promise.all(
-      competitions.map(async (competition) => {
-        const prizes = (await db
-          .selectFrom("competition_prizes")
-          .selectAll()
-          .where("competition_id", "=", competition.id)
-          .where("available_quantity", ">", 0)
-          .execute()) as CompetitionPrizes[];
+//     const prizes = (await db
+//       .selectFrom("competition_prizes")
+//       .selectAll()
+//       .where("competition_id", "=", id)
+//       .execute()) as CompetitionPrizes[];
 
-        return {
-          ...competition,
-          prizes,
-        } as CompetitionWithPrizes;
-      })
-    );
-
-    return competitionsWithPrizes;
-  }
-);
+//     return {
+//       ...competition,
+//       prizes,
+//     } as CompetitionWithPrizes;
+//   }
+// );

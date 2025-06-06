@@ -2,19 +2,24 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { DB } from "@/db/types";
 import { ShoppingCart } from "lucide-react";
 import { generateAvatar } from "@/lib/utils/avatar";
 
-type CompetitionWithPrizes = DB["competitions"] & {
-  prizes: DB["competition_prizes"][];
-  media_info?: {
-    images: string[];
-    thumbnail: string;
-  };
+type CompetitionWithPrizes = {
+  id: string;
+  title: string;
+  description: string;
+  start_date: Date;
+  end_date: Date;
+  status: string;
+  type:string;
+  ticket_price: number;
   total_tickets: number;
   tickets_sold: number;
-  end_date: string | Date;
+  media_info: {
+    images: string[];
+    thumbnail: string;
+  } | null;
 };
 
 interface CompetitionCardProps {
@@ -22,15 +27,6 @@ interface CompetitionCardProps {
 }
 
 export function CompetitionCard({ competition }: CompetitionCardProps) {
-  const isRaffle = competition.type === "raffle";
-  const totalPrizes = competition.prizes.reduce(
-    (acc, prize) => acc + prize.total_quantity,
-    0
-  );
-  const availablePrizes = competition.prizes.reduce(
-    (acc, prize) => acc + prize.available_quantity,
-    0
-  );
   const ticketsRemaining =
     Number(competition.total_tickets) - Number(competition.tickets_sold);
   const soldPercentage = Math.round(
@@ -85,7 +81,7 @@ export function CompetitionCard({ competition }: CompetitionCardProps) {
       {/* Content */}
       <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
         <span className="p-1 bg-orange-100 dark:bg-orange-900 rounded text-[10px] font-semibold text-neutral-900 dark:text-white leading-none md:px-4 md:py-1 md:text-sm md:leading-tight">
-          {isRaffle ? "Raffle" : "Instant Win"}
+          {competition.type}
         </span>
         <div className="w-full flex flex-col items-start gap-1 md:gap-2">
           <div className="w-full text-neutral-900 dark:text-white text-base md:text-2xl font-medium leading-normal">
