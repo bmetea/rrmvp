@@ -4,6 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { generateAvatar } from "@/lib/utils/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type CompetitionWithPrizes = {
   id: string;
@@ -12,7 +20,7 @@ type CompetitionWithPrizes = {
   start_date: Date;
   end_date: Date;
   status: string;
-  type:string;
+  type: string;
   ticket_price: number;
   total_tickets: number;
   tickets_sold: number;

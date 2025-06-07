@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { Prize } from "@/types/prize";
-import { fetchPrizes } from "@/app/services/prizeService";
+import { fetchPrizes } from "@/services/prizeService";
 
 interface PrizesContextType {
   prizes: Prize[];

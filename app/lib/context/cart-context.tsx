@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Prize } from "@/types/prize";
-import { analytics } from "@/lib/segment";
+import { analytics } from "../segment";
 
 interface CartItem {
   prize: Prize;

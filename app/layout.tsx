@@ -6,7 +6,7 @@ import Footer from "@/components/navigation/Footer";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
-import { PrizesProvider } from "../lib/context/prizes-context";
+import { PrizesProvider } from "@/lib/context/prizes-context";
 import Script from "next/script";
 import SegmentProvider from "@/components/analytics/SegmentProvider";
 

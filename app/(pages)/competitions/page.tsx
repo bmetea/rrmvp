@@ -1,6 +1,6 @@
 import Competitions from "@/components/sections/Competitions";
 import { CompetitionCard } from "@/components/ui/competition-card";
-import { fetchCompetitionsServer } from "@/app/services/competitionService";
+import { fetchCompetitionsServer } from "@/services/competitionService";
 import type { DB } from "@/db/types";
 
 type CompetitionWithPrizes = {
@@ -10,7 +10,7 @@ type CompetitionWithPrizes = {
   start_date: Date;
   end_date: Date;
   status: string;
-  type:string;
+  type: string;
   ticket_price: number;
   total_tickets: number;
   tickets_sold: number;

@@ -1,4 +1,4 @@
-import { fetchCompetitionPrizesServer } from "@/app/services/competitionService";
+import { fetchCompetitionPrizesServer } from "@/services/competitionService";
 import { notFound } from "next/navigation";
 import CompetitionPage from "@/components/layout/CompetitionPage";
 import { DB, Competitions, CompetitionPrizes, Products } from "@/db/types";
