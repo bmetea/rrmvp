@@ -89,6 +89,7 @@ export default async function RootLayout({
         </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          suppressHydrationWarning
         >
           {/* <SegmentProvider /> */}
           <ThemeProvider
@@ -97,13 +98,13 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-              <CartProvider>
-                <div className="flex min-h-screen flex-col">
-                  <Navbar />
-                  <main className="flex-1 pt-16">{children}</main>
-                  <Footer />
-                </div>
-              </CartProvider>
+            <CartProvider>
+              <div className="flex min-h-screen flex-col">
+                <Navbar />
+                <main className="flex-1 pt-16">{children}</main>
+                <Footer />
+              </div>
+            </CartProvider>
           </ThemeProvider>
         </body>
       </html>

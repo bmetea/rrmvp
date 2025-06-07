@@ -1,5 +1,6 @@
 import {
   fetchCompetitionPrizesServer,
+  Competition,
   CompetitionWithPrizes,
 } from "@/services/competitionService";
 import { notFound } from "next/navigation";
@@ -14,15 +15,15 @@ interface PageProps {
 export default async function CompetitionPageWrapper({ params }: PageProps) {
   const { id } = await params;
 
-  const competition: CompetitionWithPrizes = await fetchCompetitionPrizesServer(
+  const competitionWithPrizes: CompetitionWithPrizes = await fetchCompetitionPrizesServer(
     id
   );
 
-  if (!competition) {
+  if (!competitionWithPrizes) {
     notFound();
   }
 
-  const mediaInfo = competition.media_info as {
+  const mediaInfo = competitionWithPrizes.media_info as {
     images?: string[];
     thumbnail?: string;
   } | null;
@@ -36,7 +37,7 @@ export default async function CompetitionPageWrapper({ params }: PageProps) {
     },
     {
       label: "Prize Details",
-      content: competition.description || "No additional details available.",
+      content: competitionWithPrizes.description || "No additional details available.",
       important: null,
     },
     {
@@ -49,24 +50,6 @@ export default async function CompetitionPageWrapper({ params }: PageProps) {
   ];
 
   return (
-    <CompetitionPage
-      competition_id={id}
-      image={
-        mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg"
-      }
-      title={competition.title}
-      subtitle={`${competition.type} Competition`}
-      ticketsSold={Number(competition.tickets_sold)}
-      totalTickets={Number(competition.total_tickets)}
-      ticketPrice={Number(competition.ticket_price)}
-      accordionSections={accordionSections}
-      prizes={competition.prizes.map((prize) => ({
-        id: String(prize.id),
-        name: prize.product.name,
-        description: prize.product.description,
-        market_value: Number(prize.product.market_value),
-        media_info: prize.product.media_info as { images?: string[] } | null,
-      }))}
-    />
+    <CompetitionPage competitionWithPrizes={competitionWithPrizes} />
   );
 }

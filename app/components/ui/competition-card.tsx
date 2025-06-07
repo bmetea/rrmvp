@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
 import { generateAvatar } from "@/lib/utils/avatar";
 import { Competition } from "@/services/competitionService";
 

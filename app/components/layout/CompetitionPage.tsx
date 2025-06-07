@@ -28,43 +28,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-interface AccordionSection {
-  label: string;
-  content: string;
-  important: string | null;
-}
-
-interface Prize {
-  id: string;
-  name: string;
-  description: string | null;
-  market_value: number;
-  media_info: {
-    images?: string[];
-  } | null;
-}
+import { CompetitionWithPrizes } from "@/services/competitionService";
 
 interface CompetitionPageProps {
-  image: string;
-  title: string;
-  subtitle: string;
-  ticketsSold: number;
-  totalTickets: number;
-  ticketPrice: number;
-  accordionSections: AccordionSection[];
-  prizes: Prize[];
+  competitionWithPrizes: CompetitionWithPrizes;
 }
 
 export default function CompetitionPage({
-  image,
-  title,
-  subtitle,
-  ticketsSold,
-  totalTickets,
-  ticketPrice,
-  accordionSections,
-  prizes,
+  competitionWithPrizes,
 }: CompetitionPageProps) {
   const [ticketCount, setTicketCount] = useState(20);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -83,6 +54,36 @@ export default function CompetitionPage({
     // TODO: Implement add to cart functionality
   };
 
+  const mediaInfo = competitionWithPrizes.media_info as {
+    images?: string[];
+    thumbnail?: string;
+  } | null;
+  const image =
+    mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg";
+  const subtitle = `${competitionWithPrizes.type} Competition`;
+
+  const accordionSections = [
+    {
+      label: "How to Enter",
+      content:
+        "Purchase tickets for a chance to win this amazing prize. The more tickets you buy, the better your chances of winning!",
+      important: null,
+    },
+    {
+      label: "Prize Details",
+      content:
+        competitionWithPrizes.description || "No additional details available.",
+      important: null,
+    },
+    {
+      label: "Terms and Conditions",
+      content:
+        "By entering this competition, you agree to our terms and conditions. The winner will be selected at random from all valid entries.",
+      important:
+        "Please ensure you read and understand all terms before entering.",
+    },
+  ];
+
   return (
     <main className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto py-12 px-4">
       {/* Photo */}
@@ -90,7 +91,7 @@ export default function CompetitionPage({
         <div className="relative w-full aspect-[4/3] md:h-64 rounded-lg overflow-hidden border">
           <Image
             src={image}
-            alt={title}
+            alt={competitionWithPrizes.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             quality={90}
@@ -108,26 +109,26 @@ export default function CompetitionPage({
         <div className="grid gap-4">
           <h2 className="text-2xl font-bold">Prizes</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {prizes.map((prize) => (
+            {competitionWithPrizes.prizes.map((prize) => (
               <Card key={prize.id}>
                 <CardHeader>
                   <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                    {prize.media_info?.images?.[0] && (
+                    {prize.product.media_info?.images?.[0] && (
                       <Image
-                        src={prize.media_info.images[0]}
-                        alt={prize.name}
+                        src={prize.product.media_info.images[0]}
+                        alt={prize.product.name}
                         fill
                         className="object-cover"
                       />
                     )}
                   </div>
-                  <CardTitle className="mt-4">{prize.name}</CardTitle>
-                  <CardDescription>{prize.description}</CardDescription>
+                  <CardTitle className="mt-4">{prize.product.name}</CardTitle>
+                  <CardDescription>{prize.product.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">Prize Value</p>
                   <p className="text-xl font-bold">
-                    ${Number(prize.market_value)}
+                    ${Number(prize.product.market_value)}
                   </p>
                 </CardContent>
               </Card>
@@ -139,15 +140,24 @@ export default function CompetitionPage({
       {/* Competition Details & Entry */}
       <section className="flex-1 flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-bold mb-1">{title}</h1>
-          <p className="text-muted-foreground mb-2">{subtitle}</p>
+          <h1 className="text-2xl font-bold mb-1">
+            {competitionWithPrizes.title}
+          </h1>
+          <p className="text-muted-foreground mb-2">
+            {competitionWithPrizes.type}
+          </p>
           <Progress
-            value={(ticketsSold / totalTickets) * 100}
+            value={
+              (competitionWithPrizes.tickets_sold /
+                competitionWithPrizes.total_tickets) *
+              100
+            }
             className="mb-2"
-            aria-label={`${ticketsSold}% of tickets sold for ${title}`}
+            aria-label={`${competitionWithPrizes.tickets_sold}% of tickets sold for ${competitionWithPrizes.title}`}
           />
           <p className="text-sm text-gray-500 mb-4">
-            {ticketsSold} / {totalTickets} tickets sold
+            {competitionWithPrizes.tickets_sold} /{" "}
+            {competitionWithPrizes.total_tickets} tickets sold
           </p>
         </div>
 
@@ -189,7 +199,7 @@ export default function CompetitionPage({
             </Button>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Only ${ticketPrice} per ticket
+            Only ${competitionWithPrizes.ticket_price} per ticket
           </p>
         </div>
 
