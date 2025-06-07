@@ -11,7 +11,6 @@ export default async function Home() {
   return (
     <main>
       <Hero />
-      {/* <PrizesSection /> */}
       <Competitions>
         {competitions.map((competition) => (
           <CompetitionCard

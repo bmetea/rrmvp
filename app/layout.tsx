@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import Script from "next/script";
-import SegmentProvider from "@/components/analytics/SegmentProvider";
+// import SegmentProvider from "@/components/analytics/SegmentProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
