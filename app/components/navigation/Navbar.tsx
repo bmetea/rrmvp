@@ -17,7 +17,6 @@ interface NavbarProps {
 
 const navLinks = [
   { href: "/competitions", label: "Competitions" },
-  { href: "/prizes", label: "Prizes" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/about", label: "About us" },
   { href: "/faq", label: "FAQ" },

@@ -6,7 +6,6 @@ import Footer from "@/components/navigation/Footer";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
-import { PrizesProvider } from "@/lib/context/prizes-context";
 import Script from "next/script";
 import SegmentProvider from "@/components/analytics/SegmentProvider";
 
@@ -98,7 +97,6 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <PrizesProvider>
               <CartProvider>
                 <div className="flex min-h-screen flex-col">
                   <Navbar />
@@ -106,7 +104,6 @@ export default async function RootLayout({
                   <Footer />
                 </div>
               </CartProvider>
-            </PrizesProvider>
           </ThemeProvider>
         </body>
       </html>

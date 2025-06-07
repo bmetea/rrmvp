@@ -1,8 +1,6 @@
-import { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import HowItWorks from "@/components/sections/HowItWorks";
 import AboutSection from "@/components/sections/AboutSection";
-import PrizesSection from "@/components/sections/PrizesSection";
 import Competitions from "@/components/sections/Competitions";
 import { CompetitionCard } from "@/components/ui/competition-card";
 import { fetchCompetitionsServer } from "@/services/competitionService";
