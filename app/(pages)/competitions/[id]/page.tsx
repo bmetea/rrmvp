@@ -1,26 +1,22 @@
 import {
   fetchCompetitionPrizesServer,
-  Competition,
   CompetitionWithPrizes,
 } from "@/services/competitionService";
 import { notFound } from "next/navigation";
 import CompetitionPage from "@/components/layout/CompetitionPage";
 
-interface DynamicCompetitionPageProps {
-  dynamicCompetitionPageProps : Competition
+interface PageProps {
+  params: {
+    id: string;
+  };
 }
 
-export default async function CompetitionPageWrapper({ dynamicCompetitionPageProps }: DynamicCompetitionPageProps) {
-
-  const competitionWithPrizes: CompetitionWithPrizes = await fetchCompetitionPrizesServer(
-    dynamicCompetitionPageProps.id
-  );
+export default async function CompetitionPageWrapper({ params }: PageProps) {
+  const competitionWithPrizes = await fetchCompetitionPrizesServer(params.id);
 
   if (!competitionWithPrizes) {
     notFound();
   }
 
-  return (
-    <CompetitionPage competitionWithPrizes={competitionWithPrizes} />
-  );
+  return <CompetitionPage competitionWithPrizes={competitionWithPrizes} />;
 }

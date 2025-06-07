@@ -18,12 +18,12 @@ export function CompetitionCartDialog() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } =
     useCart();
 
-  const handleUpdateQuantity = (competitionId: number, newQuantity: number) => {
+  const handleUpdateQuantity = (competitionId: string, newQuantity: number) => {
     console.log("Updating quantity:", { competitionId, newQuantity });
     updateQuantity(competitionId, newQuantity);
   };
 
-  const handleRemoveItem = (competitionId: number) => {
+  const handleRemoveItem = (competitionId: string) => {
     console.log("Removing item:", competitionId);
     removeItem(competitionId);
   };

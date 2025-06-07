@@ -51,7 +51,7 @@ export default function CompetitionPage({
       alert("Please answer the skill-based question first");
       return;
     }
-    // TODO: Implement add to cart functionality
+    addItem(competitionWithPrizes, ticketCount);
   };
 
   const mediaInfo = competitionWithPrizes.media_info as {
