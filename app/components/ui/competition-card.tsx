@@ -4,39 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { generateAvatar } from "@/lib/utils/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Competition } from "@/services/competitionService";
 
-type CompetitionWithPrizes = {
-  id: string;
-  title: string;
-  description: string;
-  start_date: Date;
-  end_date: Date;
-  status: string;
-  type: string;
-  ticket_price: number;
-  total_tickets: number;
-  tickets_sold: number;
-  media_info: {
-    images: string[];
-    thumbnail: string;
-  } | null;
-};
-
-interface CompetitionCardProps {
-  competition: CompetitionWithPrizes;
-}
-
-export function CompetitionCard({ competition }: CompetitionCardProps) {
-  const ticketsRemaining =
-    Number(competition.total_tickets) - Number(competition.tickets_sold);
+export function CompetitionCard({ competition }: { competition: Competition }) {
   const soldPercentage = Math.round(
     (Number(competition.tickets_sold) / Number(competition.total_tickets)) * 100
   );
@@ -133,42 +103,29 @@ export function CompetitionCard({ competition }: CompetitionCardProps) {
               {soldPercentage}% sold
             </div>
           </div>
-          {/* Buttons */}
-          <div className="w-full flex items-center gap-6">
-            <div className="p-3 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-3">
-              <ShoppingCart className="w-5 h-5 text-white" />
-            </div>
-            <Link href={`/competitions/${competition.id}`} className="flex-1">
-              <div className="w-full px-6 py-3 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer">
-                <span className="text-white text-base font-semibold leading-normal">
-                  Buy Tickets
-                </span>
-                <svg
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="w-6 h-6"
-                >
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </Link>
-          </div>
         </div>
-        {/* Button always at the bottom */}
+        {/* Button */}
         <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
           <Link href={`/competitions/${competition.id}`} className="w-full">
             <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer">
               <span className="text-white text-sm font-semibold leading-tight">
                 Buy Tickets
               </span>
+              <svg
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="w-6 h-6"
+              >
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
           </Link>
         </div>

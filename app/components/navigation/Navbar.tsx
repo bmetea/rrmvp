@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { CartDialog } from "@/components/cart/cart-dialog";
+import { CompetitionCartDialog } from "@/components/cart/competition-cart-dialog";
 
 interface NavbarProps {
   activePath?: string;
@@ -80,7 +80,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
-            <CartDialog />
+            <CompetitionCartDialog />
           </div>
 
           {/* Desktop Navigation */}
@@ -104,7 +104,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            <CartDialog />
+            <CompetitionCartDialog />
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
@@ -146,7 +146,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <div className="flex items-center px-5 space-x-2">
                 <ThemeToggle />
                 <SignedIn>
-                  <CartDialog />
+                  <CompetitionCartDialog />
                   <UserButton afterSignOutUrl="/" />
                 </SignedIn>
                 <SignedOut>

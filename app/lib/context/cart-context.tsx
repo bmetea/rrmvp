@@ -1,73 +1,128 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { Prize } from "@/types/prize";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { analytics } from "../segment";
 
+interface Competition {
+  id: number;
+  title: string;
+  type: string;
+  ticket_price: number;
+  media_info?: {
+    thumbnail?: string;
+    images?: string[];
+  } | null;
+}
+
 interface CartItem {
-  prize: Prize;
+  competition: Competition;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (prize: Prize, quantity: number) => void;
-  removeItem: (prizeId: number) => void;
-  updateQuantity: (prizeId: number, quantity: number) => void;
+  addItem: (competition: Competition, quantity: number) => void;
+  removeItem: (competitionId: number) => void;
+  updateQuantity: (competitionId: number, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
+  totalPrice: number;
 }
+
+const CART_STORAGE_KEY = "competition-cart";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const addItem = (prize: Prize, quantity: number) => {
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (savedCart) {
+        setItems(JSON.parse(savedCart));
+      }
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (isInitialized) {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      } catch (error) {
+        console.error("Error saving cart to localStorage:", error);
+      }
+    }
+  }, [items, isInitialized]);
+
+  const addItem = (competition: Competition, quantity: number) => {
+    if (!competition.id) {
+      console.error("Cannot add competition to cart: missing competition ID");
+      return;
+    }
+
     setItems((currentItems) => {
       const existingItem = currentItems.find(
-        (item) => item.prize.id === prize.id
+        (item) => item.competition.id === competition.id
       );
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.prize.id === prize.id
+          item.competition.id === competition.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
 
-      return [...currentItems, { prize, quantity }];
+      return [...currentItems, { competition, quantity }];
     });
     analytics.then(([a]) =>
       a.track("Add to Cart", {
-        prizeId: prize.id,
-        prizeTitle: prize.title,
+        competitionId: competition.id,
+        competitionTitle: competition.title,
         quantity,
       })
     );
   };
 
-  const removeItem = (prizeId: number) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.prize.id !== prizeId)
-    );
+  const removeItem = (competitionId: number) => {
+    setItems((currentItems) => {
+      const newItems = currentItems.filter(
+        (item) => item.competition.id !== competitionId
+      );
+      return newItems;
+    });
     analytics.then(([a]) =>
       a.track("Remove from Cart", {
-        prizeId: prizeId,
+        competitionId: competitionId,
       })
     );
   };
 
-  const updateQuantity = (prizeId: number, quantity: number) => {
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.prize.id === prizeId ? { ...item, quantity } : item
-      )
-    );
+  const updateQuantity = (competitionId: number, quantity: number) => {
+    setItems((currentItems) => {
+      const newItems = currentItems.map((item) =>
+        item.competition.id === competitionId
+          ? { ...item, quantity: Math.max(1, quantity) }
+          : item
+      );
+      return newItems;
+    });
     analytics.then(([a]) =>
       a.track("Update Cart Quantity", {
-        prizeId: prizeId,
+        competitionId: competitionId,
         quantity,
       })
     );
@@ -75,9 +130,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (error) {
+      console.error("Error clearing cart from localStorage:", error);
+    }
   };
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = items.reduce(
+    (total, item) => total + item.quantity * item.competition.ticket_price,
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -88,6 +152,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         clearCart,
         totalItems,
+        totalPrice,
       }}
     >
       {children}

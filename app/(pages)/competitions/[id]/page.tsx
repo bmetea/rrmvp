@@ -1,13 +1,9 @@
-import { fetchCompetitionPrizesServer } from "@/services/competitionService";
+import {
+  fetchCompetitionPrizesServer,
+  CompetitionWithPrizes,
+} from "@/services/competitionService";
 import { notFound } from "next/navigation";
 import CompetitionPage from "@/components/layout/CompetitionPage";
-import { DB, Competitions, CompetitionPrizes, Products } from "@/db/types";
-
-type CompetitionWithPrizesAndProducts = Competitions & {
-  prizes: (CompetitionPrizes & {
-    product: Products;
-  })[];
-};
 
 interface PageProps {
   params: Promise<{
@@ -18,9 +14,9 @@ interface PageProps {
 export default async function CompetitionPageWrapper({ params }: PageProps) {
   const { id } = await params;
 
-  const competition = (await fetchCompetitionPrizesServer(
+  const competition: CompetitionWithPrizes = await fetchCompetitionPrizesServer(
     id
-  )) as unknown as CompetitionWithPrizesAndProducts;
+  );
 
   if (!competition) {
     notFound();
@@ -54,6 +50,7 @@ export default async function CompetitionPageWrapper({ params }: PageProps) {
 
   return (
     <CompetitionPage
+      competition_id={id}
       image={
         mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg"
       }
