@@ -91,7 +91,7 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <SegmentProvider />
+          {/* <SegmentProvider /> */}
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
