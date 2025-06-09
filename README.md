@@ -1,7 +1,15 @@
 ## TODO
-- only allow checkout if you're logged in
-- make a buy button on the checkout page
-- when you click buy, if you have enough credit into your account it should work properly with db inserts.
+- 09 June 2025
+  - Users and wallets are being created on user sign-up
+  - Users can buy tickets and then the buys are being registered in the db
+    - the cart is being cleared
+    - it redirects to 404
+    - we're making a db entry for every ticket, that needs to change
+    - check 
+  - Questions
+    - Where should we redirect after a purchase ? 
+    - 
+
 
 
 ## Notes
