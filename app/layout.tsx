@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import Script from "next/script";
+import { Toaster } from "sonner";
 // import SegmentProvider from "@/components/analytics/SegmentProvider";
 
 const geistSans = Geist({
@@ -91,6 +92,7 @@ export default async function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning
         >
+          <Toaster />
           {/* <SegmentProvider /> */}
           <ThemeProvider
             attribute="class"

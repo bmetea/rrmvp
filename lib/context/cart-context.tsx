@@ -1,16 +1,16 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { CompetitionWithPrizes } from "@/services/competitionService";
+import { Competition } from "@/services/competitionService";
 
 interface CartItem {
-  competition: CompetitionWithPrizes;
+  competition: Competition;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (competition: CompetitionWithPrizes, quantity: number) => void;
+  addItem: (competition: Competition, quantity: number) => void;
   removeItem: (competitionId: string) => void;
   updateQuantity: (competitionId: string, quantity: number) => void;
   clearCart: () => void;
@@ -44,7 +44,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, mounted]);
 
-  const addItem = (competition: CompetitionWithPrizes, quantity: number) => {
+  const addItem = (competition: Competition, quantity: number) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find(
         (item) => item.competition.id === competition.id
