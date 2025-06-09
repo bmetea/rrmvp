@@ -1,10 +1,7 @@
 ## TODO
-- [x] Database
-- [x] PayloadCMS
-- Cart Page 
-- Checkout page
-- Wallet System
-- Referral system
+- only allow checkout if you're logged in
+- make a buy button on the checkout page
+- when you click buy, if you have enough credit into your account it should work properly with db inserts.
 
 
 ## Notes
