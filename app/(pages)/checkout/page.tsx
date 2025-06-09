@@ -156,7 +156,7 @@ export default function CheckoutPage() {
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
             />
-            <Button className="w-full mb-4">Proceed to Checkout</Button>
+            <Button className="w-full mb-4">Buy Now</Button>
             <div className="flex items-center gap-2 mb-2">
               <div className="flex-1 border-t" />
               <span className="text-xs text-muted-foreground">or</span>

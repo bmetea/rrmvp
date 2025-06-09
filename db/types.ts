@@ -92,7 +92,6 @@ export interface Users {
   last_name: string | null;
   updated_at: Generated<Timestamp | null>;
   username: string | null;
-  wallet_id: string;
 }
 
 export interface Wallets {

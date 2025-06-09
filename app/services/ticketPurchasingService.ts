@@ -1,0 +1,176 @@
+import { db } from "@/db";
+import { cache } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+
+interface PurchaseResult {
+  success: boolean;
+  message: string;
+  ticketIds?: string[];
+}
+
+export const purchaseTickets = cache(
+  async (
+    competitionId: string,
+    ticketCount: number
+  ): Promise<PurchaseResult> => {
+    const session = await auth();
+
+    if (!session?.userId) {
+      return {
+        success: false,
+        message: "You must be logged in to purchase tickets",
+      };
+    }
+
+    // Start a transaction to ensure data consistency
+    return await db.transaction().execute(async (trx) => {
+      // 1. Get the competition and validate it's available
+      const competition = await trx
+        .selectFrom("competitions")
+        .select([
+          "id",
+          "ticket_price",
+          "total_tickets",
+          "tickets_sold",
+          "status",
+          "end_date",
+        ])
+        .where("id", "=", competitionId)
+        .executeTakeFirst();
+
+      if (!competition) {
+        return {
+          success: false,
+          message: "Competition not found",
+        };
+      }
+
+      // Validate competition status and availability
+      if (competition.status !== "active") {
+        return {
+          success: false,
+          message: "This competition is not active",
+        };
+      }
+
+      if (new Date() > competition.end_date) {
+        return {
+          success: false,
+          message: "This competition has ended",
+        };
+      }
+
+      if (competition.tickets_sold + ticketCount > competition.total_tickets) {
+        return {
+          success: false,
+          message: "Not enough tickets available",
+        };
+      }
+
+      // 2. Get user's wallet and validate balance
+      const user = await trx
+        .selectFrom("users")
+        .select(["id", "wallet_id"])
+        .where("clerk_id", "=", session.userId)
+        .executeTakeFirst();
+
+      if (!user) {
+        return {
+          success: false,
+          message: "User not found",
+        };
+      }
+
+      const wallet = await trx
+        .selectFrom("wallets")
+        .select(["id", "balance"])
+        .where("id", "=", user.wallet_id)
+        .executeTakeFirst();
+
+      if (!wallet) {
+        return {
+          success: false,
+          message: "Wallet not found",
+        };
+      }
+
+      const totalCost = competition.ticket_price * ticketCount;
+      if (wallet.balance < totalCost) {
+        return {
+          success: false,
+          message: "Insufficient balance",
+        };
+      }
+
+      // 3. Create wallet transaction
+      const walletTransaction = await trx
+        .insertInto("wallet_transactions")
+        .values({
+          wallet_id: wallet.id,
+          amount: totalCost,
+          type: "debit",
+          status: "completed",
+          reference_type: "ticket_purchase",
+          reference_id: competitionId,
+          description: `Purchase of ${ticketCount} tickets for competition ${competitionId}`,
+        })
+        .returning("id")
+        .executeTakeFirst();
+
+      if (!walletTransaction) {
+        return {
+          success: false,
+          message: "Failed to create wallet transaction",
+        };
+      }
+
+      // 4. Update wallet balance
+      await trx
+        .updateTable("wallets")
+        .set({
+          balance: wallet.balance - totalCost,
+        })
+        .where("id", "=", wallet.id)
+        .execute();
+
+      // 5. Create tickets
+      const ticketNumbers = Array.from({ length: ticketCount }, () =>
+        Math.random().toString(36).substring(2, 15).toUpperCase()
+      );
+
+      const tickets = await trx
+        .insertInto("tickets")
+        .values(
+          ticketNumbers.map((ticketNumber) => ({
+            competition_id: competitionId,
+            user_id: user.id,
+            wallet_transaction_id: walletTransaction.id,
+            status: "active",
+            ticket_number: ticketNumber,
+          }))
+        )
+        .returning("id")
+        .execute();
+
+      // 6. Update competition tickets sold count
+      await trx
+        .updateTable("competitions")
+        .set({
+          tickets_sold: competition.tickets_sold + ticketCount,
+        })
+        .where("id", "=", competitionId)
+        .execute();
+
+      // Revalidate relevant paths
+      revalidatePath("/competitions/[id]");
+      revalidatePath("/profile");
+
+      return {
+        success: true,
+        message: `Successfully purchased ${ticketCount} tickets`,
+        ticketIds: tickets.map((ticket) => ticket.id),
+      };
+    });
+  }
+);
