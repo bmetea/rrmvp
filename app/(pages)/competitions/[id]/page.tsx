@@ -1,18 +1,14 @@
-import {
-  fetchCompetitionPrizesServer,
-  CompetitionWithPrizes,
-} from "@/services/competitionService";
+import { fetchCompetitionPrizesServer } from "@/services/competitionService";
 import { notFound } from "next/navigation";
 import CompetitionPage from "@/components/layout/CompetitionPage";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function CompetitionPageWrapper({ params }: PageProps) {
-  const competitionWithPrizes = await fetchCompetitionPrizesServer(params.id);
+  const { id } = await params;
+  const competitionWithPrizes = await fetchCompetitionPrizesServer(id);
 
   if (!competitionWithPrizes) {
     notFound();
