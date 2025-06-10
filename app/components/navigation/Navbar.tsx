@@ -3,13 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/components/cart/competition-cart-dialog";
+import MyEntriesPage from "@/components/user/MyEntriesPage";
 
 interface NavbarProps {
   activePath?: string;
@@ -106,7 +107,15 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <ThemeToggle />
             <CompetitionCartDialog />
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton>
+                <UserButton.UserProfilePage
+                  label="My Entries"
+                  url="entries"
+                  labelIcon={<Ticket className="h-4 w-4" />}
+                >
+                  <MyEntriesPage />
+                </UserButton.UserProfilePage>
+              </UserButton>
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
@@ -147,7 +156,15 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <ThemeToggle />
                 <SignedIn>
                   <CompetitionCartDialog />
-                  <UserButton afterSignOutUrl="/" />
+                  <UserButton>
+                    <UserButton.UserProfilePage
+                      label="My Entries"
+                      url="entries"
+                      labelIcon={<Ticket className="h-4 w-4" />}
+                    >
+                      <MyEntriesPage />
+                    </UserButton.UserProfilePage>
+                  </UserButton>
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
