@@ -166,8 +166,8 @@ export async function purchaseTickets(
 
         // If we get here, all operations were successful
         // Revalidate relevant paths
-        revalidatePath("/competitions/[id]");
-        revalidatePath("/profile");
+        revalidatePath("/competitions/[id]", "page");
+        revalidatePath("/profile", "page");
 
         return {
           success: true,
