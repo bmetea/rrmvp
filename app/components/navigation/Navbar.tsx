@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useAuth,
+} from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/components/cart/competition-cart-dialog";
 import MyEntriesPage from "@/components/user/MyEntriesPage";
 
@@ -27,11 +33,14 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { userId } = useAuth();
 
   // After mounting, we can safely show the theme-dependent logo
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const isAdmin = userId === "user_2yHYTl16QkOq9usCZ4GlQY3vW3Y";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
@@ -100,6 +109,19 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 {link.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  activePath === "/admin"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                Admin Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Right side buttons */}
@@ -151,6 +173,23 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </span>
               </Link>
             ))}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "block px-3 py-2 rounded-md text-base font-medium group transition-all duration-300",
+                  activePath === "/admin"
+                    ? "text-orange-500 bg-orange-50"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                )}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="relative inline-block">
+                  Admin Dashboard
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                </span>
+              </Link>
+            )}
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5 space-x-2">
                 <ThemeToggle />
