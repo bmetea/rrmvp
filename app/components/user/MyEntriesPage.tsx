@@ -93,7 +93,8 @@ export default function MyEntriesPage() {
                 <div className="flex-1">
                   <h3 className="font-medium">{ticket.competition.title}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Ticket #{ticket.ticket_number}
+                    Ticket #{ticket.ticket_number} ({ticket.number_of_tickets}{" "}
+                    {ticket.number_of_tickets === 1 ? "ticket" : "tickets"})
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Purchased on {formatDate(ticket.purchase_date)}

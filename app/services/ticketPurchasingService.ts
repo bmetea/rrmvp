@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 interface PurchaseResult {
   success: boolean;
   message: string;
-  ticketIds?: string[];
+  ticketId?: string;
 }
 
 export async function purchaseTickets(
@@ -119,6 +119,7 @@ export async function purchaseTickets(
             reference_type: "ticket_purchase",
             reference_id: competitionId,
             description: `Purchase of ${ticketCount} tickets for competition ${competitionId}`,
+            number_of_tickets: ticketCount,
           })
           .returning("id")
           .executeTakeFirst();
@@ -136,24 +137,27 @@ export async function purchaseTickets(
           .where("id", "=", wallet.id)
           .execute();
 
-        // 5. Create tickets
-        const ticketNumbers = Array.from({ length: ticketCount }, () =>
-          Math.random().toString(36).substring(2, 15).toUpperCase()
-        );
-
-        const tickets = await trx
+        // 5. Create a single ticket entry with number_of_tickets
+        const ticketNumber = Math.random()
+          .toString(36)
+          .substring(2, 15)
+          .toUpperCase();
+        const ticket = await trx
           .insertInto("tickets")
-          .values(
-            ticketNumbers.map((ticketNumber) => ({
-              competition_id: competitionId,
-              user_id: user.id,
-              wallet_transaction_id: walletTransaction.id,
-              status: "active",
-              ticket_number: ticketNumber,
-            }))
-          )
+          .values({
+            competition_id: competitionId,
+            user_id: user.id,
+            wallet_transaction_id: walletTransaction.id,
+            status: "active",
+            ticket_number: ticketNumber,
+            number_of_tickets: ticketCount,
+          })
           .returning("id")
-          .execute();
+          .executeTakeFirst();
+
+        if (!ticket) {
+          throw new Error("Failed to create ticket");
+        }
 
         // 6. Update competition tickets sold count
         await trx
@@ -172,7 +176,7 @@ export async function purchaseTickets(
         return {
           success: true,
           message: `Successfully purchased ${ticketCount} tickets`,
-          ticketIds: tickets.map((ticket) => ticket.id),
+          ticketId: ticket.id,
         };
       } catch (error) {
         // This will trigger a rollback of all changes in the transaction

@@ -8,6 +8,7 @@ export interface UserTicket {
   ticket_number: string;
   status: string;
   purchase_date: Date;
+  number_of_tickets: number;
   competition: {
     id: string;
     title: string;
@@ -56,6 +57,7 @@ export async function getUserTickets(): Promise<{
         "tickets.ticket_number",
         "tickets.status",
         "tickets.purchase_date",
+        "tickets.number_of_tickets",
         "competitions.id as competition_id",
         "competitions.title",
         "competitions.type",
@@ -73,6 +75,7 @@ export async function getUserTickets(): Promise<{
       ticket_number: ticket.ticket_number,
       status: ticket.status,
       purchase_date: ticket.purchase_date,
+      number_of_tickets: ticket.number_of_tickets,
       competition: {
         id: ticket.competition_id,
         title: ticket.title,

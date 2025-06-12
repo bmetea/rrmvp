@@ -75,6 +75,7 @@ export interface Tickets {
   competition_id: string | null;
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
+  number_of_tickets: Generated<number | null>;
   purchase_date: Generated<Timestamp | null>;
   status: string;
   ticket_number: string;
@@ -107,6 +108,7 @@ export interface WalletTransactions {
   created_at: Generated<Timestamp | null>;
   description: string | null;
   id: Generated<string>;
+  number_of_tickets: Generated<number | null>;
   reference_id: string | null;
   reference_type: string;
   status: string;

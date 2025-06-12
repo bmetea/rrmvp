@@ -22,7 +22,7 @@ interface CheckoutResult {
     competitionId: string;
     success: boolean;
     message: string;
-    ticketIds?: string[];
+    ticketId?: string;
   }[];
 }
 
@@ -38,7 +38,7 @@ export async function processCheckout(
         competitionId: item.competition.id,
         success: result.success,
         message: result.message,
-        ticketIds: result.ticketIds,
+        ticketId: result.ticketId,
       });
     } catch (error) {
       results.push({
