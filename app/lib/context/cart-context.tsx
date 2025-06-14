@@ -10,7 +10,7 @@ import {
 import { analytics } from "../segment";
 
 interface Competition {
-  id: number;
+  id: string;
   title: string;
   type: string;
   ticket_price: number;
@@ -28,8 +28,8 @@ interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (competition: Competition, quantity: number) => void;
-  removeItem: (competitionId: number) => void;
-  updateQuantity: (competitionId: number, quantity: number) => void;
+  removeItem: (competitionId: string) => void;
+  updateQuantity: (competitionId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -97,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const removeItem = (competitionId: number) => {
+  const removeItem = (competitionId: string) => {
     setItems((currentItems) => {
       const newItems = currentItems.filter(
         (item) => item.competition.id !== competitionId
@@ -111,7 +111,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const updateQuantity = (competitionId: number, quantity: number) => {
+  const updateQuantity = (competitionId: string, quantity: number) => {
     setItems((currentItems) => {
       const newItems = currentItems.map((item) =>
         item.competition.id === competitionId
