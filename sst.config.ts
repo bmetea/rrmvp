@@ -38,6 +38,9 @@ export default $config({
     new sst.aws.Nextjs(`rr-${$app.stage}`, {
       link: [rds],
       vpc: vpc,
+      server: {
+        architecture: "arm64"
+      },
       environment: {
         CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
         CLERK_WEBHOOK_SIGNING_SECRET: process.env.CLERK_WEBHOOK_SIGNING_SECRET!,

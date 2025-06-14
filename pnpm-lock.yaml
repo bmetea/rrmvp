@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@aws-lambda-powertools/logger':
+        specifier: ^2.21.0
+        version: 2.21.0
       '@clerk/nextjs':
         specifier: ^6.19.4
         version: 6.19.4(next@15.3.2(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svix@1.65.0)
@@ -179,6 +182,20 @@ packages:
   '@antfu/ni@23.3.1':
     resolution: {integrity: sha512-C90iyzm/jLV7Lomv2UzwWUzRv9WZr1oRsFRKsX5HjQL4EXrbi9H/RtBkjCP+NF+ABZXUKpAa4F1dkoTaea4zHg==}
     hasBin: true
+
+  '@aws-lambda-powertools/commons@2.21.0':
+    resolution: {integrity: sha512-8AXwZv3k5Ey/9xyW9fsTgHDhayJswvDi94yfNNX0zbe/8lZouTPePYWfffJegJDOaN1nkNoCQQD2pS3v5QLB/Q==}
+
+  '@aws-lambda-powertools/logger@2.21.0':
+    resolution: {integrity: sha512-neurPYJzkt3nSxiF3MJGzJa09/w7SR2Mhq0RAM8tbXetSm0e6o9TkIbGaYbK1LcXEXLtDmqO6n0JnJ/y5ZqWvA==}
+    peerDependencies:
+      '@aws-lambda-powertools/jmespath': 2.x
+      '@middy/core': 4.x || 5.x || 6.x
+    peerDependenciesMeta:
+      '@aws-lambda-powertools/jmespath':
+        optional: true
+      '@middy/core':
+        optional: true
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -4389,6 +4406,13 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
 
   '@antfu/ni@23.3.1': {}
+
+  '@aws-lambda-powertools/commons@2.21.0': {}
+
+  '@aws-lambda-powertools/logger@2.21.0':
+    dependencies:
+      '@aws-lambda-powertools/commons': 2.21.0
+      lodash.merge: 4.6.2
 
   '@babel/code-frame@7.27.1':
     dependencies:

@@ -1,9 +1,44 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { logger } from "./app/lib/logger";
+import { NextResponse } from "next/server";
+import type { NextRequest, NextFetchEvent } from "next/server";
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
-export default clerkMiddleware();
+// Create a middleware that combines logging and Clerk authentication
+const middleware = async (req: NextRequest, event: NextFetchEvent) => {
+  const startTime = Date.now();
+  const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
+
+  // Add request context to logger
+  logger.addContext({
+    requestId,
+    path: req.nextUrl.pathname,
+    method: req.method,
+  });
+
+  try {
+    // Execute Clerk middleware
+    const response = await clerkMiddleware()(req, event);
+    const duration = Date.now() - startTime;
+
+    logger.info("Request completed", {
+      duration,
+      statusCode: response instanceof NextResponse ? response.status : 200,
+    });
+
+    return response;
+  } catch (error) {
+    const duration = Date.now() - startTime;
+
+    logger.error("Request failed", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      duration,
+    });
+
+    throw error;
+  }
+};
+
+export default middleware;
 
 export const config = {
   matcher: [
