@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { fetchProductsServer } from "@/services/productService";
 import { auth } from "@clerk/nextjs/server";
+import { AddProductDialog } from "./add-product-dialog";
 
 export default async function ProductsPage() {
   const { userId } = await auth();
@@ -27,10 +28,7 @@ export default async function ProductsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Product
-        </Button>
+        <AddProductDialog />
       </div>
 
       <Card>
