@@ -59,7 +59,7 @@ export default function CompetitionPage({
     thumbnail?: string;
   } | null;
   const image =
-    mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg";
+    mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/images/placeholder.jpg";
 
   const accordionSections = [
     {

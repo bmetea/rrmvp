@@ -37,14 +37,14 @@ const Hero = () => {
             >
               Enter now
             </Button>
-            <Link href="/prizes">
+            <Link href="/competitions">
               <Button
                 size="lg"
                 variant="outline"
                 className="border-2 border-[#E19841] text-[#E19841] hover:bg-[#E19841]/20 hover:text-white transition-colors"
-                aria-label="View available prizes"
+                aria-label="View available competitions"
               >
-                View Prizes
+                View Competitions
               </Button>
             </Link>
           </div>

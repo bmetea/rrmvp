@@ -67,7 +67,7 @@ export function CompetitionCartDialog() {
                       <Image
                         src={
                           item.competition.media_info?.thumbnail ||
-                          "/placeholder.jpg"
+                          "/images/placeholder.jpg"
                         }
                         alt={item.competition.title}
                         fill
