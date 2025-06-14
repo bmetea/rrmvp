@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import Script from "next/script";
 import { Toaster } from "sonner";
+import { ReactScan } from "@/components/performance/reactScan";
 // import SegmentProvider from "@/components/analytics/SegmentProvider";
 
 const geistSans = Geist({
@@ -59,6 +60,7 @@ export default async function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+      {/* <ReactScan /> */}
       <html lang="en" suppressHydrationWarning>
         <head>
           <link
