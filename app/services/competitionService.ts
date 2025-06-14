@@ -69,7 +69,10 @@ export type CompetitionWithPrizes = {
   total_tickets: number;
   tickets_sold: number;
   status: string;
-  media_info: unknown;
+  media_info: {
+    thumbnail?: string;
+    images?: string[];
+  } | null;
   prizes: CompetitionPrize[];
 };
 
@@ -138,8 +141,19 @@ export const fetchCompetitionPrizesServer = cache(
       .where("competition_prizes.competition_id", "=", id)
       .execute();
 
+    // Parse media_info from JSON
+    const parsedMediaInfo = competition.media_info
+      ? ((typeof competition.media_info === "string"
+          ? JSON.parse(competition.media_info)
+          : competition.media_info) as {
+          thumbnail?: string;
+          images?: string[];
+        })
+      : null;
+
     return {
       ...competition,
+      media_info: parsedMediaInfo,
       prizes: competitionPrizes.map((prize) => ({
         ...prize,
         product: {
