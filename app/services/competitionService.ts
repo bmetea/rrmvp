@@ -192,3 +192,28 @@ export const fetchCompetitionPrizesServer = cache(
     };
   }
 );
+
+export const fetchAllCompetitionsServer = cache(async () => {
+  try {
+    const competitions = await db
+      .selectFrom("competitions")
+      .selectAll()
+      .execute();
+
+    // Parse media_info for each competition
+    return competitions.map((competition) => ({
+      ...competition,
+      media_info: competition.media_info
+        ? ((typeof competition.media_info === "string"
+            ? JSON.parse(competition.media_info)
+            : competition.media_info) as {
+            thumbnail?: string;
+            images?: string[];
+          })
+        : null,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch competitions:", error);
+    return [];
+  }
+});

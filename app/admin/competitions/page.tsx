@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { fetchCompetitionsServer } from "@/services/competitionService";
+import { fetchAllCompetitionsServer } from "@/services/competitionService";
 import { CompetitionsClient } from "./competitions-client";
 
 export default async function CompetitionsPage() {
@@ -15,7 +15,7 @@ export default async function CompetitionsPage() {
   //   redirect("/");
   // }
 
-  const competitions = await fetchCompetitionsServer();
+  const competitions = await fetchAllCompetitionsServer();
 
   return <CompetitionsClient competitions={competitions} />;
 }
