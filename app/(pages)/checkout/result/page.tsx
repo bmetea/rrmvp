@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { checkPaymentStatus } from "@/components/payments/actions";
 import {
   Dialog,
   DialogContent,
@@ -12,33 +13,67 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
 
-type PaymentResultDialogProps = {
-  isOpen: boolean;
-  status: "loading" | "success" | "error";
-  message: string;
-  onClose: () => void;
-};
-
-export function PaymentResultDialog({
-  isOpen,
-  status,
-  message,
-  onClose,
-}: PaymentResultDialogProps) {
+export default function CheckoutResultPage() {
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading"
+  );
+  const [message, setMessage] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
+  const searchParams = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    const verifyPayment = async () => {
+      const checkoutId = searchParams.get("id");
+
+      if (!checkoutId) {
+        setStatus("error");
+        setMessage("Invalid payment response");
+        return;
+      }
+
+      try {
+        const result = await checkPaymentStatus(checkoutId);
+
+        if (result.error) {
+          setStatus("error");
+          setMessage(result.error);
+          return;
+        }
+
+        if (result.result?.code === "000.100.110") {
+          setStatus("success");
+          setMessage("Payment successful!");
+        } else {
+          setStatus("error");
+          setMessage(result.result?.description || "Payment failed");
+        }
+      } catch (error) {
+        setStatus("error");
+        setMessage("Error checking payment status");
+        console.error(error);
+      }
+    };
+
+    verifyPayment();
+  }, [searchParams]);
 
   useEffect(() => {
     if (status === "success") {
       const timer = setTimeout(() => {
-        onClose();
-        router.push("/nomu-checkout");
+        handleClose();
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [status, onClose, router]);
+  }, [status]);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    router.push("/checkout");
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">
@@ -63,13 +98,7 @@ export function PaymentResultDialog({
 
         {status === "error" && (
           <div className="flex justify-center">
-            <Button
-              onClick={() => {
-                onClose();
-                router.push("/nomu-checkout");
-              }}
-              variant="default"
-            >
+            <Button onClick={handleClose} variant="default">
               Try Again
             </Button>
           </div>

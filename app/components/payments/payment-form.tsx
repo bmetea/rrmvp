@@ -9,7 +9,21 @@ declare global {
   }
 }
 
-export default function CheckoutPage() {
+interface PaymentFormProps {
+  amount: string;
+  currency?: string;
+  paymentType?: string;
+  brands?: string;
+  className?: string;
+}
+
+export function PaymentForm({
+  amount,
+  currency = "GBP",
+  paymentType = "DB",
+  brands = "VISA AMEX APPLEPAY GOOGLEPAY",
+  className = "",
+}: PaymentFormProps) {
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,9 +31,9 @@ export default function CheckoutPage() {
     const initializeCheckout = async () => {
       try {
         const result = await prepareCheckout({
-          amount: "10.00", // Replace with actual amount
-          currency: "GBP", // Replace with actual currency
-          paymentType: "DB",
+          amount,
+          currency,
+          paymentType,
         });
 
         if (result.id) {
@@ -34,7 +48,7 @@ export default function CheckoutPage() {
     };
 
     initializeCheckout();
-  }, []);
+  }, [amount, currency, paymentType]);
 
   useEffect(() => {
     if (checkoutId) {
@@ -55,13 +69,12 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+    <div className={className}>
       {checkoutId ? (
         <form
-          action="/nomu-checkout/result"
+          action="/checkout/result"
           className="paymentWidgets"
-          data-brands="VISA AMEX APPLEPAY GOOGLEPAY"
+          data-brands={brands}
         />
       ) : (
         <div>Loading payment form...</div>
