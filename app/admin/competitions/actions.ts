@@ -12,6 +12,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
     const total_tickets = parseInt(formData.get("total_tickets") as string);
     const start_date = new Date(formData.get("start_date") as string);
     const end_date = new Date(formData.get("end_date") as string);
+    const status = formData.get("status") as string;
 
     const updatedCompetition = await db
       .updateTable("competitions")
@@ -23,6 +24,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
         total_tickets,
         start_date,
         end_date,
+        status,
         updated_at: new Date(),
       })
       .where("id", "=", id)

@@ -14,6 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Competition } from "@/services/competitionService";
 import { toast } from "sonner";
 import { updateCompetitionAction } from "./actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EditCompetitionDialogProps {
   competition: Competition;
@@ -35,6 +42,7 @@ export function EditCompetitionDialog({
     total_tickets: competition.total_tickets.toString(),
     start_date: new Date(competition.start_date).toISOString().split("T")[0],
     end_date: new Date(competition.end_date).toISOString().split("T")[0],
+    status: competition.status,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +61,7 @@ export function EditCompetitionDialog({
       form.append("total_tickets", formData.total_tickets);
       form.append("start_date", formData.start_date);
       form.append("end_date", formData.end_date);
+      form.append("status", formData.status);
 
       const result = await updateCompetitionAction(competition.id, form);
 
@@ -165,6 +174,26 @@ export function EditCompetitionDialog({
               }
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value) =>
+                setFormData({ ...formData, status: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="ended">Ended</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-end space-x-2">
