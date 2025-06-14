@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import type { Competition } from "@/services/competitionService";
 import { EditCompetitionDialog } from "./edit-competition-dialog";
+import { AddCompetitionDialog } from "./add-competition-dialog";
 
 interface CompetitionsClientProps {
   competitions: Competition[];
@@ -23,6 +24,7 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
   const [selectedCompetition, setSelectedCompetition] =
     useState<Competition | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const handleEditClick = (competition: Competition) => {
     setSelectedCompetition(competition);
@@ -47,7 +49,7 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Competitions</h1>
-        <Button>
+        <Button onClick={() => setAddDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Add Competition
         </Button>
@@ -125,6 +127,11 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
           onOpenChange={setEditDialogOpen}
         />
       )}
+
+      <AddCompetitionDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+      />
     </div>
   );
 }
