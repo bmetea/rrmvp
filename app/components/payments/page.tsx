@@ -61,7 +61,7 @@ export default function CheckoutPage() {
         <form
           action="/nomu-checkout/result"
           className="paymentWidgets"
-          data-brands="VISA MASTERCARD AMEX"
+          data-brands="VISA AMEX APPLEPAY GOOGLEPAY"
         />
       ) : (
         <div>Loading payment form...</div>

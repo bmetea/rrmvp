@@ -8,12 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { Minus, Plus, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { processCheckout } from "@/services/checkoutService";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert } from "@/components/ui/alert";
+import { prepareCheckout } from "../../components/payments/actions";
+import { PaymentResultDialog } from "../../components/payments/components/payment-result-dialog";
+import { formatPrice, penceToPounds } from "@/lib/utils/price";
 
+declare global {
+  interface Window {
+    OPPWA: any;
+  }
+}
 
 interface CartItem {
   competition: {
@@ -33,30 +40,64 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState("");
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showResultDialog, setShowResultDialog] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "loading" | "success" | "error"
+  >("loading");
+  const [paymentMessage, setPaymentMessage] = useState("");
 
-  const handleCheckout = async () => {
-    if (items.length === 0) {
-      toast.error("Your cart is empty");
-      return;
-    }
+  useEffect(() => {
+    const initializeCheckout = async () => {
+      if (items.length === 0) return;
 
-    setIsProcessing(true);
-    try {
-      const result = await processCheckout(items as unknown as CartItem[]);
-      if (result.success) {
-        toast.success("Tickets purchased successfully!");
-        // Clear the cart
-        items.forEach((item) => removeItem(item.competition.id));
-        // Redirect to competitions page
-        router.push("/competitions");
-      } else {
-        toast.error(result.message || "Failed to purchase tickets");
+      setIsProcessing(true);
+      try {
+        const result = await prepareCheckout({
+          amount: penceToPounds(totalPrice).toFixed(2),
+          currency: "GBP",
+          paymentType: "DB",
+        });
+
+        if (result.id) {
+          setCheckoutId(result.id);
+        } else {
+          setError(result.error || "Failed to prepare checkout");
+          toast.error(result.error || "Failed to prepare checkout");
+        }
+      } catch (err) {
+        setError("Error preparing checkout");
+        toast.error("Error preparing checkout");
+        console.error(err);
+      } finally {
+        setIsProcessing(false);
       }
-    } catch (error) {
-      toast.error("An error occurred during checkout");
-      console.error("Checkout error:", error);
-    } finally {
-      setIsProcessing(false);
+    };
+
+    initializeCheckout();
+  }, [items, totalPrice]);
+
+  useEffect(() => {
+    if (checkoutId) {
+      // Load the payment widget script
+      const script = document.createElement("script");
+      script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
+      script.async = true;
+      document.body.appendChild(script);
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [checkoutId]);
+
+  const handleDialogClose = () => {
+    setShowResultDialog(false);
+    if (paymentStatus === "success") {
+      // Clear the cart
+      items.forEach((item) => removeItem(item.competition.id));
+      router.push("/competitions");
     }
   };
 
@@ -116,7 +157,7 @@ export default function CheckoutPage() {
                         <div className="text-sm mb-2">
                           Price per entry{" "}
                           <span className="font-medium">
-                            £{(item.competition.ticket_price / 100).toFixed(2)}
+                            {formatPrice(item.competition.ticket_price)}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -187,11 +228,11 @@ export default function CheckoutPage() {
             </div>
             <div className="flex justify-between mb-2">
               <span>Subtotal</span>
-              <span>£{totalPrice.toFixed(2)}</span>
+              <span>{formatPrice(totalPrice)}</span>
             </div>
             <div className="flex justify-between mb-4">
               <span className="font-medium">Total Payable</span>
-              <span className="font-bold">£{totalPrice.toFixed(2)}</span>
+              <span className="font-bold">{formatPrice(totalPrice)}</span>
             </div>
             <Input
               placeholder="Enter your code"
@@ -199,13 +240,19 @@ export default function CheckoutPage() {
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
             />
-            <Button
-              className="w-full mb-4"
-              onClick={handleCheckout}
-              disabled={isProcessing}
-            >
-              {isProcessing ? "Processing..." : "Buy Now"}
-            </Button>
+            {error ? (
+              <div className="text-red-500 mb-4">{error}</div>
+            ) : checkoutId ? (
+              <form
+                action="/nomu-checkout/result"
+                className="paymentWidgets mb-4"
+                data-brands="VISA MASTERCARD AMEX"
+              />
+            ) : (
+              <Button className="w-full mb-4" disabled={isProcessing}>
+                {isProcessing ? "Processing..." : "Loading payment form..."}
+              </Button>
+            )}
             <div className="flex items-center gap-2 mb-2">
               <div className="flex-1 border-t" />
               <span className="text-xs text-muted-foreground">or</span>
@@ -228,6 +275,13 @@ export default function CheckoutPage() {
           </CardContent>
         </Card>
       </aside>
+
+      <PaymentResultDialog
+        isOpen={showResultDialog}
+        status={paymentStatus}
+        message={paymentMessage}
+        onClose={handleDialogClose}
+      />
     </div>
   );
 }

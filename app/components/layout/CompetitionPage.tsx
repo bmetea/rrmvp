@@ -29,6 +29,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CompetitionWithPrizes } from "@/services/competitionService";
+import { formatPrice } from "@/lib/utils/price";
 
 interface CompetitionPageProps {
   competitionWithPrizes: CompetitionWithPrizes;
@@ -197,9 +198,9 @@ export default function CompetitionPage({
               +
             </Button>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Only ${competitionWithPrizes.ticket_price} per ticket
-          </p>
+          <div className="text-2xl font-bold text-primary">
+            Only {formatPrice(competitionWithPrizes.ticket_price)} per ticket
+          </div>
         </div>
 
         {/* Skills-based question */}

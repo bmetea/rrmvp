@@ -53,6 +53,11 @@ export default $config({
         OPPWA_ENTITY_ID: process.env.OPPWA_ENTITY_ID!,
         OPPWA_ACCESS_TOKEN: process.env.OPPWA_ACCESS_TOKEN!,
         NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL!,
+        // Analytics configuration
+        NEXT_PUBLIC_ENABLE_ANALYTICS:
+          process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "false",
+        NEXT_PUBLIC_SEGMENT_WRITE_KEY:
+          process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
       },
     });
     return {

@@ -6,6 +6,8 @@ import {
   useState,
   ReactNode,
   useEffect,
+  useMemo,
+  useCallback,
 } from "react";
 import { analytics } from "../segment";
 
@@ -66,7 +68,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isInitialized]);
 
-  const addItem = (competition: Competition, quantity: number) => {
+  const addItem = useCallback((competition: Competition, quantity: number) => {
     if (!competition.id) {
       console.error("Cannot add competition to cart: missing competition ID");
       return;
@@ -87,76 +89,101 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       return [...currentItems, { competition, quantity }];
     });
-    analytics.then(([a]) =>
-      a.track("Add to Cart", {
-        competitionId: competition.id,
-        competitionTitle: competition.title,
-        quantity,
-      })
-    );
-  };
+  }, []);
 
-  const removeItem = (competitionId: string) => {
-    setItems((currentItems) => {
-      const newItems = currentItems.filter(
-        (item) => item.competition.id !== competitionId
+  // Track add to cart analytics
+  useEffect(() => {
+    if (items.length > 0) {
+      const lastItem = items[items.length - 1];
+      analytics.then(([a]) =>
+        a.track("Add to Cart", {
+          competitionId: lastItem.competition.id,
+          competitionTitle: lastItem.competition.title,
+          quantity: lastItem.quantity,
+        })
       );
-      return newItems;
-    });
-    analytics.then(([a]) =>
-      a.track("Remove from Cart", {
-        competitionId: competitionId,
-      })
-    );
-  };
+    }
+  }, [items]);
 
-  const updateQuantity = (competitionId: string, quantity: number) => {
-    setItems((currentItems) => {
-      const newItems = currentItems.map((item) =>
-        item.competition.id === competitionId
-          ? { ...item, quantity: Math.max(1, quantity) }
-          : item
+  const removeItem = useCallback((competitionId: string) => {
+    setItems((currentItems) =>
+      currentItems.filter((item) => item.competition.id !== competitionId)
+    );
+  }, []);
+
+  // Track remove from cart analytics
+  useEffect(() => {
+    if (items.length === 0) {
+      analytics.then(([a]) =>
+        a.track("Remove from Cart", {
+          competitionId: "all",
+        })
       );
-      return newItems;
-    });
-    analytics.then(([a]) =>
-      a.track("Update Cart Quantity", {
-        competitionId: competitionId,
-        quantity,
-      })
-    );
-  };
+    }
+  }, [items]);
 
-  const clearCart = () => {
+  const updateQuantity = useCallback(
+    (competitionId: string, quantity: number) => {
+      setItems((currentItems) =>
+        currentItems.map((item) =>
+          item.competition.id === competitionId
+            ? { ...item, quantity: Math.max(1, quantity) }
+            : item
+        )
+      );
+    },
+    []
+  );
+
+  const clearCart = useCallback(() => {
     setItems([]);
     try {
       localStorage.removeItem(CART_STORAGE_KEY);
     } catch (error) {
       console.error("Error clearing cart from localStorage:", error);
     }
-  };
+  }, []);
 
-  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-  const totalPrice = items.reduce(
-    (total, item) =>
-      total + item.quantity * (item.competition.ticket_price || 0),
-    0
+  // Memoize calculated values
+  const totalItems = useMemo(
+    () => items.reduce((total, item) => total + item.quantity, 0),
+    [items]
+  );
+
+  const totalPrice = useMemo(
+    () =>
+      items.reduce(
+        (total, item) =>
+          total + item.quantity * (item.competition.ticket_price || 0),
+        0
+      ),
+    [items]
+  );
+
+  // Memoize context value
+  const contextValue = useMemo(
+    () => ({
+      items,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      totalItems,
+      totalPrice,
+    }),
+    [
+      items,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      totalItems,
+      totalPrice,
+    ]
   );
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        totalItems,
-        totalPrice,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
   );
 }
 

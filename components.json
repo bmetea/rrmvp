@@ -14,7 +14,6 @@
     "components": "@/app/components",
     "services": "@/app/services",
     "utils": "@/lib/utils",
-    "ui": "@/app/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

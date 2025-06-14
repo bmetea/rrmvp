@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Competition } from "@/services/competitionService";
+import { formatPrice, poundsToPence } from "@/lib/utils/price";
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -36,14 +37,20 @@ export function CompetitionDialog({
   const isEdit = !!competition;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    type: "",
-    ticket_price: "",
-    total_tickets: "",
-    start_date: "",
-    end_date: "",
-    status: "draft",
+    title: competition?.title || "",
+    description: competition?.description || "",
+    type: competition?.type || "standard",
+    ticket_price: competition
+      ? formatPrice(competition.ticket_price, false)
+      : "",
+    total_tickets: competition?.total_tickets.toString() || "",
+    start_date: competition
+      ? new Date(competition.start_date).toISOString().split("T")[0]
+      : "",
+    end_date: competition
+      ? new Date(competition.end_date).toISOString().split("T")[0]
+      : "",
+    status: competition?.status || "draft",
   });
 
   // Update form data when competition changes (for edit mode)
@@ -53,7 +60,7 @@ export function CompetitionDialog({
         title: competition.title,
         description: competition.description,
         type: competition.type,
-        ticket_price: (competition.ticket_price / 100).toString(),
+        ticket_price: formatPrice(competition.ticket_price, false),
         total_tickets: competition.total_tickets.toString(),
         start_date: new Date(competition.start_date)
           .toISOString()
@@ -66,7 +73,7 @@ export function CompetitionDialog({
       setFormData({
         title: "",
         description: "",
-        type: "",
+        type: "standard",
         ticket_price: "",
         total_tickets: "",
         start_date: "",
@@ -87,7 +94,7 @@ export function CompetitionDialog({
       form.append("type", formData.type);
       form.append(
         "ticket_price",
-        (parseFloat(formData.ticket_price) * 100).toString()
+        poundsToPence(parseFloat(formData.ticket_price)).toString()
       );
       form.append("total_tickets", formData.total_tickets);
       form.append("start_date", formData.start_date);
