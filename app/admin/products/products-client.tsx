@@ -29,6 +29,13 @@ export function ProductsClient({ products }: ProductsClientProps) {
     setEditDialogOpen(true);
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: "GBP",
+    }).format(amount / 100);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -48,6 +55,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
                 <TableHead>Sub Name</TableHead>
                 <TableHead>Market Value</TableHead>
                 <TableHead>Type</TableHead>
+                <TableHead>Credit Amount</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -56,14 +64,14 @@ export function ProductsClient({ products }: ProductsClientProps) {
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.sub_name || "-"}</TableCell>
-                  <TableCell>
-                    {new Intl.NumberFormat("en-GB", {
-                      style: "currency",
-                      currency: "GBP",
-                    }).format(product.market_value / 100)}
-                  </TableCell>
+                  <TableCell>{formatCurrency(product.market_value)}</TableCell>
                   <TableCell>
                     {product.is_wallet_credit ? "Wallet Credit" : "Physical"}
+                  </TableCell>
+                  <TableCell>
+                    {product.is_wallet_credit && product.credit_amount
+                      ? formatCurrency(product.credit_amount)
+                      : "-"}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
