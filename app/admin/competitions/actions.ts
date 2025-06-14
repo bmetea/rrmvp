@@ -36,6 +36,8 @@ export async function createCompetitionAction(formData: FormData) {
       throw new Error("Failed to create competition");
     }
 
+    revalidatePath("/");
+    revalidatePath("/competitions");
     revalidatePath("/admin/competitions");
     return { success: true, data: newCompetition };
   } catch (error) {
@@ -76,6 +78,8 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
       throw new Error("Failed to update competition");
     }
 
+    revalidatePath("/");
+    revalidatePath("/competitions");
     revalidatePath("/admin/competitions");
     return { success: true, data: updatedCompetition };
   } catch (error) {
