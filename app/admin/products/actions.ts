@@ -10,6 +10,7 @@ export async function createProductAction(formData: {
   description?: string | null;
   is_wallet_credit: boolean;
   credit_amount?: number | null;
+  media_info: { images: string[]; videos: string[] };
 }) {
   try {
     const product = await db
@@ -21,6 +22,7 @@ export async function createProductAction(formData: {
         description: formData.description,
         is_wallet_credit: formData.is_wallet_credit,
         credit_amount: formData.credit_amount,
+        media_info: formData.media_info,
       })
       .returning([
         "id",
@@ -53,6 +55,7 @@ export async function updateProductAction(
     description?: string | null;
     is_wallet_credit: boolean;
     credit_amount?: number | null;
+    media_info: { images: string[]; videos: string[] };
   }
 ) {
   try {
@@ -65,6 +68,7 @@ export async function updateProductAction(
         description: formData.description,
         is_wallet_credit: formData.is_wallet_credit,
         credit_amount: formData.credit_amount,
+        media_info: formData.media_info,
         updated_at: new Date(),
       })
       .where("id", "=", id)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,13 +12,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Pencil } from "lucide-react";
 import { updateProductAction } from "./actions";
 import { toast } from "sonner";
-import type { Product } from "@/services/productService";
+import { MediaInput } from "./media-input";
 
 interface EditProductDialogProps {
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    sub_name: string | null;
+    market_value: number;
+    description: string | null;
+    is_wallet_credit: boolean;
+    credit_amount: number | null;
+    media_info: { images: string[]; videos: string[] };
+  };
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -30,28 +38,25 @@ export function EditProductDialog({
 }: EditProductDialogProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    sub_name: "",
-    market_value: "",
-    description: "",
-    is_wallet_credit: false,
-    credit_amount: "",
+    name: product.name,
+    sub_name: product.sub_name || "",
+    market_value: (product.market_value / 100).toString(),
+    description: product.description || "",
+    is_wallet_credit: product.is_wallet_credit,
+    credit_amount: product.credit_amount?.toString() || "",
+    media_info: product.media_info || { images: [], videos: [] },
   });
 
-  // Update form data when product changes
   useEffect(() => {
-    if (product) {
-      setFormData({
-        name: product.name,
-        sub_name: product.sub_name || "",
-        market_value: (product.market_value / 100).toString(),
-        description: product.description || "",
-        is_wallet_credit: product.is_wallet_credit,
-        credit_amount: product.credit_amount
-          ? (product.credit_amount / 100).toString()
-          : "",
-      });
-    }
+    setFormData({
+      name: product.name,
+      sub_name: product.sub_name || "",
+      market_value: (product.market_value / 100).toString(),
+      description: product.description || "",
+      is_wallet_credit: product.is_wallet_credit,
+      credit_amount: product.credit_amount?.toString() || "",
+      media_info: product.media_info || { images: [], videos: [] },
+    });
   }, [product]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,8 +71,9 @@ export function EditProductDialog({
         description: formData.description || null,
         is_wallet_credit: formData.is_wallet_credit,
         credit_amount: formData.is_wallet_credit
-          ? Math.round(parseFloat(formData.credit_amount) * 100)
+          ? parseFloat(formData.credit_amount)
           : null,
+        media_info: formData.media_info,
       });
 
       if (result.success) {
@@ -85,7 +91,7 @@ export function EditProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
@@ -166,6 +172,11 @@ export function EditProductDialog({
               />
             </div>
           )}
+
+          <MediaInput
+            value={formData.media_info}
+            onChange={(media_info) => setFormData({ ...formData, media_info })}
+          />
 
           <div className="flex justify-end space-x-2">
             <Button

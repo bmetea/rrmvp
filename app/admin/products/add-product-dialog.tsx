@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Plus } from "lucide-react";
 import { createProductAction } from "./actions";
 import { toast } from "sonner";
+import { MediaInput } from "./media-input";
 
 export function AddProductDialog() {
   const [open, setOpen] = useState(false);
@@ -27,6 +28,7 @@ export function AddProductDialog() {
     description: "",
     is_wallet_credit: false,
     credit_amount: "",
+    media_info: { images: [], videos: [] },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,6 +45,7 @@ export function AddProductDialog() {
         credit_amount: formData.is_wallet_credit
           ? parseFloat(formData.credit_amount)
           : null,
+        media_info: formData.media_info,
       });
 
       if (result.success) {
@@ -54,6 +57,7 @@ export function AddProductDialog() {
           description: "",
           is_wallet_credit: false,
           credit_amount: "",
+          media_info: { images: [], videos: [] },
         });
         toast.success("Product created successfully");
       } else {
@@ -74,7 +78,7 @@ export function AddProductDialog() {
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
@@ -155,6 +159,11 @@ export function AddProductDialog() {
               />
             </div>
           )}
+
+          <MediaInput
+            value={formData.media_info}
+            onChange={(media_info) => setFormData({ ...formData, media_info })}
+          />
 
           <div className="flex justify-end space-x-2">
             <Button
