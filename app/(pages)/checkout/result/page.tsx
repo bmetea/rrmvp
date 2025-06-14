@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { useCart } from "@/lib/context/cart-context";
+import { checkout } from "../actions";
 
 export default function CheckoutResultPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -19,8 +21,10 @@ export default function CheckoutResultPage() {
   );
   const [message, setMessage] = useState("");
   const [isOpen, setIsOpen] = useState(true);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { clearCart, items } = useCart();
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -59,13 +63,30 @@ export default function CheckoutResultPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (status === "success") {
-      const timer = setTimeout(() => {
-        handleClose();
-      }, 3000);
-      return () => clearTimeout(timer);
+    if (status === "success" && !isProcessingCheckout) {
+      const processCheckout = async () => {
+        setIsProcessingCheckout(true);
+        try {
+          const result = await checkout(items);
+          if (!result.success) {
+            setStatus("error");
+            setMessage(result.message || "Failed to process checkout");
+            return;
+          }
+          clearCart();
+          const timer = setTimeout(() => {
+            handleClose();
+          }, 3000);
+          return () => clearTimeout(timer);
+        } catch (error) {
+          setStatus("error");
+          setMessage("Error processing checkout");
+          console.error(error);
+        }
+      };
+      processCheckout();
     }
-  }, [status]);
+  }, [status, clearCart, items, isProcessingCheckout]);
 
   const handleClose = () => {
     setIsOpen(false);
