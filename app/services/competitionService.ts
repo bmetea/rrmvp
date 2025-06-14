@@ -14,6 +14,10 @@ export type Competition = {
   status: string;
   created_at: Date;
   updated_at: Date;
+  media_info: {
+    thumbnail?: string;
+    images?: string[];
+  } | null;
 };
 
 const allowedSortColumns = [
@@ -36,7 +40,10 @@ type Product = {
   name: string;
   description: string;
   market_value: number;
-  media_info: unknown;
+  media_info: {
+    images?: string[];
+    videos?: string[];
+  } | null;
   sub_name: string | null;
   is_wallet_credit: boolean;
   credit_amount: number | null;
@@ -82,7 +89,19 @@ export const fetchCompetitionsServer = cache(async () => {
       .selectFrom("competitions")
       .selectAll()
       .execute();
-    return competitions;
+
+    // Parse media_info for each competition
+    return competitions.map((competition) => ({
+      ...competition,
+      media_info: competition.media_info
+        ? ((typeof competition.media_info === "string"
+            ? JSON.parse(competition.media_info)
+            : competition.media_info) as {
+            thumbnail?: string;
+            images?: string[];
+          })
+        : null,
+    }));
   } catch (error) {
     console.error("Failed to fetch competitions:", error);
     return [];
@@ -141,7 +160,7 @@ export const fetchCompetitionPrizesServer = cache(
       .where("competition_prizes.competition_id", "=", id)
       .execute();
 
-    // Parse media_info from JSON
+    // Parse media_info from JSON for competition
     const parsedMediaInfo = competition.media_info
       ? ((typeof competition.media_info === "string"
           ? JSON.parse(competition.media_info)
@@ -154,19 +173,31 @@ export const fetchCompetitionPrizesServer = cache(
     return {
       ...competition,
       media_info: parsedMediaInfo,
-      prizes: competitionPrizes.map((prize) => ({
-        ...prize,
-        product: {
-          id: prize.product_id,
-          name: prize.name,
-          description: prize.description,
-          market_value: prize.market_value,
-          media_info: prize.media_info,
-          sub_name: prize.sub_name,
-          is_wallet_credit: prize.is_wallet_credit,
-          credit_amount: prize.credit_amount,
-        },
-      })),
+      prizes: competitionPrizes.map((prize) => {
+        // Parse media_info from JSON for product
+        const parsedProductMediaInfo = prize.media_info
+          ? ((typeof prize.media_info === "string"
+              ? JSON.parse(prize.media_info)
+              : prize.media_info) as {
+              images?: string[];
+              videos?: string[];
+            })
+          : null;
+
+        return {
+          ...prize,
+          product: {
+            id: prize.product_id,
+            name: prize.name,
+            description: prize.description,
+            market_value: prize.market_value,
+            media_info: parsedProductMediaInfo,
+            sub_name: prize.sub_name,
+            is_wallet_credit: prize.is_wallet_credit,
+            credit_amount: prize.credit_amount,
+          },
+        };
+      }),
     };
   }
 );

@@ -14,16 +14,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert } from "@/components/ui/alert";
 
-interface Prize {
-  id: string;
-  title: string;
-  subtitle?: string;
-  media?: Array<{ formats?: { small?: { url: string } } }>;
-  ticket_price: number;
-  media_info?: {
-    thumbnail?: string;
-  };
-}
 
 interface CartItem {
   competition: {
