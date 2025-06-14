@@ -14,6 +14,17 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert } from "@/components/ui/alert";
 
+interface Prize {
+  id: string;
+  title: string;
+  subtitle?: string;
+  media?: Array<{ formats?: { small?: { url: string } } }>;
+  ticket_price: number;
+  media_info?: {
+    thumbnail?: string;
+  };
+}
+
 interface CartItem {
   competition: {
     id: string;
@@ -28,8 +39,7 @@ interface CartItem {
 }
 
 export default function CheckoutPage() {
-  const { items, updateQuantity, removeItem, totalItems, totalPrice } =
-    useCart();
+  const { items, updateQuantity, removeItem, totalPrice } = useCart();
   const [discount, setDiscount] = useState("");
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -46,7 +56,7 @@ export default function CheckoutPage() {
       if (result.success) {
         toast.success("Tickets purchased successfully!");
         // Clear the cart
-        items.forEach((item) => removeItem(item.competition.id));
+        items.forEach((item) => removeItem(item.prize.id));
         // Redirect to competitions page
         router.push("/competitions");
       } else {
@@ -82,7 +92,7 @@ export default function CheckoutPage() {
           </Card>
         ) : (
           items.map((item) => (
-            <Card key={item.competition.id} className="mb-6">
+            <Card key={item.prize.id} className="mb-6">
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="flex-1">
@@ -99,17 +109,17 @@ export default function CheckoutPage() {
                       <div className="relative w-20 h-20 rounded overflow-hidden border">
                         <Image
                           src={
-                            item.competition.media_info?.thumbnail ||
+                            item.prize.media_info?.thumbnail ||
                             "/placeholder.jpg"
                           }
-                          alt={item.competition.title}
+                          alt={item.prize.title}
                           fill
                           className="object-cover"
                         />
                       </div>
                       <div className="flex-1">
                         <div className="font-semibold text-lg mb-1">
-                          {item.competition.title}
+                          {item.prize.title}
                         </div>
                         <div className="text-muted-foreground text-sm mb-1">
                           100s of prizes to be won. Win a prize every time.
@@ -118,7 +128,7 @@ export default function CheckoutPage() {
                         <div className="text-sm mb-2">
                           Price per entry{" "}
                           <span className="font-medium">
-                            £{item.competition.ticket_price.toFixed(2)}
+                            £{item.prize.ticket_price.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -128,7 +138,7 @@ export default function CheckoutPage() {
                             className="h-8 w-8"
                             onClick={() =>
                               updateQuantity(
-                                item.competition.id,
+                                item.prize.id,
                                 Math.max(1, item.quantity - 1)
                               )
                             }
@@ -143,10 +153,7 @@ export default function CheckoutPage() {
                             size="icon"
                             className="h-8 w-8"
                             onClick={() =>
-                              updateQuantity(
-                                item.competition.id,
-                                item.quantity + 1
-                              )
+                              updateQuantity(item.prize.id, item.quantity + 1)
                             }
                           >
                             <Plus className="h-4 w-4" />
@@ -155,7 +162,7 @@ export default function CheckoutPage() {
                             variant="link"
                             size="sm"
                             className="text-destructive ml-2"
-                            onClick={() => removeItem(item.competition.id)}
+                            onClick={() => removeItem(item.prize.id)}
                           >
                             Remove
                           </Button>

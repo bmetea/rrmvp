@@ -36,6 +36,20 @@ export function ProductsClient({ products }: ProductsClientProps) {
     }).format(amount / 100);
   };
 
+  const normalizeMediaInfo = (
+    media_info: unknown
+  ): { images: string[]; videos: string[] } => {
+    if (
+      media_info &&
+      typeof media_info === "object" &&
+      "images" in media_info &&
+      "videos" in media_info
+    ) {
+      return media_info as { images: string[]; videos: string[] };
+    }
+    return { images: [], videos: [] };
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -96,7 +110,10 @@ export function ProductsClient({ products }: ProductsClientProps) {
 
       {selectedProduct && (
         <EditProductDialog
-          product={selectedProduct}
+          product={{
+            ...selectedProduct,
+            media_info: normalizeMediaInfo(selectedProduct.media_info),
+          }}
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
         />

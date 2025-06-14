@@ -15,7 +15,7 @@ export interface UserTicket {
     type: string;
     status: string;
     end_date: Date;
-    media_info: any;
+    media_info: unknown;
   };
 }
 

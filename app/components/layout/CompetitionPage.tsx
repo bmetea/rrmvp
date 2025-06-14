@@ -60,7 +60,6 @@ export default function CompetitionPage({
   } | null;
   const image =
     mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/placeholder.jpg";
-  const subtitle = `${competitionWithPrizes.type} Competition`;
 
   const accordionSections = [
     {

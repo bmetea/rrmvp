@@ -34,7 +34,7 @@ export function MediaInput({ value, onChange }: MediaInputProps) {
   const handleAddImage = () => {
     if (newImageUrl.trim()) {
       try {
-        const url = new URL(newImageUrl.trim());
+        new URL(newImageUrl.trim());
         const convertedUrl = convertUnsplashUrl(newImageUrl.trim());
         onChange({
           ...value,
@@ -42,7 +42,7 @@ export function MediaInput({ value, onChange }: MediaInputProps) {
         });
         setNewImageUrl("");
         setError(null);
-      } catch (e) {
+      } catch {
         setError("Please enter a valid URL");
       }
     }

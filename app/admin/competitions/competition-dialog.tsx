@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,9 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { Competition } from "@/services/competitionService";
 import { toast } from "sonner";
-import { updateCompetitionAction } from "./actions";
+import { createCompetitionAction, updateCompetitionAction } from "./actions";
 import {
   Select,
   SelectContent,
@@ -21,29 +20,61 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Competition } from "@/services/competitionService";
 
-interface EditCompetitionDialogProps {
-  competition: Competition;
+interface CompetitionDialogProps {
+  competition?: Competition;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditCompetitionDialog({
+export function CompetitionDialog({
   competition,
   open,
   onOpenChange,
-}: EditCompetitionDialogProps) {
+}: CompetitionDialogProps) {
+  const isEdit = !!competition;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: competition.title,
-    description: competition.description,
-    type: competition.type,
-    ticket_price: (competition.ticket_price / 100).toString(),
-    total_tickets: competition.total_tickets.toString(),
-    start_date: new Date(competition.start_date).toISOString().split("T")[0],
-    end_date: new Date(competition.end_date).toISOString().split("T")[0],
-    status: competition.status,
+    title: "",
+    description: "",
+    type: "",
+    ticket_price: "",
+    total_tickets: "",
+    start_date: "",
+    end_date: "",
+    status: "draft",
   });
+
+  // Update form data when competition changes (for edit mode)
+  useEffect(() => {
+    if (competition) {
+      setFormData({
+        title: competition.title,
+        description: competition.description,
+        type: competition.type,
+        ticket_price: (competition.ticket_price / 100).toString(),
+        total_tickets: competition.total_tickets.toString(),
+        start_date: new Date(competition.start_date)
+          .toISOString()
+          .split("T")[0],
+        end_date: new Date(competition.end_date).toISOString().split("T")[0],
+        status: competition.status,
+      });
+    } else {
+      // Reset form for create mode
+      setFormData({
+        title: "",
+        description: "",
+        type: "",
+        ticket_price: "",
+        total_tickets: "",
+        start_date: "",
+        end_date: "",
+        status: "draft",
+      });
+    }
+  }, [competition]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,17 +94,30 @@ export function EditCompetitionDialog({
       form.append("end_date", formData.end_date);
       form.append("status", formData.status);
 
-      const result = await updateCompetitionAction(competition.id, form);
+      const result = isEdit
+        ? await updateCompetitionAction(competition!.id, form)
+        : await createCompetitionAction(form);
 
       if (!result.success) {
         throw new Error(result.error);
       }
 
-      toast.success("Competition updated successfully");
+      toast.success(
+        isEdit
+          ? "Competition updated successfully"
+          : "Competition created successfully"
+      );
       onOpenChange(false);
     } catch (error) {
-      console.error("Failed to update competition:", error);
-      toast.error("Failed to update competition");
+      console.error(
+        isEdit
+          ? "Failed to update competition:"
+          : "Failed to create competition:",
+        error
+      );
+      toast.error(
+        isEdit ? "Failed to update competition" : "Failed to create competition"
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +127,9 @@ export function EditCompetitionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit Competition</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Edit Competition" : "Add New Competition"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -206,7 +252,13 @@ export function EditCompetitionDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Changes"}
+              {loading
+                ? isEdit
+                  ? "Saving..."
+                  : "Creating..."
+                : isEdit
+                ? "Save Changes"
+                : "Create Competition"}
             </Button>
           </div>
         </form>

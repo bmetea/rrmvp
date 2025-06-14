@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getUserTickets, UserTicket } from "@/services/userDataService";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import Link from "next/link";
 export default function MyEntriesPage() {
   const [tickets, setTickets] = useState<UserTicket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -18,11 +17,9 @@ export default function MyEntriesPage() {
         const result = await getUserTickets();
         if (result.success && result.tickets) {
           setTickets(result.tickets);
-        } else {
-          setError(result.message || "Failed to load tickets");
         }
       } catch (err) {
-        setError("An error occurred while loading tickets");
+        console.error("An error occurred while loading tickets", err);
       } finally {
         setLoading(false);
       }
@@ -52,18 +49,10 @@ export default function MyEntriesPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        <p>{error}</p>
-      </div>
-    );
-  }
-
   if (tickets.length === 0) {
     return (
       <div className="p-4 text-center">
-        <p>You haven't entered any competitions yet.</p>
+        <p>You haven&apos;t entered any competitions yet.</p>
       </div>
     );
   }

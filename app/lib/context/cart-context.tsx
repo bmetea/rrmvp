@@ -9,27 +9,24 @@ import {
 } from "react";
 import { analytics } from "../segment";
 
-interface Competition {
+interface Prize {
   id: string;
   title: string;
-  type: string;
+  subtitle?: string;
+  media?: Array<{ formats?: { small?: { url: string } } }>;
   ticket_price: number;
-  media_info?: {
-    thumbnail?: string;
-    images?: string[];
-  } | null;
 }
 
 interface CartItem {
-  competition: Competition;
+  prize: Prize;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (competition: Competition, quantity: number) => void;
-  removeItem: (competitionId: string) => void;
-  updateQuantity: (competitionId: string, quantity: number) => void;
+  addItem: (prize: Prize, quantity: number) => void;
+  removeItem: (prizeId: string) => void;
+  updateQuantity: (prizeId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -67,54 +64,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isInitialized]);
 
-  const addItem = (competition: Competition, quantity: number) => {
-    if (!competition.id) {
-      console.error("Cannot add competition to cart: missing competition ID");
+  const addItem = (prize: Prize, quantity: number) => {
+    if (!prize.id) {
+      console.error("Cannot add prize to cart: missing prize ID");
       return;
     }
 
     setItems((currentItems) => {
       const existingItem = currentItems.find(
-        (item) => item.competition.id === competition.id
+        (item) => item.prize.id === prize.id
       );
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.competition.id === competition.id
+          item.prize.id === prize.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
 
-      return [...currentItems, { competition, quantity }];
+      return [...currentItems, { prize, quantity }];
     });
     analytics.then(([a]) =>
       a.track("Add to Cart", {
-        competitionId: competition.id,
-        competitionTitle: competition.title,
+        prizeId: prize.id,
+        prizeTitle: prize.title,
         quantity,
       })
     );
   };
 
-  const removeItem = (competitionId: string) => {
+  const removeItem = (prizeId: string) => {
     setItems((currentItems) => {
-      const newItems = currentItems.filter(
-        (item) => item.competition.id !== competitionId
-      );
+      const newItems = currentItems.filter((item) => item.prize.id !== prizeId);
       return newItems;
     });
     analytics.then(([a]) =>
       a.track("Remove from Cart", {
-        competitionId: competitionId,
+        prizeId: prizeId,
       })
     );
   };
 
-  const updateQuantity = (competitionId: string, quantity: number) => {
+  const updateQuantity = (prizeId: string, quantity: number) => {
     setItems((currentItems) => {
       const newItems = currentItems.map((item) =>
-        item.competition.id === competitionId
+        item.prize.id === prizeId
           ? { ...item, quantity: Math.max(1, quantity) }
           : item
       );
@@ -122,7 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
     analytics.then(([a]) =>
       a.track("Update Cart Quantity", {
-        competitionId: competitionId,
+        prizeId: prizeId,
         quantity,
       })
     );
@@ -139,7 +134,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const totalPrice = items.reduce(
-    (total, item) => total + item.quantity * item.competition.ticket_price,
+    (total, item) => total + item.quantity * (item.prize.ticket_price || 0),
     0
   );
 

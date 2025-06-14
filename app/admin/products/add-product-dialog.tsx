@@ -63,7 +63,7 @@ export function AddProductDialog() {
       } else {
         toast.error(result.error || "Failed to create product");
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred");
     } finally {
       setLoading(false);

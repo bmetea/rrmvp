@@ -1,6 +1,5 @@
 import { db } from "@/db";
 import { cache } from "react";
-import { Products } from "@/db/types";
 
 export type Product = {
   id: string;
@@ -8,7 +7,7 @@ export type Product = {
   sub_name: string | null;
   market_value: number;
   description: string | null;
-  media_info: any;
+  media_info: unknown;
   is_wallet_credit: boolean;
   credit_amount: number | null;
   created_at: Date | null;
@@ -64,7 +63,7 @@ export type CreateProductInput = {
   sub_name?: string | null;
   market_value: number;
   description?: string | null;
-  media_info?: any;
+  media_info?: unknown;
   is_wallet_credit: boolean;
   credit_amount?: number | null;
 };

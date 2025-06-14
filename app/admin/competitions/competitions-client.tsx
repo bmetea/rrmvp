@@ -13,8 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Competition } from "@/services/competitionService";
-import { EditCompetitionDialog } from "./edit-competition-dialog";
-import { AddCompetitionDialog } from "./add-competition-dialog";
+import { CompetitionDialog } from "./competition-dialog";
 
 interface CompetitionsClientProps {
   competitions: Competition[];
@@ -23,12 +22,16 @@ interface CompetitionsClientProps {
 export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
   const [selectedCompetition, setSelectedCompetition] =
     useState<Competition | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleEditClick = (competition: Competition) => {
     setSelectedCompetition(competition);
-    setEditDialogOpen(true);
+    setDialogOpen(true);
+  };
+
+  const handleAddClick = () => {
+    setSelectedCompetition(null);
+    setDialogOpen(true);
   };
 
   const formatCurrency = (amount: number) => {
@@ -49,7 +52,7 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Competitions</h1>
-        <Button onClick={() => setAddDialogOpen(true)}>
+        <Button onClick={handleAddClick}>
           <Plus className="mr-2 h-4 w-4" />
           Add Competition
         </Button>
@@ -120,17 +123,10 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
         </CardContent>
       </Card>
 
-      {selectedCompetition && (
-        <EditCompetitionDialog
-          competition={selectedCompetition}
-          open={editDialogOpen}
-          onOpenChange={setEditDialogOpen}
-        />
-      )}
-
-      <AddCompetitionDialog
-        open={addDialogOpen}
-        onOpenChange={setAddDialogOpen}
+      <CompetitionDialog
+        competition={selectedCompetition || undefined}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
       />
     </div>
   );
