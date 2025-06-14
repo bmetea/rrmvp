@@ -51,7 +51,12 @@ export default async function ProductsPage() {
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.sub_name || "-"}</TableCell>
-                  <TableCell>${product.market_value}</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat("en-GB", {
+                      style: "currency",
+                      currency: "GBP",
+                    }).format(product.market_value / 100)}
+                  </TableCell>
                   <TableCell>
                     {product.is_wallet_credit ? "Wallet Credit" : "Physical"}
                   </TableCell>

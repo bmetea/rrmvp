@@ -37,7 +37,7 @@ export function AddProductDialog() {
       const result = await createProductAction({
         name: formData.name,
         sub_name: formData.sub_name || null,
-        market_value: parseFloat(formData.market_value),
+        market_value: Math.round(parseFloat(formData.market_value) * 100),
         description: formData.description || null,
         is_wallet_credit: formData.is_wallet_credit,
         credit_amount: formData.is_wallet_credit
@@ -103,11 +103,12 @@ export function AddProductDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="market_value">Market Value</Label>
+            <Label htmlFor="market_value">Market Value (£)</Label>
             <Input
               id="market_value"
               type="number"
               step="0.01"
+              min="0"
               value={formData.market_value}
               onChange={(e) =>
                 setFormData({ ...formData, market_value: e.target.value })
@@ -140,11 +141,12 @@ export function AddProductDialog() {
 
           {formData.is_wallet_credit && (
             <div className="space-y-2">
-              <Label htmlFor="credit_amount">Credit Amount</Label>
+              <Label htmlFor="credit_amount">Credit Amount (£)</Label>
               <Input
                 id="credit_amount"
                 type="number"
                 step="0.01"
+                min="0"
                 value={formData.credit_amount}
                 onChange={(e) =>
                   setFormData({ ...formData, credit_amount: e.target.value })
