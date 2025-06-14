@@ -3,6 +3,9 @@ import { auth } from "@clerk/nextjs/server";
 import { fetchAllCompetitionsServer } from "@/services/competitionService";
 import { CompetitionsClient } from "./competitions-client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function CompetitionsPage() {
   const { userId } = await auth();
 

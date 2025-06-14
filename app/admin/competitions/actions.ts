@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createCompetitionAction(formData: FormData) {
   try {
@@ -36,9 +36,15 @@ export async function createCompetitionAction(formData: FormData) {
       throw new Error("Failed to create competition");
     }
 
+    // Revalidate all competition-related paths
     revalidatePath("/");
     revalidatePath("/competitions");
+    revalidatePath("/competitions/[id]", "page");
     revalidatePath("/admin/competitions");
+
+    // Revalidate the competitions tag
+    revalidateTag("competitions");
+
     return { success: true, data: newCompetition };
   } catch (error) {
     console.error("Failed to create competition:", error);
@@ -78,9 +84,15 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
       throw new Error("Failed to update competition");
     }
 
+    // Revalidate all competition-related paths
     revalidatePath("/");
     revalidatePath("/competitions");
+    revalidatePath(`/competitions/${id}`, "page");
     revalidatePath("/admin/competitions");
+
+    // Revalidate the competitions tag
+    revalidateTag("competitions");
+
     return { success: true, data: updatedCompetition };
   } catch (error) {
     console.error("Failed to update competition:", error);

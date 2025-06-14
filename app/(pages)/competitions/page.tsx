@@ -1,21 +1,18 @@
-import Competitions from "@/components/sections/Competitions";
-import { CompetitionCard } from "@/components/ui/competition-card";
-import { fetchCompetitionsServer, Competition } from "@/services/competitionService";
+import { CompetitionList } from "@/components/sections/CompetitionList";
+import { fetchCompetitionsServer } from "@/services/competitionService";
 
+export const dynamic = "force-dynamic";
 
 export default async function CompetitionsPage() {
-  const competitions: Competition[] = await fetchCompetitionsServer();
+  const competitions = await fetchCompetitionsServer();
 
   return (
     <main>
-      <Competitions>
-        {competitions.map((competition) => (
-          <CompetitionCard
-            key={competition.id.toString()}
-            competition={competition}
-          />
-        ))}
-      </Competitions>
+      <CompetitionList
+        competitions={competitions}
+        title="All Competitions"
+        showFilters={true}
+      />
     </main>
   );
 }
