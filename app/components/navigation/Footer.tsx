@@ -15,7 +15,8 @@ const Footer = () => {
                 width={192}
                 height={272}
                 className="mb-2 w-48 h-[68px]"
-                priority
+                loading="lazy"
+                fetchPriority="low"
               />
             </Link>
           </div>

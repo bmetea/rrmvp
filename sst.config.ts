@@ -27,7 +27,7 @@ export default $config({
         password: process.env.DB_PASSWORD!,
         database: process.env.DB_NAME!,
         host: process.env.DB_HOST!,
-        port: parseInt(process.env.DB_PORT!)|| 5432,
+        port: parseInt(process.env.DB_PORT!) || 5432,
       },
       // proxy: true,
     });
@@ -39,7 +39,7 @@ export default $config({
       link: [rds],
       vpc: vpc,
       server: {
-        architecture: "arm64"
+        architecture: "arm64",
       },
       environment: {
         CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
@@ -48,6 +48,11 @@ export default $config({
           process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
         NEXT_PUBLIC_STRAPI_API_TOKEN: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN!,
         NEXT_PUBLIC_STRAPI_API_URL: process.env.NEXT_PUBLIC_STRAPI_API_URL!,
+        // Total Processing environment variables
+        OPPWA_BASE_URL: process.env.OPPWA_BASE_URL!,
+        OPPWA_ENTITY_ID: process.env.OPPWA_ENTITY_ID!,
+        OPPWA_ACCESS_TOKEN: process.env.OPPWA_ACCESS_TOKEN!,
+        NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL!,
       },
     });
     return {
