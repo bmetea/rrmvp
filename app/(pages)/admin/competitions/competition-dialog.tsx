@@ -45,6 +45,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../../components/ui/tabs";
+import { fetchProductsServer } from "@/services/productService";
+import { useDebounce } from "@/hooks/use-debounce";
+import { searchProductsAction } from "@/actions/product";
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -159,6 +162,8 @@ export function CompetitionDialog({
 }: CompetitionDialogProps) {
   const isEdit = !!competition;
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
   const [products, setProducts] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     title: competition?.title || "",
@@ -184,6 +189,20 @@ export function CompetitionDialog({
   });
   const [currentCompetition, setCurrentCompetition] =
     useState<CompetitionWithPrizes | null>(null);
+
+  // Fetch products with search using server action
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { products } = await searchProductsAction(debouncedSearch);
+        setProducts(products);
+      } catch (error) {
+        // Handle error silently
+      }
+    };
+
+    fetchProducts();
+  }, [debouncedSearch]);
 
   // Fetch competition data with prizes and products when dialog opens
   useEffect(() => {
@@ -565,6 +584,19 @@ export function CompetitionDialog({
           {isEdit && (
             <div className="flex flex-col h-full overflow-hidden">
               <h3 className="text-lg font-semibold mb-4">Available Products</h3>
+
+              {/* Search Box */}
+              <div className="mb-4">
+                <Input
+                  type="search"
+                  placeholder="Search products..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Product List */}
               <div className="border rounded-lg divide-y overflow-y-auto flex-1 min-h-0">
                 {products.map((product) => (
                   <div

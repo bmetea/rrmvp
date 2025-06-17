@@ -17,36 +17,82 @@ export type Product = {
   updated_at: Date | null;
 };
 
-export const fetchProductsServer = cache(async (): Promise<Product[]> => {
-  const products = await db
-    .selectFrom("products")
-    .select([
-      "id",
-      "name",
-      "sub_name",
-      "market_value",
-      "description",
-      "media_info",
-      "is_wallet_credit",
-      "credit_amount",
-      "created_at",
-      "updated_at",
-    ])
-    .orderBy("created_at", "desc")
-    .execute();
+export type ProductsResponse = {
+  products: Product[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
 
-  return products.map((product) => ({
-    ...product,
-    media_info: product.media_info
-      ? ((typeof product.media_info === "string"
-          ? JSON.parse(product.media_info)
-          : product.media_info) as {
-          images?: string[];
-          videos?: string[];
-        })
-      : null,
-  }));
-});
+export const fetchProductsServer = cache(
+  async (
+    page: number = 1,
+    pageSize: number = 10,
+    search?: string
+  ): Promise<ProductsResponse> => {
+    const offset = (page - 1) * pageSize;
+
+    // Get total count with search filter
+    let countQuery = db
+      .selectFrom("products")
+      .select((eb) => eb.fn.countAll().as("count"));
+
+    if (search && search.trim() !== "") {
+      countQuery = countQuery.where((eb) => eb("name", "ilike", `%${search}%`));
+    }
+
+    const countResult = await countQuery.executeTakeFirst();
+    const total = Number(countResult?.count ?? 0);
+    const totalPages = Math.ceil(total / pageSize);
+
+    // Get paginated results with search filter
+    let productsQuery = db
+      .selectFrom("products")
+      .select([
+        "id",
+        "name",
+        "sub_name",
+        "market_value",
+        "description",
+        "media_info",
+        "is_wallet_credit",
+        "credit_amount",
+        "created_at",
+        "updated_at",
+      ]);
+
+    if (search && search.trim() !== "") {
+      productsQuery = productsQuery.where((eb) =>
+        eb("name", "ilike", `%${search}%`)
+      );
+    }
+
+    const products = await productsQuery
+      .orderBy("created_at", "desc")
+      .limit(pageSize)
+      .offset(offset)
+      .execute();
+
+    return {
+      products: products.map((product) => ({
+        ...product,
+        media_info: product.media_info
+          ? ((typeof product.media_info === "string"
+              ? JSON.parse(product.media_info)
+              : product.media_info) as {
+              images?: string[];
+              videos?: string[];
+            })
+          : null,
+      })),
+      total,
+      page,
+      pageSize,
+      totalPages,
+    };
+  }
+);
 
 export const fetchProductByIdServer = cache(
   async (id: string): Promise<Product | null> => {

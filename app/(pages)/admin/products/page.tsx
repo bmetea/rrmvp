@@ -3,7 +3,16 @@ import { auth } from "@clerk/nextjs/server";
 import { fetchProductsServer } from "@/services/productService";
 import { ProductsClient } from "./products-client";
 
-export default async function ProductsPage() {
+interface ProductsPageProps {
+  searchParams: Promise<{
+    page?: string;
+    search?: string;
+  }>;
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: ProductsPageProps) {
   const { userId } = await auth();
 
   // Check if the user is the admin
@@ -11,7 +20,32 @@ export default async function ProductsPage() {
     redirect("/");
   }
 
-  const products = await fetchProductsServer();
+  const params = await searchParams;
+  console.log("Page params:", params); // Debug log
 
-  return <ProductsClient products={products} />;
+  const page = params.page ? parseInt(params.page) : 1;
+  const search = params.search || "";
+  console.log("Search value:", search); // Debug log
+
+  const pageSize = 10;
+
+  const { products, total, totalPages } = await fetchProductsServer(
+    page,
+    pageSize,
+    search
+  );
+
+  console.log("Total products:", total); // Debug log
+  console.log("First product:", products[0]?.name); // Debug log
+
+  return (
+    <ProductsClient
+      products={products}
+      total={total}
+      page={page}
+      pageSize={pageSize}
+      totalPages={totalPages}
+      search={search}
+    />
+  );
 }
