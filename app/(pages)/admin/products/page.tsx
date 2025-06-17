@@ -21,12 +21,8 @@ export default async function ProductsPage({
   }
 
   const params = await searchParams;
-  console.log("Page params:", params); // Debug log
-
   const page = params.page ? parseInt(params.page) : 1;
-  const search = params.search || "";
-  console.log("Search value:", search); // Debug log
-
+  const search = params.search;
   const pageSize = 10;
 
   const { products, total, totalPages } = await fetchProductsServer(
@@ -34,9 +30,6 @@ export default async function ProductsPage({
     pageSize,
     search
   );
-
-  console.log("Total products:", total); // Debug log
-  console.log("First product:", products[0]?.name); // Debug log
 
   return (
     <ProductsClient

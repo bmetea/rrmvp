@@ -49,39 +49,25 @@ export function ProductsClient({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [search, setSearch] = useState(initialSearch || "");
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleEditClick = (product: Product) => {
     setSelectedProduct(product);
     setEditDialogOpen(true);
   };
 
-  const updateSearch = useCallback(
-    (newSearch: string) => {
-      console.log("Updating search to:", newSearch); // Debug log
-      const params = new URLSearchParams(searchParams);
-      if (newSearch) {
-        params.set("search", newSearch);
-      } else {
-        params.delete("search");
-      }
-      const newUrl = `/admin/products?${params.toString()}`;
-      console.log("New URL:", newUrl); // Debug log
-      router.push(newUrl);
-    },
-    [router, searchParams]
-  );
-
-  // Only trigger search when the input value changes
-  useEffect(() => {
-    if (search === initialSearch) return;
-
-    console.log("Search changed from", initialSearch, "to", search); // Debug log
-    const timer = setTimeout(() => {
-      updateSearch(search);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [search, initialSearch, updateSearch]);
+  const handleSearch = (newSearch: string) => {
+    setSearch(newSearch);
+    const newUrl = new URL(window.location.href);
+    if (newSearch) {
+      newUrl.searchParams.set("search", newSearch);
+    } else {
+      newUrl.searchParams.delete("search");
+    }
+    newUrl.searchParams.set("page", "1");
+    router.push(newUrl.pathname + newUrl.search);
+  };
 
   const handleClearSearch = () => {
     setSearch("");
@@ -134,7 +120,7 @@ export function ProductsClient({
                   type="search"
                   placeholder="Search by product name..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="w-[300px] pr-8"
                 />
                 {search && (
