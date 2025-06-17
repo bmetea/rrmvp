@@ -29,7 +29,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Competition } from "@/services/competitionService";
-import type { CompetitionPrizes } from "../../../../db/types";
 import { formatPrice, poundsToPence } from "@/lib/utils/price";
 import {
   Table,
