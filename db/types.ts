@@ -25,6 +25,10 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface CompetitionPrizes {
   available_quantity: number;
+  /**
+   * Array of winning ticket numbers that have been claimed by users. These numbers are moved from winning_ticket_numbers when a ticket is won.
+   */
+  claimed_winning_tickets: Generated<number[] | null>;
   competition_id: string | null;
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
