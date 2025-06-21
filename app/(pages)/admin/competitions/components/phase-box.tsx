@@ -200,7 +200,7 @@ export function PhaseBox({
                       </p>
                     )}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 pointer-events-auto">
                   {product.winning_ticket_numbers &&
                     Array.isArray(product.winning_ticket_numbers) &&
                     product.winning_ticket_numbers.length > 0 && (

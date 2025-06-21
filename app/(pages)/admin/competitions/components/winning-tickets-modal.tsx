@@ -64,11 +64,11 @@ export function WinningTicketsModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] h-full overflow-hidden">
         <DialogHeader>
           <DialogTitle>Winning Ticket Numbers</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[75vh] overflow-y-auto">
           <div className="space-y-2">
             <h3 className="font-medium">{prize.name}</h3>
             <p className="text-sm text-muted-foreground">
@@ -84,7 +84,7 @@ export function WinningTicketsModal({
               Winning Ticket Numbers ({winningTickets.length} total)
             </Label>
             {winningTickets.length > 0 ? (
-              <div className="bg-muted p-3 rounded-md">
+              <div className="bg-muted p-3 rounded-md max-h-[40vh] overflow-y-auto">
                 <div className="flex flex-wrap gap-1">
                   {winningTickets.map((ticket: number, index: number) => (
                     <span
