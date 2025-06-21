@@ -48,6 +48,7 @@ import {
 import { fetchProductsServer } from "@/services/productService";
 import { useDebounce } from "@/hooks/use-debounce";
 import { searchProductsAction } from "@/actions/product";
+import { Switch } from "@/components/ui/switch";
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -88,6 +89,94 @@ function PhaseBox({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      <div className="space-y-2 flex-1 overflow-y-auto">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="bg-muted p-3 rounded-md flex flex-col gap-2"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="font-medium">{product.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatPrice(product.market_value, false)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDelete(product.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <Label htmlFor={`quantity-${product.id}`} className="text-xs">
+                Quantity:
+              </Label>
+              <Input
+                id={`quantity-${product.id}`}
+                type="number"
+                min="1"
+                value={product.total_quantity || 1}
+                onChange={(e) => {
+                  const quantity = parseInt(e.target.value);
+                  if (!isNaN(quantity) && quantity > 0) {
+                    onQuantityChange(product.id, quantity);
+                  }
+                }}
+                className="w-16 h-8"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// New component for raffle prize selection
+interface RafflePrizeBoxProps {
+  products: any[];
+  onDrop: (product: any) => void;
+  onDelete: (prizeId: string) => void;
+  onQuantityChange: (prizeId: string, quantity: number) => void;
+  isEditMode: boolean;
+}
+
+function RafflePrizeBox({
+  products,
+  onDrop,
+  onDelete,
+  onQuantityChange,
+  isEditMode,
+}: RafflePrizeBoxProps) {
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const product = JSON.parse(e.dataTransfer.getData("product"));
+    onDrop(product);
+  };
+
+  return (
+    <div
+      className="border rounded-lg p-4 h-full flex flex-col"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <div className="mb-4">
+        <h4 className="font-medium text-sm text-muted-foreground">
+          Drag a product here to set as the raffle prize
+        </h4>
+        {products.length > 0 && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Only one product can be selected for raffle competitions
+          </p>
+        )}
+      </div>
       <div className="space-y-2 flex-1 overflow-y-auto">
         {products.map((product) => (
           <div
@@ -181,7 +270,7 @@ export function CompetitionDialog({
   const [formData, setFormData] = useState({
     title: competition?.title || "",
     description: competition?.description || "",
-    type: competition?.type || "standard",
+    type: competition?.type || "raffle",
     ticket_price: competition
       ? formatPrice(competition.ticket_price, false)
       : "",
@@ -205,6 +294,23 @@ export function CompetitionDialog({
 
   // Store pending prizes for creation mode
   const [pendingPrizes, setPendingPrizes] = useState<PendingPrize[]>([]);
+
+  // Helper function to check if there are multiple items across phases
+  const hasMultipleItemsAcrossPhases = () => {
+    const totalItems = Object.values(phaseProducts).reduce(
+      (sum, products) => sum + products.length,
+      0
+    );
+    return totalItems > 1;
+  };
+
+  // Helper function to get total items count
+  const getTotalItemsCount = () => {
+    return Object.values(phaseProducts).reduce(
+      (sum, products) => sum + products.length,
+      0
+    );
+  };
 
   // Fetch products with search using server action
   useEffect(() => {
@@ -306,7 +412,7 @@ export function CompetitionDialog({
       setFormData({
         title: "",
         description: "",
-        type: "standard",
+        type: "raffle",
         ticket_price: "",
         total_tickets: "",
         start_date: "",
@@ -473,6 +579,83 @@ export function CompetitionDialog({
     }
   };
 
+  // New handler for raffle prize drop (no phase needed)
+  const handleRaffleDrop = async (product: any) => {
+    if (isEdit) {
+      // Edit mode - add prize to database
+      if (!competition?.id) {
+        toast.error("Competition must be saved first");
+        return;
+      }
+
+      try {
+        const result = await addCompetitionPrizeAction(competition.id, {
+          product_id: product.id,
+          total_quantity: 1,
+          phase: 1, // Raffle competitions use phase 1
+          prize_group: "main",
+          is_instant_win: false,
+          min_ticket_percentage: "0",
+          max_ticket_percentage: "100",
+        });
+
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // Update local state with the new prize
+        setPhaseProducts((prev) => ({
+          ...prev,
+          1: [
+            {
+              id: result.data.id,
+              name: product.name,
+              sub_name: product.sub_name,
+              market_value: product.market_value,
+              total_quantity: 1,
+              product_id: product.id,
+            },
+          ], // Replace any existing prizes for raffle
+        }));
+
+        toast.success("Raffle prize set successfully");
+      } catch (error) {
+        console.error("Failed to set raffle prize:", error);
+        toast.error("Failed to set raffle prize");
+      }
+    } else {
+      // Creation mode - add to pending prizes
+      const pendingPrize: PendingPrize = {
+        id: `pending-${Date.now()}-${Math.random()}`, // Temporary ID
+        phase: 1, // Raffle competitions use phase 1
+        total_quantity: 1,
+        product_id: product.id,
+        name: product.name,
+        sub_name: product.sub_name,
+        market_value: product.market_value,
+      };
+
+      setPendingPrizes((prev) => [pendingPrize]); // Replace any existing prizes
+
+      // Update phase products for display
+      setPhaseProducts((prev) => ({
+        ...prev,
+        1: [
+          {
+            id: pendingPrize.id,
+            name: product.name,
+            sub_name: product.sub_name,
+            market_value: product.market_value,
+            total_quantity: 1,
+            product_id: product.id,
+          },
+        ], // Replace any existing prizes for raffle
+      }));
+
+      toast.success("Raffle prize set successfully");
+    }
+  };
+
   const handleDeletePrize = async (prizeId: string) => {
     if (isEdit) {
       // Edit mode - delete from database
@@ -594,15 +777,49 @@ export function CompetitionDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="type">Type</Label>
-              <Input
-                id="type"
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                required
-              />
+              <Label htmlFor="type">Competition Type</Label>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="type-toggle"
+                    checked={formData.type === "instant_win"}
+                    onCheckedChange={(checked) => {
+                      const newType = checked ? "instant_win" : "raffle";
+
+                      // Check if switching to raffle and there are multiple items
+                      if (
+                        newType === "raffle" &&
+                        hasMultipleItemsAcrossPhases()
+                      ) {
+                        toast.error(
+                          `Cannot switch to raffle mode. You have ${getTotalItemsCount()} items across phases. Raffle competitions can only have one prize. Please remove extra items first.`
+                        );
+                        return;
+                      }
+
+                      setFormData({
+                        ...formData,
+                        type: newType,
+                      });
+                    }}
+                  />
+                  <Label htmlFor="type-toggle" className="text-sm font-medium">
+                    {formData.type === "instant_win" ? "Instant Win" : "Raffle"}
+                  </Label>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {formData.type === "instant_win"
+                    ? "Winners are determined immediately"
+                    : "Winners are drawn at the end"}
+                </div>
+              </div>
+              {formData.type === "raffle" && hasMultipleItemsAcrossPhases() && (
+                <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-200">
+                  ⚠️ Warning: You have {getTotalItemsCount()} items across
+                  phases. Raffle competitions can only have one prize. Consider
+                  switching to Instant Win mode or removing extra items.
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -763,44 +980,56 @@ export function CompetitionDialog({
 
           {/* Right Column - Prize Phases */}
           <div className="flex flex-col h-full overflow-hidden">
-            <h3 className="text-lg font-semibold mb-4">Prize Phases</h3>
-            <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
-              <TabsList className="grid grid-cols-3">
-                <TabsTrigger value="phase1">Phase 1</TabsTrigger>
-                <TabsTrigger value="phase2">Phase 2</TabsTrigger>
-                <TabsTrigger value="phase3">Phase 3</TabsTrigger>
-              </TabsList>
-              <TabsContent value="phase1" className="flex-1 mt-0">
-                <PhaseBox
-                  phase={1}
-                  products={phaseProducts[1]}
-                  onDrop={handleDrop}
-                  onDelete={handleDeletePrize}
-                  onQuantityChange={handleQuantityChange}
-                  isEditMode={isEdit}
-                />
-              </TabsContent>
-              <TabsContent value="phase2" className="flex-1 mt-0">
-                <PhaseBox
-                  phase={2}
-                  products={phaseProducts[2]}
-                  onDrop={handleDrop}
-                  onDelete={handleDeletePrize}
-                  onQuantityChange={handleQuantityChange}
-                  isEditMode={isEdit}
-                />
-              </TabsContent>
-              <TabsContent value="phase3" className="flex-1 mt-0">
-                <PhaseBox
-                  phase={3}
-                  products={phaseProducts[3]}
-                  onDrop={handleDrop}
-                  onDelete={handleDeletePrize}
-                  onQuantityChange={handleQuantityChange}
-                  isEditMode={isEdit}
-                />
-              </TabsContent>
-            </Tabs>
+            <h3 className="text-lg font-semibold mb-4">
+              {formData.type === "raffle" ? "Raffle Prize" : "Prize Phases"}
+            </h3>
+            {formData.type === "raffle" ? (
+              <RafflePrizeBox
+                products={phaseProducts[1]}
+                onDrop={handleRaffleDrop}
+                onDelete={handleDeletePrize}
+                onQuantityChange={handleQuantityChange}
+                isEditMode={isEdit}
+              />
+            ) : (
+              <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
+                <TabsList className="grid grid-cols-3">
+                  <TabsTrigger value="phase1">Phase 1</TabsTrigger>
+                  <TabsTrigger value="phase2">Phase 2</TabsTrigger>
+                  <TabsTrigger value="phase3">Phase 3</TabsTrigger>
+                </TabsList>
+                <TabsContent value="phase1" className="flex-1 mt-0">
+                  <PhaseBox
+                    phase={1}
+                    products={phaseProducts[1]}
+                    onDrop={handleDrop}
+                    onDelete={handleDeletePrize}
+                    onQuantityChange={handleQuantityChange}
+                    isEditMode={isEdit}
+                  />
+                </TabsContent>
+                <TabsContent value="phase2" className="flex-1 mt-0">
+                  <PhaseBox
+                    phase={2}
+                    products={phaseProducts[2]}
+                    onDrop={handleDrop}
+                    onDelete={handleDeletePrize}
+                    onQuantityChange={handleQuantityChange}
+                    isEditMode={isEdit}
+                  />
+                </TabsContent>
+                <TabsContent value="phase3" className="flex-1 mt-0">
+                  <PhaseBox
+                    phase={3}
+                    products={phaseProducts[3]}
+                    onDrop={handleDrop}
+                    onDelete={handleDeletePrize}
+                    onQuantityChange={handleQuantityChange}
+                    isEditMode={isEdit}
+                  />
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
         </div>
       </DialogContent>
