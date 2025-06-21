@@ -14,6 +14,11 @@ import Image from "next/image";
 
 type ViewMode = "list" | "detail";
 
+// Cache for entries data to persist across remounts
+let entriesCache: CompetitionEntry[] | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export default function MyEntriesPage() {
   const [entries, setEntries] = useState<CompetitionEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,28 +26,42 @@ export default function MyEntriesPage() {
   const [selectedEntry, setSelectedEntry] = useState<CompetitionEntry | null>(
     null
   );
-  const hasFetched = useRef(false);
+  const isFetching = useRef(false);
 
   useEffect(() => {
-    // Prevent multiple API calls
-    if (hasFetched.current) {
-      console.log("MyEntriesPage: Skipping fetch - already fetched");
-      return;
-    }
-
-    console.log("MyEntriesPage: Fetching entries...");
-    hasFetched.current = true;
-
     const fetchEntries = async () => {
+      // Check if we have valid cached data
+      const now = Date.now();
+      if (entriesCache && now - cacheTimestamp < CACHE_DURATION) {
+        console.log("MyEntriesPage: Using cached entries");
+        setEntries(entriesCache);
+        setLoading(false);
+        return;
+      }
+
+      // Prevent multiple simultaneous API calls
+      if (isFetching.current) {
+        console.log("MyEntriesPage: Fetch already in progress, skipping");
+        return;
+      }
+
+      console.log("MyEntriesPage: Fetching entries...");
+      isFetching.current = true;
+      setLoading(true);
+
       try {
         const result = await getUserCompetitionEntries();
         if (result.success && result.entries) {
+          // Cache the results
+          entriesCache = result.entries;
+          cacheTimestamp = now;
           setEntries(result.entries);
         }
       } catch (err) {
         console.error("An error occurred while loading entries", err);
       } finally {
         setLoading(false);
+        isFetching.current = false;
       }
     };
 
