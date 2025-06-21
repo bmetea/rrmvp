@@ -1,31 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUserTickets, UserTicket } from "@/services/userDataService";
+import {
+  getUserCompetitionEntries,
+  CompetitionEntry,
+} from "@/services/competitionEntryService";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function MyEntriesPage() {
-  const [tickets, setTickets] = useState<UserTicket[]>([]);
+  const [entries, setEntries] = useState<CompetitionEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTickets = async () => {
+    const fetchEntries = async () => {
       try {
-        const result = await getUserTickets();
-        if (result.success && result.tickets) {
-          setTickets(result.tickets);
+        const result = await getUserCompetitionEntries();
+        if (result.success && result.entries) {
+          setEntries(result.entries);
         }
       } catch (err) {
-        console.error("An error occurred while loading tickets", err);
+        console.error("An error occurred while loading entries", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTickets();
+    fetchEntries();
   }, []);
 
   const formatDate = (date: Date) => {
@@ -34,6 +37,20 @@ export default function MyEntriesPage() {
       day: "numeric",
       year: "numeric",
     });
+  };
+
+  const formatTicketNumbers = (tickets: CompetitionEntry["tickets"]) => {
+    if (tickets.length === 1) {
+      return `Ticket #${tickets[0].ticket_number}`;
+    }
+
+    if (tickets.length <= 5) {
+      return `Tickets #${tickets.map((t) => t.ticket_number).join(", #")}`;
+    }
+
+    return `Tickets #${tickets[0].ticket_number}-#${
+      tickets[tickets.length - 1].ticket_number
+    } (${tickets.length} total)`;
   };
 
   if (loading) {
@@ -49,7 +66,7 @@ export default function MyEntriesPage() {
     );
   }
 
-  if (tickets.length === 0) {
+  if (entries.length === 0) {
     return (
       <div className="p-4 text-center">
         <p>You haven&apos;t entered any competitions yet.</p>
@@ -61,43 +78,42 @@ export default function MyEntriesPage() {
     <div className="space-y-4 p-4">
       <h2 className="text-xl font-semibold">My Entries</h2>
       <div className="space-y-4">
-        {tickets.map((ticket) => (
+        {entries.map((entry) => (
           <Link
-            key={ticket.id}
-            href={`/competitions/${ticket.competition.id}`}
+            key={entry.id}
+            href={`/competitions/${entry.competition.id}`}
             className="block"
           >
             <Card className="transition-colors hover:bg-accent">
               <CardContent className="flex items-center gap-4 p-4">
-                {ticket.competition.media_info?.thumbnail && (
+                {entry.competition.media_info?.thumbnail && (
                   <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
                     <Image
-                      src={ticket.competition.media_info.thumbnail}
-                      alt={ticket.competition.title}
+                      src={entry.competition.media_info.thumbnail}
+                      alt={entry.competition.title}
                       fill
                       className="object-cover"
                     />
                   </div>
                 )}
                 <div className="flex-1">
-                  <h3 className="font-medium">{ticket.competition.title}</h3>
+                  <h3 className="font-medium">{entry.competition.title}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Ticket #{ticket.ticket_number} ({ticket.number_of_tickets}{" "}
-                    {ticket.number_of_tickets === 1 ? "ticket" : "tickets"})
+                    {formatTicketNumbers(entry.tickets)}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Purchased on {formatDate(ticket.purchase_date)}
+                    Purchased on {formatDate(entry.created_at)}
                   </p>
                 </div>
                 <div className="text-right">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                      ticket.status === "active"
+                      entry.competition.status === "active"
                         ? "bg-green-100 text-green-700"
                         : "bg-gray-100 text-gray-700"
                     }`}
                   >
-                    {ticket.status}
+                    {entry.competition.status}
                   </span>
                 </div>
               </CardContent>

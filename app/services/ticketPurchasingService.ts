@@ -7,7 +7,118 @@ import { revalidatePath } from "next/cache";
 interface PurchaseResult {
   success: boolean;
   message: string;
-  ticketId?: string;
+  entryId?: string;
+  ticketNumbers?: number[];
+}
+
+// Helper function to move a winning ticket from available to claimed
+export async function claimWinningTicket(
+  competitionId: string,
+  ticketNumber: number
+): Promise<{ success: boolean; message: string; prizeId?: string }> {
+  try {
+    return await db.transaction().execute(async (trx) => {
+      // Find the prize that has this winning ticket number
+      const prize = await trx
+        .selectFrom("competition_prizes")
+        .select(["id", "winning_ticket_numbers", "claimed_winning_tickets"])
+        .where("competition_id", "=", competitionId)
+        .where("winning_ticket_numbers", "@>", [ticketNumber])
+        .executeTakeFirst();
+
+      if (!prize) {
+        return {
+          success: false,
+          message: "No winning prize found for this ticket number",
+        };
+      }
+
+      // Check if the ticket is already claimed
+      if (
+        prize.claimed_winning_tickets &&
+        prize.claimed_winning_tickets.includes(ticketNumber)
+      ) {
+        return {
+          success: false,
+          message: "This winning ticket has already been claimed",
+        };
+      }
+
+      // Remove the ticket from winning_ticket_numbers and add to claimed_winning_tickets
+      const updatedWinningTickets =
+        prize.winning_ticket_numbers?.filter((num) => num !== ticketNumber) ||
+        [];
+
+      const updatedClaimedTickets = [
+        ...(prize.claimed_winning_tickets || []),
+        ticketNumber,
+      ];
+
+      // Update the prize
+      await trx
+        .updateTable("competition_prizes")
+        .set({
+          winning_ticket_numbers: updatedWinningTickets,
+          claimed_winning_tickets: updatedClaimedTickets,
+          updated_at: new Date(),
+        })
+        .where("id", "=", prize.id)
+        .execute();
+
+      return {
+        success: true,
+        message: "Winning ticket claimed successfully",
+        prizeId: prize.id,
+      };
+    });
+  } catch (error) {
+    console.error("Error claiming winning ticket:", error);
+    return {
+      success: false,
+      message: "An error occurred while claiming the winning ticket",
+    };
+  }
+}
+
+// Helper function to find next available ticket numbers
+async function findNextAvailableTicketNumbers(
+  competitionId: string,
+  count: number
+): Promise<number[]> {
+  try {
+    // Get all existing ticket numbers for this competition from both tables
+    const existingTickets = await db
+      .selectFrom("tickets")
+      .select("ticket_number")
+      .where("competition_id", "=", competitionId)
+      .union(
+        db
+          .selectFrom("competition_entry_tickets")
+          .select("ticket_number")
+          .where("competition_id", "=", competitionId)
+      )
+      .execute();
+
+    const existingNumbers = new Set(
+      existingTickets.map((ticket) => ticket.ticket_number)
+    );
+
+    // Find the next available numbers
+    const availableNumbers: number[] = [];
+    let currentNumber = 1;
+
+    while (availableNumbers.length < count) {
+      if (!existingNumbers.has(currentNumber)) {
+        availableNumbers.push(currentNumber);
+      }
+      currentNumber++;
+    }
+
+    return availableNumbers;
+  } catch (error) {
+    console.error("Error finding next available ticket numbers:", error);
+    return [];
+  }
 }
 
 export async function purchaseTickets(
@@ -137,27 +248,45 @@ export async function purchaseTickets(
           .where("id", "=", wallet.id)
           .execute();
 
-        // 5. Create a single ticket entry with number_of_tickets
-        const ticketNumber =
-          Math.floor(Math.random() * competition.total_tickets) + 1;
-        const ticket = await trx
-          .insertInto("tickets")
+        // 5. Find next available ticket numbers
+        const ticketNumbers = await findNextAvailableTicketNumbers(
+          competitionId,
+          ticketCount
+        );
+
+        if (ticketNumbers.length !== ticketCount) {
+          throw new Error("Not enough available ticket numbers");
+        }
+
+        // 6. Create competition entry
+        const competitionEntry = await trx
+          .insertInto("competition_entries")
           .values({
             competition_id: competitionId,
             user_id: user.id,
             wallet_transaction_id: walletTransaction.id,
-            status: "active",
-            ticket_number: ticketNumber,
-            number_of_tickets: ticketCount,
           })
           .returning("id")
           .executeTakeFirst();
 
-        if (!ticket) {
-          throw new Error("Failed to create ticket");
+        if (!competitionEntry) {
+          throw new Error("Failed to create competition entry");
         }
 
-        // 6. Update competition tickets sold count
+        // 7. Create individual ticket records in competition_entry_tickets
+        const ticketValues = ticketNumbers.map((ticketNumber) => ({
+          competition_entry_id: competitionEntry.id,
+          competition_id: competitionId,
+          ticket_number: ticketNumber,
+          winning_ticket: false,
+        }));
+
+        await trx
+          .insertInto("competition_entry_tickets")
+          .values(ticketValues)
+          .execute();
+
+        // 8. Update competition tickets sold count
         await trx
           .updateTable("competitions")
           .set({
@@ -173,8 +302,11 @@ export async function purchaseTickets(
 
         return {
           success: true,
-          message: `Successfully purchased ${ticketCount} tickets`,
-          ticketId: ticket.id,
+          message: `Successfully purchased ${ticketCount} tickets (numbers: ${ticketNumbers.join(
+            ", "
+          )})`,
+          entryId: competitionEntry.id,
+          ticketNumbers,
         };
       } catch (error) {
         // This will trigger a rollback of all changes in the transaction

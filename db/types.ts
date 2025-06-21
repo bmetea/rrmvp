@@ -23,6 +23,25 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface CompetitionEntries {
+  competition_id: string;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string;
+  wallet_transaction_id: string;
+}
+
+export interface CompetitionEntryTickets {
+  competition_entry_id: string;
+  competition_id: string;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  ticket_number: number;
+  updated_at: Generated<Timestamp | null>;
+  winning_ticket: Generated<boolean>;
+}
+
 export interface CompetitionPrizes {
   available_quantity: number;
   /**
@@ -126,6 +145,8 @@ export interface Winners {
 }
 
 export interface DB {
+  competition_entries: CompetitionEntries;
+  competition_entry_tickets: CompetitionEntryTickets;
   competition_prizes: CompetitionPrizes;
   competitions: Competitions;
   products: Products;
