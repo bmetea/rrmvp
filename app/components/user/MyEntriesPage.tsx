@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getUserCompetitionEntries,
   CompetitionEntry,
@@ -13,8 +13,18 @@ import Link from "next/link";
 export default function MyEntriesPage() {
   const [entries, setEntries] = useState<CompetitionEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple API calls
+    if (hasFetched.current) {
+      console.log("MyEntriesPage: Skipping fetch - already fetched");
+      return;
+    }
+
+    console.log("MyEntriesPage: Fetching entries...");
+    hasFetched.current = true;
+
     const fetchEntries = async () => {
       try {
         const result = await getUserCompetitionEntries();
@@ -29,6 +39,11 @@ export default function MyEntriesPage() {
     };
 
     fetchEntries();
+
+    // Cleanup function
+    return () => {
+      console.log("MyEntriesPage: Component unmounting");
+    };
   }, []);
 
   const formatDate = (date: Date) => {

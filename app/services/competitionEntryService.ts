@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { sql } from "kysely";
+import { auth } from "@clerk/nextjs/server";
 
 export interface CompetitionEntry {
   id: string;
@@ -39,7 +40,31 @@ export async function getUserCompetitionEntries(): Promise<{
   entries?: CompetitionEntry[];
   error?: string;
 }> {
+  const session = await auth();
+
+  if (!session?.userId) {
+    return {
+      success: false,
+      error: "You must be logged in to view your entries",
+    };
+  }
+
   try {
+    // Get the user's database ID from their Clerk ID
+    const user = await db
+      .selectFrom("users")
+      .select(["id"])
+      .where("clerk_id", "=", session.userId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    // Fetch all entries with competition data in a single query
     const entries = await db
       .selectFrom("competition_entries as ce")
       .innerJoin("competitions as c", "c.id", "ce.competition_id")
@@ -56,34 +81,57 @@ export async function getUserCompetitionEntries(): Promise<{
         "c.end_date",
         "c.media_info",
       ])
-      .where("ce.user_id", "=", "current_user_id()")
+      .where("ce.user_id", "=", user.id)
       .orderBy("ce.created_at", "desc")
       .execute();
 
-    // Get tickets for each entry
-    const entriesWithTickets = await Promise.all(
-      entries.map(async (entry) => {
-        const tickets = await db
-          .selectFrom("competition_entry_tickets")
-          .selectAll()
-          .where("competition_entry_id", "=", entry.id)
-          .orderBy("ticket_number", "asc")
-          .execute();
+    if (entries.length === 0) {
+      return {
+        success: true,
+        entries: [],
+      };
+    }
 
-        return {
-          ...entry,
-          tickets,
-          competition: {
-            id: entry.competition_id,
-            title: entry.title,
-            type: entry.type,
-            status: entry.status,
-            end_date: entry.end_date,
-            media_info: entry.media_info,
-          },
-        };
-      })
-    );
+    // Get all entry IDs
+    const entryIds = entries.map((entry) => entry.id);
+
+    // Fetch all tickets for all entries in a single query
+    const allTickets = await db
+      .selectFrom("competition_entry_tickets")
+      .selectAll()
+      .where("competition_entry_id", "in", entryIds)
+      .orderBy("ticket_number", "asc")
+      .execute();
+
+    // Group tickets by entry ID
+    const ticketsByEntryId = allTickets.reduce((acc, ticket) => {
+      if (!acc[ticket.competition_entry_id]) {
+        acc[ticket.competition_entry_id] = [];
+      }
+      acc[ticket.competition_entry_id].push(ticket);
+      return acc;
+    }, {} as Record<string, typeof allTickets>);
+
+    // Combine entries with their tickets
+    const entriesWithTickets = entries.map((entry) => ({
+      ...entry,
+      tickets: ticketsByEntryId[entry.id] || [],
+      competition: {
+        id: entry.competition_id,
+        title: entry.title,
+        type: entry.type,
+        status: entry.status,
+        end_date: entry.end_date,
+        media_info: entry.media_info
+          ? ((typeof entry.media_info === "string"
+              ? JSON.parse(entry.media_info)
+              : entry.media_info) as {
+              thumbnail?: string;
+              images?: string[];
+            })
+          : null,
+      },
+    }));
 
     return {
       success: true,
@@ -184,7 +232,14 @@ export async function purchaseCompetitionEntry(
           type: completeEntry.type,
           status: completeEntry.status,
           end_date: completeEntry.end_date,
-          media_info: completeEntry.media_info,
+          media_info: completeEntry.media_info
+            ? ((typeof completeEntry.media_info === "string"
+                ? JSON.parse(completeEntry.media_info)
+                : completeEntry.media_info) as {
+                thumbnail?: string;
+                images?: string[];
+              })
+            : null,
         },
       },
     };
@@ -202,17 +257,11 @@ async function findNextAvailableTicketNumbers(
   count: number
 ): Promise<number[]> {
   try {
-    // Get all existing ticket numbers for this competition from both tables
+    // Get all existing ticket numbers for this competition from competition_entry_tickets table
     const existingTickets = await db
-      .selectFrom("tickets")
+      .selectFrom("competition_entry_tickets")
       .select("ticket_number")
       .where("competition_id", "=", competitionId)
-      .union(
-        db
-          .selectFrom("competition_entry_tickets")
-          .select("ticket_number")
-          .where("competition_id", "=", competitionId)
-      )
       .execute();
 
     const existingNumbers = new Set(

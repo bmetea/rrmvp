@@ -86,17 +86,11 @@ async function findNextAvailableTicketNumbers(
   count: number
 ): Promise<number[]> {
   try {
-    // Get all existing ticket numbers for this competition from both tables
+    // Get all existing ticket numbers for this competition from competition_entry_tickets table
     const existingTickets = await db
-      .selectFrom("tickets")
+      .selectFrom("competition_entry_tickets")
       .select("ticket_number")
       .where("competition_id", "=", competitionId)
-      .union(
-        db
-          .selectFrom("competition_entry_tickets")
-          .select("ticket_number")
-          .where("competition_id", "=", competitionId)
-      )
       .execute();
 
     const existingNumbers = new Set(
@@ -278,7 +272,7 @@ export async function purchaseTickets(
           competition_entry_id: competitionEntry.id,
           competition_id: competitionId,
           ticket_number: ticketNumber,
-          winning_ticket: false,
+          winning_ticket: false, // Will be updated below if it's a winning ticket
         }));
 
         await trx
@@ -286,7 +280,88 @@ export async function purchaseTickets(
           .values(ticketValues)
           .execute();
 
-        // 8. Update competition tickets sold count
+        // 8. Check if any of the purchased tickets are winning tickets
+        const winningTicketsFound: { ticketNumber: number; prizeId: string }[] =
+          [];
+
+        // Get all prizes for this competition
+        const prizes = await trx
+          .selectFrom("competition_prizes")
+          .select(["id", "winning_ticket_numbers", "claimed_winning_tickets"])
+          .where("competition_id", "=", competitionId)
+          .execute();
+
+        // Create a mutable copy of prizes to track changes
+        const prizesMap = new Map(
+          prizes.map((prize) => [
+            prize.id,
+            {
+              ...prize,
+              winning_ticket_numbers: [...(prize.winning_ticket_numbers || [])],
+              claimed_winning_tickets: [
+                ...(prize.claimed_winning_tickets || []),
+              ],
+            },
+          ])
+        );
+
+        // Check each ticket against each prize
+        for (const ticketNumber of ticketNumbers) {
+          for (const [prizeId, prize] of prizesMap) {
+            if (
+              prize.winning_ticket_numbers &&
+              prize.winning_ticket_numbers.includes(ticketNumber)
+            ) {
+              winningTicketsFound.push({
+                ticketNumber,
+                prizeId,
+              });
+            }
+          }
+        }
+
+        // 9. Update winning tickets and prize data
+        for (const winningTicket of winningTicketsFound) {
+          // Update the ticket record to mark it as winning
+          await trx
+            .updateTable("competition_entry_tickets")
+            .set({ winning_ticket: true })
+            .where("competition_entry_id", "=", competitionEntry.id)
+            .where("ticket_number", "=", winningTicket.ticketNumber)
+            .execute();
+
+          // Update the prize by moving the ticket from winning to claimed
+          const prize = prizesMap.get(winningTicket.prizeId);
+          if (prize) {
+            // Remove from winning tickets
+            const updatedWinningTickets = prize.winning_ticket_numbers.filter(
+              (num) => num !== winningTicket.ticketNumber
+            );
+
+            // Add to claimed tickets
+            const updatedClaimedTickets = [
+              ...prize.claimed_winning_tickets,
+              winningTicket.ticketNumber,
+            ];
+
+            // Update the prize in memory
+            prize.winning_ticket_numbers = updatedWinningTickets;
+            prize.claimed_winning_tickets = updatedClaimedTickets;
+
+            // Update the database
+            await trx
+              .updateTable("competition_prizes")
+              .set({
+                winning_ticket_numbers: updatedWinningTickets,
+                claimed_winning_tickets: updatedClaimedTickets,
+                updated_at: new Date(),
+              })
+              .where("id", "=", winningTicket.prizeId)
+              .execute();
+          }
+        }
+
+        // 10. Update competition tickets sold count
         await trx
           .updateTable("competitions")
           .set({
@@ -300,11 +375,23 @@ export async function purchaseTickets(
         revalidatePath("/competitions/[id]", "page");
         revalidatePath("/profile", "page");
 
+        const winningTicketNumbers = winningTicketsFound.map(
+          (wt) => wt.ticketNumber
+        );
+        const winningMessage =
+          winningTicketNumbers.length > 0
+            ? ` 🎉 Congratulations! You won ${
+                winningTicketNumbers.length
+              } prize${winningTicketNumbers.length > 1 ? "s" : ""} with ticket${
+                winningTicketNumbers.length > 1 ? "s" : ""
+              } #${winningTicketNumbers.join(", #")}!`
+            : "";
+
         return {
           success: true,
           message: `Successfully purchased ${ticketCount} tickets (numbers: ${ticketNumbers.join(
             ", "
-          )})`,
+          )})${winningMessage}`,
           entryId: competitionEntry.id,
           ticketNumbers,
         };
