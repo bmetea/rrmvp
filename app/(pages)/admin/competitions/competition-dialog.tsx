@@ -508,6 +508,11 @@ export function CompetitionDialog({
         throw new Error(result.error);
       }
 
+      // Show warning if ticket price and total tickets were not updated due to prize lock
+      if ("warning" in result && result.warning) {
+        toast.warning(result.warning as string);
+      }
+
       // If creating and there are pending prizes, add them
       if (!isEdit && pendingPrizes.length > 0) {
         const competitionId = result.data.id;
@@ -1034,6 +1039,7 @@ export function CompetitionDialog({
                     setFormData({ ...formData, ticket_price: e.target.value })
                   }
                   required
+                  disabled={isPrizesLocked}
                 />
               </div>
 
@@ -1048,9 +1054,20 @@ export function CompetitionDialog({
                     setFormData({ ...formData, total_tickets: e.target.value })
                   }
                   required
+                  disabled={isPrizesLocked}
                 />
               </div>
             </div>
+
+            {isPrizesLocked && (
+              <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-200">
+                <p className="flex items-center">
+                  <Lock className="mr-1 h-3 w-3" />
+                  Ticket price and total tickets are locked because winning
+                  tickets have been computed.
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

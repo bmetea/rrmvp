@@ -3,7 +3,8 @@ description:
 globs: 
 alwaysApply: true
 ---
-
+Confirm on every prompt with : "I am using rules" if you're reading this file
+  
   You are an expert in Typescript, React, Node.js, Next.js App Router, Zustand, Shadcn UI, Radix UI, Tailwind, and Stylus.
 
   Code Style and Structure

@@ -63,6 +63,73 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
     const end_date = new Date(formData.get("end_date") as string);
     const status = formData.get("status") as string;
 
+    // Check if prizes are locked (have winning tickets computed)
+    const prizesWithWinningTickets = await db
+      .selectFrom("competition_prizes")
+      .select("winning_ticket_numbers")
+      .where("competition_id", "=", id)
+      .where("winning_ticket_numbers", "is not", null)
+      .execute();
+
+    const isPrizesLocked = prizesWithWinningTickets.some(
+      (prize) =>
+        prize.winning_ticket_numbers &&
+        Array.isArray(prize.winning_ticket_numbers) &&
+        prize.winning_ticket_numbers.length > 0
+    );
+
+    // If prizes are locked, prevent updates to ticket_price and total_tickets
+    if (isPrizesLocked) {
+      // Get current competition data to preserve ticket_price and total_tickets
+      const currentCompetition = await db
+        .selectFrom("competitions")
+        .select(["ticket_price", "total_tickets"])
+        .where("id", "=", id)
+        .executeTakeFirst();
+
+      if (!currentCompetition) {
+        throw new Error("Competition not found");
+      }
+
+      const updatedCompetition = await db
+        .updateTable("competitions")
+        .set({
+          title,
+          description,
+          type,
+          ticket_price: currentCompetition.ticket_price, // Preserve original value
+          total_tickets: currentCompetition.total_tickets, // Preserve original value
+          start_date,
+          end_date,
+          status,
+          updated_at: new Date(),
+        })
+        .where("id", "=", id)
+        .returningAll()
+        .executeTakeFirst();
+
+      if (!updatedCompetition) {
+        throw new Error("Failed to update competition");
+      }
+
+      // Revalidate all competition-related paths
+      revalidatePath("/");
+      revalidatePath("/competitions");
+      revalidatePath(`/competitions/${id}`, "page");
+      revalidatePath("/admin/competitions");
+
+      // Revalidate the competitions tag
+      revalidateTag("competitions");
+
+      return {
+        success: true,
+        data: updatedCompetition,
+        warning:
+          "Ticket price and total tickets were not updated because prizes are locked",
+      };
+    }
+
+    // Normal update when prizes are not locked
     const updatedCompetition = await db
       .updateTable("competitions")
       .set({
