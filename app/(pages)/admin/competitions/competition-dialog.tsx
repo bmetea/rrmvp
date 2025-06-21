@@ -61,6 +61,7 @@ interface PhaseBoxProps {
   onDrop: (product: any, phase: number) => void;
   onDelete: (prizeId: string) => void;
   onQuantityChange: (prizeId: string, quantity: number) => void;
+  isEditMode: boolean;
 }
 
 function PhaseBox({
@@ -69,6 +70,7 @@ function PhaseBox({
   onDrop,
   onDelete,
   onQuantityChange,
+  isEditMode,
 }: PhaseBoxProps) {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -155,6 +157,17 @@ interface CompetitionWithPrizes extends Omit<Competition, "prizes"> {
   prizes: CompetitionPrize[];
 }
 
+// Interface for prizes being added during creation
+interface PendingPrize {
+  id: string; // Temporary ID for local state management
+  phase: number;
+  total_quantity: number;
+  product_id: string;
+  name: string;
+  sub_name: string;
+  market_value: number;
+}
+
 export function CompetitionDialog({
   competition,
   open,
@@ -189,6 +202,9 @@ export function CompetitionDialog({
   });
   const [currentCompetition, setCurrentCompetition] =
     useState<CompetitionWithPrizes | null>(null);
+
+  // Store pending prizes for creation mode
+  const [pendingPrizes, setPendingPrizes] = useState<PendingPrize[]>([]);
 
   // Fetch products with search using server action
   useEffect(() => {
@@ -249,6 +265,24 @@ export function CompetitionDialog({
         .finally(() => {
           setLoading(false);
         });
+    } else if (open && !competition?.id) {
+      // For creation mode, just fetch products
+      setLoading(true);
+      fetchProductsAction()
+        .then((result) => {
+          if (result.success) {
+            setProducts(result.data);
+          } else {
+            toast.error("Failed to fetch products");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+          toast.error("Failed to load products");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, competition?.id]);
 
@@ -279,6 +313,9 @@ export function CompetitionDialog({
         end_date: "",
         status: "draft",
       });
+      // Reset pending prizes and phase products
+      setPendingPrizes([]);
+      setPhaseProducts({ 1: [], 2: [], 3: [] });
     }
   }, [competition]);
 
@@ -308,11 +345,36 @@ export function CompetitionDialog({
         throw new Error(result.error);
       }
 
-      toast.success(
-        isEdit
-          ? "Competition updated successfully"
-          : "Competition created successfully"
-      );
+      // If creating and there are pending prizes, add them
+      if (!isEdit && pendingPrizes.length > 0) {
+        const competitionId = result.data.id;
+        const prizePromises = pendingPrizes.map((prize) =>
+          addCompetitionPrizeAction(competitionId, {
+            product_id: prize.product_id,
+            total_quantity: prize.total_quantity,
+            phase: prize.phase,
+            prize_group: "main",
+            is_instant_win: false,
+            min_ticket_percentage: "0",
+            max_ticket_percentage: "100",
+          })
+        );
+
+        try {
+          await Promise.all(prizePromises);
+          toast.success("Competition and prizes created successfully");
+        } catch (error) {
+          console.error("Failed to add prizes:", error);
+          toast.error("Competition created but failed to add some prizes");
+        }
+      } else {
+        toast.success(
+          isEdit
+            ? "Competition updated successfully"
+            : "Competition created successfully"
+        );
+      }
+
       onOpenChange(false);
     } catch (error) {
       console.error(
@@ -334,33 +396,70 @@ export function CompetitionDialog({
   };
 
   const handleDrop = async (product: any, phase: number) => {
-    if (!competition?.id) {
-      toast.error("Competition must be saved first");
-      return;
-    }
-
-    try {
-      const result = await addCompetitionPrizeAction(competition.id, {
-        product_id: product.id,
-        total_quantity: 1,
-        phase: phase,
-        prize_group: "main",
-        is_instant_win: false,
-        min_ticket_percentage: "0",
-        max_ticket_percentage: "100",
-      });
-
-      if (!result.success) {
-        throw new Error(result.error);
+    if (isEdit) {
+      // Edit mode - add prize to database
+      if (!competition?.id) {
+        toast.error("Competition must be saved first");
+        return;
       }
 
-      // Update local state with the new prize
+      try {
+        const result = await addCompetitionPrizeAction(competition.id, {
+          product_id: product.id,
+          total_quantity: 1,
+          phase: phase,
+          prize_group: "main",
+          is_instant_win: false,
+          min_ticket_percentage: "0",
+          max_ticket_percentage: "100",
+        });
+
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // Update local state with the new prize
+        setPhaseProducts((prev) => ({
+          ...prev,
+          [phase]: [
+            ...prev[phase],
+            {
+              id: result.data.id,
+              name: product.name,
+              sub_name: product.sub_name,
+              market_value: product.market_value,
+              total_quantity: 1,
+              product_id: product.id,
+            },
+          ],
+        }));
+
+        toast.success("Prize added successfully");
+      } catch (error) {
+        console.error("Failed to add prize:", error);
+        toast.error("Failed to add prize");
+      }
+    } else {
+      // Creation mode - add to pending prizes
+      const pendingPrize: PendingPrize = {
+        id: `pending-${Date.now()}-${Math.random()}`, // Temporary ID
+        phase: phase,
+        total_quantity: 1,
+        product_id: product.id,
+        name: product.name,
+        sub_name: product.sub_name,
+        market_value: product.market_value,
+      };
+
+      setPendingPrizes((prev) => [...prev, pendingPrize]);
+
+      // Update phase products for display
       setPhaseProducts((prev) => ({
         ...prev,
         [phase]: [
           ...prev[phase],
           {
-            id: result.data.id,
+            id: pendingPrize.id,
             name: product.name,
             sub_name: product.sub_name,
             market_value: product.market_value,
@@ -370,22 +469,41 @@ export function CompetitionDialog({
         ],
       }));
 
-      toast.success("Prize added successfully");
-    } catch (error) {
-      console.error("Failed to add prize:", error);
-      toast.error("Failed to add prize");
+      toast.success("Prize added to competition");
     }
   };
 
   const handleDeletePrize = async (prizeId: string) => {
-    try {
-      const result = await deleteCompetitionPrizeAction(prizeId);
+    if (isEdit) {
+      // Edit mode - delete from database
+      try {
+        const result = await deleteCompetitionPrizeAction(prizeId);
 
-      if (!result.success) {
-        throw new Error(result.error);
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // Update local state
+        setPhaseProducts((prev) => {
+          const newPhases = { ...prev };
+          Object.keys(newPhases).forEach((phase) => {
+            newPhases[Number(phase)] = newPhases[Number(phase)].filter(
+              (p) => p.id !== prizeId
+            );
+          });
+          return newPhases;
+        });
+
+        toast.success("Prize deleted successfully");
+      } catch (error) {
+        console.error("Failed to delete prize:", error);
+        toast.error("Failed to delete prize");
       }
+    } else {
+      // Creation mode - remove from pending prizes
+      setPendingPrizes((prev) => prev.filter((p) => p.id !== prizeId));
 
-      // Update local state
+      // Update phase products for display
       setPhaseProducts((prev) => {
         const newPhases = { ...prev };
         Object.keys(newPhases).forEach((phase) => {
@@ -396,24 +514,47 @@ export function CompetitionDialog({
         return newPhases;
       });
 
-      toast.success("Prize deleted successfully");
-    } catch (error) {
-      console.error("Failed to delete prize:", error);
-      toast.error("Failed to delete prize");
+      toast.success("Prize removed from competition");
     }
   };
 
   const handleQuantityChange = async (prizeId: string, quantity: number) => {
-    try {
-      const result = await updateCompetitionPrizeAction(prizeId, {
-        total_quantity: quantity,
-      });
+    if (isEdit) {
+      // Edit mode - update in database
+      try {
+        const result = await updateCompetitionPrizeAction(prizeId, {
+          total_quantity: quantity,
+        });
 
-      if (!result.success) {
-        throw new Error(result.error);
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // Update local state
+        setPhaseProducts((prev) => {
+          const newPhases = { ...prev };
+          Object.keys(newPhases).forEach((phase) => {
+            newPhases[Number(phase)] = newPhases[Number(phase)].map((p) =>
+              p.id === prizeId ? { ...p, total_quantity: quantity } : p
+            );
+          });
+          return newPhases;
+        });
+
+        toast.success("Quantity updated successfully");
+      } catch (error) {
+        console.error("Failed to update quantity:", error);
+        toast.error("Failed to update quantity");
       }
+    } else {
+      // Creation mode - update pending prizes
+      setPendingPrizes((prev) =>
+        prev.map((p) =>
+          p.id === prizeId ? { ...p, total_quantity: quantity } : p
+        )
+      );
 
-      // Update local state
+      // Update phase products for display
       setPhaseProducts((prev) => {
         const newPhases = { ...prev };
         Object.keys(newPhases).forEach((phase) => {
@@ -423,11 +564,6 @@ export function CompetitionDialog({
         });
         return newPhases;
       });
-
-      toast.success("Quantity updated successfully");
-    } catch (error) {
-      console.error("Failed to update quantity:", error);
-      toast.error("Failed to update quantity");
     }
   };
 
@@ -581,92 +717,91 @@ export function CompetitionDialog({
           </form>
 
           {/* Middle Column - Product List */}
-          {isEdit && (
-            <div className="flex flex-col h-full overflow-hidden">
-              <h3 className="text-lg font-semibold mb-4">Available Products</h3>
+          <div className="flex flex-col h-full overflow-hidden">
+            <h3 className="text-lg font-semibold mb-4">Available Products</h3>
 
-              {/* Search Box */}
-              <div className="mb-4">
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full"
-                />
-              </div>
+            {/* Search Box */}
+            <div className="mb-4">
+              <Input
+                type="search"
+                placeholder="Search products..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full"
+              />
+            </div>
 
-              {/* Product List */}
-              <div className="border rounded-lg divide-y overflow-y-auto flex-1 min-h-0">
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, product)}
-                    className="w-full p-3 text-left hover:bg-muted/50 transition-colors cursor-move"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {product.sub_name}
-                        </p>
-                      </div>
-                      <p className="font-medium">
-                        {formatPrice(product.market_value, false)}
+            {/* Product List */}
+            <div className="border rounded-lg divide-y overflow-y-auto flex-1 min-h-0">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, product)}
+                  className="w-full p-3 text-left hover:bg-muted/50 transition-colors cursor-move"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {product.sub_name}
                       </p>
                     </div>
-                    {product.description && (
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
-                        {product.description}
-                      </p>
-                    )}
+                    <p className="font-medium">
+                      {formatPrice(product.market_value, false)}
+                    </p>
                   </div>
-                ))}
-              </div>
+                  {product.description && (
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
+                      {product.description}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
+          </div>
 
           {/* Right Column - Prize Phases */}
-          {isEdit && (
-            <div className="flex flex-col h-full overflow-hidden">
-              <h3 className="text-lg font-semibold mb-4">Prize Phases</h3>
-              <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
-                <TabsList className="grid grid-cols-3">
-                  <TabsTrigger value="phase1">Phase 1</TabsTrigger>
-                  <TabsTrigger value="phase2">Phase 2</TabsTrigger>
-                  <TabsTrigger value="phase3">Phase 3</TabsTrigger>
-                </TabsList>
-                <TabsContent value="phase1" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={1}
-                    products={phaseProducts[1]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                  />
-                </TabsContent>
-                <TabsContent value="phase2" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={2}
-                    products={phaseProducts[2]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                  />
-                </TabsContent>
-                <TabsContent value="phase3" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={3}
-                    products={phaseProducts[3]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                  />
-                </TabsContent>
-              </Tabs>
-            </div>
-          )}
+          <div className="flex flex-col h-full overflow-hidden">
+            <h3 className="text-lg font-semibold mb-4">Prize Phases</h3>
+            <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
+              <TabsList className="grid grid-cols-3">
+                <TabsTrigger value="phase1">Phase 1</TabsTrigger>
+                <TabsTrigger value="phase2">Phase 2</TabsTrigger>
+                <TabsTrigger value="phase3">Phase 3</TabsTrigger>
+              </TabsList>
+              <TabsContent value="phase1" className="flex-1 mt-0">
+                <PhaseBox
+                  phase={1}
+                  products={phaseProducts[1]}
+                  onDrop={handleDrop}
+                  onDelete={handleDeletePrize}
+                  onQuantityChange={handleQuantityChange}
+                  isEditMode={isEdit}
+                />
+              </TabsContent>
+              <TabsContent value="phase2" className="flex-1 mt-0">
+                <PhaseBox
+                  phase={2}
+                  products={phaseProducts[2]}
+                  onDrop={handleDrop}
+                  onDelete={handleDeletePrize}
+                  onQuantityChange={handleQuantityChange}
+                  isEditMode={isEdit}
+                />
+              </TabsContent>
+              <TabsContent value="phase3" className="flex-1 mt-0">
+                <PhaseBox
+                  phase={3}
+                  products={phaseProducts[3]}
+                  onDrop={handleDrop}
+                  onDelete={handleDeletePrize}
+                  onQuantityChange={handleQuantityChange}
+                  isEditMode={isEdit}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

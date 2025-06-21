@@ -52,10 +52,10 @@ alwaysApply: true
   - Use cleanup functions in useEffect to prevent memory leaks.
   - Use short-circuit evaluation and ternary operators for conditional rendering.
 
-  State Management
+  <!-- State Management
   - Use Zustand for global state management.
   - Lift state up when needed to share state between components.
-  - Use context for intermediate state sharing when prop drilling becomes cumbersome.
+  - Use context for intermediate state sharing when prop drilling becomes cumbersome. -->
 
   UI and Styling
   - Use Shadcn UI and Radix UI for component foundations.
