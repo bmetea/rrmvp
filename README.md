@@ -10,7 +10,71 @@
     - Where should we redirect after a purchase ? 
     - 
 
+## Google Analytics Setup
 
+This application includes Google Analytics 4 (GA4) tracking. The setup includes:
+
+### Environment Variables
+
+Add these environment variables to your `.env.local` file:
+
+```bash
+# Enable/disable analytics (default: false)
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
+
+# Google Analytics Tracking ID (default: G-TCT192NP1Q)
+NEXT_PUBLIC_GA_TRACKING_ID=G-TCT192NP1Q
+```
+
+### Features
+
+- **Automatic Page View Tracking**: Page views are automatically tracked when users navigate between pages
+- **Custom Event Tracking**: Use the `useGoogleAnalytics` hook to track custom events
+- **Purchase Tracking**: Built-in support for tracking e-commerce purchases
+- **Conditional Loading**: Analytics only loads when `NEXT_PUBLIC_ENABLE_ANALYTICS` is set to `true`
+
+### Usage
+
+#### Track Custom Events
+
+```tsx
+import { useGoogleAnalytics } from '@/hooks/use-google-analytics';
+
+function MyComponent() {
+  const { trackEvent } = useGoogleAnalytics();
+
+  const handleButtonClick = () => {
+    trackEvent('button_click', 'engagement', 'hero_cta', 1);
+  };
+
+  return <button onClick={handleButtonClick}>Click me</button>;
+}
+```
+
+#### Track Purchases
+
+```tsx
+import { useGoogleAnalytics } from '@/hooks/use-google-analytics';
+
+function CheckoutComponent() {
+  const { trackPurchase } = useGoogleAnalytics();
+
+  const handlePurchase = (orderData) => {
+    trackPurchase(
+      orderData.transactionId,
+      orderData.total,
+      'USD',
+      orderData.items
+    );
+  };
+}
+```
+
+### Components
+
+- `GoogleAnalytics`: Loads the Google Analytics script
+- `PageViewTracker`: Automatically tracks page views
+- `useGoogleAnalytics`: Hook for tracking custom events
 
 ## Notes
 

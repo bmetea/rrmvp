@@ -55,9 +55,11 @@ export default $config({
         NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL!,
         // Analytics configuration
         NEXT_PUBLIC_ENABLE_ANALYTICS:
-          process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "false",
+          process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "true",
         NEXT_PUBLIC_SEGMENT_WRITE_KEY:
           process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
+        NEXT_PUBLIC_GA_TRACKING_ID:
+          process.env.NEXT_PUBLIC_GA_TRACKING_ID || "G-TCT192NP1Q",
       },
     });
     return {

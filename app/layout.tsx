@@ -8,6 +8,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/lib/context/cart-context";
 import Script from "next/script";
 import { Toaster } from "sonner";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import PageViewTracker from "@/components/analytics/PageViewTracker";
 // import SegmentProvider from "@/components/analytics/SegmentProvider";
 
 const geistSans = Geist({
@@ -94,6 +96,8 @@ export default async function RootLayout({
           suppressHydrationWarning
         >
           <Toaster />
+          <GoogleAnalytics />
+          <PageViewTracker />
           {/* <SegmentProvider /> */}
           <ThemeProvider
             attribute="class"
