@@ -90,18 +90,6 @@ export interface Products {
   updated_at: Generated<Timestamp | null>;
 }
 
-export interface Tickets {
-  competition_id: string | null;
-  created_at: Generated<Timestamp | null>;
-  id: Generated<string>;
-  number_of_tickets: Generated<number | null>;
-  purchase_date: Generated<Timestamp | null>;
-  status: string;
-  ticket_number: number;
-  user_id: string;
-  wallet_transaction_id: string;
-}
-
 export interface Users {
   clerk_id: string;
   created_at: Generated<Timestamp | null>;
@@ -136,23 +124,13 @@ export interface WalletTransactions {
   wallet_id: string;
 }
 
-export interface Winners {
-  created_at: Generated<Timestamp | null>;
-  id: Generated<string>;
-  status: string;
-  ticket_id: string | null;
-  won_at: Generated<Timestamp | null>;
-}
-
 export interface DB {
   competition_entries: CompetitionEntries;
   competition_entry_tickets: CompetitionEntryTickets;
   competition_prizes: CompetitionPrizes;
   competitions: Competitions;
   products: Products;
-  tickets: Tickets;
   users: Users;
   wallet_transactions: WalletTransactions;
   wallets: Wallets;
-  winners: Winners;
 }

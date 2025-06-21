@@ -23,6 +23,6 @@ alwaysApply: false
 # Config
 - All the database connectoions should be from here : db/index.ts
 - When i mention database changes i mean we need to add the net migratoin here : db/migrations
-- after any migratoin we generate new types: db/types.ts
+- after any migratoin we generate new types using kysely, don't make changes to this file: db/types.ts
 
 
