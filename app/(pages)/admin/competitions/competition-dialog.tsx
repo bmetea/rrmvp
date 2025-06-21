@@ -40,7 +40,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2, Lock, Unlock, Calculator } from "lucide-react";
+import { Trash2, Lock, Unlock, Calculator, Eye } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -53,6 +53,134 @@ import { searchProductsAction } from "@/actions/product";
 import { Switch } from "@/components/ui/switch";
 import { OverrideDialog } from "./override-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Winning Tickets Modal Component
+interface WinningTicketsModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  prize: any;
+  phase: number;
+  totalTickets: number;
+  isRaffle?: boolean;
+}
+
+function WinningTicketsModal({
+  open,
+  onOpenChange,
+  prize,
+  phase,
+  totalTickets,
+  isRaffle = false,
+}: WinningTicketsModalProps) {
+  if (!prize) return null;
+
+  // Calculate phase boundaries
+  const phase1End = Math.floor(totalTickets / 3);
+  const phase2Start = phase1End + 1;
+  const phase2End = Math.floor((totalTickets * 2) / 3);
+  const phase3Start = phase2End + 1;
+  const phase3End = totalTickets;
+
+  const getPhaseRange = () => {
+    // For raffle competitions, show the full range
+    if (isRaffle) {
+      return `1-${totalTickets}`;
+    }
+
+    switch (phase) {
+      case 1:
+        return `1-${phase1End}`;
+      case 2:
+        return `${phase2Start}-${phase2End}`;
+      case 3:
+        return `${phase3Start}-${phase3End}`;
+      default:
+        return "N/A";
+    }
+  };
+
+  const getPhaseDescription = () => {
+    if (isRaffle) {
+      return "Raffle competition - full ticket range";
+    }
+    return `Phase ${phase}`;
+  };
+
+  const winningTickets = prize.winning_ticket_numbers || [];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Winning Ticket Numbers</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <h3 className="font-medium">{prize.name}</h3>
+            <p className="text-sm text-muted-foreground">
+              {getPhaseDescription()} • {formatPrice(prize.market_value, false)}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Ticket Range: {getPhaseRange()}
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">
+              Winning Ticket Numbers ({winningTickets.length} total)
+            </Label>
+            {winningTickets.length > 0 ? (
+              <div className="bg-muted p-3 rounded-md">
+                <div className="flex flex-wrap gap-1">
+                  {winningTickets.map((ticket: number, index: number) => (
+                    <span
+                      key={index}
+                      className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md font-mono"
+                    >
+                      {ticket}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No winning tickets have been generated yet.
+              </p>
+            )}
+          </div>
+
+          <div className="text-xs text-muted-foreground">
+            {isRaffle ? (
+              <>
+                <p>
+                  • These ticket numbers were randomly generated across the full
+                  ticket range
+                </p>
+                <p>• Each number is unique</p>
+                <p>
+                  • Winners are determined when users purchase matching ticket
+                  numbers
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  • These ticket numbers were randomly generated within Phase{" "}
+                  {phase}
+                </p>
+                <p>• Each number is unique within this phase</p>
+                <p>
+                  • Winners are determined when users purchase matching ticket
+                  numbers
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -81,6 +209,9 @@ function PhaseBox({
   isLocked = false,
   totalTickets = 0,
 }: PhaseBoxProps) {
+  const [selectedPrize, setSelectedPrize] = useState<any>(null);
+  const [winningTicketsModalOpen, setWinningTicketsModalOpen] = useState(false);
+
   const handleDragOver = (e: React.DragEvent) => {
     if (isLocked) return;
     e.preventDefault();
@@ -91,6 +222,11 @@ function PhaseBox({
     e.preventDefault();
     const product = JSON.parse(e.dataTransfer.getData("product"));
     onDrop(product, phase);
+  };
+
+  const handleViewWinningTickets = (prize: any) => {
+    setSelectedPrize(prize);
+    setWinningTicketsModalOpen(true);
   };
 
   // Calculate phase boundaries
@@ -113,6 +249,19 @@ function PhaseBox({
     }
   };
 
+  const getPhaseTicketLimit = () => {
+    switch (phase) {
+      case 1:
+        return phase1End;
+      case 2:
+        return phase2End - phase2Start + 1;
+      case 3:
+        return phase3End - phase3Start + 1;
+      default:
+        return 0;
+    }
+  };
+
   const getTotalWinningTickets = () => {
     return products.reduce(
       (sum, product) => sum + (product.total_quantity || 0),
@@ -130,98 +279,170 @@ function PhaseBox({
   };
 
   return (
-    <div
-      className={`border rounded-lg p-4 h-full flex flex-col ${
-        isLocked ? "opacity-60 pointer-events-none" : ""
-      }`}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      {/* Phase Header with Information */}
-      <div className="mb-4 space-y-2">
-        <div className="flex items-center justify-between">
-          <h4 className="font-medium">Phase {phase}</h4>
-          {totalTickets > 0 && (
-            <span className="text-xs text-muted-foreground">
-              Range: {getPhaseRange()}
-            </span>
+    <>
+      <div
+        className={`border rounded-lg p-4 h-full flex flex-col min-h-0 ${
+          isLocked ? "opacity-60 pointer-events-none" : ""
+        }`}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Phase Header with Information */}
+        <div className="flex-shrink-0 mb-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium">Phase {phase}</h4>
+            {totalTickets > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  Range: {getPhaseRange()}
+                </span>
+                <span
+                  className={`text-xs font-medium ${
+                    getTotalWinningTickets() <= getPhaseTicketLimit()
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {getTotalWinningTickets()}/{getPhaseTicketLimit()}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {isLocked && hasWinningTickets() && (
+            <div className="p-2 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-xs text-green-700 flex items-center">
+                <Calculator className="mr-1 h-3 w-3" />
+                {getTotalWinningTickets()} winning tickets generated
+              </p>
+            </div>
           )}
+
+          {isLocked && (
+            <div className="p-2 bg-amber-50 border border-amber-200 rounded-md">
+              <p className="text-xs text-amber-700 flex items-center">
+                <Lock className="mr-1 h-3 w-3" />
+                Prize editing is locked
+              </p>
+            </div>
+          )}
+
+          {/* Warning when approaching or exceeding phase limit */}
+          {totalTickets > 0 &&
+            !isLocked &&
+            (() => {
+              const currentTotal = getTotalWinningTickets();
+              const limit = getPhaseTicketLimit();
+              const percentage = (currentTotal / limit) * 100;
+
+              if (currentTotal > limit) {
+                return (
+                  <div className="p-2 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-xs text-red-700 flex items-center">
+                      <span className="mr-1">⚠️</span>
+                      Exceeds phase limit! Remove some prizes or reduce
+                      quantities.
+                    </p>
+                  </div>
+                );
+              } else if (percentage >= 80) {
+                return (
+                  <div className="p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <p className="text-xs text-yellow-700 flex items-center">
+                      <span className="mr-1">⚠️</span>
+                      Approaching phase limit ({Math.round(percentage)}% used)
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
         </div>
 
-        {isLocked && hasWinningTickets() && (
-          <div className="p-2 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-xs text-green-700 flex items-center">
-              <Calculator className="mr-1 h-3 w-3" />
-              {getTotalWinningTickets()} winning tickets generated
-            </p>
-          </div>
-        )}
-
-        {isLocked && (
-          <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded-md">
-            <p className="text-xs text-amber-700 flex items-center">
-              <Lock className="mr-1 h-3 w-3" />
-              Prize editing is locked
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="space-y-2 flex-1 overflow-y-auto">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-muted p-3 rounded-md flex flex-col gap-2"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="font-medium">{product.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {formatPrice(product.market_value, false)}
-                </p>
-                {product.winning_ticket_numbers &&
-                  Array.isArray(product.winning_ticket_numbers) &&
-                  product.winning_ticket_numbers.length > 0 && (
-                    <p className="text-xs text-green-600 mt-1">
-                      Winning tickets:{" "}
-                      {product.winning_ticket_numbers.join(", ")}
-                    </p>
+        <div className="flex-1 overflow-y-auto min-h-0 space-y-2">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="bg-muted p-3 rounded-md flex flex-col gap-2"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="font-medium">{product.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {formatPrice(product.market_value, false)}
+                  </p>
+                  {/* DEBUG: Show winning_ticket_numbers */}
+                  <p className="text-xs text-blue-600 break-all">
+                    {JSON.stringify(product.winning_ticket_numbers)}
+                  </p>
+                  {product.winning_ticket_numbers &&
+                    Array.isArray(product.winning_ticket_numbers) &&
+                    product.winning_ticket_numbers.length > 0 && (
+                      <p className="text-xs text-green-600 mt-1">
+                        Winning tickets: {product.winning_ticket_numbers.length}{" "}
+                        generated
+                      </p>
+                    )}
+                </div>
+                <div className="flex items-center gap-1">
+                  {product.winning_ticket_numbers &&
+                    Array.isArray(product.winning_ticket_numbers) &&
+                    product.winning_ticket_numbers.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewWinningTickets(product)}
+                        className="h-8 w-8"
+                        title="View winning ticket numbers"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    )}
+                  {!isLocked && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   )}
+                </div>
               </div>
-              {!isLocked && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(product.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
+              <div className="flex items-center gap-2 pt-2 border-t">
+                <Label htmlFor={`quantity-${product.id}`} className="text-xs">
+                  Quantity:
+                </Label>
+                <Input
+                  id={`quantity-${product.id}`}
+                  type="number"
+                  min="1"
+                  value={product.total_quantity || 1}
+                  onChange={(e) => {
+                    if (isLocked) return;
+                    const quantity = parseInt(e.target.value);
+                    if (!isNaN(quantity) && quantity > 0) {
+                      onQuantityChange(product.id, quantity);
+                    }
+                  }}
+                  className="w-16 h-8"
+                  disabled={isLocked}
+                />
+              </div>
             </div>
-            <div className="flex items-center gap-2 pt-2 border-t">
-              <Label htmlFor={`quantity-${product.id}`} className="text-xs">
-                Quantity:
-              </Label>
-              <Input
-                id={`quantity-${product.id}`}
-                type="number"
-                min="1"
-                value={product.total_quantity || 1}
-                onChange={(e) => {
-                  if (isLocked) return;
-                  const quantity = parseInt(e.target.value);
-                  if (!isNaN(quantity) && quantity > 0) {
-                    onQuantityChange(product.id, quantity);
-                  }
-                }}
-                className="w-16 h-8"
-                disabled={isLocked}
-              />
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* Winning Tickets Modal */}
+      <WinningTicketsModal
+        open={winningTicketsModalOpen}
+        onOpenChange={setWinningTicketsModalOpen}
+        prize={selectedPrize}
+        phase={phase}
+        totalTickets={totalTickets}
+      />
+    </>
   );
 }
 
@@ -233,6 +454,7 @@ interface RafflePrizeBoxProps {
   onQuantityChange: (prizeId: string, quantity: number) => void;
   isEditMode: boolean;
   isLocked?: boolean;
+  totalTickets?: number;
 }
 
 function RafflePrizeBox({
@@ -242,7 +464,11 @@ function RafflePrizeBox({
   onQuantityChange,
   isEditMode,
   isLocked = false,
+  totalTickets = 0,
 }: RafflePrizeBoxProps) {
+  const [selectedPrize, setSelectedPrize] = useState<any>(null);
+  const [winningTicketsModalOpen, setWinningTicketsModalOpen] = useState(false);
+
   const handleDragOver = (e: React.DragEvent) => {
     if (isLocked) return;
     e.preventDefault();
@@ -255,79 +481,174 @@ function RafflePrizeBox({
     onDrop(product);
   };
 
+  const handleViewWinningTickets = (prize: any) => {
+    setSelectedPrize(prize);
+    setWinningTicketsModalOpen(true);
+  };
+
+  const getTotalWinningTickets = () => {
+    return products.reduce(
+      (sum, product) => sum + (product.total_quantity || 0),
+      0
+    );
+  };
+
   return (
-    <div
-      className={`border rounded-lg p-4 h-full flex flex-col ${
-        isLocked ? "opacity-60 pointer-events-none" : ""
-      }`}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      {isLocked && (
-        <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded-md">
-          <p className="text-xs text-amber-700 flex items-center">
-            <Lock className="mr-1 h-3 w-3" />
-            Prize editing is locked
-          </p>
-        </div>
-      )}
-      <div className="mb-4">
-        <h4 className="font-medium text-sm text-muted-foreground">
-          Drag a product here to set as the raffle prize
-        </h4>
-        {products.length > 0 && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Only one product can be selected for raffle competitions
-          </p>
-        )}
-      </div>
-      <div className="space-y-2 flex-1 overflow-y-auto">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-muted p-3 rounded-md flex flex-col gap-2"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="font-medium">{product.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {formatPrice(product.market_value, false)}
-                </p>
-              </div>
-              {!isLocked && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(product.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-2 pt-2 border-t">
-              <Label htmlFor={`quantity-${product.id}`} className="text-xs">
-                Quantity:
-              </Label>
-              <Input
-                id={`quantity-${product.id}`}
-                type="number"
-                min="1"
-                value={product.total_quantity || 1}
-                onChange={(e) => {
-                  if (isLocked) return;
-                  const quantity = parseInt(e.target.value);
-                  if (!isNaN(quantity) && quantity > 0) {
-                    onQuantityChange(product.id, quantity);
-                  }
-                }}
-                className="w-16 h-8"
-                disabled={isLocked}
-              />
-            </div>
+    <>
+      <div
+        className={`border rounded-lg p-4 h-full flex flex-col min-h-0 ${
+          isLocked ? "opacity-60 pointer-events-none" : ""
+        }`}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {isLocked && (
+          <div className="flex-shrink-0 mb-4 p-2 bg-amber-50 border border-amber-200 rounded-md">
+            <p className="text-xs text-amber-700 flex items-center">
+              <Lock className="mr-1 h-3 w-3" />
+              Prize editing is locked
+            </p>
           </div>
-        ))}
+        )}
+        <div className="flex-shrink-0 mb-4">
+          <h4 className="font-medium text-sm text-muted-foreground">
+            Drag a product here to set as the raffle prize
+          </h4>
+          {products.length > 0 && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Only one product can be selected for raffle competitions
+            </p>
+          )}
+          {totalTickets > 0 && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-xs text-muted-foreground">
+                Range: 1-{totalTickets}
+              </span>
+              <span
+                className={`text-xs font-medium ${
+                  getTotalWinningTickets() <= totalTickets
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {getTotalWinningTickets()}/{totalTickets}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Warning when approaching or exceeding raffle limit */}
+        {totalTickets > 0 &&
+          !isLocked &&
+          (() => {
+            const currentTotal = getTotalWinningTickets();
+            const limit = totalTickets;
+            const percentage = (currentTotal / limit) * 100;
+
+            if (currentTotal > limit) {
+              return (
+                <div className="flex-shrink-0 mb-4 p-2 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-xs text-red-700 flex items-center">
+                    <span className="mr-1">⚠️</span>
+                    Exceeds total ticket limit! Reduce quantity.
+                  </p>
+                </div>
+              );
+            } else if (percentage >= 80) {
+              return (
+                <div className="flex-shrink-0 mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                  <p className="text-xs text-yellow-700 flex items-center">
+                    <span className="mr-1">⚠️</span>
+                    Approaching ticket limit ({Math.round(percentage)}% used)
+                  </p>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
+        <div className="flex-1 overflow-y-auto min-h-0 space-y-2">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="bg-muted p-3 rounded-md flex flex-col gap-2"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="font-medium">{product.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {formatPrice(product.market_value, false)}
+                  </p>
+                  {product.winning_ticket_numbers &&
+                    Array.isArray(product.winning_ticket_numbers) &&
+                    product.winning_ticket_numbers.length > 0 && (
+                      <p className="text-xs text-green-600 mt-1">
+                        Winning tickets: {product.winning_ticket_numbers.length}{" "}
+                        generated
+                      </p>
+                    )}
+                </div>
+                <div className="flex items-center gap-1">
+                  {isLocked &&
+                    product.winning_ticket_numbers &&
+                    Array.isArray(product.winning_ticket_numbers) &&
+                    product.winning_ticket_numbers.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewWinningTickets(product)}
+                        className="h-8 w-8"
+                        title="View winning ticket numbers"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    )}
+                  {!isLocked && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 pt-2 border-t">
+                <Label htmlFor={`quantity-${product.id}`} className="text-xs">
+                  Quantity:
+                </Label>
+                <Input
+                  id={`quantity-${product.id}`}
+                  type="number"
+                  min="1"
+                  value={product.total_quantity || 1}
+                  onChange={(e) => {
+                    if (isLocked) return;
+                    const quantity = parseInt(e.target.value);
+                    if (!isNaN(quantity) && quantity > 0) {
+                      onQuantityChange(product.id, quantity);
+                    }
+                  }}
+                  className="w-16 h-8"
+                  disabled={isLocked}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* Winning Tickets Modal */}
+      <WinningTicketsModal
+        open={winningTicketsModalOpen}
+        onOpenChange={setWinningTicketsModalOpen}
+        prize={selectedPrize}
+        phase={1} // Raffle competitions don't have phases, but we'll use phase 1 for consistency
+        totalTickets={totalTickets}
+        isRaffle={true} // Pass isRaffle=true for raffle prize box
+      />
+    </>
   );
 }
 
@@ -472,6 +793,7 @@ export function CompetitionDialog({
                     market_value: prize.product.market_value,
                     total_quantity: prize.total_quantity || 1,
                     product_id: prize.product.id,
+                    winning_ticket_numbers: prize.winning_ticket_numbers, // <-- include this
                   });
                 }
               });
@@ -1333,14 +1655,14 @@ export function CompetitionDialog({
 
           {/* Right Column - Prize Phases */}
           <div className="flex flex-col h-full overflow-hidden">
-            <h3 className="text-lg font-semibold mb-4">
+            <h3 className="text-lg font-semibold mb-4 flex-shrink-0">
               {formData.type === "raffle" ? "Raffle Prize" : "Prize Phases"}
             </h3>
 
             {/* Phase Distribution Summary */}
             {formData.type === "instant_win" &&
               currentCompetition?.total_tickets && (
-                <div className="mb-4 p-3 bg-muted rounded-lg">
+                <div className="mb-4 p-3 bg-muted rounded-lg flex-shrink-0">
                   <h4 className="text-sm font-medium mb-2">
                     Phase Distribution
                   </h4>
@@ -1378,60 +1700,66 @@ export function CompetitionDialog({
                 </div>
               )}
 
-            {formData.type === "raffle" ? (
-              <RafflePrizeBox
-                products={phaseProducts[1]}
-                onDrop={handleRaffleDrop}
-                onDelete={handleDeletePrize}
-                onQuantityChange={handleQuantityChange}
-                isEditMode={isEdit}
-                isLocked={isPrizesLocked}
-              />
-            ) : (
-              <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
-                <TabsList className="grid grid-cols-3">
-                  <TabsTrigger value="phase1">Phase 1</TabsTrigger>
-                  <TabsTrigger value="phase2">Phase 2</TabsTrigger>
-                  <TabsTrigger value="phase3">Phase 3</TabsTrigger>
-                </TabsList>
-                <TabsContent value="phase1" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={1}
-                    products={phaseProducts[1]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                    isEditMode={isEdit}
-                    isLocked={isPrizesLocked}
-                    totalTickets={currentCompetition?.total_tickets}
-                  />
-                </TabsContent>
-                <TabsContent value="phase2" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={2}
-                    products={phaseProducts[2]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                    isEditMode={isEdit}
-                    isLocked={isPrizesLocked}
-                    totalTickets={currentCompetition?.total_tickets}
-                  />
-                </TabsContent>
-                <TabsContent value="phase3" className="flex-1 mt-0">
-                  <PhaseBox
-                    phase={3}
-                    products={phaseProducts[3]}
-                    onDrop={handleDrop}
-                    onDelete={handleDeletePrize}
-                    onQuantityChange={handleQuantityChange}
-                    isEditMode={isEdit}
-                    isLocked={isPrizesLocked}
-                    totalTickets={currentCompetition?.total_tickets}
-                  />
-                </TabsContent>
-              </Tabs>
-            )}
+            <div className="flex-1 min-h-0">
+              {formData.type === "raffle" ? (
+                <RafflePrizeBox
+                  products={phaseProducts[1]}
+                  onDrop={handleRaffleDrop}
+                  onDelete={handleDeletePrize}
+                  onQuantityChange={handleQuantityChange}
+                  isEditMode={isEdit}
+                  isLocked={isPrizesLocked}
+                  totalTickets={currentCompetition?.total_tickets}
+                />
+              ) : (
+                <Tabs
+                  defaultValue="phase1"
+                  className="flex-1 flex flex-col h-full"
+                >
+                  <TabsList className="grid grid-cols-3 flex-shrink-0">
+                    <TabsTrigger value="phase1">Phase 1</TabsTrigger>
+                    <TabsTrigger value="phase2">Phase 2</TabsTrigger>
+                    <TabsTrigger value="phase3">Phase 3</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="phase1" className="flex-1 mt-0 min-h-0">
+                    <PhaseBox
+                      phase={1}
+                      products={phaseProducts[1]}
+                      onDrop={handleDrop}
+                      onDelete={handleDeletePrize}
+                      onQuantityChange={handleQuantityChange}
+                      isEditMode={isEdit}
+                      isLocked={isPrizesLocked}
+                      totalTickets={currentCompetition?.total_tickets}
+                    />
+                  </TabsContent>
+                  <TabsContent value="phase2" className="flex-1 mt-0 min-h-0">
+                    <PhaseBox
+                      phase={2}
+                      products={phaseProducts[2]}
+                      onDrop={handleDrop}
+                      onDelete={handleDeletePrize}
+                      onQuantityChange={handleQuantityChange}
+                      isEditMode={isEdit}
+                      isLocked={isPrizesLocked}
+                      totalTickets={currentCompetition?.total_tickets}
+                    />
+                  </TabsContent>
+                  <TabsContent value="phase3" className="flex-1 mt-0 min-h-0">
+                    <PhaseBox
+                      phase={3}
+                      products={phaseProducts[3]}
+                      onDrop={handleDrop}
+                      onDelete={handleDeletePrize}
+                      onQuantityChange={handleQuantityChange}
+                      isEditMode={isEdit}
+                      isLocked={isPrizesLocked}
+                      totalTickets={currentCompetition?.total_tickets}
+                    />
+                  </TabsContent>
+                </Tabs>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>

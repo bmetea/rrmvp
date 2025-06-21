@@ -13,6 +13,7 @@ Confirm on every prompt with : "I am using rules" if you're reading this file
   - Prefer iteration and modularization over code duplication.
   - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
   - Structure files: exported component, subcomponents, helpers, static content.
+  - Stop using sed commands
 
   Standard.js Rules
   - Use 2 space indentation.
