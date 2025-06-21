@@ -277,9 +277,7 @@ interface CompetitionPrize {
   total_quantity: number;
   prize_group: string;
   is_instant_win: boolean;
-  min_ticket_percentage: string;
-  max_ticket_percentage: string;
-  winning_ticket_numbers: string[] | null;
+  winning_ticket_numbers: number[] | null;
   product: PrizeProduct;
 }
 
@@ -523,8 +521,6 @@ export function CompetitionDialog({
             phase: prize.phase,
             prize_group: "main",
             is_instant_win: false,
-            min_ticket_percentage: "0",
-            max_ticket_percentage: "100",
           })
         );
 
@@ -578,8 +574,6 @@ export function CompetitionDialog({
           phase: phase,
           prize_group: "main",
           is_instant_win: false,
-          min_ticket_percentage: "0",
-          max_ticket_percentage: "100",
         });
 
         if (!result.success) {
@@ -657,8 +651,6 @@ export function CompetitionDialog({
           phase: 1, // Raffle competitions use phase 1
           prize_group: "main",
           is_instant_win: false,
-          min_ticket_percentage: "0",
-          max_ticket_percentage: "100",
         });
 
         if (!result.success) {

@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export interface UserTicket {
   id: string;
-  ticket_number: string;
+  ticket_number: number;
   status: string;
   purchase_date: Date;
   number_of_tickets: number;

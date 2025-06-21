@@ -21,8 +21,6 @@ export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-export type Numeric = ColumnType<string, number | string, number | string>;
-
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface CompetitionPrizes {
@@ -31,14 +29,12 @@ export interface CompetitionPrizes {
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
   is_instant_win: Generated<boolean | null>;
-  max_ticket_percentage: Numeric;
-  min_ticket_percentage: Numeric;
   phase: number;
   prize_group: string;
   product_id: string | null;
   total_quantity: number;
   updated_at: Generated<Timestamp | null>;
-  winning_ticket_numbers: string[] | null;
+  winning_ticket_numbers: number[] | null;
   won_quantity: Generated<number>;
 }
 
@@ -78,7 +74,7 @@ export interface Tickets {
   number_of_tickets: Generated<number | null>;
   purchase_date: Generated<Timestamp | null>;
   status: string;
-  ticket_number: string;
+  ticket_number: number;
   user_id: string;
   wallet_transaction_id: string;
 }
@@ -118,12 +114,10 @@ export interface WalletTransactions {
 }
 
 export interface Winners {
-  competition_prize_id: string | null;
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
   status: string;
   ticket_id: string | null;
-  wallet_transaction_id: string | null;
   won_at: Generated<Timestamp | null>;
 }
 

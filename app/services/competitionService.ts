@@ -42,9 +42,7 @@ type CompetitionPrize = {
   phase: number;
   prize_group: string;
   is_instant_win: boolean;
-  min_ticket_percentage: string;
-  max_ticket_percentage: string;
-  winning_ticket_numbers: string[];
+  winning_ticket_numbers: number[];
   product: Product;
 };
 
@@ -135,8 +133,6 @@ export async function fetchCompetitionPrizesServer(
       "competition_prizes.phase",
       "competition_prizes.prize_group",
       "competition_prizes.is_instant_win",
-      "competition_prizes.min_ticket_percentage",
-      "competition_prizes.max_ticket_percentage",
       "competition_prizes.winning_ticket_numbers",
       "products.id as product_id",
       "products.name",
@@ -265,8 +261,6 @@ export async function fetchCompetitionByIdServer(
       "competition_prizes.phase",
       "competition_prizes.prize_group",
       "competition_prizes.is_instant_win",
-      "competition_prizes.min_ticket_percentage",
-      "competition_prizes.max_ticket_percentage",
       "competition_prizes.winning_ticket_numbers",
       "products.id as product_id",
       "products.name",

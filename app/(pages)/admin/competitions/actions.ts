@@ -175,8 +175,6 @@ export async function addCompetitionPrizeAction(
     phase: number;
     prize_group: string;
     is_instant_win: boolean;
-    min_ticket_percentage: string;
-    max_ticket_percentage: string;
   }
 ) {
   try {
@@ -190,8 +188,6 @@ export async function addCompetitionPrizeAction(
         phase: formData.phase,
         prize_group: formData.prize_group,
         is_instant_win: formData.is_instant_win,
-        min_ticket_percentage: formData.min_ticket_percentage,
-        max_ticket_percentage: formData.max_ticket_percentage,
         won_quantity: 0,
         created_at: new Date(),
         updated_at: new Date(),
@@ -331,8 +327,6 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
         "competition_prizes.total_quantity",
         "competition_prizes.prize_group",
         "competition_prizes.is_instant_win",
-        "competition_prizes.min_ticket_percentage",
-        "competition_prizes.max_ticket_percentage",
         "competition_prizes.winning_ticket_numbers",
         "products.id as product_id",
         "products.name",
@@ -354,8 +348,6 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
           total_quantity: prize.total_quantity,
           prize_group: prize.prize_group,
           is_instant_win: prize.is_instant_win,
-          min_ticket_percentage: prize.min_ticket_percentage,
-          max_ticket_percentage: prize.max_ticket_percentage,
           winning_ticket_numbers: prize.winning_ticket_numbers,
           product: {
             id: prize.product_id,
@@ -404,29 +396,19 @@ export async function computeWinningTicketsAction(competitionId: string) {
 
     // Generate winning ticket numbers for each prize
     const totalTickets = competition.total_tickets;
-    const usedTicketNumbers = new Set<string>();
+    const usedTicketNumbers = new Set<number>();
 
     for (const prize of prizes) {
-      const winningTicketNumbers: string[] = [];
+      const winningTicketNumbers: number[] = [];
       const ticketsToGenerate = prize.total_quantity;
 
-      // Calculate the range for this prize based on percentage
-      const minTicket = Math.floor(
-        (parseFloat(prize.min_ticket_percentage) / 100) * totalTickets
-      );
-      const maxTicket = Math.floor(
-        (parseFloat(prize.max_ticket_percentage) / 100) * totalTickets
-      );
-
-      // Generate unique winning ticket numbers within the specified range
+      // Generate unique winning ticket numbers across the entire ticket range
       while (winningTicketNumbers.length < ticketsToGenerate) {
-        const ticketNumber =
-          Math.floor(Math.random() * (maxTicket - minTicket + 1)) + minTicket;
-        const ticketString = ticketNumber.toString().padStart(6, "0");
+        const ticketNumber = Math.floor(Math.random() * totalTickets) + 1; // 1 to totalTickets
 
-        if (!usedTicketNumbers.has(ticketString)) {
-          usedTicketNumbers.add(ticketString);
-          winningTicketNumbers.push(ticketString);
+        if (!usedTicketNumbers.has(ticketNumber)) {
+          usedTicketNumbers.add(ticketNumber);
+          winningTicketNumbers.push(ticketNumber);
         }
       }
 

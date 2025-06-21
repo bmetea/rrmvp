@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Kysely PostgreSQL database patterns
+globs: ["db/**/*.ts", "lib/db/**/*.ts"]
+alwaysApply: false
+---
+
+# Kysely PostgreSQL Guidelines
+
+- Define database schema interfaces with proper types
+- Use Kysely's type-safe query builders for all database operations
+- Implement proper transaction handling for multi-operation queries
+- Use prepared statements for parameterized queries
+- Define database migrations with clear up/down functions
+- Implement proper error handling for database operations
+- Use connection pooling for efficient database connections
+
+
+# Config
+- All the database connectoions should be from here : db/index.ts
+- When i mention database changes i mean we need to add the net migratoin here : db/migrations
+- after any migratoin we generate new types: db/types.ts
+
+

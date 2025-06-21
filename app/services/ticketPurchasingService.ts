@@ -138,10 +138,8 @@ export async function purchaseTickets(
           .execute();
 
         // 5. Create a single ticket entry with number_of_tickets
-        const ticketNumber = Math.random()
-          .toString(36)
-          .substring(2, 15)
-          .toUpperCase();
+        const ticketNumber =
+          Math.floor(Math.random() * competition.total_tickets) + 1;
         const ticket = await trx
           .insertInto("tickets")
           .values({
