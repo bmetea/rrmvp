@@ -388,39 +388,100 @@ export async function computeWinningTicketsAction(competitionId: string) {
       .selectFrom("competition_prizes")
       .selectAll()
       .where("competition_id", "=", competitionId)
+      .orderBy("phase", "asc")
       .execute();
 
     if (prizes.length === 0) {
       throw new Error("No prizes found for this competition");
     }
 
-    // Generate winning ticket numbers for each prize
+    // Calculate phase boundaries
     const totalTickets = competition.total_tickets;
-    const usedTicketNumbers = new Set<number>();
+    const phase1End = Math.floor(totalTickets / 3);
+    const phase2Start = phase1End + 1;
+    const phase2End = Math.floor((totalTickets * 2) / 3);
+    const phase3Start = phase2End + 1;
+    const phase3End = totalTickets;
 
-    for (const prize of prizes) {
-      const winningTicketNumbers: number[] = [];
-      const ticketsToGenerate = prize.total_quantity;
+    // Group prizes by phase
+    const prizesByPhase = prizes.reduce((acc, prize) => {
+      if (!acc[prize.phase]) {
+        acc[prize.phase] = [];
+      }
+      acc[prize.phase].push(prize);
+      return acc;
+    }, {} as Record<number, typeof prizes>);
 
-      // Generate unique winning ticket numbers across the entire ticket range
-      while (winningTicketNumbers.length < ticketsToGenerate) {
-        const ticketNumber = Math.floor(Math.random() * totalTickets) + 1; // 1 to totalTickets
+    // Generate winning ticket numbers for each phase
+    for (const [phase, phasePrizes] of Object.entries(prizesByPhase)) {
+      const phaseNum = parseInt(phase);
 
-        if (!usedTicketNumbers.has(ticketNumber)) {
-          usedTicketNumbers.add(ticketNumber);
-          winningTicketNumbers.push(ticketNumber);
-        }
+      // Calculate phase boundaries
+      let phaseStart: number, phaseEnd: number;
+
+      switch (phaseNum) {
+        case 1:
+          phaseStart = 1;
+          phaseEnd = phase1End;
+          break;
+        case 2:
+          phaseStart = phase2Start;
+          phaseEnd = phase2End;
+          break;
+        case 3:
+          phaseStart = phase3Start;
+          phaseEnd = phase3End;
+          break;
+        default:
+          throw new Error(`Invalid phase number: ${phaseNum}`);
       }
 
-      // Update the prize with winning ticket numbers
-      await db
-        .updateTable("competition_prizes")
-        .set({
-          winning_ticket_numbers: winningTicketNumbers,
-          updated_at: new Date(),
-        })
-        .where("id", "=", prize.id)
-        .execute();
+      // Calculate total winning tickets for this phase
+      const phaseTotalWinningTickets = phasePrizes.reduce(
+        (sum, prize) => sum + prize.total_quantity,
+        0
+      );
+
+      // Validate that we don't exceed the phase ticket range
+      const phaseTicketRange = phaseEnd - phaseStart + 1;
+      if (phaseTotalWinningTickets > phaseTicketRange) {
+        throw new Error(
+          `Phase ${phaseNum} has ${phaseTotalWinningTickets} winning tickets but only ${phaseTicketRange} tickets available in range ${phaseStart}-${phaseEnd}`
+        );
+      }
+
+      // Generate unique winning ticket numbers for this phase
+      const usedTicketNumbers = new Set<number>();
+
+      for (const prize of phasePrizes) {
+        const winningTicketNumbers: number[] = [];
+        const ticketsToGenerate = prize.total_quantity;
+
+        // Generate unique winning ticket numbers within the phase range
+        while (winningTicketNumbers.length < ticketsToGenerate) {
+          const ticketNumber =
+            Math.floor(Math.random() * (phaseEnd - phaseStart + 1)) +
+            phaseStart;
+
+          if (!usedTicketNumbers.has(ticketNumber)) {
+            usedTicketNumbers.add(ticketNumber);
+            winningTicketNumbers.push(ticketNumber);
+          }
+        }
+
+        // Sort the winning ticket numbers for consistency
+        winningTicketNumbers.sort((a, b) => a - b);
+
+        // Update the prize with winning ticket numbers
+        await db
+          .updateTable("competition_prizes")
+          .set({
+            winning_ticket_numbers: winningTicketNumbers,
+            updated_at: new Date(),
+          })
+          .where("id", "=", prize.id)
+          .execute();
+      }
     }
 
     // Revalidate all competition-related paths
@@ -432,7 +493,25 @@ export async function computeWinningTicketsAction(competitionId: string) {
     // Revalidate the competitions tag
     revalidateTag("competitions");
 
-    return { success: true, message: "Winning tickets computed successfully" };
+    return {
+      success: true,
+      message:
+        "Winning tickets computed successfully using phase-based distribution",
+      data: {
+        totalTickets,
+        phase1Range: `1-${phase1End}`,
+        phase2Range: `${phase2Start}-${phase2End}`,
+        phase3Range: `${phase3Start}-${phase3End}`,
+        prizesByPhase: Object.keys(prizesByPhase).map((phase) => ({
+          phase: parseInt(phase),
+          totalPrizes: prizesByPhase[parseInt(phase)].length,
+          totalWinningTickets: prizesByPhase[parseInt(phase)].reduce(
+            (sum, prize) => sum + prize.total_quantity,
+            0
+          ),
+        })),
+      },
+    };
   } catch (error) {
     console.error("Failed to compute winning tickets:", error);
     return {
