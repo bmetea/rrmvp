@@ -7,12 +7,20 @@ import {
 } from "@/services/competitionEntryService";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, Trophy } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
+type ViewMode = "list" | "detail";
 
 export default function MyEntriesPage() {
   const [entries, setEntries] = useState<CompetitionEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [selectedEntry, setSelectedEntry] = useState<CompetitionEntry | null>(
+    null
+  );
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -68,6 +76,20 @@ export default function MyEntriesPage() {
     } (${tickets.length} total)`;
   };
 
+  const handleEntryClick = (entry: CompetitionEntry) => {
+    setSelectedEntry(entry);
+    setViewMode("detail");
+  };
+
+  const handleBackToList = () => {
+    setViewMode("list");
+    setSelectedEntry(null);
+  };
+
+  const getWinningTicketsCount = (tickets: CompetitionEntry["tickets"]) => {
+    return tickets.filter((ticket) => ticket.winning_ticket).length;
+  };
+
   if (loading) {
     return (
       <div className="space-y-4 p-4">
@@ -89,17 +111,124 @@ export default function MyEntriesPage() {
     );
   }
 
+  // Detail view
+  if (viewMode === "detail" && selectedEntry) {
+    const winningTicketsCount = getWinningTicketsCount(selectedEntry.tickets);
+    const hasWinningTickets = winningTicketsCount > 0;
+
+    return (
+      <div className="space-y-4 p-4">
+        {/* Back button */}
+        <Button
+          variant="ghost"
+          onClick={handleBackToList}
+          className="mb-4 -ml-2"
+        >
+          <ChevronLeft className="h-4 w-4 mr-2" />
+          Back to Entries
+        </Button>
+
+        {/* Entry detail */}
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4 mb-6">
+              {selectedEntry.competition.media_info?.thumbnail && (
+                <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
+                  <Image
+                    src={selectedEntry.competition.media_info.thumbnail}
+                    alt={selectedEntry.competition.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold mb-2">
+                  {selectedEntry.competition.title}
+                </h2>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Purchased on {formatDate(selectedEntry.created_at)}
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {selectedEntry.tickets.length} ticket
+                  {selectedEntry.tickets.length > 1 ? "s" : ""} purchased
+                </p>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                    selectedEntry.competition.status === "active"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {selectedEntry.competition.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Winning tickets summary */}
+            {hasWinningTickets && (
+              <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-600" />
+                  <span className="font-medium text-yellow-800">
+                    Congratulations! You have {winningTicketsCount} winning
+                    ticket{winningTicketsCount > 1 ? "s" : ""} in this
+                    competition.
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Tickets grid */}
+            <div>
+              <h3 className="font-medium mb-4">Your Tickets</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                {selectedEntry.tickets.map((ticket) => (
+                  <div
+                    key={ticket.id}
+                    className={`p-4 rounded-lg border text-center transition-colors ${
+                      ticket.winning_ticket
+                        ? "bg-yellow-50 border-yellow-200 shadow-sm"
+                        : "bg-background border-border"
+                    }`}
+                  >
+                    <div className="text-lg font-bold mb-2">
+                      #{ticket.ticket_number}
+                    </div>
+                    {ticket.winning_ticket && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-yellow-100 text-yellow-800 border-yellow-200"
+                      >
+                        <Trophy className="h-3 w-3 mr-1" />
+                        Winner
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // List view
   return (
     <div className="space-y-4 p-4">
       <h2 className="text-xl font-semibold">My Entries</h2>
       <div className="space-y-4">
-        {entries.map((entry) => (
-          <Link
-            key={entry.id}
-            href={`/competitions/${entry.competition.id}`}
-            className="block"
-          >
-            <Card className="transition-colors hover:bg-accent">
+        {entries.map((entry) => {
+          const winningTicketsCount = getWinningTicketsCount(entry.tickets);
+          const hasWinningTickets = winningTicketsCount > 0;
+
+          return (
+            <Card
+              key={entry.id}
+              className="transition-colors hover:bg-accent cursor-pointer"
+              onClick={() => handleEntryClick(entry)}
+            >
               <CardContent className="flex items-center gap-4 p-4">
                 {entry.competition.media_info?.thumbnail && (
                   <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
@@ -119,6 +248,15 @@ export default function MyEntriesPage() {
                   <p className="text-sm text-muted-foreground">
                     Purchased on {formatDate(entry.created_at)}
                   </p>
+                  {hasWinningTickets && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Trophy className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm font-medium text-yellow-700">
+                        {winningTicketsCount} winning ticket
+                        {winningTicketsCount > 1 ? "s" : ""}!
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="text-right">
                   <span
@@ -133,8 +271,8 @@ export default function MyEntriesPage() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
