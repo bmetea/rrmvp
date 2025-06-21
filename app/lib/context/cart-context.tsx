@@ -44,15 +44,46 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Ensure items is always an array
+  const safeItems = Array.isArray(items) ? items : [];
+
   // Load cart from localStorage on mount
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       if (savedCart) {
-        setItems(JSON.parse(savedCart));
+        const parsedCart = JSON.parse(savedCart);
+        // Ensure we have a valid array
+        if (Array.isArray(parsedCart)) {
+          // Validate each item has the required structure
+          const validItems = parsedCart.filter(
+            (item) =>
+              item &&
+              typeof item === "object" &&
+              item.competition &&
+              item.competition.id &&
+              typeof item.quantity === "number" &&
+              item.quantity > 0
+          );
+          setItems(validItems);
+        } else {
+          console.warn(
+            "Invalid cart data in localStorage, clearing:",
+            parsedCart
+          );
+          localStorage.removeItem(CART_STORAGE_KEY);
+          setItems([]);
+        }
       }
     } catch (error) {
       console.error("Error loading cart from localStorage:", error);
+      // Clear corrupted data
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch (e) {
+        console.error("Error clearing corrupted cart data:", e);
+      }
+      setItems([]);
     }
     setIsInitialized(true);
   }, []);
@@ -61,12 +92,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isInitialized) {
       try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(safeItems));
       } catch (error) {
         console.error("Error saving cart to localStorage:", error);
       }
     }
-  }, [items, isInitialized]);
+  }, [safeItems, isInitialized]);
 
   const addItem = useCallback((competition: Competition, quantity: number) => {
     if (!competition.id) {
@@ -75,26 +106,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     setItems((currentItems) => {
-      const existingItem = currentItems.find(
+      const safeCurrentItems = Array.isArray(currentItems) ? currentItems : [];
+      const existingItem = safeCurrentItems.find(
         (item) => item.competition.id === competition.id
       );
 
       if (existingItem) {
-        return currentItems.map((item) =>
+        return safeCurrentItems.map((item) =>
           item.competition.id === competition.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
 
-      return [...currentItems, { competition, quantity }];
+      return [...safeCurrentItems, { competition, quantity }];
     });
   }, []);
 
   // Track add to cart analytics
   useEffect(() => {
-    if (items.length > 0) {
-      const lastItem = items[items.length - 1];
+    if (safeItems.length > 0) {
+      const lastItem = safeItems[safeItems.length - 1];
       analytics.then(([a]) =>
         a.track("Add to Cart", {
           competitionId: lastItem.competition.id,
@@ -103,34 +135,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
         })
       );
     }
-  }, [items]);
+  }, [safeItems]);
 
   const removeItem = useCallback((competitionId: string) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.competition.id !== competitionId)
-    );
+    setItems((currentItems) => {
+      const safeCurrentItems = Array.isArray(currentItems) ? currentItems : [];
+      return safeCurrentItems.filter(
+        (item) => item.competition.id !== competitionId
+      );
+    });
   }, []);
 
   // Track remove from cart analytics
   useEffect(() => {
-    if (items.length === 0) {
+    if (safeItems.length === 0) {
       analytics.then(([a]) =>
         a.track("Remove from Cart", {
           competitionId: "all",
         })
       );
     }
-  }, [items]);
+  }, [safeItems]);
 
   const updateQuantity = useCallback(
     (competitionId: string, quantity: number) => {
-      setItems((currentItems) =>
-        currentItems.map((item) =>
+      setItems((currentItems) => {
+        const safeCurrentItems = Array.isArray(currentItems)
+          ? currentItems
+          : [];
+        return safeCurrentItems.map((item) =>
           item.competition.id === competitionId
             ? { ...item, quantity: Math.max(1, quantity) }
             : item
-        )
-      );
+        );
+      });
     },
     []
   );
@@ -145,25 +183,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Memoize calculated values
-  const totalItems = useMemo(
-    () => items.reduce((total, item) => total + item.quantity, 0),
-    [items]
-  );
+  const totalItems = useMemo(() => {
+    if (!Array.isArray(safeItems)) {
+      console.warn("SafeItems is not an array:", safeItems);
+      return 0;
+    }
+    return safeItems.reduce((total, item) => total + (item?.quantity || 0), 0);
+  }, [safeItems]);
 
-  const totalPrice = useMemo(
-    () =>
-      items.reduce(
-        (total, item) =>
-          total + item.quantity * (item.competition.ticket_price || 0),
-        0
-      ),
-    [items]
-  );
+  const totalPrice = useMemo(() => {
+    if (!Array.isArray(safeItems)) {
+      console.warn("SafeItems is not an array:", safeItems);
+      return 0;
+    }
+    return safeItems.reduce(
+      (total, item) =>
+        total + (item?.quantity || 0) * (item?.competition?.ticket_price || 0),
+      0
+    );
+  }, [safeItems]);
 
   // Memoize context value
   const contextValue = useMemo(
     () => ({
-      items,
+      items: safeItems,
       addItem,
       removeItem,
       updateQuantity,
@@ -172,7 +215,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       totalPrice,
     }),
     [
-      items,
+      safeItems,
       addItem,
       removeItem,
       updateQuantity,

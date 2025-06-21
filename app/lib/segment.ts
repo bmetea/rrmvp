@@ -14,10 +14,13 @@ const noopAnalytics = {
     ]),
 };
 
-// Only initialize Segment if enabled
+// Only initialize Segment if enabled and write key is provided
+const isAnalyticsEnabled = process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true";
+const segmentWriteKey = process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY;
+
 export const analytics =
-  process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true"
+  isAnalyticsEnabled && segmentWriteKey && segmentWriteKey.trim() !== ""
     ? AnalyticsBrowser.load({
-        writeKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
+        writeKey: segmentWriteKey,
       })
     : noopAnalytics;

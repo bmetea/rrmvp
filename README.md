@@ -76,6 +76,39 @@ function CheckoutComponent() {
 - `PageViewTracker`: Automatically tracks page views
 - `useGoogleAnalytics`: Hook for tracking custom events
 
+## Segment Analytics Setup
+
+This application also includes Segment Analytics for enhanced tracking capabilities.
+
+### Environment Variables
+
+Add these environment variables to your `.env.local` file:
+
+```bash
+# Enable/disable analytics (default: false)
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
+
+# Segment Write Key (required for Segment analytics)
+NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key_here
+```
+
+### Features
+
+- **Automatic Cart Tracking**: Cart events are automatically tracked when items are added/removed
+- **Checkout Tracking**: Purchase events are tracked during checkout
+- **Conditional Loading**: Segment only loads when both `NEXT_PUBLIC_ENABLE_ANALYTICS` is `true` and a valid write key is provided
+- **Graceful Degradation**: If analytics is disabled or write key is missing, a no-op analytics instance is used
+
+### Usage
+
+Segment analytics is automatically used in the cart context and checkout flow. No additional setup is required.
+
+### Configuration Notes
+
+- If `NEXT_PUBLIC_ENABLE_ANALYTICS` is set to `false`, both Google Analytics and Segment will be disabled
+- If `NEXT_PUBLIC_SEGMENT_WRITE_KEY` is not provided or is empty, Segment will be disabled but Google Analytics will still work (if enabled)
+- The application will not throw errors if Segment is not properly configured
+
 ## Notes
 
 ### Using Other db stage on sst dev
