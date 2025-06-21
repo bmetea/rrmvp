@@ -247,17 +247,16 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
   try {
     const competition = await db
       .selectFrom("competitions")
-      .where("id", "=", competitionId)
       .selectAll()
+      .where("id", "=", competitionId)
       .executeTakeFirst();
 
     if (!competition) {
-      return { success: false, error: "Competition not found" };
+      throw new Error("Competition not found");
     }
 
     const prizes = await db
       .selectFrom("competition_prizes")
-      .where("competition_id", "=", competitionId)
       .innerJoin("products", "products.id", "competition_prizes.product_id")
       .select([
         "competition_prizes.id",
@@ -267,12 +266,15 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
         "competition_prizes.is_instant_win",
         "competition_prizes.min_ticket_percentage",
         "competition_prizes.max_ticket_percentage",
+        "competition_prizes.winning_ticket_numbers",
         "products.id as product_id",
         "products.name",
         "products.sub_name",
         "products.market_value",
         "products.description",
       ])
+      .where("competition_prizes.competition_id", "=", competitionId)
+      .orderBy("competition_prizes.phase", "asc")
       .execute();
 
     return {
@@ -287,6 +289,7 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
           is_instant_win: prize.is_instant_win,
           min_ticket_percentage: prize.min_ticket_percentage,
           max_ticket_percentage: prize.max_ticket_percentage,
+          winning_ticket_numbers: prize.winning_ticket_numbers,
           product: {
             id: prize.product_id,
             name: prize.name,
@@ -300,5 +303,123 @@ export async function fetchCompetitionWithPrizesAction(competitionId: string) {
   } catch (error) {
     console.error("Failed to fetch competition with prizes:", error);
     return { success: false, error: "Failed to fetch competition with prizes" };
+  }
+}
+
+export async function computeWinningTicketsAction(competitionId: string) {
+  try {
+    // Get the competition and its prizes
+    const competition = await db
+      .selectFrom("competitions")
+      .selectAll()
+      .where("id", "=", competitionId)
+      .executeTakeFirst();
+
+    if (!competition) {
+      throw new Error("Competition not found");
+    }
+
+    if (competition.type !== "instant_win") {
+      throw new Error(
+        "Winning tickets can only be computed for instant win competitions"
+      );
+    }
+
+    const prizes = await db
+      .selectFrom("competition_prizes")
+      .selectAll()
+      .where("competition_id", "=", competitionId)
+      .execute();
+
+    if (prizes.length === 0) {
+      throw new Error("No prizes found for this competition");
+    }
+
+    // Generate winning ticket numbers for each prize
+    const totalTickets = competition.total_tickets;
+    const usedTicketNumbers = new Set<string>();
+
+    for (const prize of prizes) {
+      const winningTicketNumbers: string[] = [];
+      const ticketsToGenerate = prize.total_quantity;
+
+      // Calculate the range for this prize based on percentage
+      const minTicket = Math.floor(
+        (parseFloat(prize.min_ticket_percentage) / 100) * totalTickets
+      );
+      const maxTicket = Math.floor(
+        (parseFloat(prize.max_ticket_percentage) / 100) * totalTickets
+      );
+
+      // Generate unique winning ticket numbers within the specified range
+      while (winningTicketNumbers.length < ticketsToGenerate) {
+        const ticketNumber =
+          Math.floor(Math.random() * (maxTicket - minTicket + 1)) + minTicket;
+        const ticketString = ticketNumber.toString().padStart(6, "0");
+
+        if (!usedTicketNumbers.has(ticketString)) {
+          usedTicketNumbers.add(ticketString);
+          winningTicketNumbers.push(ticketString);
+        }
+      }
+
+      // Update the prize with winning ticket numbers
+      await db
+        .updateTable("competition_prizes")
+        .set({
+          winning_ticket_numbers: winningTicketNumbers,
+          updated_at: new Date(),
+        })
+        .where("id", "=", prize.id)
+        .execute();
+    }
+
+    // Revalidate all competition-related paths
+    revalidatePath("/");
+    revalidatePath("/competitions");
+    revalidatePath(`/competitions/${competitionId}`, "page");
+    revalidatePath("/admin/competitions");
+
+    // Revalidate the competitions tag
+    revalidateTag("competitions");
+
+    return { success: true, message: "Winning tickets computed successfully" };
+  } catch (error) {
+    console.error("Failed to compute winning tickets:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to compute winning tickets",
+    };
+  }
+}
+
+export async function clearWinningTicketsAction(competitionId: string) {
+  try {
+    // Clear winning ticket numbers for all prizes in the competition
+    await db
+      .updateTable("competition_prizes")
+      .set({
+        winning_ticket_numbers: null,
+        updated_at: new Date(),
+      })
+      .where("competition_id", "=", competitionId)
+      .execute();
+
+    // Revalidate all competition-related paths
+    revalidatePath("/");
+    revalidatePath("/competitions");
+    revalidatePath(`/competitions/${competitionId}`, "page");
+    revalidatePath("/admin/competitions");
+
+    // Revalidate the competitions tag
+    revalidateTag("competitions");
+
+    return { success: true, message: "Winning tickets cleared successfully" };
+  } catch (error) {
+    console.error("Failed to clear winning tickets:", error);
+    return { success: false, error: "Failed to clear winning tickets" };
   }
 }

@@ -20,6 +20,8 @@ import {
   fetchProductsAction,
   updateCompetitionPrizeAction,
   fetchCompetitionWithPrizesAction,
+  computeWinningTicketsAction,
+  clearWinningTicketsAction,
 } from "./actions";
 import {
   Select,
@@ -38,7 +40,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2 } from "lucide-react";
+import { Trash2, Lock, Unlock, Calculator } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -49,6 +51,8 @@ import { fetchProductsServer } from "@/services/productService";
 import { useDebounce } from "@/hooks/use-debounce";
 import { searchProductsAction } from "@/actions/product";
 import { Switch } from "@/components/ui/switch";
+import { OverrideDialog } from "./override-dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -63,6 +67,7 @@ interface PhaseBoxProps {
   onDelete: (prizeId: string) => void;
   onQuantityChange: (prizeId: string, quantity: number) => void;
   isEditMode: boolean;
+  isLocked?: boolean;
 }
 
 function PhaseBox({
@@ -72,12 +77,15 @@ function PhaseBox({
   onDelete,
   onQuantityChange,
   isEditMode,
+  isLocked = false,
 }: PhaseBoxProps) {
   const handleDragOver = (e: React.DragEvent) => {
+    if (isLocked) return;
     e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent) => {
+    if (isLocked) return;
     e.preventDefault();
     const product = JSON.parse(e.dataTransfer.getData("product"));
     onDrop(product, phase);
@@ -85,10 +93,20 @@ function PhaseBox({
 
   return (
     <div
-      className="border rounded-lg p-4 h-full flex flex-col"
+      className={`border rounded-lg p-4 h-full flex flex-col ${
+        isLocked ? "opacity-60 pointer-events-none" : ""
+      }`}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {isLocked && (
+        <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded-md">
+          <p className="text-xs text-amber-700 flex items-center">
+            <Lock className="mr-1 h-3 w-3" />
+            Prize editing is locked
+          </p>
+        </div>
+      )}
       <div className="space-y-2 flex-1 overflow-y-auto">
         {products.map((product) => (
           <div
@@ -102,13 +120,15 @@ function PhaseBox({
                   {formatPrice(product.market_value, false)}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onDelete(product.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {!isLocked && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDelete(product.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <div className="flex items-center gap-2 pt-2 border-t">
               <Label htmlFor={`quantity-${product.id}`} className="text-xs">
@@ -120,12 +140,14 @@ function PhaseBox({
                 min="1"
                 value={product.total_quantity || 1}
                 onChange={(e) => {
+                  if (isLocked) return;
                   const quantity = parseInt(e.target.value);
                   if (!isNaN(quantity) && quantity > 0) {
                     onQuantityChange(product.id, quantity);
                   }
                 }}
                 className="w-16 h-8"
+                disabled={isLocked}
               />
             </div>
           </div>
@@ -142,6 +164,7 @@ interface RafflePrizeBoxProps {
   onDelete: (prizeId: string) => void;
   onQuantityChange: (prizeId: string, quantity: number) => void;
   isEditMode: boolean;
+  isLocked?: boolean;
 }
 
 function RafflePrizeBox({
@@ -150,12 +173,15 @@ function RafflePrizeBox({
   onDelete,
   onQuantityChange,
   isEditMode,
+  isLocked = false,
 }: RafflePrizeBoxProps) {
   const handleDragOver = (e: React.DragEvent) => {
+    if (isLocked) return;
     e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent) => {
+    if (isLocked) return;
     e.preventDefault();
     const product = JSON.parse(e.dataTransfer.getData("product"));
     onDrop(product);
@@ -163,10 +189,20 @@ function RafflePrizeBox({
 
   return (
     <div
-      className="border rounded-lg p-4 h-full flex flex-col"
+      className={`border rounded-lg p-4 h-full flex flex-col ${
+        isLocked ? "opacity-60 pointer-events-none" : ""
+      }`}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {isLocked && (
+        <div className="mb-4 p-2 bg-amber-50 border border-amber-200 rounded-md">
+          <p className="text-xs text-amber-700 flex items-center">
+            <Lock className="mr-1 h-3 w-3" />
+            Prize editing is locked
+          </p>
+        </div>
+      )}
       <div className="mb-4">
         <h4 className="font-medium text-sm text-muted-foreground">
           Drag a product here to set as the raffle prize
@@ -190,13 +226,15 @@ function RafflePrizeBox({
                   {formatPrice(product.market_value, false)}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onDelete(product.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {!isLocked && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDelete(product.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <div className="flex items-center gap-2 pt-2 border-t">
               <Label htmlFor={`quantity-${product.id}`} className="text-xs">
@@ -208,12 +246,14 @@ function RafflePrizeBox({
                 min="1"
                 value={product.total_quantity || 1}
                 onChange={(e) => {
+                  if (isLocked) return;
                   const quantity = parseInt(e.target.value);
                   if (!isNaN(quantity) && quantity > 0) {
                     onQuantityChange(product.id, quantity);
                   }
                 }}
                 className="w-16 h-8"
+                disabled={isLocked}
               />
             </div>
           </div>
@@ -239,6 +279,7 @@ interface CompetitionPrize {
   is_instant_win: boolean;
   min_ticket_percentage: string;
   max_ticket_percentage: string;
+  winning_ticket_numbers: string[] | null;
   product: PrizeProduct;
 }
 
@@ -262,38 +303,34 @@ export function CompetitionDialog({
   open,
   onOpenChange,
 }: CompetitionDialogProps) {
-  const isEdit = !!competition;
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 300);
-  const [products, setProducts] = useState<any[]>([]);
   const [formData, setFormData] = useState({
-    title: competition?.title || "",
-    description: competition?.description || "",
-    type: competition?.type || "raffle",
-    ticket_price: competition
-      ? formatPrice(competition.ticket_price, false)
-      : "",
-    total_tickets: competition?.total_tickets.toString() || "",
-    start_date: competition
-      ? new Date(competition.start_date).toISOString().split("T")[0]
-      : "",
-    end_date: competition
-      ? new Date(competition.end_date).toISOString().split("T")[0]
-      : "",
-    status: competition?.status || "draft",
+    title: "",
+    description: "",
+    type: "raffle" as "raffle" | "instant_win",
+    ticket_price: "",
+    total_tickets: "",
+    start_date: "",
+    end_date: "",
+    status: "draft" as "draft" | "active" | "ended" | "cancelled",
   });
 
-  const [phaseProducts, setPhaseProducts] = useState<{ [key: number]: any[] }>({
-    1: [],
-    2: [],
-    3: [],
-  });
+  const [products, setProducts] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [currentCompetition, setCurrentCompetition] =
     useState<CompetitionWithPrizes | null>(null);
-
-  // Store pending prizes for creation mode
+  const [phaseProducts, setPhaseProducts] = useState<{
+    [key: number]: any[];
+  }>({ 1: [], 2: [], 3: [] });
   const [pendingPrizes, setPendingPrizes] = useState<PendingPrize[]>([]);
+
+  // Instant win functionality state
+  const [overrideDialogOpen, setOverrideDialogOpen] = useState(false);
+  const [isPrizesLocked, setIsPrizesLocked] = useState(false);
+  const [isComputingTickets, setIsComputingTickets] = useState(false);
+
+  const debouncedSearch = useDebounce(search, 300);
 
   // Helper function to check if there are multiple items across phases
   const hasMultipleItemsAcrossPhases = () => {
@@ -347,18 +384,32 @@ export function CompetitionDialog({
             );
             // Initialize phase products from competition prizes
             const phases: { [key: number]: any[] } = { 1: [], 2: [], 3: [] };
-            competitionResult.data.prizes.forEach((prize) => {
-              if (prize.phase && phases[prize.phase]) {
-                phases[prize.phase].push({
-                  id: prize.id,
-                  name: prize.product.name,
-                  sub_name: prize.product.sub_name,
-                  market_value: prize.product.market_value,
-                  total_quantity: prize.total_quantity,
-                  product_id: prize.product.id,
-                });
-              }
-            });
+            if (
+              competitionResult.data.prizes &&
+              Array.isArray(competitionResult.data.prizes)
+            ) {
+              competitionResult.data.prizes.forEach((prize) => {
+                if (
+                  prize &&
+                  prize.phase &&
+                  phases[prize.phase] &&
+                  prize.product &&
+                  prize.product.name &&
+                  prize.product.sub_name !== undefined &&
+                  prize.product.market_value !== undefined &&
+                  prize.id
+                ) {
+                  phases[prize.phase].push({
+                    id: prize.id,
+                    name: prize.product.name,
+                    sub_name: prize.product.sub_name,
+                    market_value: prize.product.market_value,
+                    total_quantity: prize.total_quantity || 1,
+                    product_id: prize.product.id,
+                  });
+                }
+              });
+            }
             setPhaseProducts(phases);
           } else {
             toast.error("Failed to fetch competition data");
@@ -395,19 +446,25 @@ export function CompetitionDialog({
   // Update form data when competition changes (for edit mode)
   useEffect(() => {
     if (competition) {
+      setIsEdit(true);
       setFormData({
         title: competition.title,
         description: competition.description,
-        type: competition.type,
+        type: competition.type as "raffle" | "instant_win",
         ticket_price: formatPrice(competition.ticket_price, false),
         total_tickets: competition.total_tickets.toString(),
         start_date: new Date(competition.start_date)
           .toISOString()
           .split("T")[0],
         end_date: new Date(competition.end_date).toISOString().split("T")[0],
-        status: competition.status,
+        status: competition.status as
+          | "draft"
+          | "active"
+          | "ended"
+          | "cancelled",
       });
     } else {
+      setIsEdit(false);
       // Reset form for create mode
       setFormData({
         title: "",
@@ -750,6 +807,137 @@ export function CompetitionDialog({
     }
   };
 
+  // Check if prizes are locked (have winning tickets computed)
+  const checkPrizesLocked = () => {
+    if (!currentCompetition || !isEdit || !currentCompetition.prizes)
+      return false;
+    return currentCompetition.prizes.some(
+      (prize) =>
+        prize &&
+        prize.winning_ticket_numbers &&
+        Array.isArray(prize.winning_ticket_numbers) &&
+        prize.winning_ticket_numbers.length > 0
+    );
+  };
+
+  // Check if all required fields are completed for instant win
+  const isInstantWinReady = () => {
+    if (formData.type !== "instant_win") return false;
+
+    const hasRequiredFields =
+      formData.title &&
+      formData.description &&
+      formData.ticket_price &&
+      formData.total_tickets &&
+      formData.start_date &&
+      formData.end_date;
+
+    if (!hasRequiredFields) return false;
+
+    // Check if there are prizes in any phase
+    const hasPrizes = Object.values(phaseProducts).some(
+      (phase) => phase.length > 0
+    );
+
+    // For new competitions, also check pending prizes
+    const hasPendingPrizes = pendingPrizes.length > 0;
+
+    return hasPrizes || hasPendingPrizes;
+  };
+
+  // Compute winning tickets
+  const handleComputeWinningTickets = async () => {
+    if (!isInstantWinReady()) {
+      toast.error(
+        "Please complete all fields and add at least one prize first"
+      );
+      return;
+    }
+
+    // If this is a new competition, save it first
+    if (!isEdit) {
+      toast.error(
+        "Please save the competition first before computing winning tickets"
+      );
+      return;
+    }
+
+    if (!currentCompetition?.id) {
+      toast.error("Competition must be saved first");
+      return;
+    }
+
+    setIsComputingTickets(true);
+    try {
+      const result = await computeWinningTicketsAction(currentCompetition.id);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      toast.success(result.message || "Winning tickets computed successfully");
+
+      // Refresh competition data to get updated winning ticket numbers
+      const refreshResult = await fetchCompetitionWithPrizesAction(
+        currentCompetition.id
+      );
+      if (refreshResult.success) {
+        setCurrentCompetition(refreshResult.data as CompetitionWithPrizes);
+        setIsPrizesLocked(true);
+      }
+    } catch (error) {
+      console.error("Failed to compute winning tickets:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to compute winning tickets"
+      );
+    } finally {
+      setIsComputingTickets(false);
+    }
+  };
+
+  // Handle override confirmation
+  const handleOverrideConfirm = async () => {
+    if (!currentCompetition?.id) {
+      toast.error("Competition not found");
+      return;
+    }
+
+    try {
+      const result = await clearWinningTicketsAction(currentCompetition.id);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      toast.success(result.message || "Winning tickets cleared successfully");
+
+      // Refresh competition data
+      const refreshResult = await fetchCompetitionWithPrizesAction(
+        currentCompetition.id
+      );
+      if (refreshResult.success) {
+        setCurrentCompetition(refreshResult.data as CompetitionWithPrizes);
+        setIsPrizesLocked(false);
+      }
+    } catch (error) {
+      console.error("Failed to clear winning tickets:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to clear winning tickets"
+      );
+    }
+  };
+
+  // Update locked state when competition changes
+  useEffect(() => {
+    if (currentCompetition) {
+      setIsPrizesLocked(checkPrizesLocked());
+    }
+  }, [currentCompetition]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[1400px] h-[90vh] overflow-hidden">
@@ -896,9 +1084,9 @@ export function CompetitionDialog({
               <Label htmlFor="status">Status</Label>
               <Select
                 value={formData.status}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, status: value })
-                }
+                onValueChange={(
+                  value: "draft" | "active" | "ended" | "cancelled"
+                ) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
@@ -911,6 +1099,66 @@ export function CompetitionDialog({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Instant Win Controls */}
+            {formData.type === "instant_win" && (
+              <div className="space-y-4 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Instant Win Controls</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {isPrizesLocked
+                        ? "Prizes are locked. Winning tickets have been computed."
+                        : "Compute winning tickets to lock prize editing."}
+                    </p>
+                  </div>
+                  {isPrizesLocked && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setOverrideDialogOpen(true)}
+                      className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                    >
+                      <Unlock className="mr-2 h-4 w-4" />
+                      Override Lock
+                    </Button>
+                  )}
+                </div>
+
+                {isPrizesLocked ? (
+                  <Alert>
+                    <Lock className="h-4 w-4" />
+                    <AlertDescription>
+                      Prize editing is locked because winning tickets have been
+                      computed. Use the override button above if you need to
+                      make changes.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <div className="space-y-2">
+                    <Button
+                      type="button"
+                      variant="default"
+                      onClick={handleComputeWinningTickets}
+                      disabled={!isInstantWinReady() || isComputingTickets}
+                      className="w-full"
+                    >
+                      <Calculator className="mr-2 h-4 w-4" />
+                      {isComputingTickets
+                        ? "Computing..."
+                        : "Compute Winning Tickets"}
+                    </Button>
+                    {!isInstantWinReady() && (
+                      <p className="text-xs text-muted-foreground">
+                        Complete all fields and add at least one prize to enable
+                        computation.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex justify-end space-x-2 pt-4">
               <Button
@@ -953,9 +1201,13 @@ export function CompetitionDialog({
               {products.map((product) => (
                 <div
                   key={product.id}
-                  draggable
+                  draggable={!isPrizesLocked}
                   onDragStart={(e) => handleDragStart(e, product)}
-                  className="w-full p-3 text-left hover:bg-muted/50 transition-colors cursor-move"
+                  className={`w-full p-3 text-left transition-colors ${
+                    isPrizesLocked
+                      ? "opacity-60 cursor-not-allowed"
+                      : "hover:bg-muted/50 cursor-move"
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -990,6 +1242,7 @@ export function CompetitionDialog({
                 onDelete={handleDeletePrize}
                 onQuantityChange={handleQuantityChange}
                 isEditMode={isEdit}
+                isLocked={isPrizesLocked}
               />
             ) : (
               <Tabs defaultValue="phase1" className="flex-1 flex flex-col">
@@ -1006,6 +1259,7 @@ export function CompetitionDialog({
                     onDelete={handleDeletePrize}
                     onQuantityChange={handleQuantityChange}
                     isEditMode={isEdit}
+                    isLocked={isPrizesLocked}
                   />
                 </TabsContent>
                 <TabsContent value="phase2" className="flex-1 mt-0">
@@ -1016,6 +1270,7 @@ export function CompetitionDialog({
                     onDelete={handleDeletePrize}
                     onQuantityChange={handleQuantityChange}
                     isEditMode={isEdit}
+                    isLocked={isPrizesLocked}
                   />
                 </TabsContent>
                 <TabsContent value="phase3" className="flex-1 mt-0">
@@ -1026,6 +1281,7 @@ export function CompetitionDialog({
                     onDelete={handleDeletePrize}
                     onQuantityChange={handleQuantityChange}
                     isEditMode={isEdit}
+                    isLocked={isPrizesLocked}
                   />
                 </TabsContent>
               </Tabs>
@@ -1033,6 +1289,13 @@ export function CompetitionDialog({
           </div>
         </div>
       </DialogContent>
+
+      {/* Override Dialog */}
+      <OverrideDialog
+        open={overrideDialogOpen}
+        onOpenChange={setOverrideDialogOpen}
+        onConfirm={handleOverrideConfirm}
+      />
     </Dialog>
   );
 }
