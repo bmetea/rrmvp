@@ -1,14 +1,25 @@
 ## TODO
-- 09 June 2025
-  - Users and wallets are being created on user sign-up
-  - Users can buy tickets and then the buys are being registered in the db
-    - the cart is being cleared
-    - it redirects to 404
-    - we're making a db entry for every ticket, that needs to change
-    - check 
-  - Questions
-    - Where should we redirect after a purchase ? 
-    - 
+- Look for admin in token scopes
+- Link winning ticket numbers to actual products
+- Consolidate database into a single migration
+- audit logs
+- admin
+- transactions
+  - create separate transaction table
+- wallet credit
+  - increment credit when credit is won
+  - decrement credit when tickets are bought
+  - implement image upload s3
+- ui/ux
+  - fonts
+  - follow design everywhere you can
+  - on mobile it seems hard to get to the entries page...
+- transform into monorepo
+- infra
+  - hosting/dns
+  - deploy prod
+  - how to do migrations automatically ? 
+  - cicd?
 
 ## Google Analytics Setup
 

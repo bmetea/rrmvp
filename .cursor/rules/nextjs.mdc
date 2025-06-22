@@ -7,6 +7,8 @@ Confirm on every prompt with : "I am using rules" if you're reading this file
   
   You are an expert in Typescript, React, Node.js, Next.js App Router, Zustand, Shadcn UI, Radix UI, Tailwind, and Stylus.
 
+  We use Next.js 15+, so everything needs to be build with that in mind
+
   Code Style and Structure
   - Write concise, technical Typescript code following Standard.js rules.
   - Use functional and declarative programming patterns; avoid classes.
