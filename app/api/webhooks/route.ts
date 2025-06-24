@@ -12,6 +12,14 @@ interface NewUser {
   username: string | null;
 }
 
+interface UpdatedUser {
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  image_url: string | null;
+  username: string | null;
+}
+
 async function createUser(user: NewUser) {
   // First create the user
   const createdUser = await db
@@ -32,6 +40,17 @@ async function createUser(user: NewUser) {
   }
 
   return createdUser;
+}
+
+async function updateUser(clerkId: string, userData: UpdatedUser) {
+  const updatedUser = await db
+    .updateTable("users")
+    .set(userData)
+    .where("clerk_id", "=", clerkId)
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  return updatedUser;
 }
 
 export async function POST(req: NextRequest) {
@@ -71,6 +90,38 @@ export async function POST(req: NextRequest) {
       await createUser(newUser);
 
       return NextResponse.json({ message: "User created successfully" });
+    }
+
+    if (eventType === "user.updated") {
+      const {
+        id,
+        email_addresses,
+        first_name,
+        last_name,
+        image_url,
+        username,
+      } = evt.data;
+
+      const primaryEmail = email_addresses[0]?.email_address;
+
+      if (!primaryEmail) {
+        return NextResponse.json(
+          { error: "No primary email found" },
+          { status: 400 }
+        );
+      }
+
+      const updatedUserData: UpdatedUser = {
+        email: primaryEmail,
+        first_name,
+        last_name,
+        image_url,
+        username,
+      };
+
+      await updateUser(id, updatedUserData);
+
+      return NextResponse.json({ message: "User updated successfully" });
     }
 
     return NextResponse.json({ message: "Webhook processed" });
