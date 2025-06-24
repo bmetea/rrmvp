@@ -1,5 +1,5 @@
 ## TODO
-- Look for admin in token scopes
+- [x] Look for admin in token scopes
 - Link winning ticket numbers to actual products
 - Consolidate database into a single migration
 - audit logs
