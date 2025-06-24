@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { fetchAllCompetitionsServer } from "@/services/competitionService";
 import { CompetitionsClient } from "./competitions-client";
+import { isUserAdmin } from "@/actions/admin";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,10 +14,10 @@ export default async function CompetitionsPage() {
     redirect("/sign-in");
   }
 
-  // TODO: Check if user is admin
-  // if (!isAdmin) {
-  //   redirect("/");
-  // }
+  // Check if user is admin
+  if (!(await isUserAdmin())) {
+    redirect("/");
+  }
 
   const competitions = await fetchAllCompetitionsServer();
 

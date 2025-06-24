@@ -16,7 +16,7 @@ import {
   useAuth,
 } from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/components/cart/competition-cart-dialog";
-import MyEntriesPage from "@/components/user/MyEntriesPage";
+import { useAdmin } from "@/hooks/use-admin";
 
 interface NavbarProps {
   activePath?: string;
@@ -34,13 +34,12 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { userId } = useAuth();
+  const { isAdmin } = useAdmin();
 
   // After mounting, we can safely show the theme-dependent logo
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const isAdmin = userId === "user_2yHYTl16QkOq9usCZ4GlQY3vW3Y";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
@@ -129,15 +128,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <ThemeToggle />
             <CompetitionCartDialog />
             <SignedIn>
-              <UserButton>
-                <UserButton.UserProfilePage
-                  label="My Entries"
-                  url="entries"
-                  labelIcon={<Ticket className="h-4 w-4" />}
-                >
-                  <MyEntriesPage />
-                </UserButton.UserProfilePage>
-              </UserButton>
+              <UserButton />
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
@@ -195,15 +186,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <ThemeToggle />
                 <SignedIn>
                   <CompetitionCartDialog />
-                  <UserButton>
-                    <UserButton.UserProfilePage
-                      label="My Entries"
-                      url="entries"
-                      labelIcon={<Ticket className="h-4 w-4" />}
-                    >
-                      <MyEntriesPage />
-                    </UserButton.UserProfilePage>
-                  </UserButton>
+                  <UserButton />
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">

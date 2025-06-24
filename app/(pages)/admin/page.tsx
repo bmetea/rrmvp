@@ -1,19 +1,10 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar } from "lucide-react";
 
 export default function AdminDashboard() {
-  const { userId } = useAuth();
-
-  // Check if the user is the admin
-  if (userId !== "user_2yHYTl16QkOq9usCZ4GlQY3vW3Y") {
-    redirect("/");
-  }
-
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">

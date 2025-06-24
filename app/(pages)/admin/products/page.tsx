@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { fetchProductsServer } from "@/services/productService";
 import { ProductsClient } from "./products-client";
+import { isUserAdmin } from "@/actions/admin";
 
 interface ProductsPageProps {
   searchParams: Promise<{
@@ -16,7 +17,7 @@ export default async function ProductsPage({
   const { userId } = await auth();
 
   // Check if the user is the admin
-  if (userId !== "user_2yHYTl16QkOq9usCZ4GlQY3vW3Y") {
+  if (!userId || !(await isUserAdmin())) {
     redirect("/");
   }
 

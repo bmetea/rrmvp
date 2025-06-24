@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Package, Trophy } from "lucide-react";
+import { useAdmin } from "@/hooks/use-admin";
 
 export default function AdminLayout({
   children,
@@ -13,10 +14,20 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { userId } = useAuth();
+  const { isAdmin, isLoading } = useAdmin();
   const pathname = usePathname();
 
+  // Show loading state while checking admin status
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   // Check if the user is the admin
-  if (userId !== "user_2yHYTl16QkOq9usCZ4GlQY3vW3Y") {
+  if (!isAdmin) {
     redirect("/");
   }
 
