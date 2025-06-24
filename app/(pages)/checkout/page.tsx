@@ -4,7 +4,7 @@ import { useCart } from "@/lib/context/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, CreditCard } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import { PaymentForm } from "@/components/payments/payment-form";
 import { formatPrice } from "@/lib/utils/price";
 import { Separator } from "@/components/ui/separator";
 import { penceToPounds } from "@/lib/utils/price";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 
 interface CartItem {
   competition: {
@@ -31,8 +32,10 @@ interface CartItem {
 export default function CheckoutPage() {
   const { items, updateQuantity, removeItem, totalPrice } = useCart();
   const [discount, setDiscount] = useState("");
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const { userId, isSignedIn } = useAuth();
 
   if (items.length === 0) {
     return (
@@ -45,6 +48,14 @@ export default function CheckoutPage() {
       </div>
     );
   }
+
+  const handlePayButtonClick = () => {
+    if (!isSignedIn) {
+      // The SignInButton will handle showing the modal
+      return;
+    }
+    setShowPaymentForm(true);
+  };
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 flex flex-col md:flex-row gap-8 min-h-[80vh]">
@@ -165,22 +176,63 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Payment Form */}
+            {/* Payment Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Payment Details</h3>
-              {error && (
-                <Alert variant="destructive" className="mb-4">
-                  {error}
-                </Alert>
+              {!showPaymentForm ? (
+                <>
+                  <h3 className="text-lg font-semibold">Ready to Pay?</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Review your basket and click below to proceed with payment
+                  </p>
+                  {!isSignedIn ? (
+                    <SignInButton mode="modal">
+                      <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
+                        <CreditCard className="h-5 w-5" />
+                        Sign in to Pay
+                      </Button>
+                    </SignInButton>
+                  ) : (
+                    <Button
+                      onClick={handlePayButtonClick}
+                      className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
+                    >
+                      <CreditCard className="h-5 w-5" />
+                      Pay by Card
+                    </Button>
+                  )}
+                  <div className="text-sm text-muted-foreground text-center">
+                    {!isSignedIn
+                      ? "You need to sign in to complete your purchase"
+                      : "You can still modify quantities above before proceeding"}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Payment Details</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPaymentForm(false)}
+                    >
+                      Back to Review
+                    </Button>
+                  </div>
+                  {error && (
+                    <Alert variant="destructive" className="mb-4">
+                      {error}
+                    </Alert>
+                  )}
+                  <PaymentForm
+                    amount={penceToPounds(totalPrice).toFixed(2)}
+                    className="mb-4"
+                  />
+                  <div className="text-sm text-muted-foreground">
+                    By proceeding with payment, you agree to our terms and
+                    conditions.
+                  </div>
+                </>
               )}
-              <PaymentForm
-                amount={penceToPounds(totalPrice).toFixed(2)}
-                className="mb-4"
-              />
-              <div className="text-sm text-muted-foreground">
-                By proceeding with payment, you agree to our terms and
-                conditions.
-              </div>
             </div>
           </CardContent>
         </Card>
