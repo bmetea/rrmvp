@@ -8,15 +8,10 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useAuth,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/components/cart/competition-cart-dialog";
 import { useAdmin } from "@/hooks/use-admin";
+import { CustomUserButton } from "@/components/user/CustomUserButton";
 
 interface NavbarProps {
   activePath?: string;
@@ -128,7 +123,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <ThemeToggle />
             <CompetitionCartDialog />
             <SignedIn>
-              <UserButton />
+              <CustomUserButton />
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
@@ -186,7 +181,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <ThemeToggle />
                 <SignedIn>
                   <CompetitionCartDialog />
-                  <UserButton />
+                  <CustomUserButton />
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
