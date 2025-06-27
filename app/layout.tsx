@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/navigation/Footer";
@@ -11,20 +10,6 @@ import { Toaster } from "sonner";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
 // import SegmentProvider from "@/components/analytics/SegmentProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  preload: true,
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  preload: true,
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Radiance Rewards",
@@ -91,10 +76,7 @@ export default async function RootLayout({
             `}
           </Script>
         </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          suppressHydrationWarning
-        >
+        <body className="antialiased" suppressHydrationWarning>
           <Toaster />
           <GoogleAnalytics />
           <PageViewTracker />

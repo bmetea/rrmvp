@@ -46,31 +46,32 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 0 0% 8%; /* #151515 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 0 0% 8%; /* #151515 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 0 0% 8%; /* #151515 */
+    --primary: 33 75% 57%; /* #E19841 */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 0 0% 97%; /* #F7F7F7 */
+    --secondary-foreground: 0 0% 8%; /* #151515 */
+    --muted: 0 0% 97%; /* #F7F7F7 */
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 271 96% 63%; /* #9747FF */
+    --accent-foreground: 0 0% 100%; /* #FFFFFF */
     --destructive: 0 84.2% 60.2%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --border: 0 0% 90.6%; /* #E7E7E7 */
+    --input: 0 0% 90.6%; /* #E7E7E7 */
+    --ring: 0 0% 8%; /* #151515 */
     --radius: 0.5rem;
-    --destructive-foreground: 0 0% 98%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 0 0% 100%;
+    --chart-1: 271 96% 63%; /* #9747FF */
+    --chart-2: 266 89% 70%; /* #9F68FF */
+    --chart-3: 0 0% 90.6%; /* #E7E7E7 */
+    --chart-4: 0 0% 100%; /* #FFFFFF */
+    --chart-5: 0 0% 8%; /* #151515 */
+    --font-sans: "Inter", system-ui, sans-serif;
   }
 
   .dark {

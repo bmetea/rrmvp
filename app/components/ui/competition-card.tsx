@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { generateAvatar } from "@/lib/utils/avatar";
 import { Competition } from "@/services/competitionService";
+import { ArrowRight } from "lucide-react";
 
 export function CompetitionCard({ competition }: { competition: Competition }) {
   const soldPercentage = Math.round(
@@ -106,25 +107,11 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         {/* Button */}
         <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
           <Link href={`/competitions/${competition.id}`} className="w-full">
-            <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer">
+            <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer transition hover:bg-accent">
               <span className="text-white text-sm font-semibold leading-tight">
-                Buy Tickets
+                Enter Now
               </span>
-              <svg
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="w-6 h-6"
-              >
-                <path
-                  d="M5 12h14M13 6l6 6-6 6"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowRight className="w-6 h-6 text-white" />
             </div>
           </Link>
         </div>
