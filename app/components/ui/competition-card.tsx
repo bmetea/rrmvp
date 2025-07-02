@@ -40,7 +40,10 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
           </svg>
         </span>
         <span className="text-neutral-900 dark:text-white text-sm font-semibold leading-tight md:text-lg md:leading-relaxed">
-          {isActive ? "Live now" : "Ended"}
+          {`Ends: ${new Date(competition.end_date).toLocaleDateString(
+            undefined,
+            { month: "long", day: "numeric" }
+          )}`}
         </span>
       </div>
       {/* Image */}
