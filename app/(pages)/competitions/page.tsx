@@ -10,7 +10,7 @@ export default async function CompetitionsPage() {
     <main>
       <CompetitionList
         competitions={competitions}
-        title="All Competitions"
+        title="Explore Prizes"
         showFilters={true}
       />
     </main>

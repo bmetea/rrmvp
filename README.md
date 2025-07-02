@@ -9,8 +9,8 @@
 - [ ] implement image upload s3
 - ui/ux
   - [x] fonts
-  - [ ] carousel instead of hero section
-  - [ ] Explore prizes instea of all competitions
+  - [x] carousel instead of hero section
+  - [x] Explore prizes instea of all competitions
   - [ ] Card banner needs to be closing date.
     - [ ] follow 7day performance and prizeguy
   - [ ] follow prize guy for layout of competition page

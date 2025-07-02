@@ -10,7 +10,7 @@ interface CompetitionListProps {
 
 export function CompetitionList({
   competitions,
-  title = "Active Competitions",
+  title = "Explore Prizes",
   showFilters = true,
 }: CompetitionListProps) {
   return (
