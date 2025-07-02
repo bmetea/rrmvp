@@ -1,9 +1,11 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import Link from "next/link";
 import Image from "next/image";
+import { Ticket } from "lucide-react";
 
 function HeroCarousel({ competitions }) {
   if (!competitions.length) {
@@ -16,41 +18,71 @@ function HeroCarousel({ competitions }) {
 
   return (
     <div className="relative bg-black text-white">
-      <Swiper slidesPerView={1} loop className="w-full h-[500px] md:h-[600px]">
-        {competitions.map((competition) => (
-          <SwiperSlide key={competition.id}>
-            <Link
-              href={`/competitions/${competition.id}`}
-              className="block w-full h-full"
-            >
-              <div className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center">
-                <Image
-                  src={
-                    competition.media_info?.thumbnail ||
-                    "/images/hero-bg-optimized.jpg"
-                  }
-                  alt={competition.title}
-                  fill
-                  className="object-cover opacity-60"
-                  sizes="100vw"
-                  quality={75}
-                  priority
-                />
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-                  <h2 className="text-4xl md:text-6xl font-extrabold mb-4 text-center drop-shadow-lg">
-                    {competition.title}
-                  </h2>
-                  <p className="text-lg md:text-2xl mb-6 max-w-2xl text-center text-white/80">
-                    {competition.description}
-                  </p>
-                  <span className="inline-block bg-[#E19841] text-black font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-[#D18A33] transition-colors">
-                    View Competition
-                  </span>
+      <Swiper
+        slidesPerView={1}
+        loop
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        modules={[Autoplay]}
+        className="w-full h-[500px] md:h-[600px]"
+      >
+        {competitions.map((competition) => {
+          const endDate = new Date(competition.end_date);
+          const formattedEndDate = endDate.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          const drawText =
+            competition.draw_time || `Draw ends ${formattedEndDate}`;
+          return (
+            <SwiperSlide key={competition.id}>
+              <Link
+                href={`/competitions/${competition.id}`}
+                className="block w-full h-full"
+              >
+                <div className="relative w-full h-[500px] md:h-[600px]">
+                  <Image
+                    src={
+                      competition.media_info?.thumbnail ||
+                      "/images/hero-bg-optimized.jpg"
+                    }
+                    alt={competition.title}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    quality={75}
+                    priority
+                  />
+                  {/* Gradient overlay */}
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-44 md:h-56 pointer-events-none"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%)",
+                    }}
+                  />
+                  {/* Bottom overlay content */}
+                  <div className="absolute bottom-0 left-0 w-full z-10 flex justify-start items-end h-44 md:h-56">
+                    <div className="w-full max-w-3xl mx-auto px-6 pb-6 flex flex-col items-start">
+                      <h2
+                        className="text-white text-2xl md:text-4xl font-extrabold uppercase leading-tight mb-2 drop-shadow-lg"
+                        style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+                      >
+                        {competition.title}
+                      </h2>
+                      <p className="text-[#E19841] text-sm md:text-lg font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
+                        {drawText}
+                      </p>
+                      <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-lg md:text-xl px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-xs justify-center cursor-pointer">
+                        Enter now <Ticket size={22} />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+              </Link>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );
