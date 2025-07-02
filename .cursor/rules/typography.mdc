@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Typography Style Guide
+
+## Typeface
+- Use the specified sans-serif typeface (if you have a specific font, set it as the base font-family).
+
+---
+
+## Desktop
+
+| Style         | Font Size | Line Height | Notes                |
+|---------------|-----------|-------------|----------------------|
+| Heading 1     | 89px      | 90%         |                      |
+| Heading 2     | 85px      | 120%        |                      |
+| Heading 3     | 63px      | 120%        |                      |
+| Heading 4     | 47px      | 130%        |                      |
+| Heading 5     | 35px      | 140%        |                      |
+| Heading 6     | 25px      | 140%        |                      |
+| Body Large    | 20px      | 150%        |                      |
+| Body Medium   | 18px      | 150%        |                      |
+| Body Small    | 16px      | 150%        |                      |
+| Caption       | 14px      | 150%        |                      |
+| Overline      | 12px      | 150%        |                      |
+
+---
+
+## Mobile
+
+| Style         | Font Size | Line Height | Notes                |
+|---------------|-----------|-------------|----------------------|
+| Heading 1     | 80px      | 120%        |                      |
+| Heading 2     | 60px      | 120%        |                      |
+| Heading 3     | 45px      | 120%        |                      |
+| Heading 4     | 35px      | 140%        |                      |
+| Heading 5     | 25px      | 140%        |                      |
+| Body Large    | 20px      | 150%        |                      |
+| Body Medium   | 18px      | 150%        |                      |
+| Body Small    | 16px      | 150%        |                      |
+| Caption       | 14px      | 150%        |                      |
+| Overline      | 12px      | 150%        |                      |
+
+---
+
+## Implementation Notes
+- Use these font sizes and line heights for all headings, body text, captions, and overlines.
+- Use responsive classes (e.g., Tailwind's `text-4xl md:text-6xl`) to switch between mobile and desktop sizes.
+- Set line heights using Tailwind's `leading-` utilities or custom CSS if needed.
+- If you have a specific font-family, set it globally in your CSS.
+- Use semantic HTML tags (`h1`, `h2`, `p`, etc.) and apply these styles via classes.

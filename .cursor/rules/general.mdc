@@ -4,3 +4,4 @@ globs:
 alwaysApply: false
 ---
 - we use pnpm as a package manager, please always use this when suggesting to run cli commands
+- always use branding colors and typography

@@ -134,6 +134,7 @@ export async function fetchCompetitionPrizesServer(
       "competition_prizes.prize_group",
       "competition_prizes.is_instant_win",
       "competition_prizes.winning_ticket_numbers",
+      "competition_prizes.claimed_winning_tickets",
       "products.id as product_id",
       "products.name",
       "products.description",
