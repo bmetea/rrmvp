@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 # Typography Style Guide
 
@@ -47,7 +47,7 @@ alwaysApply: true
 
 ## Implementation Notes
 - Use these font sizes and line heights for all headings, body text, captions, and overlines.
-- Use responsive classes (e.g., Tailwind's `text-4xl md:text-6xl`) to switch between mobile and desktop sizes.
-- Set line heights using Tailwind's `leading-` utilities or custom CSS if needed.
+- Use responsive classes (e.g., Tailwind’s `text-4xl md:text-6xl`) to switch between mobile and desktop sizes.
+- Set line heights using Tailwind’s `leading-` utilities or custom CSS if needed.
 - If you have a specific font-family, set it globally in your CSS.
 - Use semantic HTML tags (`h1`, `h2`, `p`, etc.) and apply these styles via classes.
