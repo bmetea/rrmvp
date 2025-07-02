@@ -1,17 +1,23 @@
 ## TODO
 - [x] Look for admin in token scopes
-- Link winning ticket numbers to actual products
-- Consolidate database into a single migration
-- audit logs
 - admin
 - transactions
   - create separate transaction table
-- wallet credit
-  - increment credit when credit is won
-  - decrement credit when tickets are bought
-  - implement image upload s3
+- [ ] wallet credit
+    - increment credit when credit is won
+    - decrement credit when tickets are bought
+- [ ] implement image upload s3
 - ui/ux
-  - fonts
+  - [x] fonts
+  - [ ] carousel instead of hero section
+  - [ ] Explore prizes instea of all competitions
+  - [ ] Card banner needs to be closing date.
+    - [ ] follow 7day performance and prizeguy
+  - [ ] follow prize guy for layout of competition page
+  - [ ] Follow that 7 days for instant win prize list
+  - [ ] not 7/8 to be won but 7 remaining.
+  - [ ] social media buttons like on prize guy
+  - [ ] 4 steps how it works
   - follow design everywhere you can
   - on mobile it seems hard to get to the entries page...
 - transform into monorepo
@@ -20,6 +26,9 @@
   - deploy prod
   - how to do migrations automatically ? 
   - cicd?
+- audit logs
+- Consolidate database into a single migration
+- Link winning ticket numbers to actual products
 
 ## Google Analytics Setup
 
