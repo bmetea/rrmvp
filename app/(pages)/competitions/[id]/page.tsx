@@ -1,6 +1,6 @@
 import { fetchCompetitionPrizesServer } from "@/services/competitionService";
 import { notFound } from "next/navigation";
-import CompetitionPage from "@/components/layout/CompetitionPage";
+import CompetitionDetail from "@/components/layout/CompetitionDetail";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,5 +17,5 @@ export default async function CompetitionPageWrapper({ params }: PageProps) {
     notFound();
   }
 
-  return <CompetitionPage competitionWithPrizes={competitionWithPrizes} />;
+  return <CompetitionDetail competitionWithPrizes={competitionWithPrizes} />;
 }

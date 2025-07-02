@@ -11,8 +11,9 @@
   - [x] fonts
   - [x] carousel instead of hero section
   - [x] Explore prizes instea of all competitions
-  - [ ] Card banner needs to be closing date.
+  - [x] Card banner needs to be closing date.
     - [ ] follow 7day performance and prizeguy
+      - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
   - [ ] follow prize guy for layout of competition page
   - [ ] Follow that 7 days for instant win prize list
   - [ ] not 7/8 to be won but 7 remaining.
