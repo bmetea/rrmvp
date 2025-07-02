@@ -23,7 +23,7 @@ function HeroCarousel({ competitions }) {
         loop
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         modules={[Autoplay]}
-        className="w-full h-[500px] md:h-[600px]"
+        className="w-full h-[600px] md:h-[750px]"
       >
         {competitions.map((competition) => {
           const endDate = new Date(competition.end_date);
@@ -40,7 +40,7 @@ function HeroCarousel({ competitions }) {
                 href={`/competitions/${competition.id}`}
                 className="block w-full h-full"
               >
-                <div className="relative w-full h-[500px] md:h-[600px]">
+                <div className="relative w-full h-[600px] md:h-[750px]">
                   <Image
                     src={
                       competition.media_info?.thumbnail ||
@@ -55,14 +55,14 @@ function HeroCarousel({ competitions }) {
                   />
                   {/* Gradient overlay */}
                   <div
-                    className="absolute bottom-0 left-0 w-full h-44 md:h-56 pointer-events-none"
+                    className="absolute bottom-0 left-0 w-full h-56 md:h-72 pointer-events-none"
                     style={{
                       background:
                         "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%)",
                     }}
                   />
                   {/* Bottom overlay content */}
-                  <div className="absolute bottom-0 left-0 w-full z-10 flex justify-start items-end h-44 md:h-56">
+                  <div className="absolute bottom-0 left-0 w-full z-10 flex justify-start items-end h-56 md:h-72">
                     <div className="w-full max-w-3xl mx-auto px-6 pb-6 flex flex-col items-start">
                       <h2
                         className="text-white text-2xl md:text-4xl font-extrabold uppercase leading-tight mb-2 drop-shadow-lg"
@@ -73,9 +73,11 @@ function HeroCarousel({ competitions }) {
                       <p className="text-[#E19841] text-sm md:text-lg font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
                         {drawText}
                       </p>
-                      <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-lg md:text-xl px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-xs justify-center cursor-pointer">
-                        Enter now <Ticket size={22} />
-                      </span>
+                      <div className="w-full flex justify-center">
+                        <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-lg md:text-xl px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-md mx-auto justify-center cursor-pointer">
+                          Enter now <Ticket size={22} />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
