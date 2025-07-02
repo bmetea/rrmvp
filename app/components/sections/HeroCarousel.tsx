@@ -11,7 +11,9 @@ function HeroCarousel({ competitions }) {
   if (!competitions.length) {
     return (
       <div className="relative bg-black text-white py-32 text-center">
-        <h1 className="text-4xl font-bold">No Active Competitions</h1>
+        <h1 className="text-[45px] md:text-[89px] leading-[120%] md:leading-[90%] font-extrabold">
+          No Active Competitions
+        </h1>
       </div>
     );
   }
@@ -65,16 +67,16 @@ function HeroCarousel({ competitions }) {
                   <div className="absolute bottom-0 left-0 w-full z-10 flex justify-start items-end h-56 md:h-72">
                     <div className="w-full max-w-3xl mx-auto px-6 pb-6 flex flex-col items-start">
                       <h2
-                        className="text-white text-2xl md:text-4xl font-extrabold uppercase leading-tight mb-2 drop-shadow-lg"
+                        className="text-white text-[35px] md:text-[85px] leading-[140%] md:leading-[120%] font-extrabold uppercase mb-2 drop-shadow-lg"
                         style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
                       >
                         {competition.title}
                       </h2>
-                      <p className="text-[#E19841] text-sm md:text-lg font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
+                      <p className="text-[#E19841] text-[14px] md:text-[20px] leading-[150%] font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
                         {drawText}
                       </p>
                       <div className="w-full flex justify-center">
-                        <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-lg md:text-xl px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-md mx-auto justify-center cursor-pointer">
+                        <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[20px] md:text-[25px] leading-[150%] px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-md mx-auto justify-center cursor-pointer">
                           Enter now <Ticket size={22} />
                         </span>
                       </div>

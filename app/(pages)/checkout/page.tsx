@@ -67,8 +67,10 @@ export default function CheckoutPage() {
           <span className="text-sm text-muted-foreground">Checkout</span>
           <span className="text-sm text-muted-foreground">Confirmation</span>
         </div>
-        <h1 className="text-2xl font-bold mb-2">My Basket ({items.length})</h1>
-        <p className="text-muted-foreground mb-4 text-sm">
+        <h1 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-2">
+          My Basket ({items.length})
+        </h1>
+        <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
           View your competitions and ticket numbers
         </p>
         {items.map((item) => (
@@ -159,7 +161,9 @@ export default function CheckoutPage() {
       <section className="w-full md:w-96">
         <Card className="sticky top-24">
           <CardContent className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+            <h2 className="text-[25px] md:text-[35px] leading-[140%] font-bold mb-4">
+              Order Summary
+            </h2>
 
             {/* Order Summary */}
             <div className="space-y-4 mb-6">
@@ -180,8 +184,10 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               {!showPaymentForm ? (
                 <>
-                  <h3 className="text-lg font-semibold">Ready to Pay?</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
+                    Ready to Pay?
+                  </h3>
+                  <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
                     Review your basket and click below to proceed with payment
                   </p>
                   {!isSignedIn ? (
@@ -200,7 +206,7 @@ export default function CheckoutPage() {
                       Pay by Card
                     </Button>
                   )}
-                  <div className="text-sm text-muted-foreground text-center">
+                  <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                     {!isSignedIn
                       ? "You need to sign in to complete your purchase"
                       : "You can still modify quantities above before proceeding"}
@@ -209,7 +215,9 @@ export default function CheckoutPage() {
               ) : (
                 <>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Payment Details</h3>
+                    <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
+                      Payment Details
+                    </h3>
                     <Button
                       variant="outline"
                       size="sm"
@@ -227,7 +235,7 @@ export default function CheckoutPage() {
                     amount={penceToPounds(totalPrice).toFixed(2)}
                     className="mb-4"
                   />
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-[14px] leading-[150%] text-muted-foreground">
                     By proceeding with payment, you agree to our terms and
                     conditions.
                   </div>

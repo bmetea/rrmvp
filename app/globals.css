@@ -106,6 +106,10 @@
   * {
     @apply border-border;
   }
+  html,
+  body {
+    font-family: var(--font-sans);
+  }
   body {
     @apply bg-background text-foreground;
   }

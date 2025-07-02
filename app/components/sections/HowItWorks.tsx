@@ -25,10 +25,10 @@ const HowItWorks = () => {
     <div className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="scroll-m-20 text-3xl font-bold tracking-tight mb-4">
+          <h2 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-4">
             How it works
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground">
             Three simple steps to start your Radiance Rewards journey.
           </p>
         </div>
@@ -43,12 +43,14 @@ const HowItWorks = () => {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#E19841]/10 text-[#E19841] text-2xl font-bold mb-4 mx-auto">
                   {step.number}
                 </div>
-                <CardTitle className="text-xl text-foreground">
+                <CardTitle className="text-[20px] md:text-[25px] leading-[150%] font-bold text-foreground">
                   {step.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{step.description}</p>
+                <p className="text-[14px] md:text-[16px] leading-[150%] text-muted-foreground">
+                  {step.description}
+                </p>
               </CardContent>
             </Card>
           ))}

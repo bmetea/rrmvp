@@ -57,12 +57,12 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
             </span>
           </div>
           {/* Title */}
-          <h1 className="text-3xl font-extrabold leading-tight mb-1">
+          <h1 className="text-[45px] md:text-[89px] leading-[120%] md:leading-[90%] font-extrabold mb-1">
             {competitionWithPrizes.title}
           </h1>
           {/* Ticket price */}
           <div className="flex items-end gap-3 mb-2">
-            <span className="text-[#E19841] text-2xl font-extrabold">
+            <span className="text-[#E19841] text-[25px] md:text-[35px] leading-[140%] font-extrabold">
               £{ticketPrice.toFixed(2)}
             </span>
           </div>
@@ -152,7 +152,9 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           </div>
           {/* Prizes Accordion */}
           <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Prizes</h2>
+            <h2 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-4">
+              Prizes
+            </h2>
             <div className="flex flex-col gap-3">
               {prizes.map((prize, idx) => {
                 const isOpen = expandedPrize === idx;
@@ -175,10 +177,10 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1">
-                        <div className="font-bold text-lg">
+                        <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
                           {prize.product.name}
-                        </div>
-                        <div className="inline-block mt-1 px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-xs font-bold">
+                        </h3>
+                        <div className="inline-block mt-1 px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-[12px] leading-[150%] font-bold">
                           To Be Won
                         </div>
                       </div>

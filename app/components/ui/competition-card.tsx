@@ -39,7 +39,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             />
           </svg>
         </span>
-        <span className="text-neutral-900 dark:text-white text-sm font-semibold leading-tight md:text-lg md:leading-relaxed">
+        <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold">
           {`Ends: ${new Date(competition.end_date).toLocaleDateString(
             undefined,
             { month: "long", day: "numeric" }
@@ -61,14 +61,14 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
       </div>
       {/* Content */}
       <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
-        <span className="p-1 bg-orange-100 dark:bg-orange-900 rounded text-[10px] font-semibold text-neutral-900 dark:text-white leading-none md:px-4 md:py-1 md:text-sm md:leading-tight">
+        <span className="p-1 bg-orange-100 dark:bg-orange-900 rounded text-[12px] leading-[150%] font-semibold text-neutral-900 dark:text-white md:px-4 md:py-1 md:text-[14px]">
           {competition.type}
         </span>
         <div className="w-full flex flex-col items-start gap-1 md:gap-2">
-          <div className="w-full text-neutral-900 dark:text-white text-base md:text-2xl font-medium leading-normal">
+          <h3 className="w-full text-neutral-900 dark:text-white text-[20px] md:text-[25px] leading-[150%] font-bold">
             {competition.title}
-          </div>
-          <div className="w-full text-zinc-800 dark:text-zinc-200 text-sm md:text-base font-normal leading-normal">
+          </h3>
+          <div className="w-full text-zinc-800 dark:text-zinc-200 text-[16px] md:text-[18px] leading-[150%] font-normal">
             {competition.description}
           </div>
         </div>
@@ -88,7 +88,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               />
             ))}
           </div>
-          <div className="text-zinc-800 dark:text-zinc-200 text-sm font-normal leading-tight">
+          <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
             {Number(competition.tickets_sold)}+ tickets sold
           </div>
         </div>
@@ -102,7 +102,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
                 style={{ width: `${soldPercentage}%` }}
               />
             </div>
-            <div className="text-zinc-800 dark:text-zinc-200 text-sm font-normal leading-tight">
+            <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
               {soldPercentage}% sold
             </div>
           </div>
@@ -111,7 +111,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
           <Link href={`/competitions/${competition.id}`} className="w-full">
             <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer transition hover:bg-accent">
-              <span className="text-white text-sm font-semibold leading-tight">
+              <span className="text-white text-[16px] leading-[150%] font-semibold">
                 Enter Now
               </span>
               <ArrowRight className="w-6 h-6 text-white" />

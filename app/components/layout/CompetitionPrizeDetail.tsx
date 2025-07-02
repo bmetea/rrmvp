@@ -24,7 +24,7 @@ export function CompetitionPrizeDetail({
     <div>
       <div className="flex mb-4 rounded overflow-hidden border border-gray-200 dark:border-[#232326]">
         <button
-          className={`flex-1 py-2 font-bold text-sm transition-colors ${
+          className={`flex-1 py-2 font-bold text-[18px] md:text-[20px] leading-[150%] transition-colors ${
             tab === "tickets"
               ? "bg-white dark:bg-[#232326] text-black dark:text-white"
               : "bg-gray-100 dark:bg-[#18181b] text-gray-500"
@@ -34,7 +34,7 @@ export function CompetitionPrizeDetail({
           TICKETS
         </button>
         <button
-          className={`flex-1 py-2 font-bold text-sm transition-colors ${
+          className={`flex-1 py-2 font-bold text-[18px] md:text-[20px] leading-[150%] transition-colors ${
             tab === "description"
               ? "bg-white dark:bg-[#232326] text-black dark:text-white"
               : "bg-gray-100 dark:bg-[#18181b] text-gray-500"
@@ -81,11 +81,11 @@ export function CompetitionPrizeDetail({
                       key={ticket + "-" + idx}
                       className="flex flex-col items-center bg-white dark:bg-[#232326] rounded-lg shadow border border-gray-200 dark:border-[#232326] p-2 min-w-[72px] max-w-[90px] w-full h-20 justify-center"
                     >
-                      <span className="font-mono text-lg font-bold mb-2 text-black dark:text-white">
+                      <span className="font-mono text-[16px] md:text-[18px] leading-[150%] font-bold mb-2 text-black dark:text-white">
                         {ticket}
                       </span>
                       <span
-                        className={`w-full rounded py-1.5 font-bold text-xs text-center transition-colors
+                        className={`w-full rounded py-1.5 font-bold text-[14px] leading-[150%] text-center transition-colors
                           ${
                             claimed
                               ? "bg-gray-300 dark:bg-gray-700 text-gray-500"
@@ -134,7 +134,9 @@ export function CompetitionPrizeDetail({
         </>
       )}
       {tab === "description" && (
-        <div className="text-sm text-black dark:text-white">{description}</div>
+        <div className="text-[16px] md:text-[18px] leading-[150%] text-black dark:text-white">
+          {description}
+        </div>
       )}
     </div>
   );
