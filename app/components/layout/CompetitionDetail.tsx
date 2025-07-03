@@ -5,10 +5,12 @@ import { useState } from "react";
 import { Ticket, ChevronDown, ChevronUp } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { CompetitionPrizeDetail } from "./CompetitionPrizeDetail";
+import { useCart } from "@/lib/context/cart-context";
 
 export default function CompetitionDetail({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
   const [expandedPrize, setExpandedPrize] = useState(null);
+  const { addItem } = useCart();
   const ticketPrice = competitionWithPrizes.ticket_price;
   const oldPrice = ticketPrice * 2; // Placeholder for old price logic
   const totalTickets = competitionWithPrizes.total_tickets;
@@ -146,7 +148,10 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           </div>
           {/* Add to basket button */}
           <div>
-            <button className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors">
+            <button
+              className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors"
+              onClick={() => addItem(competitionWithPrizes, ticketCount)}
+            >
               Add To Basket
             </button>
           </div>
