@@ -82,12 +82,13 @@ export function PaymentForm({
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
-              $(".wpwl-control-cardHolder").attr("placeholder", "Name on card")
-              $(".wpwl-control-cardNumber").attr("placeholder", "1234 1234 1234 1234")
-              $(".wpwl-control-expiry").attr("placeholder", "MM / YY")
-              $(".wpwl-control-cardExpiryMonth").attr("placeholder", "MM")
-              $(".wpwl-control-cardExpiryYear").attr("placeholder", "YY")
-              $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
+              // The following lines are commented out to restore browser autofill:
+              // $(".wpwl-control-cardHolder").attr("placeholder", "Name on card")
+              // $(".wpwl-control-cardNumber").attr("placeholder", "1234 1234 1234 1234")
+              // $(".wpwl-control-expiry").attr("placeholder", "MM / YY")
+              // $(".wpwl-control-cardExpiryMonth").attr("placeholder", "MM")
+              // $(".wpwl-control-cardExpiryYear").attr("placeholder", "YY")
+              // $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
               $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton' ><center>Click to Pay</center></div>")
               $(".nomupaySubmitButton").click(function(){
                 if (window.wpwl && window.wpwl.executePayment) {
