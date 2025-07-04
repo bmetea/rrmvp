@@ -42,8 +42,8 @@ export default middleware;
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Skip Next.js internals, all static files, and allow Apple Pay association file
+    "/((?!_next|.well-known/apple-developer-merchantid-domain-association|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Protect all API routes except webhooks
     "/api/((?!webhooks).*)",
     // Protect all tRPC routes

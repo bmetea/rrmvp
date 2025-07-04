@@ -31,6 +31,15 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/.well-known/apple-developer-merchantid-domain-association",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain",
+          },
+        ],
+      },
+      {
         // Cache static assets for 1 year
         source: "/:path*",
         headers: [
