@@ -19,8 +19,8 @@ import {
   fetchCompetitionWithPrizesAction,
   computeWinningTicketsAction,
   clearWinningTicketsAction,
+  searchProductsAction,
 } from "../actions";
-import { searchProductsAction } from "@/actions/product";
 import { OverrideDialog } from "../override-dialog";
 import type { Competition } from "@/services/competitionService";
 import { poundsToPence } from "@/lib/utils/price";
@@ -122,8 +122,10 @@ export function CompetitionDialog({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { products } = await searchProductsAction(debouncedSearch);
-        setProducts(products);
+        const result = await searchProductsAction(debouncedSearch);
+        if (result.success) {
+          setProducts(result.data);
+        }
       } catch (error) {
         // Handle error silently
       }

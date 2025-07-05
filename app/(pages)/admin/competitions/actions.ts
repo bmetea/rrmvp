@@ -267,6 +267,31 @@ export async function fetchProductsAction() {
   }
 }
 
+export async function searchProductsAction(searchTerm: string) {
+  try {
+    const products = await db
+      .selectFrom("products")
+      .select([
+        "id",
+        "name",
+        "sub_name",
+        "market_value",
+        "description",
+        "media_info",
+        "is_wallet_credit",
+        "credit_amount",
+      ])
+      .where("name", "ilike", `%${searchTerm}%`)
+      .orderBy("created_at", "desc")
+      .execute();
+
+    return { success: true, data: products };
+  } catch (error) {
+    console.error("Failed to search products:", error);
+    return { success: false, error: "Failed to search products" };
+  }
+}
+
 export async function updateCompetitionPrizeAction(
   prizeId: string,
   data: { total_quantity: number }
