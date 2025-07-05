@@ -3,17 +3,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { checkPaymentStatus } from "@/components/payments/actions";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle } from "lucide-react";
 import { useCart } from "@/lib/context/cart-context";
 import { checkoutWithTransaction } from "../actions";
+import { PurchaseResult } from "@/components/payments/purchase-result";
 
 export default function CheckoutResultPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -22,6 +14,7 @@ export default function CheckoutResultPage() {
   const [message, setMessage] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+  const [purchaseResults, setPurchaseResults] = useState<any[]>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
   const { clearCart, items } = useCart();
@@ -74,11 +67,8 @@ export default function CheckoutResultPage() {
             setMessage(result.message || "Failed to process checkout");
             return;
           }
+          setPurchaseResults(result.results || []);
           clearCart();
-          const timer = setTimeout(() => {
-            handleClose();
-          }, 3000);
-          return () => clearTimeout(timer);
         } catch (error) {
           setStatus("error");
           setMessage("Error processing checkout");
@@ -91,47 +81,37 @@ export default function CheckoutResultPage() {
 
   const handleClose = () => {
     setIsOpen(false);
-    router.push("/checkout");
+    router.push("/competitions");
   };
 
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="text-red-500 text-xl font-semibold">{message}</div>
+        <button
+          onClick={() => router.push("/checkout")}
+          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center">
-            {status === "loading" && "Processing Payment"}
-            {status === "success" && "Payment Successful"}
-            {status === "error" && "Payment Failed"}
-          </DialogTitle>
-          <DialogDescription className="text-center">
-            {message}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="flex flex-col items-center justify-center py-4">
-          {status === "loading" && (
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
-          )}
-          {status === "success" && (
-            <CheckCircle2 className="h-12 w-12 text-green-500" />
-          )}
-          {status === "error" && <XCircle className="h-12 w-12 text-red-500" />}
-        </div>
-
-        {status === "error" && (
-          <div className="flex justify-center">
-            <Button onClick={handleClose} variant="default">
-              Try Again
-            </Button>
-          </div>
-        )}
-
-        {status === "success" && (
-          <p className="text-center text-sm text-gray-500">
-            Redirecting back to checkout...
-          </p>
-        )}
-      </DialogContent>
-    </Dialog>
+    <PurchaseResult
+      isOpen={isOpen}
+      onClose={handleClose}
+      results={purchaseResults}
+      paymentMethod="card"
+    />
   );
 }
