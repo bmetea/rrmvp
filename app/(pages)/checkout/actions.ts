@@ -205,6 +205,40 @@ export async function processHybridCheckout(
           );
         }
 
+        // Check for and claim any winning tickets
+        const winningTickets = await trx
+          .selectFrom("winning_tickets")
+          .select(["id", "ticket_number", "prize_id"])
+          .where("competition_id", "=", item.competition.id)
+          .where("ticket_number", "in", ticketNumbers)
+          .where("status", "=", "available")
+          .execute();
+
+        const claimedTickets: { ticketNumber: number; prizeId: string }[] = [];
+
+        // Claim each winning ticket atomically
+        for (const winningTicket of winningTickets) {
+          const claimedTicket = await trx
+            .updateTable("winning_tickets")
+            .set({
+              status: "claimed",
+              claimed_by_user_id: user.id,
+              claimed_at: new Date(),
+              competition_entry_id: competitionEntry.id,
+            })
+            .where("id", "=", winningTicket.id)
+            .where("status", "=", "available") // Double-check to prevent race conditions
+            .returning("id")
+            .executeTakeFirst();
+
+          if (claimedTicket) {
+            claimedTickets.push({
+              ticketNumber: winningTicket.ticket_number,
+              prizeId: winningTicket.prize_id,
+            });
+          }
+        }
+
         // Update competition tickets sold count
         const currentCompetition = await trx
           .selectFrom("competitions")
@@ -221,12 +255,22 @@ export async function processHybridCheckout(
           .where("id", "=", item.competition.id)
           .execute();
 
+        const winningMessage =
+          claimedTickets.length > 0
+            ? ` 🎉 Congratulations! You won ${claimedTickets.length} prize${
+                claimedTickets.length > 1 ? "s" : ""
+              } with ticket${
+                claimedTickets.length > 1 ? "s" : ""
+              } #${claimedTickets.map((t) => t.ticketNumber).join(", #")}!`
+            : "";
+
         results.push({
           competitionId: item.competition.id,
           success: true,
-          message: `Successfully purchased ${item.quantity} tickets`,
+          message: `Successfully purchased ${item.quantity} tickets${winningMessage}`,
           entryId: competitionEntry.id,
           ticketNumbers,
+          winningTickets: claimedTickets,
         });
       }
 

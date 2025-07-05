@@ -537,50 +537,80 @@ export async function computeWinningTicketsAction(competitionId: string) {
   }
 }
 
-export async function clearWinningTicketsAction(competitionId: string) {
+export async function clearWinningTicketsAction(
+  competitionId: string,
+  prizeId?: string // Made optional to support clearing all tickets
+): Promise<{ success: boolean; message: string }> {
   try {
-    // Clear winning tickets from the new table and the old arrays
-    await db.transaction().execute(async (trx) => {
-      // Clear winning tickets from the new table
-      await trx
-        .deleteFrom("winning_tickets")
-        .where("competition_id", "=", competitionId)
-        .execute();
+    return await db.transaction().execute(async (trx) => {
+      if (prizeId) {
+        // Single prize clearing logic
+        const prize = await trx
+          .selectFrom("competition_prizes")
+          .select(["winning_ticket_numbers", "claimed_winning_tickets"])
+          .where("id", "=", prizeId)
+          .executeTakeFirst();
 
-      // Clear winning ticket numbers from competition_prizes (for backward compatibility)
-      await trx
-        .updateTable("competition_prizes")
-        .set({
-          winning_ticket_numbers: null,
-          claimed_winning_tickets: null,
-          updated_at: new Date(),
-        })
-        .where("competition_id", "=", competitionId)
-        .execute();
+        if (!prize) {
+          return {
+            success: false,
+            message: "Prize not found",
+          };
+        }
 
-      // Reset winning_ticket flags in competition_entry_tickets
-      await trx
-        .updateTable("competition_entry_tickets")
-        .set({
-          winning_ticket: false,
-          prize_id: null,
-        })
-        .where("competition_id", "=", competitionId)
-        .execute();
+        // Reset winning tickets in the winning_tickets table
+        await trx
+          .deleteFrom("winning_tickets")
+          .where("competition_id", "=", competitionId)
+          .where("prize_id", "=", prizeId)
+          .execute();
+
+        // Reset the prize's winning ticket numbers
+        await trx
+          .updateTable("competition_prizes")
+          .set({
+            winning_ticket_numbers: null,
+            claimed_winning_tickets: null,
+          })
+          .where("id", "=", prizeId)
+          .execute();
+
+        return {
+          success: true,
+          message: "Successfully cleared winning tickets for the prize",
+        };
+      } else {
+        // Clear all winning tickets for the competition
+        await trx
+          .deleteFrom("winning_tickets")
+          .where("competition_id", "=", competitionId)
+          .execute();
+
+        // Reset all prizes' winning ticket numbers
+        await trx
+          .updateTable("competition_prizes")
+          .set({
+            winning_ticket_numbers: null,
+            claimed_winning_tickets: null,
+          })
+          .where("competition_id", "=", competitionId)
+          .execute();
+
+        return {
+          success: true,
+          message:
+            "Successfully cleared all winning tickets for the competition",
+        };
+      }
     });
-
-    // Revalidate all competition-related paths
-    revalidatePath("/");
-    revalidatePath("/competitions");
-    revalidatePath(`/competitions/${competitionId}`, "page");
-    revalidatePath("/admin/competitions");
-
-    // Revalidate the competitions tag
-    revalidateTag("competitions");
-
-    return { success: true, message: "Winning tickets cleared successfully" };
   } catch (error) {
-    console.error("Failed to clear winning tickets:", error);
-    return { success: false, error: "Failed to clear winning tickets" };
+    console.error("Error clearing winning tickets:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to clear winning tickets",
+    };
   }
 }

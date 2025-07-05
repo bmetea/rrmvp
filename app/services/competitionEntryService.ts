@@ -25,16 +25,6 @@ export interface CompetitionEntry {
   };
 }
 
-export interface CompetitionEntryTicket {
-  id: string;
-  competition_entry_id: string;
-  competition_id: string;
-  ticket_number: number;
-  winning_ticket: boolean;
-  created_at: Date;
-  updated_at: Date;
-}
-
 export async function getUserCompetitionEntries(): Promise<{
   success: boolean;
   entries?: CompetitionEntry[];
@@ -171,7 +161,7 @@ export async function purchaseCompetitionEntry(
       };
     }
 
-    // Create the competition entry
+    // Create the competition entry with ticket numbers
     const [entry] = await db
       .insertInto("competition_entries")
       .values({
@@ -179,24 +169,12 @@ export async function purchaseCompetitionEntry(
         user_id: userId,
         wallet_transaction_id: walletTransactionId,
         payment_transaction_id: paymentTransactionId,
+        tickets: nextTicketNumbers,
       })
       .returningAll()
       .execute();
 
-    // Create individual ticket records
-    const ticketValues = nextTicketNumbers.map((ticketNumber) => ({
-      competition_entry_id: entry.id,
-      competition_id: competitionId,
-      ticket_number: ticketNumber,
-      winning_ticket: false,
-    }));
-
-    await db
-      .insertInto("competition_entry_tickets")
-      .values(ticketValues)
-      .execute();
-
-    // Fetch the complete entry with tickets
+    // Fetch the complete entry with competition data
     const [completeEntry] = await db
       .selectFrom("competition_entries as ce")
       .innerJoin("competitions as c", "c.id", "ce.competition_id")
@@ -205,6 +183,7 @@ export async function purchaseCompetitionEntry(
         "ce.competition_id",
         "ce.user_id",
         "ce.wallet_transaction_id",
+        "ce.tickets",
         "ce.created_at",
         "ce.updated_at",
         "c.title",
@@ -216,18 +195,10 @@ export async function purchaseCompetitionEntry(
       .where("ce.id", "=", entry.id)
       .execute();
 
-    const tickets = await db
-      .selectFrom("competition_entry_tickets")
-      .selectAll()
-      .where("competition_entry_id", "=", entry.id)
-      .orderBy("ticket_number", "asc")
-      .execute();
-
     return {
       success: true,
       entry: {
         ...completeEntry,
-        tickets,
         competition: {
           id: completeEntry.competition_id,
           title: completeEntry.title,
@@ -259,15 +230,16 @@ async function findNextAvailableTicketNumbers(
   count: number
 ): Promise<number[]> {
   try {
-    // Get all existing ticket numbers for this competition from competition_entry_tickets table
-    const existingTickets = await db
-      .selectFrom("competition_entry_tickets")
-      .select("ticket_number")
+    // Get all existing ticket numbers for this competition from competition_entries table
+    const entries = await db
+      .selectFrom("competition_entries")
+      .select("tickets")
       .where("competition_id", "=", competitionId)
       .execute();
 
+    // Flatten all ticket arrays into a single set of used numbers
     const existingNumbers = new Set(
-      existingTickets.map((ticket) => ticket.ticket_number)
+      entries.flatMap((entry) => entry.tickets || [])
     );
 
     // Find the next available numbers
