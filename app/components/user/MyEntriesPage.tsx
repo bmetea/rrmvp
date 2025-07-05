@@ -81,18 +81,18 @@ export default function MyEntriesPage() {
     });
   };
 
-  const formatTicketNumbers = (tickets: CompetitionEntry["tickets"]) => {
+  const formatTicketNumbers = (tickets: number[]) => {
     if (tickets.length === 1) {
-      return `Ticket #${tickets[0].ticket_number}`;
+      return `Ticket #${tickets[0]}`;
     }
 
     if (tickets.length <= 5) {
-      return `Tickets #${tickets.map((t) => t.ticket_number).join(", #")}`;
+      return `Tickets #${tickets.join(", #")}`;
     }
 
-    return `Tickets #${tickets[0].ticket_number}-#${
-      tickets[tickets.length - 1].ticket_number
-    } (${tickets.length} total)`;
+    return `Tickets #${tickets[0]}-#${tickets[tickets.length - 1]} (${
+      tickets.length
+    } total)`;
   };
 
   const handleEntryClick = (entry: CompetitionEntry) => {
@@ -105,8 +105,8 @@ export default function MyEntriesPage() {
     setSelectedEntry(null);
   };
 
-  const getWinningTicketsCount = (tickets: CompetitionEntry["tickets"]) => {
-    return tickets.filter((ticket) => ticket.winning_ticket).length;
+  const getWinningTicketsCount = (entry: CompetitionEntry) => {
+    return entry.winning_tickets?.length || 0;
   };
 
   if (loading) {
@@ -132,7 +132,7 @@ export default function MyEntriesPage() {
 
   // Detail view
   if (viewMode === "detail" && selectedEntry) {
-    const winningTicketsCount = getWinningTicketsCount(selectedEntry.tickets);
+    const winningTicketsCount = getWinningTicketsCount(selectedEntry);
     const hasWinningTickets = winningTicketsCount > 0;
 
     return (
@@ -202,29 +202,47 @@ export default function MyEntriesPage() {
             <div>
               <h3 className="font-medium mb-4">Your Tickets</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                {selectedEntry.tickets.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className={`p-4 rounded-lg border text-center transition-colors ${
-                      ticket.winning_ticket
-                        ? "bg-yellow-50 border-yellow-200 shadow-sm"
-                        : "bg-background border-border"
-                    }`}
-                  >
-                    <div className="text-lg font-bold mb-2">
-                      #{ticket.ticket_number}
+                {selectedEntry.tickets.map((ticketNumber) => {
+                  const winningTicket = selectedEntry.winning_tickets?.find(
+                    (wt) => wt.ticket_number === ticketNumber
+                  );
+                  const isWinning = !!winningTicket;
+
+                  return (
+                    <div
+                      key={ticketNumber}
+                      className={`p-4 rounded-lg border text-center transition-colors ${
+                        isWinning
+                          ? "bg-yellow-50 border-yellow-200 shadow-sm"
+                          : "bg-background border-border"
+                      }`}
+                    >
+                      <div className="text-lg font-bold mb-2">
+                        #{ticketNumber}
+                      </div>
+                      {isWinning && (
+                        <div className="space-y-1">
+                          <Badge
+                            variant="secondary"
+                            className="bg-yellow-100 text-yellow-800 border-yellow-200"
+                          >
+                            <Trophy className="h-3 w-3 mr-1" />
+                            Winner
+                          </Badge>
+                          <div className="text-xs text-yellow-800 mt-2">
+                            <div className="font-medium">
+                              {winningTicket.prize_name}
+                            </div>
+                            <div>
+                              Value: £
+                              {(winningTicket.prize_value / 100).toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    {ticket.winning_ticket && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-yellow-100 text-yellow-800 border-yellow-200"
-                      >
-                        <Trophy className="h-3 w-3 mr-1" />
-                        Winner
-                      </Badge>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </CardContent>
@@ -239,7 +257,7 @@ export default function MyEntriesPage() {
       <h2 className="text-xl font-semibold">My Entries</h2>
       <div className="space-y-4">
         {entries.map((entry) => {
-          const winningTicketsCount = getWinningTicketsCount(entry.tickets);
+          const winningTicketsCount = getWinningTicketsCount(entry);
           const hasWinningTickets = winningTicketsCount > 0;
 
           return (

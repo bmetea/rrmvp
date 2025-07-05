@@ -23,6 +23,12 @@ export interface CompetitionEntry {
       images?: string[];
     } | null;
   };
+  winning_tickets?: {
+    ticket_number: number;
+    prize_id: string;
+    prize_name: string;
+    prize_value: number;
+  }[];
 }
 
 export async function getUserCompetitionEntries(): Promise<{
@@ -86,24 +92,48 @@ export async function getUserCompetitionEntries(): Promise<{
     // Get all entry IDs
     const entryIds = entries.map((entry) => entry.id);
 
-    // Get winning tickets for these entries
+    // Get winning tickets for these entries with prize information
     const winningTickets = await db
-      .selectFrom("winning_tickets")
-      .select(["ticket_number", "competition_entry_id"])
-      .where("competition_entry_id", "in", entryIds)
-      .where("status", "=", "claimed")
+      .selectFrom("winning_tickets as wt")
+      .innerJoin("competition_prizes as cp", "cp.id", "wt.prize_id")
+      .innerJoin("products as p", "p.id", "cp.product_id")
+      .select([
+        "wt.ticket_number",
+        "wt.competition_entry_id",
+        "wt.prize_id",
+        "p.name as prize_name",
+        "p.market_value as prize_value",
+      ])
+      .where("wt.competition_entry_id", "in", entryIds)
+      .where("wt.status", "=", "claimed")
       .execute();
 
     // Create a map of winning tickets by entry ID
-    const winningTicketsByEntryId = winningTickets.reduce((acc, ticket) => {
-      if (!acc[ticket.competition_entry_id]) {
-        acc[ticket.competition_entry_id] = [];
-      }
-      acc[ticket.competition_entry_id].push(ticket.ticket_number);
-      return acc;
-    }, {} as Record<string, number[]>);
+    const winningTicketsByEntryId = winningTickets.reduce(
+      (acc, ticket) => {
+        if (!acc[ticket.competition_entry_id]) {
+          acc[ticket.competition_entry_id] = [];
+        }
+        acc[ticket.competition_entry_id].push({
+          ticket_number: ticket.ticket_number,
+          prize_id: ticket.prize_id,
+          prize_name: ticket.prize_name,
+          prize_value: ticket.prize_value,
+        });
+        return acc;
+      },
+      {} as Record<
+        string,
+        Array<{
+          ticket_number: number;
+          prize_id: string;
+          prize_name: string;
+          prize_value: number;
+        }>
+      >
+    );
 
-    // Format entries with their tickets
+    // Format entries with their tickets and winning tickets
     const formattedEntries = entries.map((entry) => ({
       ...entry,
       competition: {
@@ -121,6 +151,7 @@ export async function getUserCompetitionEntries(): Promise<{
             })
           : null,
       },
+      winning_tickets: winningTicketsByEntryId[entry.id] || [],
     }));
 
     return {
