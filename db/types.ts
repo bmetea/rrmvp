@@ -21,12 +21,15 @@ export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
+export type Numeric = ColumnType<string, number | string, number | string>;
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface CompetitionEntries {
   competition_id: string;
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
+  payment_transaction_id: string | null;
   updated_at: Generated<Timestamp | null>;
   user_id: string;
   wallet_transaction_id: string;
@@ -75,6 +78,23 @@ export interface Competitions {
   total_tickets: number;
   type: string;
   updated_at: Generated<Timestamp | null>;
+}
+
+export interface PaymentTransactions {
+  amount: Numeric;
+  brand: string | null;
+  checkout_id: string;
+  created_at: Generated<Timestamp | null>;
+  currency: string;
+  id: Generated<string>;
+  payment_id: string | null;
+  payment_type: string | null;
+  raw_prepare_result: Json | null;
+  raw_status_result: Json | null;
+  status_code: string | null;
+  status_description: string | null;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string | null;
 }
 
 export interface Products {
@@ -129,6 +149,7 @@ export interface DB {
   competition_entry_tickets: CompetitionEntryTickets;
   competition_prizes: CompetitionPrizes;
   competitions: Competitions;
+  payment_transactions: PaymentTransactions;
   products: Products;
   users: Users;
   wallet_transactions: WalletTransactions;

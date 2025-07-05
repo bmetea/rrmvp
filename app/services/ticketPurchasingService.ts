@@ -117,7 +117,8 @@ async function findNextAvailableTicketNumbers(
 
 export async function purchaseTickets(
   competitionId: string,
-  ticketCount: number
+  ticketCount: number,
+  paymentTransactionId?: string
 ): Promise<PurchaseResult> {
   const session = await auth();
 
@@ -259,6 +260,9 @@ export async function purchaseTickets(
             competition_id: competitionId,
             user_id: user.id,
             wallet_transaction_id: walletTransaction.id,
+            ...(paymentTransactionId
+              ? { payment_transaction_id: paymentTransactionId }
+              : {}),
           })
           .returning("id")
           .executeTakeFirst();

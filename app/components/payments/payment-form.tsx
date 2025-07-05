@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { prepareCheckout } from "./actions";
+import { useAuth } from "@clerk/nextjs";
 
 declare global {
   interface Window {
@@ -26,6 +27,7 @@ export function PaymentForm({
 }: PaymentFormProps) {
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { userId } = useAuth();
 
   // Get gatewayMerchantId from env
   const gatewayMerchantId = process.env.NEXT_PUBLIC_OPPWA_ENTITY_ID;
@@ -37,6 +39,7 @@ export function PaymentForm({
           amount,
           currency,
           paymentType,
+          userId: userId || undefined,
         });
 
         if (result.id) {
@@ -51,7 +54,7 @@ export function PaymentForm({
     };
 
     initializeCheckout();
-  }, [amount, currency, paymentType]);
+  }, [amount, currency, paymentType, userId]);
 
   useEffect(() => {
     if (checkoutId) {

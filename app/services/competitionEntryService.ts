@@ -150,7 +150,8 @@ export async function purchaseCompetitionEntry(
   competitionId: string,
   userId: string,
   walletTransactionId: string,
-  numberOfTickets: number
+  numberOfTickets: number,
+  paymentTransactionId: string
 ): Promise<{
   success: boolean;
   entry?: CompetitionEntry;
@@ -177,6 +178,7 @@ export async function purchaseCompetitionEntry(
         competition_id: competitionId,
         user_id: userId,
         wallet_transaction_id: walletTransactionId,
+        payment_transaction_id: paymentTransactionId,
       })
       .returningAll()
       .execute();

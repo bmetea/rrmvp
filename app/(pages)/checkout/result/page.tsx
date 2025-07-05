@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useCart } from "@/lib/context/cart-context";
-import { checkout } from "../actions";
+import { checkoutWithTransaction } from "../actions";
 
 export default function CheckoutResultPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -67,7 +67,8 @@ export default function CheckoutResultPage() {
       const processCheckout = async () => {
         setIsProcessingCheckout(true);
         try {
-          const result = await checkout(items);
+          const checkoutId = searchParams.get("id");
+          const result = await checkoutWithTransaction(items, checkoutId);
           if (!result.success) {
             setStatus("error");
             setMessage(result.message || "Failed to process checkout");
@@ -86,7 +87,7 @@ export default function CheckoutResultPage() {
       };
       processCheckout();
     }
-  }, [status, clearCart, items, isProcessingCheckout]);
+  }, [status, clearCart, items, isProcessingCheckout, searchParams]);
 
   const handleClose = () => {
     setIsOpen(false);

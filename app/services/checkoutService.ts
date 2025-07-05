@@ -27,13 +27,18 @@ interface CheckoutResult {
 }
 
 export async function processCheckout(
-  items: CartItem[]
+  items: CartItem[],
+  paymentTransactionId?: string
 ): Promise<CheckoutResult> {
   const results = [];
 
   for (const item of items) {
     try {
-      const result = await purchaseTickets(item.competition.id, item.quantity);
+      const result = await purchaseTickets(
+        item.competition.id,
+        item.quantity,
+        paymentTransactionId
+      );
       results.push({
         competitionId: item.competition.id,
         success: result.success,
