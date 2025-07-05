@@ -33,7 +33,6 @@ export default function MyEntriesPage() {
       // Check if we have valid cached data
       const now = Date.now();
       if (entriesCache && now - cacheTimestamp < CACHE_DURATION) {
-        console.log("MyEntriesPage: Using cached entries");
         setEntries(entriesCache);
         setLoading(false);
         return;
@@ -41,11 +40,8 @@ export default function MyEntriesPage() {
 
       // Prevent multiple simultaneous API calls
       if (isFetching.current) {
-        console.log("MyEntriesPage: Fetch already in progress, skipping");
         return;
       }
-
-      console.log("MyEntriesPage: Fetching entries...");
       isFetching.current = true;
       setLoading(true);
 
@@ -68,9 +64,7 @@ export default function MyEntriesPage() {
     fetchEntries();
 
     // Cleanup function
-    return () => {
-      console.log("MyEntriesPage: Component unmounting");
-    };
+    return () => {};
   }, []);
 
   const formatDate = (date: Date) => {

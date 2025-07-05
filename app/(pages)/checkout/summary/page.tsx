@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
 
 interface PurchaseResult {
   competitionId: string;
@@ -34,7 +33,6 @@ export default function CheckoutSummaryPage() {
   const searchParams = useSearchParams();
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
-  const { openUserProfile } = useClerk();
   const router = useRouter();
 
   useEffect(() => {

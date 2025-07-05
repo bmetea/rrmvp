@@ -86,15 +86,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
               {progress} %
             </div>
           </div>
-          {/* Entry route buttons (placeholder, not functional) */}
-          <div className="flex gap-2 mt-2">
-            <button className="bg-[#232326] text-white px-4 py-2 rounded-lg font-bold text-sm border border-[#444] dark:border-[#333]">
-              Online
-            </button>
-            <button className="bg-transparent text-gray-400 px-4 py-2 rounded-lg font-bold text-sm border border-[#444] dark:border-[#333] cursor-not-allowed">
-              Free Entry Route
-            </button>
-          </div>
+
           {/* Quick ticket selector */}
           <div>
             <label className="block font-bold mb-1">Select Tickets</label>

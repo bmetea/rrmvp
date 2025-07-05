@@ -7,9 +7,11 @@ import { analytics } from "@/lib/segment";
 function SegmentPageTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   useEffect(() => {
     analytics.then(([analytics]) => analytics.page());
   }, [pathname, searchParams]);
+
   return null;
 }
 

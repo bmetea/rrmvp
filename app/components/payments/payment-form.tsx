@@ -85,7 +85,7 @@ export function PaymentForm({
             merchantId: 'BCR2DN4TWXD3VYDY'
           },
           onReady: function() {
-            console.log('onReady called')
+      
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
@@ -103,7 +103,7 @@ export function PaymentForm({
                 }
               })
             } else {
-              console.log('jQuery not found in onReady')
+      
             }
           }
         }

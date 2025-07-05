@@ -72,12 +72,10 @@ export default function CheckoutPage() {
   }
 
   const handlePayButtonClick = () => {
-    console.log("handlePayButtonClick called, isSignedIn:", isSignedIn);
     if (!isSignedIn) {
       // The SignInButton will handle showing the modal
       return;
     }
-    console.log("Setting showPaymentForm to true");
     setShowPaymentForm(true);
   };
 
@@ -88,17 +86,13 @@ export default function CheckoutPage() {
     walletBalance !== null && walletBalance >= totalPrice;
 
   const handleHybridPurchase = async () => {
-    console.log("Starting wallet purchase...");
     setPurchaseStatus("loading");
     setIsProcessingWalletCheckout(true);
 
     try {
       const result = await processWalletOnlyCheckout(items);
-      console.log("Wallet purchase result:", result);
 
       if (result.success) {
-        console.log("Purchase successful, setting state...");
-
         // Clear cart first
         clearCart();
 
@@ -120,8 +114,6 @@ export default function CheckoutPage() {
         const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
         router.push(`/checkout/summary?summary=${encodedSummary}`);
       } else {
-        console.log("Purchase failed:", result.message);
-
         // Redirect to summary page with error
         const summaryData = {
           paymentMethod: "wallet",

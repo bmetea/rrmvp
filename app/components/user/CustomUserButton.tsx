@@ -1,7 +1,6 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { Ticket } from "lucide-react";
 import MyEntriesPage from "./MyEntriesPage";
 
 const TicketIcon = () => {
