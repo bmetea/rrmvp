@@ -5,113 +5,80 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { checkPaymentStatus } from "@/components/payments/actions";
 import { useCart } from "@/lib/context/cart-context";
 import { checkoutWithTransaction } from "../actions";
-import { PurchaseResult } from "@/components/payments/purchase-result";
 
 export default function CheckoutResultPage() {
-  const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading"
-  );
+  const [status, setStatus] = useState<"loading" | "error">("loading");
   const [message, setMessage] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
-  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
-  const [purchaseResults, setPurchaseResults] = useState<any[]>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
   const { clearCart, items } = useCart();
 
   useEffect(() => {
-    const verifyPayment = async () => {
+    const processPaymentAndCheckout = async () => {
       const checkoutId = searchParams.get("id");
 
       if (!checkoutId) {
-        setStatus("error");
-        setMessage("Invalid payment response");
+        redirectToSummary("error", "Invalid payment response");
         return;
       }
 
       try {
-        const result = await checkPaymentStatus(checkoutId);
+        // Verify payment first
+        const paymentResult = await checkPaymentStatus(checkoutId);
 
-        if (result.error) {
-          setStatus("error");
-          setMessage(result.error);
+        if (
+          paymentResult.error ||
+          paymentResult.result?.code !== "000.100.110"
+        ) {
+          redirectToSummary(
+            "error",
+            paymentResult.error ||
+              paymentResult.result?.description ||
+              "Payment failed"
+          );
           return;
         }
 
-        if (result.result?.code === "000.100.110") {
-          setStatus("success");
-          setMessage("Payment successful!");
-        } else {
-          setStatus("error");
-          setMessage(result.result?.description || "Payment failed");
-        }
+        // Process the checkout
+        const result = await checkoutWithTransaction(items, checkoutId);
+
+        // Clear cart before redirecting
+        clearCart();
+
+        // Redirect to summary page with results
+        const summaryData = {
+          paymentMethod: "card",
+          results: result.results || [],
+          paymentStatus: result.success ? "success" : "error",
+          paymentMessage: result.message,
+        };
+
+        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+        router.push(`/checkout/summary?summary=${encodedSummary}`);
       } catch (error) {
-        setStatus("error");
-        setMessage("Error checking payment status");
-        console.error(error);
+        console.error("Error processing payment and checkout:", error);
+        redirectToSummary("error", "Error processing payment and checkout");
       }
     };
 
-    verifyPayment();
-  }, [searchParams]);
+    processPaymentAndCheckout();
+  }, [searchParams, items, clearCart, router]);
 
-  useEffect(() => {
-    if (status === "success" && !isProcessingCheckout) {
-      const processCheckout = async () => {
-        setIsProcessingCheckout(true);
-        try {
-          const checkoutId = searchParams.get("id");
-          const result = await checkoutWithTransaction(items, checkoutId);
-          if (!result.success) {
-            setStatus("error");
-            setMessage(result.message || "Failed to process checkout");
-            return;
-          }
-          setPurchaseResults(result.results || []);
-          clearCart();
-        } catch (error) {
-          setStatus("error");
-          setMessage("Error processing checkout");
-          console.error(error);
-        }
-      };
-      processCheckout();
-    }
-  }, [status, clearCart, items, isProcessingCheckout, searchParams]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    router.push("/competitions");
+  const redirectToSummary = (status: "error", message: string) => {
+    const summaryData = {
+      paymentMethod: "card",
+      results: [],
+      paymentStatus: status,
+      paymentMessage: message,
+    };
+    const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+    router.push(`/checkout/summary?summary=${encodedSummary}`);
   };
 
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
-      </div>
-    );
-  }
-
-  if (status === "error") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="text-red-500 text-xl font-semibold">{message}</div>
-        <button
-          onClick={() => router.push("/checkout")}
-          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
-
+  // Show loading spinner while processing
   return (
-    <PurchaseResult
-      isOpen={isOpen}
-      onClose={handleClose}
-      results={purchaseResults}
-      paymentMethod="card"
-    />
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+    </div>
   );
 }

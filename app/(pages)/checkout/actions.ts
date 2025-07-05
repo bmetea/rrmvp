@@ -83,6 +83,8 @@ export async function processHybridCheckout(
   success: boolean;
   message: string;
   results?: any[];
+  walletAmount?: number;
+  cardAmount?: number;
 }> {
   try {
     const session = await auth();
@@ -300,6 +302,8 @@ export async function processHybridCheckout(
         success: true,
         message: scenarioMessage,
         results,
+        walletAmount: walletCreditUsed,
+        cardAmount: cardPaymentAmount,
       };
     });
   } catch (error) {

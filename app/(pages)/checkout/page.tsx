@@ -4,7 +4,7 @@ import { useCart } from "@/lib/context/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Minus, Plus, CreditCard, CheckCircle } from "lucide-react";
+import { Minus, Plus, CreditCard } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,6 @@ import { Separator } from "@/components/ui/separator";
 import { penceToPounds } from "@/lib/utils/price";
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance, processWalletOnlyCheckout } from "./actions";
-import { PurchaseResult } from "@/components/payments/purchase-result";
 
 interface CartItem {
   competition: {
@@ -42,8 +41,6 @@ export default function CheckoutPage() {
   const { userId, isSignedIn } = useAuth();
   const [isProcessingWalletCheckout, setIsProcessingWalletCheckout] =
     useState(false);
-  const [purchaseResults, setPurchaseResults] = useState<any[]>([]);
-  const [showPurchaseResult, setShowPurchaseResult] = useState(false);
   const [purchaseStatus, setPurchaseStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -105,11 +102,13 @@ export default function CheckoutPage() {
         // Clear cart first
         clearCart();
 
-        // Set success state and results
-        setPurchaseResults(result.results || []);
-        setPurchaseStatus("success");
-        setShowPurchaseResult(true);
-        setShowPaymentForm(false);
+        // Prepare summary data
+        const summaryData = {
+          paymentMethod: "wallet",
+          results: result.results || [],
+          paymentStatus: "success",
+          paymentMessage: result.message,
+        };
 
         // Refresh wallet balance
         const balanceResult = await getUserWalletBalance();
@@ -117,39 +116,39 @@ export default function CheckoutPage() {
           setWalletBalance(balanceResult.balance);
         }
 
-        console.log("State set, purchaseStatus should be success");
+        // Redirect to summary page
+        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+        router.push(`/checkout/summary?summary=${encodedSummary}`);
       } else {
         console.log("Purchase failed:", result.message);
-        setError(result.message);
-        setPurchaseStatus("error");
-        toast.error(result.message);
+
+        // Redirect to summary page with error
+        const summaryData = {
+          paymentMethod: "wallet",
+          results: [],
+          paymentStatus: "error",
+          paymentMessage: result.message,
+        };
+        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+        router.push(`/checkout/summary?summary=${encodedSummary}`);
       }
     } catch (error) {
       console.error("Purchase error:", error);
       const errorMessage = "An error occurred during purchase";
-      setError(errorMessage);
-      setPurchaseStatus("error");
-      toast.error(errorMessage);
+
+      // Redirect to summary page with error
+      const summaryData = {
+        paymentMethod: "wallet",
+        results: [],
+        paymentStatus: "error",
+        paymentMessage: errorMessage,
+      };
+      const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+      router.push(`/checkout/summary?summary=${encodedSummary}`);
     } finally {
       setIsProcessingWalletCheckout(false);
     }
   };
-
-  const handlePurchaseResultClose = () => {
-    console.log("Closing purchase result modal");
-    setShowPurchaseResult(false);
-    setPurchaseStatus("idle");
-    router.push("/competitions");
-  };
-
-  // Debug logging
-  console.log("Current state:", {
-    purchaseStatus,
-    showPurchaseResult,
-    purchaseResultsLength: purchaseResults.length,
-    remainingToPay,
-    walletCreditUsed,
-  });
 
   return (
     <>
@@ -414,7 +413,6 @@ export default function CheckoutPage() {
                         </>
                       ) : (
                         <div className="bg-green-50 p-4 rounded-lg text-center">
-                          <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
                           <p className="text-green-800 font-medium">
                             No card payment required!
                           </p>
@@ -449,20 +447,10 @@ export default function CheckoutPage() {
       {/* Debug info */}
       {process.env.NODE_ENV === "development" && (
         <div className="fixed top-4 right-4 bg-black text-white p-2 text-xs z-50">
-          Status: {purchaseStatus} | Show: {showPurchaseResult.toString()} |
-          Results: {purchaseResults.length}
+          Status: {purchaseStatus} | Show: {showPaymentForm.toString()} | Wallet
+          Balance: {walletBalance !== null ? formatPrice(walletBalance) : "N/A"}
         </div>
       )}
-
-      {/* Purchase Result Modal - Always render but control visibility */}
-      <PurchaseResult
-        isOpen={purchaseStatus === "success" && showPurchaseResult}
-        onClose={handlePurchaseResultClose}
-        results={purchaseResults}
-        paymentMethod={remainingToPay === 0 ? "wallet" : "hybrid"}
-        walletAmount={walletCreditUsed}
-        cardAmount={remainingToPay}
-      />
     </>
   );
 }
