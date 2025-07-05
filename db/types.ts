@@ -32,7 +32,7 @@ export interface CompetitionEntries {
   payment_transaction_id: string | null;
   updated_at: Generated<Timestamp | null>;
   user_id: string;
-  wallet_transaction_id: string;
+  wallet_transaction_id: string | null;
 }
 
 export interface CompetitionEntryTickets {

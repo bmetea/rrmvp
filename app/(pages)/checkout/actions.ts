@@ -2,6 +2,7 @@
 
 import { processCheckout } from "@/services/checkoutService";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
 
 interface CartItem {
   competition: {
@@ -38,6 +39,251 @@ export async function checkout(
   }
 }
 
+// Helper function to find next available ticket numbers (copied from ticketPurchasingService)
+async function findNextAvailableTicketNumbers(
+  competitionId: string,
+  count: number,
+  trx: any
+): Promise<number[]> {
+  try {
+    // Get all existing ticket numbers for this competition from competition_entry_tickets table
+    const existingTickets = await trx
+      .selectFrom("competition_entry_tickets")
+      .select("ticket_number")
+      .where("competition_id", "=", competitionId)
+      .execute();
+
+    const existingNumbers = new Set(
+      existingTickets.map((ticket: any) => ticket.ticket_number)
+    );
+
+    // Find the next available numbers
+    const availableNumbers: number[] = [];
+    let currentNumber = 1;
+
+    while (availableNumbers.length < count) {
+      if (!existingNumbers.has(currentNumber)) {
+        availableNumbers.push(currentNumber);
+      }
+      currentNumber++;
+    }
+
+    return availableNumbers;
+  } catch (error) {
+    console.error("Error finding next available ticket numbers:", error);
+    return [];
+  }
+}
+
+export async function processHybridCheckout(
+  items: CartItem[],
+  paymentTransactionId?: string
+): Promise<{
+  success: boolean;
+  message: string;
+  results?: any[];
+}> {
+  try {
+    const session = await auth();
+
+    if (!session?.userId) {
+      return {
+        success: false,
+        message: "You must be logged in to complete this purchase",
+      };
+    }
+
+    const { db } = await import("@/db");
+
+    // Calculate total cost
+    const totalCost = items.reduce(
+      (sum, item) => sum + item.competition.ticket_price * item.quantity,
+      0
+    );
+
+    return await db.transaction().execute(async (trx) => {
+      // Get database user ID from Clerk user ID
+      const user = await trx
+        .selectFrom("users")
+        .select("id")
+        .where("clerk_id", "=", session.userId)
+        .executeTakeFirst();
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      // Get wallet balance
+      const wallet = await trx
+        .selectFrom("wallets")
+        .select(["id", "balance"])
+        .where("user_id", "=", user.id)
+        .executeTakeFirst();
+
+      if (!wallet) {
+        throw new Error("Wallet not found");
+      }
+
+      // Calculate payment breakdown
+      const walletCreditUsed = Math.min(wallet.balance, totalCost);
+      const cardPaymentAmount = totalCost - walletCreditUsed;
+
+      const results = [];
+
+      // Scenario analysis:
+      // 1. Card-only: walletCreditUsed = 0, cardPaymentAmount = totalCost
+      // 2. Wallet-only: walletCreditUsed = totalCost, cardPaymentAmount = 0
+      // 3. Hybrid: walletCreditUsed > 0 && cardPaymentAmount > 0
+
+      for (const item of items) {
+        const itemCost = item.competition.ticket_price * item.quantity;
+        const itemWalletCredit = Math.min(
+          walletCreditUsed * (itemCost / totalCost),
+          itemCost
+        );
+
+        let walletTransactionId: string | null = null;
+
+        // Create wallet transaction if wallet credit is used
+        if (itemWalletCredit > 0) {
+          const walletTransaction = await trx
+            .insertInto("wallet_transactions")
+            .values({
+              wallet_id: wallet.id,
+              amount: Math.round(itemWalletCredit), // Round to avoid decimal issues
+              type: "debit",
+              status: "completed",
+              reference_type: "ticket_purchase",
+              reference_id: item.competition.id,
+              description: `Wallet credit for ${item.quantity} tickets in competition ${item.competition.id}`,
+              number_of_tickets: item.quantity,
+            })
+            .returning("id")
+            .executeTakeFirst();
+
+          if (!walletTransaction) {
+            throw new Error(
+              `Failed to create wallet transaction for competition ${item.competition.id}`
+            );
+          }
+
+          walletTransactionId = walletTransaction.id;
+        }
+
+        // Create competition entry
+        const competitionEntry = await trx
+          .insertInto("competition_entries")
+          .values({
+            competition_id: item.competition.id,
+            user_id: user.id,
+            wallet_transaction_id: walletTransactionId, // Can be null for card-only
+            payment_transaction_id: paymentTransactionId || null, // Can be null for wallet-only
+          })
+          .returning("id")
+          .executeTakeFirst();
+
+        if (!competitionEntry) {
+          throw new Error(
+            `Failed to create competition entry for ${item.competition.id}`
+          );
+        }
+
+        // Create tickets using local helper function
+        const ticketNumbers = await findNextAvailableTicketNumbers(
+          item.competition.id,
+          item.quantity,
+          trx
+        );
+
+        if (ticketNumbers.length !== item.quantity) {
+          throw new Error(
+            `Not enough available ticket numbers for competition ${item.competition.id}`
+          );
+        }
+
+        // Create individual ticket records
+        const ticketValues = ticketNumbers.map((ticketNumber) => ({
+          competition_entry_id: competitionEntry.id,
+          competition_id: item.competition.id,
+          ticket_number: ticketNumber,
+          winning_ticket: false,
+        }));
+
+        await trx
+          .insertInto("competition_entry_tickets")
+          .values(ticketValues)
+          .execute();
+
+        // Update competition tickets sold count
+        const currentCompetition = await trx
+          .selectFrom("competitions")
+          .select("tickets_sold")
+          .where("id", "=", item.competition.id)
+          .executeTakeFirst();
+
+        await trx
+          .updateTable("competitions")
+          .set({
+            tickets_sold:
+              (currentCompetition?.tickets_sold || 0) + item.quantity,
+          })
+          .where("id", "=", item.competition.id)
+          .execute();
+
+        results.push({
+          competitionId: item.competition.id,
+          success: true,
+          message: `Successfully purchased ${item.quantity} tickets`,
+          entryId: competitionEntry.id,
+          ticketNumbers,
+        });
+      }
+
+      // Update wallet balance if wallet credit was used
+      if (walletCreditUsed > 0) {
+        await trx
+          .updateTable("wallets")
+          .set({
+            balance: wallet.balance - walletCreditUsed,
+          })
+          .where("id", "=", wallet.id)
+          .execute();
+      }
+
+      const scenarioMessage =
+        cardPaymentAmount === 0
+          ? "Purchase completed using wallet credit only"
+          : walletCreditUsed === 0
+          ? "Purchase completed using card payment only"
+          : `Purchase completed using £${(walletCreditUsed / 100).toFixed(
+              2
+            )} wallet credit + £${(cardPaymentAmount / 100).toFixed(
+              2
+            )} card payment`;
+
+      return {
+        success: true,
+        message: scenarioMessage,
+        results,
+      };
+    });
+  } catch (error) {
+    console.error("Hybrid checkout error:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "An error occurred during checkout",
+    };
+  } finally {
+    // Revalidate relevant paths
+    revalidatePath("/competitions/[id]");
+    revalidatePath("/profile");
+    revalidatePath("/checkout");
+  }
+}
+
 export async function checkoutWithTransaction(
   items: CartItem[],
   checkoutId?: string
@@ -53,13 +299,8 @@ export async function checkoutWithTransaction(
         .executeTakeFirst();
       if (tx) paymentTransactionId = tx.id;
     }
-    const result = await processCheckout(items, paymentTransactionId);
-    if (result.success) {
-      revalidatePath("/competitions/[id]");
-      revalidatePath("/profile");
-      revalidatePath("/checkout");
-    }
-    return result;
+
+    return await processHybridCheckout(items, paymentTransactionId);
   } catch (error) {
     console.error("Checkout error:", error);
     return {
@@ -68,4 +309,59 @@ export async function checkoutWithTransaction(
       results: [],
     };
   }
+}
+
+export async function getUserWalletBalance(): Promise<{
+  success: boolean;
+  balance?: number;
+  error?: string;
+}> {
+  try {
+    const session = await auth();
+
+    if (!session?.userId) {
+      return {
+        success: false,
+        error: "You must be logged in to view wallet balance",
+      };
+    }
+
+    const { db } = await import("@/db");
+
+    // Get database user ID from Clerk user ID
+    const user = await db
+      .selectFrom("users")
+      .select("id")
+      .where("clerk_id", "=", session.userId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    // Get wallet balance
+    const wallet = await db
+      .selectFrom("wallets")
+      .select("balance")
+      .where("user_id", "=", user.id)
+      .executeTakeFirst();
+
+    return {
+      success: true,
+      balance: wallet?.balance ?? 0,
+    };
+  } catch (error) {
+    console.error("Error getting wallet balance:", error);
+    return {
+      success: false,
+      error: "Failed to get wallet balance",
+    };
+  }
+}
+
+export async function processWalletOnlyCheckout(items: CartItem[]) {
+  return await processHybridCheckout(items); // No payment transaction ID = wallet-only
 }

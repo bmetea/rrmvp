@@ -4,9 +4,9 @@ import { useCart } from "@/lib/context/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Minus, Plus, CreditCard } from "lucide-react";
+import { Minus, Plus, CreditCard, CheckCircle } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert } from "@/components/ui/alert";
@@ -15,6 +15,7 @@ import { formatPrice } from "@/lib/utils/price";
 import { Separator } from "@/components/ui/separator";
 import { penceToPounds } from "@/lib/utils/price";
 import { SignInButton, useAuth } from "@clerk/nextjs";
+import { getUserWalletBalance, processWalletOnlyCheckout } from "./actions";
 
 interface CartItem {
   competition: {
@@ -30,12 +31,30 @@ interface CartItem {
 }
 
 export default function CheckoutPage() {
-  const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice, clearCart } =
+    useCart();
   const [discount, setDiscount] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const { userId, isSignedIn } = useAuth();
+  const [isProcessingWalletCheckout, setIsProcessingWalletCheckout] =
+    useState(false);
+
+  // Fetch wallet balance when user is signed in
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      if (isSignedIn) {
+        const result = await getUserWalletBalance();
+        if (result.success && result.balance !== undefined) {
+          setWalletBalance(result.balance);
+        }
+      }
+    };
+
+    fetchWalletBalance();
+  }, [isSignedIn]);
 
   if (items.length === 0) {
     return (
@@ -55,6 +74,48 @@ export default function CheckoutPage() {
       return;
     }
     setShowPaymentForm(true);
+  };
+
+  const walletCreditUsed =
+    walletBalance !== null ? Math.min(walletBalance, totalPrice) : 0;
+  const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
+  const hasSufficientBalance =
+    walletBalance !== null && walletBalance >= totalPrice;
+
+  const handleHybridPurchase = async () => {
+    setIsProcessingWalletCheckout(true);
+    try {
+      const result = await processWalletOnlyCheckout(items); // This now uses hybrid logic
+
+      if (result.success) {
+        // Clear cart and refresh wallet balance
+        clearCart();
+
+        // Refresh wallet balance
+        const balanceResult = await getUserWalletBalance();
+        if (balanceResult.success && balanceResult.balance !== undefined) {
+          setWalletBalance(balanceResult.balance);
+        }
+
+        // Show success message and redirect
+        toast.success(result.message || "Purchase completed successfully!");
+
+        // Redirect to a success page or back to competitions
+        setTimeout(() => {
+          router.push("/competitions");
+        }, 2000);
+      } else {
+        setError(result.message);
+        toast.error(result.message);
+      }
+    } catch (error) {
+      const errorMessage = "An error occurred during purchase";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error(error);
+    } finally {
+      setIsProcessingWalletCheckout(false);
+    }
   };
 
   return (
@@ -171,13 +232,47 @@ export default function CheckoutPage() {
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
+
+              {isSignedIn && walletBalance !== null && (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Available Wallet Credit
+                    </span>
+                    <span className="text-green-600 font-medium">
+                      {formatPrice(walletBalance)}
+                    </span>
+                  </div>
+
+                  {walletCreditUsed > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        - Wallet Credit Applied
+                      </span>
+                      <span className="text-green-600 font-medium">
+                        -{formatPrice(walletCreditUsed)}
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
+
               <Separator />
+
               <div className="flex justify-between">
-                <span className="font-medium">Total Payable</span>
+                <span className="font-medium">
+                  {remainingToPay > 0 ? "Remaining to Pay" : "Total Payable"}
+                </span>
                 <span className="font-bold text-lg">
-                  {formatPrice(totalPrice)}
+                  {formatPrice(remainingToPay)}
                 </span>
               </div>
+
+              {remainingToPay === 0 && isSignedIn && (
+                <div className="text-xs text-green-600 text-center bg-green-50 p-2 rounded">
+                  🎉 This purchase is fully covered by your wallet credit!
+                </div>
+              )}
             </div>
 
             {/* Payment Section */}
@@ -188,7 +283,13 @@ export default function CheckoutPage() {
                     Ready to Pay?
                   </h3>
                   <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
-                    Review your basket and click below to proceed with payment
+                    {remainingToPay === 0
+                      ? "Your wallet credit covers the full amount. Click below to complete your purchase."
+                      : remainingToPay < totalPrice
+                      ? `Your wallet credit will be applied. You'll be charged ${formatPrice(
+                          remainingToPay
+                        )} on your card.`
+                      : "Review your basket and click below to proceed with payment"}
                   </p>
                   {!isSignedIn ? (
                     <SignInButton mode="modal">
@@ -203,12 +304,16 @@ export default function CheckoutPage() {
                       className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
                     >
                       <CreditCard className="h-5 w-5" />
-                      Pay by Card
+                      {remainingToPay === 0
+                        ? "Complete Purchase"
+                        : `Pay ${formatPrice(remainingToPay)}`}
                     </Button>
                   )}
                   <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                     {!isSignedIn
                       ? "You need to sign in to complete your purchase"
+                      : remainingToPay === 0
+                      ? "No card payment required - using wallet credit only"
                       : "You can still modify quantities above before proceeding"}
                   </div>
                 </>
@@ -231,10 +336,42 @@ export default function CheckoutPage() {
                       {error}
                     </Alert>
                   )}
-                  <PaymentForm
-                    amount={penceToPounds(totalPrice).toFixed(2)}
-                    className="mb-4"
-                  />
+                  {remainingToPay > 0 ? (
+                    <>
+                      <div className="bg-blue-50 p-3 rounded-lg mb-4">
+                        <p className="text-sm text-blue-800">
+                          <strong>Payment Breakdown:</strong>
+                          <br />
+                          Wallet Credit: {formatPrice(walletCreditUsed)}
+                          <br />
+                          Card Payment: {formatPrice(remainingToPay)}
+                        </p>
+                      </div>
+                      <PaymentForm
+                        amount={penceToPounds(remainingToPay).toFixed(2)}
+                        className="mb-4"
+                      />
+                    </>
+                  ) : (
+                    <div className="bg-green-50 p-4 rounded-lg text-center">
+                      <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                      <p className="text-green-800 font-medium">
+                        No card payment required!
+                      </p>
+                      <p className="text-green-700 text-sm">
+                        This purchase is fully covered by your wallet credit.
+                      </p>
+                      <Button
+                        className="mt-3"
+                        onClick={handleHybridPurchase}
+                        disabled={isProcessingWalletCheckout}
+                      >
+                        {isProcessingWalletCheckout
+                          ? "Processing..."
+                          : "Complete Purchase"}
+                      </Button>
+                    </div>
+                  )}
                   <div className="text-[14px] leading-[150%] text-muted-foreground">
                     By proceeding with payment, you agree to our terms and
                     conditions.
