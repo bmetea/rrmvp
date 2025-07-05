@@ -472,7 +472,20 @@ export async function computeWinningTicketsAction(competitionId: string) {
         // Sort the winning ticket numbers for consistency
         winningTicketNumbers.sort((a, b) => a - b);
 
-        // Update the prize with winning ticket numbers
+        // Insert winning tickets into the new table
+        const winningTicketData = winningTicketNumbers.map((ticketNumber) => ({
+          competition_id: competitionId,
+          prize_id: prize.id,
+          ticket_number: ticketNumber,
+          status: "available" as const,
+        }));
+
+        await db
+          .insertInto("winning_tickets")
+          .values(winningTicketData)
+          .execute();
+
+        // Update the prize with winning ticket numbers (for backward compatibility)
         await db
           .updateTable("competition_prizes")
           .set({
@@ -526,15 +539,35 @@ export async function computeWinningTicketsAction(competitionId: string) {
 
 export async function clearWinningTicketsAction(competitionId: string) {
   try {
-    // Clear winning ticket numbers for all prizes in the competition
-    await db
-      .updateTable("competition_prizes")
-      .set({
-        winning_ticket_numbers: null,
-        updated_at: new Date(),
-      })
-      .where("competition_id", "=", competitionId)
-      .execute();
+    // Clear winning tickets from the new table and the old arrays
+    await db.transaction().execute(async (trx) => {
+      // Clear winning tickets from the new table
+      await trx
+        .deleteFrom("winning_tickets")
+        .where("competition_id", "=", competitionId)
+        .execute();
+
+      // Clear winning ticket numbers from competition_prizes (for backward compatibility)
+      await trx
+        .updateTable("competition_prizes")
+        .set({
+          winning_ticket_numbers: null,
+          claimed_winning_tickets: null,
+          updated_at: new Date(),
+        })
+        .where("competition_id", "=", competitionId)
+        .execute();
+
+      // Reset winning_ticket flags in competition_entry_tickets
+      await trx
+        .updateTable("competition_entry_tickets")
+        .set({
+          winning_ticket: false,
+          prize_id: null,
+        })
+        .where("competition_id", "=", competitionId)
+        .execute();
+    });
 
     // Revalidate all competition-related paths
     revalidatePath("/");

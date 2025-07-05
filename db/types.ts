@@ -30,19 +30,10 @@ export interface CompetitionEntries {
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
   payment_transaction_id: string | null;
+  tickets: Generated<number[] | null>;
   updated_at: Generated<Timestamp | null>;
   user_id: string;
   wallet_transaction_id: string | null;
-}
-
-export interface CompetitionEntryTickets {
-  competition_entry_id: string;
-  competition_id: string;
-  created_at: Generated<Timestamp | null>;
-  id: Generated<string>;
-  ticket_number: number;
-  updated_at: Generated<Timestamp | null>;
-  winning_ticket: Generated<boolean>;
 }
 
 export interface CompetitionPrizes {
@@ -144,9 +135,21 @@ export interface WalletTransactions {
   wallet_id: string;
 }
 
+export interface WinningTickets {
+  claimed_at: Timestamp | null;
+  claimed_by_user_id: string | null;
+  competition_entry_id: string | null;
+  competition_id: string;
+  created_at: Generated<Timestamp | null>;
+  id: Generated<string>;
+  prize_id: string;
+  status: Generated<string>;
+  ticket_number: number;
+  updated_at: Generated<Timestamp | null>;
+}
+
 export interface DB {
   competition_entries: CompetitionEntries;
-  competition_entry_tickets: CompetitionEntryTickets;
   competition_prizes: CompetitionPrizes;
   competitions: Competitions;
   payment_transactions: PaymentTransactions;
@@ -154,4 +157,5 @@ export interface DB {
   users: Users;
   wallet_transactions: WalletTransactions;
   wallets: Wallets;
+  winning_tickets: WinningTickets;
 }

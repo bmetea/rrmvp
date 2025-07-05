@@ -11,7 +11,7 @@ export interface CompetitionEntry {
   wallet_transaction_id: string;
   created_at: Date;
   updated_at: Date;
-  tickets: CompetitionEntryTicket[];
+  tickets: number[];
   competition: {
     id: string;
     title: string;
@@ -73,6 +73,7 @@ export async function getUserCompetitionEntries(): Promise<{
         "ce.competition_id",
         "ce.user_id",
         "ce.wallet_transaction_id",
+        "ce.tickets",
         "ce.created_at",
         "ce.updated_at",
         "c.title",
@@ -95,27 +96,26 @@ export async function getUserCompetitionEntries(): Promise<{
     // Get all entry IDs
     const entryIds = entries.map((entry) => entry.id);
 
-    // Fetch all tickets for all entries in a single query
-    const allTickets = await db
-      .selectFrom("competition_entry_tickets")
-      .selectAll()
+    // Get winning tickets for these entries
+    const winningTickets = await db
+      .selectFrom("winning_tickets")
+      .select(["ticket_number", "competition_entry_id"])
       .where("competition_entry_id", "in", entryIds)
-      .orderBy("ticket_number", "asc")
+      .where("status", "=", "claimed")
       .execute();
 
-    // Group tickets by entry ID
-    const ticketsByEntryId = allTickets.reduce((acc, ticket) => {
+    // Create a map of winning tickets by entry ID
+    const winningTicketsByEntryId = winningTickets.reduce((acc, ticket) => {
       if (!acc[ticket.competition_entry_id]) {
         acc[ticket.competition_entry_id] = [];
       }
-      acc[ticket.competition_entry_id].push(ticket);
+      acc[ticket.competition_entry_id].push(ticket.ticket_number);
       return acc;
-    }, {} as Record<string, typeof allTickets>);
+    }, {} as Record<string, number[]>);
 
-    // Combine entries with their tickets
-    const entriesWithTickets = entries.map((entry) => ({
+    // Format entries with their tickets
+    const formattedEntries = entries.map((entry) => ({
       ...entry,
-      tickets: ticketsByEntryId[entry.id] || [],
       competition: {
         id: entry.competition_id,
         title: entry.title,
@@ -135,7 +135,7 @@ export async function getUserCompetitionEntries(): Promise<{
 
     return {
       success: true,
-      entries: entriesWithTickets,
+      entries: formattedEntries,
     };
   } catch (error) {
     console.error("Error fetching user competition entries:", error);

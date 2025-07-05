@@ -46,15 +46,16 @@ async function findNextAvailableTicketNumbers(
   trx: any
 ): Promise<number[]> {
   try {
-    // Get all existing ticket numbers for this competition from competition_entry_tickets table
-    const existingTickets = await trx
-      .selectFrom("competition_entry_tickets")
-      .select("ticket_number")
+    // Get all existing ticket numbers for this competition from competition_entries table
+    const entries = await trx
+      .selectFrom("competition_entries")
+      .select("tickets")
       .where("competition_id", "=", competitionId)
       .execute();
 
+    // Flatten all ticket arrays into a single set of used numbers
     const existingNumbers = new Set(
-      existingTickets.map((ticket: any) => ticket.ticket_number)
+      entries.flatMap((entry) => entry.tickets || [])
     );
 
     // Find the next available numbers
@@ -170,24 +171,6 @@ export async function processHybridCheckout(
           walletTransactionId = walletTransaction.id;
         }
 
-        // Create competition entry
-        const competitionEntry = await trx
-          .insertInto("competition_entries")
-          .values({
-            competition_id: item.competition.id,
-            user_id: user.id,
-            wallet_transaction_id: walletTransactionId, // Can be null for card-only
-            payment_transaction_id: paymentTransactionId || null, // Can be null for wallet-only
-          })
-          .returning("id")
-          .executeTakeFirst();
-
-        if (!competitionEntry) {
-          throw new Error(
-            `Failed to create competition entry for ${item.competition.id}`
-          );
-        }
-
         // Create tickets using local helper function
         const ticketNumbers = await findNextAvailableTicketNumbers(
           item.competition.id,
@@ -201,18 +184,26 @@ export async function processHybridCheckout(
           );
         }
 
-        // Create individual ticket records
-        const ticketValues = ticketNumbers.map((ticketNumber) => ({
-          competition_entry_id: competitionEntry.id,
-          competition_id: item.competition.id,
-          ticket_number: ticketNumber,
-          winning_ticket: false,
-        }));
+        // Create competition entry with ticket numbers
+        const competitionEntry = await trx
+          .insertInto("competition_entries")
+          .values({
+            competition_id: item.competition.id,
+            user_id: user.id,
+            wallet_transaction_id: walletTransactionId,
+            tickets: ticketNumbers,
+            ...(paymentTransactionId
+              ? { payment_transaction_id: paymentTransactionId }
+              : {}),
+          })
+          .returning("id")
+          .executeTakeFirst();
 
-        await trx
-          .insertInto("competition_entry_tickets")
-          .values(ticketValues)
-          .execute();
+        if (!competitionEntry) {
+          throw new Error(
+            `Failed to create competition entry for ${item.competition.id}`
+          );
+        }
 
         // Update competition tickets sold count
         const currentCompetition = await trx
