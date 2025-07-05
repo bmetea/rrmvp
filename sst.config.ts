@@ -31,9 +31,6 @@ export default $config({
       },
       // proxy: true,
     });
-    // const rds = new sst.aws.Postgres("rrdb", {
-    //   vpc,
-    // });
 
     new sst.aws.Nextjs(`rr-${$app.stage}`, {
       link: [rds],

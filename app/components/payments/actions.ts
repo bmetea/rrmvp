@@ -82,6 +82,9 @@ export async function checkPaymentStatus(
 
     const data = await response.json();
     console.log("payment status result:", data);
+    if (data.result && data.result.parameterErrors) {
+      console.log("parameterErrors:", data.result.parameterErrors);
+    }
     return { result: data.result };
   } catch (error) {
     console.error("Payment status check error:", error);

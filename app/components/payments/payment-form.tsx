@@ -69,7 +69,11 @@ export function PaymentForm({
           style: 'card',
           enableSAQACompliance: true,
           applePay: {
-            buttonStyle: 'black',
+            buttonStyle: "black",
+            buttonSource: "js",
+            displayName: "MyStore",
+            total: { label: "COMPANY, INC." },
+            merchantIdentifier: '${gatewayMerchantId}',
           },
           googlePay: {
             buttonColor: 'black',
@@ -147,10 +151,6 @@ export function PaymentForm({
           font-weight: 500;
           color: #374151;
           margin-bottom: 0.5rem;
-        }
-        .wpwl-apple-pay-button {
-          width: 100%;
-          padding: 18px;
         }
         hr.rounded {
           border-top: 3px solid #d1d5db;
