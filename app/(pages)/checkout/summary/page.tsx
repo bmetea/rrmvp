@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
+import { useClerk } from "@clerk/nextjs";
 
 interface PurchaseResult {
   competitionId: string;
@@ -30,9 +31,11 @@ interface PurchaseSummary {
 }
 
 export default function CheckoutSummaryPage() {
-  const [summary, setSummary] = useState<PurchaseSummary | null>(null);
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const [purchaseSummary, setPurchaseSummary] =
+    useState<PurchaseSummary | null>(null);
+  const { openUserProfile } = useClerk();
+  const router = useRouter();
 
   useEffect(() => {
     // Get summary data from URL state
@@ -40,7 +43,7 @@ export default function CheckoutSummaryPage() {
     if (summaryData) {
       try {
         const decodedSummary = JSON.parse(decodeURIComponent(summaryData));
-        setSummary(decodedSummary);
+        setPurchaseSummary(decodedSummary);
       } catch (error) {
         console.error("Error parsing summary data:", error);
         router.push("/competitions");
@@ -50,7 +53,7 @@ export default function CheckoutSummaryPage() {
     }
   }, [searchParams, router]);
 
-  if (!summary) {
+  if (!purchaseSummary) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
@@ -58,11 +61,11 @@ export default function CheckoutSummaryPage() {
     );
   }
 
-  const totalTickets = summary.results.reduce(
+  const totalTickets = purchaseSummary.results.reduce(
     (sum, result) => sum + result.ticketNumbers.length,
     0
   );
-  const totalWinningTickets = summary.results.reduce(
+  const totalWinningTickets = purchaseSummary.results.reduce(
     (sum, result) => sum + result.winningTickets.length,
     0
   );
@@ -77,7 +80,7 @@ export default function CheckoutSummaryPage() {
   };
 
   const handleViewEntries = () => {
-    router.push("/profile");
+    router.push("/user/my-entries");
   };
 
   const handleContinueShopping = () => {
@@ -88,19 +91,19 @@ export default function CheckoutSummaryPage() {
     <div className="container max-w-4xl mx-auto py-8 px-4">
       <Card className="p-6">
         <div className="flex flex-col items-center mb-6">
-          {summary.paymentStatus === "success" ? (
+          {purchaseSummary.paymentStatus === "success" ? (
             <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
           ) : (
             <XCircle className="h-16 w-16 text-red-500 mb-4" />
           )}
           <h1 className="text-2xl font-bold text-center mb-2">
-            {summary.paymentStatus === "success"
+            {purchaseSummary.paymentStatus === "success"
               ? "Purchase Complete!"
               : "Purchase Failed"}
           </h1>
-          {summary.paymentMessage && (
+          {purchaseSummary.paymentMessage && (
             <p className="text-muted-foreground text-center">
-              {summary.paymentMessage}
+              {purchaseSummary.paymentMessage}
             </p>
           )}
         </div>
@@ -109,14 +112,15 @@ export default function CheckoutSummaryPage() {
           <div className="bg-muted/50 rounded-lg p-4">
             <h2 className="font-semibold mb-2">Payment Details</h2>
             <p className="text-sm text-muted-foreground">
-              {summary.paymentMethod === "wallet" && "Paid using wallet credit"}
-              {summary.paymentMethod === "card" && "Paid using card"}
-              {summary.paymentMethod === "hybrid" &&
-                `Paid £${(summary.walletAmount! / 100).toFixed(
+              {purchaseSummary.paymentMethod === "wallet" &&
+                "Paid using wallet credit"}
+              {purchaseSummary.paymentMethod === "card" && "Paid using card"}
+              {purchaseSummary.paymentMethod === "hybrid" &&
+                `Paid £${(purchaseSummary.walletAmount! / 100).toFixed(
                   2
-                )} using wallet + £${(summary.cardAmount! / 100).toFixed(
-                  2
-                )} using card`}
+                )} using wallet + £${(
+                  purchaseSummary.cardAmount! / 100
+                ).toFixed(2)} using card`}
             </p>
           </div>
 
@@ -147,7 +151,7 @@ export default function CheckoutSummaryPage() {
           <div className="space-y-4">
             <h2 className="font-semibold">Purchase Details</h2>
             <ScrollArea className="h-[300px] rounded-md border p-4">
-              {summary.results.map((result, index) => (
+              {purchaseSummary.results.map((result, index) => (
                 <div key={result.entryId} className="mb-6 last:mb-0">
                   <h3 className="font-semibold mb-2">Entry {index + 1}</h3>
                   <div className="space-y-2 text-sm">
@@ -161,7 +165,7 @@ export default function CheckoutSummaryPage() {
                       </p>
                     )}
                   </div>
-                  {index < summary.results.length - 1 && (
+                  {index < purchaseSummary.results.length - 1 && (
                     <Separator className="my-4" />
                   )}
                 </div>
