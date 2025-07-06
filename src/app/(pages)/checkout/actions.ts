@@ -39,40 +39,55 @@ export async function checkout(
   }
 }
 
-// Helper function to find next available ticket numbers (copied from ticketPurchasingService)
-async function findNextAvailableTicketNumbers(
+// Atomic ticket allocation function
+async function allocateTicketNumbers(
   competitionId: string,
   count: number,
   trx: any
-): Promise<number[]> {
+): Promise<{ success: boolean; ticketNumbers?: number[]; error?: string }> {
   try {
-    // Get all existing ticket numbers for this competition from competition_entries table
-    const entries = await trx
-      .selectFrom("competition_entries")
-      .select("tickets")
+    const { sql } = await import("kysely");
+
+    // Atomic allocation: increment counter and check availability in one operation
+    const result = await trx
+      .updateTable("ticket_counters")
+      .set({
+        last_ticket_number: sql`last_ticket_number + ${count}`,
+        updated_at: sql`CURRENT_TIMESTAMP`,
+      })
       .where("competition_id", "=", competitionId)
-      .execute();
+      .where(
+        sql`last_ticket_number + ${count} <= (
+        SELECT total_tickets FROM competitions WHERE id = ${competitionId}
+      )`
+      )
+      .returning(["last_ticket_number"])
+      .executeTakeFirst();
 
-    // Flatten all ticket arrays into a single set of used numbers
-    const existingNumbers = new Set(
-      entries.flatMap((entry) => entry.tickets || [])
-    );
-
-    // Find the next available numbers
-    const availableNumbers: number[] = [];
-    let currentNumber = 1;
-
-    while (availableNumbers.length < count) {
-      if (!existingNumbers.has(currentNumber)) {
-        availableNumbers.push(currentNumber);
-      }
-      currentNumber++;
+    if (!result) {
+      return {
+        success: false,
+        error: "Not enough tickets available",
+      };
     }
 
-    return availableNumbers;
+    // Generate the ticket numbers for this allocation
+    const startNumber = result.last_ticket_number - count + 1;
+    const ticketNumbers = Array.from(
+      { length: count },
+      (_, i) => startNumber + i
+    );
+
+    return {
+      success: true,
+      ticketNumbers,
+    };
   } catch (error) {
-    console.error("Error finding next available ticket numbers:", error);
-    return [];
+    console.error("Error allocating ticket numbers:", error);
+    return {
+      success: false,
+      error: "Failed to allocate tickets",
+    };
   }
 }
 
@@ -173,18 +188,21 @@ export async function processHybridCheckout(
           walletTransactionId = walletTransaction.id;
         }
 
-        // Create tickets using local helper function
-        const ticketNumbers = await findNextAvailableTicketNumbers(
+        // Atomically allocate ticket numbers
+        const allocation = await allocateTicketNumbers(
           item.competition.id,
           item.quantity,
           trx
         );
 
-        if (ticketNumbers.length !== item.quantity) {
+        if (!allocation.success) {
           throw new Error(
-            `Not enough available ticket numbers for competition ${item.competition.id}`
+            allocation.error ||
+              `Failed to allocate tickets for competition ${item.competition.id}`
           );
         }
+
+        const ticketNumbers = allocation.ticketNumbers!;
 
         // Create competition entry with ticket numbers
         const competitionEntry = await trx
@@ -241,18 +259,13 @@ export async function processHybridCheckout(
           }
         }
 
-        // Update competition tickets sold count
-        const currentCompetition = await trx
-          .selectFrom("competitions")
-          .select("tickets_sold")
-          .where("id", "=", item.competition.id)
-          .executeTakeFirst();
+        // Update competition tickets sold count using atomic increment
+        const { sql } = await import("kysely");
 
         await trx
           .updateTable("competitions")
           .set({
-            tickets_sold:
-              (currentCompetition?.tickets_sold || 0) + item.quantity,
+            tickets_sold: sql`tickets_sold + ${item.quantity}`,
           })
           .where("id", "=", item.competition.id)
           .execute();

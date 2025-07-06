@@ -101,6 +101,13 @@ export interface Products {
   updated_at: Generated<Timestamp | null>;
 }
 
+export interface TicketCounters {
+  competition_id: string;
+  created_at: Generated<Timestamp | null>;
+  last_ticket_number: Generated<number>;
+  updated_at: Generated<Timestamp | null>;
+}
+
 export interface Users {
   clerk_id: string;
   created_at: Generated<Timestamp | null>;
@@ -154,6 +161,7 @@ export interface DB {
   competitions: Competitions;
   payment_transactions: PaymentTransactions;
   products: Products;
+  ticket_counters: TicketCounters;
   users: Users;
   wallet_transactions: WalletTransactions;
   wallets: Wallets;

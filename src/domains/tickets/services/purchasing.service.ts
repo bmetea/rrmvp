@@ -3,6 +3,7 @@
 import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { sql } from "kysely";
 
 interface PurchaseResult {
   success: boolean;
@@ -70,39 +71,53 @@ export async function claimWinningTicket(
   }
 }
 
-// Helper function to find next available ticket numbers
-async function findNextAvailableTicketNumbers(
+// NEW: Atomic ticket allocation function
+async function allocateTicketNumbers(
   competitionId: string,
-  count: number
-): Promise<number[]> {
+  count: number,
+  trx: any
+): Promise<{ success: boolean; ticketNumbers?: number[]; error?: string }> {
   try {
-    // Get all existing ticket numbers for this competition from competition_entries table
-    const entries = await db
-      .selectFrom("competition_entries")
-      .select("tickets")
+    // Atomic allocation: increment counter and check availability in one operation
+    const result = await trx
+      .updateTable("ticket_counters")
+      .set({
+        last_ticket_number: sql`last_ticket_number + ${count}`,
+        updated_at: sql`CURRENT_TIMESTAMP`,
+      })
       .where("competition_id", "=", competitionId)
-      .execute();
+      .where(
+        sql`last_ticket_number + ${count} <= (
+        SELECT total_tickets FROM competitions WHERE id = ${competitionId}
+      )`
+      )
+      .returning(["last_ticket_number"])
+      .executeTakeFirst();
 
-    // Flatten all ticket arrays into a single set of used numbers
-    const existingNumbers = new Set(
-      entries.flatMap((entry) => entry.tickets || [])
-    );
-
-    // Find the next available numbers
-    const availableNumbers: number[] = [];
-    let currentNumber = 1;
-
-    while (availableNumbers.length < count) {
-      if (!existingNumbers.has(currentNumber)) {
-        availableNumbers.push(currentNumber);
-      }
-      currentNumber++;
+    if (!result) {
+      return {
+        success: false,
+        error: "Not enough tickets available",
+      };
     }
 
-    return availableNumbers;
+    // Generate the ticket numbers for this allocation
+    const startNumber = result.last_ticket_number - count + 1;
+    const ticketNumbers = Array.from(
+      { length: count },
+      (_, i) => startNumber + i
+    );
+
+    return {
+      success: true,
+      ticketNumbers,
+    };
   } catch (error) {
-    console.error("Error finding next available ticket numbers:", error);
-    return [];
+    console.error("Error allocating ticket numbers:", error);
+    return {
+      success: false,
+      error: "Failed to allocate tickets",
+    };
   }
 }
 
@@ -155,13 +170,18 @@ export async function purchaseTickets(
           throw new Error("Competition is not active");
         }
 
-        // 3. Check if there are enough tickets available
-        if (
-          competition.tickets_sold + ticketCount >
-          competition.total_tickets
-        ) {
-          throw new Error("Not enough tickets available");
+        // 3. Atomically allocate ticket numbers (this also checks availability)
+        const allocation = await allocateTicketNumbers(
+          competitionId,
+          ticketCount,
+          trx
+        );
+
+        if (!allocation.success) {
+          throw new Error(allocation.error || "Failed to allocate tickets");
         }
+
+        const ticketNumbers = allocation.ticketNumbers!;
 
         // 4. Get user's wallet
         const wallet = await trx
@@ -197,16 +217,6 @@ export async function purchaseTickets(
 
         if (!walletTransaction) {
           throw new Error("Failed to create wallet transaction");
-        }
-
-        // Get next available ticket numbers
-        const ticketNumbers = await findNextAvailableTicketNumbers(
-          competitionId,
-          ticketCount
-        );
-
-        if (ticketNumbers.length !== ticketCount) {
-          throw new Error("Not enough available ticket numbers");
         }
 
         // 6. Create competition entry with ticket numbers
@@ -266,11 +276,11 @@ export async function purchaseTickets(
           }
         }
 
-        // 9. Update competition tickets sold count
+        // 9. Update competition tickets sold count using atomic increment
         await trx
           .updateTable("competitions")
           .set({
-            tickets_sold: competition.tickets_sold + ticketCount,
+            tickets_sold: sql`tickets_sold + ${ticketCount}`,
           })
           .where("id", "=", competitionId)
           .execute();

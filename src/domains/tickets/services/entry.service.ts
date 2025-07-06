@@ -179,74 +179,76 @@ export async function purchaseCompetitionEntry(
   error?: string;
 }> {
   try {
-    // Find next available ticket numbers for this competition
-    const nextTicketNumbers = await findNextAvailableTicketNumbers(
-      competitionId,
-      numberOfTickets
-    );
+    return await db.transaction().execute(async (trx) => {
+      // Atomically allocate ticket numbers
+      const allocation = await allocateTicketNumbers(
+        competitionId,
+        numberOfTickets,
+        trx
+      );
 
-    if (!nextTicketNumbers || nextTicketNumbers.length !== numberOfTickets) {
+      if (!allocation.success) {
+        throw new Error(allocation.error || "Failed to allocate tickets");
+      }
+
+      const ticketNumbers = allocation.ticketNumbers!;
+
+      // Create the competition entry with ticket numbers
+      const [entry] = await trx
+        .insertInto("competition_entries")
+        .values({
+          competition_id: competitionId,
+          user_id: userId,
+          wallet_transaction_id: walletTransactionId,
+          payment_transaction_id: paymentTransactionId,
+          tickets: ticketNumbers,
+        })
+        .returningAll()
+        .execute();
+
+      // Fetch the complete entry with competition data
+      const [completeEntry] = await trx
+        .selectFrom("competition_entries as ce")
+        .innerJoin("competitions as c", "c.id", "ce.competition_id")
+        .select([
+          "ce.id",
+          "ce.competition_id",
+          "ce.user_id",
+          "ce.wallet_transaction_id",
+          "ce.tickets",
+          "ce.created_at",
+          "ce.updated_at",
+          "c.title",
+          "c.type",
+          "c.status",
+          "c.end_date",
+          "c.media_info",
+        ])
+        .where("ce.id", "=", entry.id)
+        .execute();
+
       return {
-        success: false,
-        error: "Not enough available ticket numbers",
-      };
-    }
-
-    // Create the competition entry with ticket numbers
-    const [entry] = await db
-      .insertInto("competition_entries")
-      .values({
-        competition_id: competitionId,
-        user_id: userId,
-        wallet_transaction_id: walletTransactionId,
-        payment_transaction_id: paymentTransactionId,
-        tickets: nextTicketNumbers,
-      })
-      .returningAll()
-      .execute();
-
-    // Fetch the complete entry with competition data
-    const [completeEntry] = await db
-      .selectFrom("competition_entries as ce")
-      .innerJoin("competitions as c", "c.id", "ce.competition_id")
-      .select([
-        "ce.id",
-        "ce.competition_id",
-        "ce.user_id",
-        "ce.wallet_transaction_id",
-        "ce.tickets",
-        "ce.created_at",
-        "ce.updated_at",
-        "c.title",
-        "c.type",
-        "c.status",
-        "c.end_date",
-        "c.media_info",
-      ])
-      .where("ce.id", "=", entry.id)
-      .execute();
-
-    return {
-      success: true,
-      entry: {
-        ...completeEntry,
-        competition: {
-          id: completeEntry.competition_id,
-          title: completeEntry.title,
-          type: completeEntry.type,
-          status: completeEntry.status,
-          end_date: completeEntry.end_date,
-          media_info: completeEntry.media_info
-            ? ((typeof completeEntry.media_info === "string"
-                ? JSON.parse(completeEntry.media_info)
-                : completeEntry.media_info) as {
-                thumbnail?: string;
-                images?: string[];
-              })
-            : null,
+        success: true,
+        entry: {
+          ...completeEntry,
+          competition: {
+            id: completeEntry.competition_id,
+            title: completeEntry.title,
+            type: completeEntry.type,
+            status: completeEntry.status,
+            end_date: completeEntry.end_date,
+            media_info: completeEntry.media_info
+              ? ((typeof completeEntry.media_info === "string"
+                  ? JSON.parse(completeEntry.media_info)
+                  : completeEntry.media_info) as {
+                  thumbnail?: string;
+                  images?: string[];
+                })
+              : null,
+          },
         },
-      },
-    };
+      };
+    });
   } catch (error) {
     console.error("Error purchasing competition entry:", error);
     return {
@@ -256,37 +258,52 @@ export async function purchaseCompetitionEntry(
   }
 }
 
-async function findNextAvailableTicketNumbers(
+// Atomic ticket allocation function
+async function allocateTicketNumbers(
   competitionId: string,
-  count: number
-): Promise<number[]> {
+  count: number,
+  trx: any
+): Promise<{ success: boolean; ticketNumbers?: number[]; error?: string }> {
   try {
-    // Get all existing ticket numbers for this competition from competition_entries table
-    const entries = await db
-      .selectFrom("competition_entries")
-      .select("tickets")
+    // Atomic allocation: increment counter and check availability in one operation
+    const result = await trx
+      .updateTable("ticket_counters")
+      .set({
+        last_ticket_number: sql`last_ticket_number + ${count}`,
+        updated_at: sql`CURRENT_TIMESTAMP`,
+      })
       .where("competition_id", "=", competitionId)
-      .execute();
+      .where(
+        sql`last_ticket_number + ${count} <= (
+        SELECT total_tickets FROM competitions WHERE id = ${competitionId}
+      )`
+      )
+      .returning(["last_ticket_number"])
+      .executeTakeFirst();
 
-    // Flatten all ticket arrays into a single set of used numbers
-    const existingNumbers = new Set(
-      entries.flatMap((entry) => entry.tickets || [])
-    );
-
-    // Find the next available numbers
-    const availableNumbers: number[] = [];
-    let currentNumber = 1;
-
-    while (availableNumbers.length < count) {
-      if (!existingNumbers.has(currentNumber)) {
-        availableNumbers.push(currentNumber);
-      }
-      currentNumber++;
+    if (!result) {
+      return {
+        success: false,
+        error: "Not enough tickets available",
+      };
     }
 
-    return availableNumbers;
+    // Generate the ticket numbers for this allocation
+    const startNumber = result.last_ticket_number - count + 1;
+    const ticketNumbers = Array.from(
+      { length: count },
+      (_, i) => startNumber + i
+    );
+
+    return {
+      success: true,
+      ticketNumbers,
+    };
   } catch (error) {
-    console.error("Error finding next available ticket numbers:", error);
-    return [];
+    console.error("Error allocating ticket numbers:", error);
+    return {
+      success: false,
+      error: "Failed to allocate tickets",
+    };
   }
 }
