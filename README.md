@@ -18,7 +18,7 @@
   - [ ] Follow that 7 days for instant win prize list
   - [ ] not 7/8 to be won but 7 remaining.
   - [x] social media buttons like on prize guy
-  - [ ] 4 steps how it works
+  - [x] 4 steps how it works
   - follow design everywhere you can
   - on mobile it seems hard to get to the entries page...
 - transform into monorepo

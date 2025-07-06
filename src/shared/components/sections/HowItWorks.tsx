@@ -10,18 +10,27 @@ import Link from "next/link";
 const steps = [
   {
     number: "1",
-    title: "Select your prize",
-    description: "Select your prize and entries",
+    title: "Choose your Prize",
+    description:
+      "Find a prize you'd love to win. Select how many tickets and enter.",
   },
   {
     number: "2",
-    title: "Answer the question",
-    description: "Answer the question correctly",
+    title: "Get your ticket number",
+    description:
+      "Purchase a ticket from your basket to be in with a chance of winning.",
   },
   {
     number: "3",
-    title: "Live Draw",
-    description: "Winner announced on Live Draw",
+    title: "Watch the draw LIVE",
+    description:
+      "Winners are selected at random in our LIVE or Automated draws.",
+  },
+  {
+    number: "4",
+    title: "Your chance to win",
+    description:
+      "All competitions and prizes go ahead regardless of amount sold",
   },
 ];
 
@@ -34,11 +43,11 @@ const HowItWorks = () => {
             How it works
           </h2>
           <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground">
-            Three simple steps to start your Radiance Rewards journey.
+            Four simple steps to start your Radiance Rewards journey.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-4 gap-8 mb-12">
           {steps.map((step) => (
             <Card
               key={step.number}
@@ -62,12 +71,12 @@ const HowItWorks = () => {
         </div>
 
         <div className="text-center">
-          <Link href="/prizes">
+          <Link href="/competitions">
             <Button
               variant="outline"
               className="border-[#E19841]/20 hover:bg-[#E19841]/5"
             >
-              View all Prizes →
+              View all Competitions →
             </Button>
           </Link>
         </div>
