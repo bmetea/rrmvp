@@ -7,6 +7,7 @@ import { Progress } from "@/shared/components/ui/progress";
 import { CompetitionPrizeDetail } from "./CompetitionPrizeDetail";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { formatPrice } from "@/shared/lib/utils/price";
+import Link from "next/link";
 
 export default function CompetitionDetail({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
@@ -30,184 +31,415 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
   const image =
     competitionWithPrizes.media_info?.thumbnail || "/images/placeholder.jpg";
   const quickSelect = [1, 3, 5, 10, 25, 50];
-  const discounts = { 3: "-5%", 5: "-10%", 10: "-10%", 25: "-15%", 50: "-20%" };
   const maxTickets = 2500;
-  const savings = oldPrice - ticketPrice;
   const totalPrice = ticketPrice * ticketCount;
   const prizes = competitionWithPrizes.prizes || [];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 max-w-5xl mx-auto py-8 px-2">
-      {/* Left: Image */}
-      <div className="w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center">
-        <div className="relative w-full aspect-square max-w-lg rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-[#18181b]">
+    <div className="max-w-7xl mx-auto py-8 px-4">
+      {/* Mobile Layout */}
+      <div className="lg:hidden">
+        {/* Main Image Section */}
+        <div className="w-full aspect-[4/3] relative rounded-2xl overflow-hidden shadow-lg mb-8">
           <Image
             src={image}
             alt={competitionWithPrizes.title}
             fill
             className="object-cover"
+            priority
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <h1 className="text-4xl font-extrabold mb-2">
+              {competitionWithPrizes.title}
+            </h1>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
+                <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
+                {formattedEndDate} {formattedTime}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+            <p className="text-[#E19841] text-2xl font-bold mb-1">
+              {ticketsLeft}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Tickets Left
+            </p>
+          </div>
+          <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+            <p className="text-[#E19841] text-2xl font-bold mb-1">
+              {ticketsSold}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Tickets Sold
+            </p>
+          </div>
+          <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+            <p className="text-[#E19841] text-2xl font-bold mb-1">
+              {formatPrice(ticketPrice)}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Per Ticket
+            </p>
+          </div>
         </div>
       </div>
-      {/* Right: Details */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center">
-        <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg text-black dark:text-white p-6 flex flex-col gap-4">
-          {/* End date/time banner */}
-          <div className="flex items-center gap-2">
-            <span className="bg-[#f3f3f3] dark:bg-[#232326] text-[#E19841] px-4 py-1 rounded-full flex items-center text-sm font-semibold">
-              <Ticket className="w-4 h-4 mr-1" /> {formattedEndDate}{" "}
-              {formattedTime}
-            </span>
-          </div>
-          {/* Title */}
-          <h1 className="text-[45px] md:text-[89px] leading-[120%] md:leading-[90%] font-extrabold mb-1">
-            {competitionWithPrizes.title}
-          </h1>
-          {/* Ticket price */}
-          <div className="flex items-end gap-3 mb-2">
-            <span className="text-[#E19841] text-[25px] md:text-[35px] leading-[140%] font-extrabold">
-              {formatPrice(ticketPrice)}
-            </span>
-          </div>
-          {/* Sold vs available metrics */}
-          <div>
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-gray-500 dark:text-gray-300">
-                {ticketsLeft} Tickets Left
-              </span>
-              <span className="text-gray-500 dark:text-gray-300">
-                {ticketsSold}/{totalTickets}
-              </span>
-            </div>
-            <Progress
-              value={progress}
-              className="h-4 bg-gray-200 dark:bg-[#232326] rounded-full"
+
+      {/* Desktop Two-Column Layout */}
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
+        {/* Left Column */}
+        <div className="space-y-8">
+          {/* Main Image */}
+          <div className="aspect-[4/3] relative rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src={image}
+              alt={competitionWithPrizes.title}
+              fill
+              className="object-cover"
+              priority
             />
-            <div className="text-[#E19841] font-bold text-sm mt-1">
-              {progress} %
-            </div>
           </div>
 
-          {/* Quick ticket selector */}
-          <div>
-            <label className="block font-bold mb-1">Select Tickets</label>
-            <div className="grid grid-cols-3 gap-2">
-              {quickSelect.map((num) => (
-                <button
-                  key={num}
-                  onClick={() => setTicketCount(num)}
-                  className={`w-full px-4 py-2 rounded-lg font-bold text-lg border-2 transition-colors
-                    ${
-                      ticketCount === num
-                        ? "bg-[#E19841] text-black border-[#E19841]"
-                        : "bg-gray-100 dark:bg-[#232326] text-black dark:text-white border-gray-100 dark:border-[#232326]"
-                    }
-                  `}
+          {/* Prize Section */}
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
+            <div className="space-y-4">
+              {prizes.map((prize, idx) => (
+                <div
+                  key={prize.id}
+                  className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
                 >
-                  {num}
-                </button>
+                  <div className="flex items-center p-4 gap-4">
+                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
+                      <Image
+                        src={
+                          prize.product.media_info?.images?.[0] ||
+                          "/images/placeholder.jpg"
+                        }
+                        alt={prize.product.name}
+                        width={80}
+                        height={80}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-2">
+                        {prize.product.name}
+                      </h3>
+                      <div className="inline-block px-3 py-1 rounded bg-[#E5F3FF] text-[#0094FF] text-sm font-bold">
+                        To Be Won
+                      </div>
+                    </div>
+                    <button
+                      className="ml-2 p-3 rounded-lg bg-[#E19841] hover:bg-[#D18A33] text-black transition-colors"
+                      onClick={() =>
+                        setExpandedPrize(expandedPrize === idx ? null : idx)
+                      }
+                      aria-label={expandedPrize === idx ? "Collapse" : "Expand"}
+                    >
+                      {expandedPrize === idx ? (
+                        <ChevronUp className="w-6 h-6" />
+                      ) : (
+                        <ChevronDown className="w-6 h-6" />
+                      )}
+                    </button>
+                  </div>
+                  {expandedPrize === idx && (
+                    <CompetitionPrizeDetail
+                      winningTickets={prize.winning_ticket_numbers || []}
+                      claimedTickets={prize.claimed_winning_tickets || []}
+                      description={
+                        prize.product.description || "No description available."
+                      }
+                    />
+                  )}
+                </div>
               ))}
             </div>
           </div>
-          {/* Slider for number of tickets */}
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-8">
+          {/* Title and End Date */}
           <div>
-            <div className="flex items-center gap-4">
-              <input
-                type="range"
-                min={1}
-                max={maxTickets}
-                value={ticketCount}
-                onChange={(e) => setTicketCount(Number(e.target.value))}
-                className="w-full accent-[#E19841]"
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+              {competitionWithPrizes.title}
+            </h1>
+            <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
+              <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
+              {formattedEndDate} {formattedTime}
+            </span>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+              <p className="text-[#E19841] text-2xl font-bold mb-1">
+                {ticketsLeft}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Tickets Left
+              </p>
+            </div>
+            <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+              <p className="text-[#E19841] text-2xl font-bold mb-1">
+                {ticketsSold}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Tickets Sold
+              </p>
+            </div>
+            <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
+              <p className="text-[#E19841] text-2xl font-bold mb-1">
+                {formatPrice(ticketPrice)}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Per Ticket
+              </p>
+            </div>
+          </div>
+
+          {/* Main Content Card */}
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="text-gray-500 dark:text-gray-300">
+                  {ticketsLeft} Tickets Left
+                </span>
+                <span className="text-gray-500 dark:text-gray-300">
+                  {ticketsSold}/{totalTickets}
+                </span>
+              </div>
+              <Progress
+                value={progress}
+                className="h-4 bg-gray-200 dark:bg-[#232326] rounded-full"
               />
-              <span className="bg-gray-100 dark:bg-[#232326] px-3 py-1 rounded-lg font-bold text-lg text-black dark:text-white">
-                {ticketCount}
-              </span>
+              <div className="text-[#E19841] font-bold text-sm mt-1">
+                {progress}%
+              </div>
             </div>
-            <div className="flex justify-between text-xs text-gray-400 mt-1">
-              <span>1</span>
-              <span>{maxTickets}</span>
+
+            {/* Quick Ticket Selection */}
+            <div className="mb-6">
+              <label className="block font-bold mb-3">Select Tickets</label>
+              <div className="grid grid-cols-3 gap-2">
+                {quickSelect.map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setTicketCount(num)}
+                    className={`w-full px-4 py-3 rounded-lg font-bold text-lg border-2 transition-colors
+                      ${
+                        ticketCount === num
+                          ? "bg-[#E19841] text-black border-[#E19841]"
+                          : "bg-gray-100 dark:bg-[#232326] text-black dark:text-white border-gray-100 dark:border-[#232326]"
+                      }
+                    `}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          {/* Total price calculator */}
-          <div>
-            <div className="bg-gray-100 dark:bg-[#232326] text-[#E19841] rounded-lg px-4 py-2 font-bold text-center">
-              x {ticketCount} Tickets: {formatPrice(totalPrice)}
+
+            {/* Custom Ticket Input */}
+            <div className="mb-6">
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  min={1}
+                  max={maxTickets}
+                  value={ticketCount}
+                  onChange={(e) => setTicketCount(Number(e.target.value))}
+                  className="w-full accent-[#E19841]"
+                />
+                <span className="bg-gray-100 dark:bg-[#232326] px-4 py-2 rounded-lg font-bold text-lg text-black dark:text-white min-w-[80px] text-center">
+                  {ticketCount}
+                </span>
+              </div>
             </div>
-          </div>
-          {/* Max tickets info */}
-          <div className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
-            Maximum tickets per user: {maxTickets}
-          </div>
-          {/* Add to basket button */}
-          <div>
+
+            {/* Total Price */}
+            <div className="mb-6">
+              <div className="bg-gray-100 dark:bg-[#232326] rounded-lg p-4 text-center">
+                <p className="text-[#E19841] text-2xl font-bold mb-1">
+                  {formatPrice(totalPrice)}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {ticketCount} Tickets at {formatPrice(ticketPrice)} each
+                </p>
+              </div>
+            </div>
+
+            {/* Add to Cart Button */}
             <button
-              className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors"
+              className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors mb-6"
               onClick={() => addItem(competitionWithPrizes, ticketCount)}
             >
-              Add To Basket
+              Add To Cart
             </button>
+
+            {/* Free Postal Entry */}
+            <Link
+              href="/free-postal-entry"
+              className="block text-center text-[#E19841] hover:text-[#D18A33] font-medium"
+            >
+              Free Postal Entry Available
+            </Link>
           </div>
-          {/* Prizes Accordion */}
-          <div className="mt-8">
-            <h2 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-4">
-              Prizes
-            </h2>
-            <div className="flex flex-col gap-3">
-              {prizes.map((prize, idx) => {
-                const isOpen = expandedPrize === idx;
-                return (
-                  <div
-                    key={prize.id}
-                    className={`rounded-xl shadow border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] transition-all`}
-                  >
-                    <div className="flex items-center p-3 gap-3">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
-                        <Image
-                          src={
-                            prize.product.media_info?.images?.[0] ||
-                            "/images/placeholder.jpg"
-                          }
-                          alt={prize.product.name}
-                          width={64}
-                          height={64}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
-                          {prize.product.name}
-                        </h3>
-                        <div className="inline-block mt-1 px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-[12px] leading-[150%] font-bold">
-                          To Be Won
-                        </div>
-                      </div>
-                      <button
-                        className={`ml-2 rounded-r-xl px-3 py-3 flex items-center justify-center bg-[#0094FF] hover:bg-[#E19841] transition-colors`}
-                        onClick={() => setExpandedPrize(isOpen ? null : idx)}
-                        aria-label={isOpen ? "Collapse" : "Expand"}
-                        type="button"
-                      >
-                        {isOpen ? (
-                          <ChevronUp className="text-white" />
-                        ) : (
-                          <ChevronDown className="text-white" />
-                        )}
-                      </button>
-                    </div>
-                    {isOpen && (
-                      <CompetitionPrizeDetail
-                        winningTickets={prize.winning_ticket_numbers || []}
-                        claimedTickets={prize.claimed_winning_tickets || []}
-                        description={
-                          prize.product.description || "No description."
-                        }
-                      />
-                    )}
+        </div>
+      </div>
+
+      {/* Mobile Content Card */}
+      <div className="lg:hidden bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+        {/* Progress Bar */}
+        <div className="mb-6">
+          <div className="flex justify-between text-xs mb-1">
+            <span className="text-gray-500 dark:text-gray-300">
+              {ticketsLeft} Tickets Left
+            </span>
+            <span className="text-gray-500 dark:text-gray-300">
+              {ticketsSold}/{totalTickets}
+            </span>
+          </div>
+          <Progress
+            value={progress}
+            className="h-4 bg-gray-200 dark:bg-[#232326] rounded-full"
+          />
+          <div className="text-[#E19841] font-bold text-sm mt-1">
+            {progress}%
+          </div>
+        </div>
+
+        {/* Quick Ticket Selection */}
+        <div className="mb-6">
+          <label className="block font-bold mb-3">Select Tickets</label>
+          <div className="grid grid-cols-3 gap-2">
+            {quickSelect.map((num) => (
+              <button
+                key={num}
+                onClick={() => setTicketCount(num)}
+                className={`w-full px-4 py-3 rounded-lg font-bold text-lg border-2 transition-colors
+                  ${
+                    ticketCount === num
+                      ? "bg-[#E19841] text-black border-[#E19841]"
+                      : "bg-gray-100 dark:bg-[#232326] text-black dark:text-white border-gray-100 dark:border-[#232326]"
+                  }
+                `}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Custom Ticket Input */}
+        <div className="mb-6">
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min={1}
+              max={maxTickets}
+              value={ticketCount}
+              onChange={(e) => setTicketCount(Number(e.target.value))}
+              className="w-full accent-[#E19841]"
+            />
+            <span className="bg-gray-100 dark:bg-[#232326] px-4 py-2 rounded-lg font-bold text-lg text-black dark:text-white min-w-[80px] text-center">
+              {ticketCount}
+            </span>
+          </div>
+        </div>
+
+        {/* Total Price */}
+        <div className="mb-6">
+          <div className="bg-gray-100 dark:bg-[#232326] rounded-lg p-4 text-center">
+            <p className="text-[#E19841] text-2xl font-bold mb-1">
+              {formatPrice(totalPrice)}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {ticketCount} Tickets at {formatPrice(ticketPrice)} each
+            </p>
+          </div>
+        </div>
+
+        {/* Add to Cart Button */}
+        <button
+          className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors mb-6"
+          onClick={() => addItem(competitionWithPrizes, ticketCount)}
+        >
+          Add To Cart
+        </button>
+
+        {/* Free Postal Entry */}
+        <Link
+          href="/free-postal-entry"
+          className="block text-center text-[#E19841] hover:text-[#D18A33] font-medium mb-8"
+        >
+          Free Postal Entry Available
+        </Link>
+
+        {/* Mobile Prizes Section */}
+        <div className="border-t border-gray-200 dark:border-[#232326] pt-8">
+          <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
+          <div className="space-y-4">
+            {prizes.map((prize, idx) => (
+              <div
+                key={prize.id}
+                className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
+              >
+                <div className="flex items-center p-4 gap-4">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
+                    <Image
+                      src={
+                        prize.product.media_info?.images?.[0] ||
+                        "/images/placeholder.jpg"
+                      }
+                      alt={prize.product.name}
+                      width={80}
+                      height={80}
+                      className="object-cover w-full h-full"
+                    />
                   </div>
-                );
-              })}
-            </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold mb-2">
+                      {prize.product.name}
+                    </h3>
+                    <div className="inline-block px-3 py-1 rounded bg-[#E5F3FF] text-[#0094FF] text-sm font-bold">
+                      To Be Won
+                    </div>
+                  </div>
+                  <button
+                    className="ml-2 p-3 rounded-lg bg-[#E19841] hover:bg-[#D18A33] text-black transition-colors"
+                    onClick={() =>
+                      setExpandedPrize(expandedPrize === idx ? null : idx)
+                    }
+                    aria-label={expandedPrize === idx ? "Collapse" : "Expand"}
+                  >
+                    {expandedPrize === idx ? (
+                      <ChevronUp className="w-6 h-6" />
+                    ) : (
+                      <ChevronDown className="w-6 h-6" />
+                    )}
+                  </button>
+                </div>
+                {expandedPrize === idx && (
+                  <CompetitionPrizeDetail
+                    winningTickets={prize.winning_ticket_numbers || []}
+                    claimedTickets={prize.claimed_winning_tickets || []}
+                    description={
+                      prize.product.description || "No description available."
+                    }
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
