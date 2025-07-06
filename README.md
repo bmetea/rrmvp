@@ -1,35 +1,17 @@
 ## TODO
-- [x] Look for admin in token scopes
-- admin
-- transactions
-  - create separate transaction table
-- [ ] wallet credit
-    - increment credit when credit is won
-    - decrement credit when tickets are bought
+- [ ] increment credit when credit is won
 - [ ] implement image upload s3
-- ui/ux
-  - [x] fonts
-  - [x] carousel instead of hero section
-  - [x] Explore prizes instea of all competitions
-  - [x] Card banner needs to be closing date.
-    - [ ] follow 7day performance and prizeguy
-      - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
-  - [x] follow prize guy for layout of competition page
-  - [ ] Follow that 7 days for instant win prize list
-  - [ ] not 7/8 to be won but 7 remaining.
-  - [x] social media buttons like on prize guy
-  - [x] 4 steps how it works
-  - follow design everywhere you can
-  - on mobile it seems hard to get to the entries page...
-- transform into monorepo
-- infra
+- [ ] follow 7day performance and prizeguy
+- [ ] can i do ticket counter on the competition table?
+  - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
+- [ ]transform into monorepo
+- [ ]infra
   - hosting/dns
   - deploy prod
   - how to do migrations automatically ? 
   - cicd?
-- audit logs
-- Consolidate database into a single migration
-- Link winning ticket numbers to actual products
+- [ ] audit logs
+- [ ] Link winning ticket numbers to actual products
 
 ## Google Analytics Setup
 
