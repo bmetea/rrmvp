@@ -1,9 +1,8 @@
 ## TODO
 - [ ] increment credit when credit is won
 - [ ] implement image upload s3
-- [ ] follow 7day performance and prizeguy
 - [ ] can i do ticket counter on the competition table?
-  - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
+- [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
 - [ ]transform into monorepo
 - [ ]infra
   - hosting/dns
@@ -12,6 +11,11 @@
   - cicd?
 - [ ] audit logs
 - [ ] Link winning ticket numbers to actual products
+- [ ] db
+  - [ ] use clerkid as primary key.
+    - [ ] or store user-uuid in token
+  - [ ] ticket counter on competition table
+  - [ ] review all db queries
 
 ## Google Analytics Setup
 
