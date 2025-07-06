@@ -38,7 +38,7 @@ import {
 } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Separator } from "@/shared/components/ui/separator";
-import { CompetitionWithPrizes } from "@/domains/competitions/services/competition.service";
+import { CompetitionWithPrizes } from "@/(pages)/competitions/(server)/competition.service";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 interface CompetitionPageProps {

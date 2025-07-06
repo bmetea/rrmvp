@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { generateAvatar } from "@/shared/lib/utils/avatar";
-import { Competition } from "@/domains/competitions/services/competition.service";
+import { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { ArrowRight } from "lucide-react";
 
 export function CompetitionCard({ competition }: { competition: Competition }) {

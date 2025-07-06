@@ -1,5 +1,5 @@
 import { CompetitionList } from "@/shared/components/sections/CompetitionList";
-import { fetchCompetitionsServer } from "@/domains/competitions/services/competition.service";
+import { fetchCompetitionsServer } from "@/(pages)/competitions/(server)/competition.service";
 
 export const dynamic = "force-dynamic";
 

@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import {
@@ -12,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-import type { Competition } from "@/domains/competitions/services/competition.service";
+import type { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionDialog } from "./competition-dialog";
 
 interface CompetitionsClientProps {

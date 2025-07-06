@@ -22,7 +22,7 @@ import {
   searchProductsAction,
 } from "../actions";
 import { OverrideDialog } from "../override-dialog";
-import type { Competition } from "@/domains/competitions/services/competition.service";
+import type { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { poundsToPence, formatPrice } from "@/shared/lib/utils/price";
 import { CompetitionForm } from "./competition-form";
 import { ProductList } from "./product-list";

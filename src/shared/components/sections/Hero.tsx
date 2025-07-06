@@ -1,4 +1,4 @@
-import { fetchCompetitionsServer } from "@/domains/competitions/services/competition.service";
+import { fetchCompetitionsServer } from "@/(pages)/competitions/(server)/competition.service";
 import HeroCarousel from "./HeroCarousel";
 
 export default async function Hero() {

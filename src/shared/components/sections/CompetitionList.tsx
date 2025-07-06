@@ -1,4 +1,4 @@
-import { Competition } from "@/domains/competitions/services/competition.service";
+import { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionCard } from "@/shared/components/ui/competition-card";
 import { Button } from "@/shared/components/ui/button";
 

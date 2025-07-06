@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { fetchAllCompetitionsServer } from "@/domains/competitions/services/competition.service";
+import { fetchAllCompetitionsServer } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionsClient } from "./competitions-client";
 import { isUserAdmin } from "@/domains/admin/actions/admin.actions";
 
