@@ -13,6 +13,8 @@ import {
   Info,
   Users,
   User,
+  Instagram,
+  Facebook,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -79,8 +81,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
+          {/* Logo and Social Icons */}
+          <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center">
               {mounted ? (
                 <Image
@@ -106,6 +108,24 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 />
               )}
             </Link>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://www.instagram.com/radiance.rewards"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-accent transition-colors"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-accent transition-colors"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+            </div>
           </div>
 
           {/* Mobile menu button and right side items */}
