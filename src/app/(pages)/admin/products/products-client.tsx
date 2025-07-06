@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Pencil, Trash2, X } from "lucide-react";
@@ -25,7 +30,7 @@ import {
 } from "@/shared/components/ui/pagination";
 import { AddProductDialog } from "./add-product-dialog";
 import { EditProductDialog } from "./edit-product-dialog";
-import type { Product } from "@/domains/products/services/product.service";
+import type { Product } from "@/(pages)/competitions/(server)/product.service";
 
 interface ProductsClientProps {
   products: Product[];

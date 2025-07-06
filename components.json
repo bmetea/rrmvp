@@ -12,7 +12,7 @@
   },
   "aliases": {
     "components": "@/shared/components",
-    "services": "@/domains",
+    "services": "@/(pages)",
     "utils": "@/shared/lib/utils",
     "lib": "@/shared/lib",
     "hooks": "@/shared/hooks"

@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import { isUserAdmin } from "@/domains/admin/actions/admin.actions";
+import { isUserAdmin } from "@/(pages)/user/(server)/admin.actions";
 
 export function useAdmin() {
   const { userId } = useAuth();

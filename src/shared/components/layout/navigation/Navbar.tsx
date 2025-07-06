@@ -21,9 +21,9 @@ import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "@/shared/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
-import { CompetitionCartDialog } from "@/(pages)/competitions/(components)/competition-cart-dialog";
+import { CompetitionCartDialog } from "@/app/(pages)/competitions/(components)/competition-cart-dialog";
 import { useAdmin } from "@/shared/hooks/use-admin";
-import { CustomUserButton } from "@/domains/users/components/user/CustomUserButton";
+import { CustomUserButton } from "@/app/(pages)/user/(components)/CustomUserButton";
 
 interface NavbarProps {
   activePath?: string;

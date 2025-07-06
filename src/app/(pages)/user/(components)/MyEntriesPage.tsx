@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   getUserCompetitionEntries,
   CompetitionEntry,
-} from "@/domains/tickets/services/entry.service";
+} from "@/(pages)/user/(server)/entry.service";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Button } from "@/shared/components/ui/button";

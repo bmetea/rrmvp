@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { fetchProductsServer } from "@/domains/products/services/product.service";
+import { fetchProductsServer } from "@/(pages)/competitions/(server)/product.service";
 import { ProductsClient } from "./products-client";
-import { isUserAdmin } from "@/domains/admin/actions/admin.actions";
+import { isUserAdmin } from "@/(pages)/user/(server)/admin.actions";
 
 interface ProductsPageProps {
   searchParams: Promise<{

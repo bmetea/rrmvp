@@ -1,6 +1,6 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { db } from "@/db";
-import { createWallet } from "@/domains/payments/services/wallet.service";
+import { createWallet } from "@/(pages)/user/(server)/wallet.service";
 import { NextResponse, NextRequest } from "next/server";
 
 interface NewUser {

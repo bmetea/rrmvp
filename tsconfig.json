@@ -19,10 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/app/*"],
+      "@/*": ["./src/*"],
+      "@/(pages)/*": ["./src/app/(pages)/*"],
       "@/db": ["./db"],
-      "@/src/*": ["./src/*"],
-      "@/domains/*": ["./src/domains/*"],
       "@/shared/*": ["./src/shared/*"]
     }
   },

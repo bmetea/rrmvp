@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { fetchAllCompetitionsServer } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionsClient } from "./competitions-client";
-import { isUserAdmin } from "@/domains/admin/actions/admin.actions";
+import { isUserAdmin } from "@/(pages)/user/(server)/admin.actions";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
