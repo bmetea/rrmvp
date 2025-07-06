@@ -15,7 +15,7 @@ import {
   User,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "@/shared/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
@@ -41,11 +41,39 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const [mounted, setMounted] = useState(false);
   const { userId } = useAuth();
   const { isAdmin } = useAdmin();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const burgerButtonRef = useRef<HTMLButtonElement>(null);
 
   // After mounting, we can safely show the theme-dependent logo
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Handle click outside for mobile menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Don't close if clicking the burger button - let the onClick handler manage that
+      if (burgerButtonRef.current?.contains(event.target as Node)) {
+        return;
+      }
+
+      // Close if clicking outside the menu
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
@@ -80,22 +108,12 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button and right side items */}
           <div className="md:hidden flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="hover:scale-110 transition-transform duration-200"
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </Button>
             <CompetitionCartDialog />
+            <SignedIn>
+              <CustomUserButton />
+            </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
                 <Button
@@ -108,6 +126,20 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </Button>
               </SignInButton>
             </SignedOut>
+            <Button
+              ref={burgerButtonRef}
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="hover:scale-110 transition-transform duration-200"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
           </div>
 
           {/* Desktop Navigation */}
@@ -162,7 +194,10 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
         </div>
 
         {/* Mobile menu */}
-        <div className={cn("md:hidden", isMobileMenuOpen ? "block" : "hidden")}>
+        <div
+          ref={mobileMenuRef}
+          className={cn("md:hidden", isMobileMenuOpen ? "block" : "hidden")}
+        >
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -206,10 +241,6 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5 space-x-2">
                 <ThemeToggle />
-                <SignedIn>
-                  <CompetitionCartDialog />
-                  <CustomUserButton />
-                </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
                     <Button
