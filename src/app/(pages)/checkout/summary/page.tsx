@@ -7,6 +7,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Separator } from "@/shared/components/ui/separator";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 interface PurchaseResult {
   competitionId: string;
@@ -112,13 +113,16 @@ export default function CheckoutSummaryPage() {
             <p className="text-sm text-muted-foreground">
               {purchaseSummary.paymentMethod === "wallet" &&
                 "Paid using wallet credit"}
-              {purchaseSummary.paymentMethod === "card" && "Paid using card"}
+              {purchaseSummary.paymentMethod === "card" &&
+                `Paid of ${formatPrice(
+                  purchaseSummary.cardAmount!
+                )} using card`}
               {purchaseSummary.paymentMethod === "hybrid" &&
-                `Paid £${(purchaseSummary.walletAmount! / 100).toFixed(
-                  2
-                )} using wallet + £${(
-                  purchaseSummary.cardAmount! / 100
-                ).toFixed(2)} using card`}
+                `Paid of ${formatPrice(
+                  purchaseSummary.walletAmount!
+                )} using wallet + ${formatPrice(
+                  purchaseSummary.cardAmount!
+                )} using card`}
             </p>
           </div>
 

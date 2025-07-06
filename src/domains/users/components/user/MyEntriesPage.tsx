@@ -11,6 +11,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { ChevronLeft, Trophy } from "lucide-react";
 import Image from "next/image";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 type ViewMode = "list" | "detail";
 
@@ -228,8 +229,7 @@ export default function MyEntriesPage() {
                               {winningTicket.prize_name}
                             </div>
                             <div>
-                              Value: £
-                              {(winningTicket.prize_value / 100).toFixed(2)}
+                              Value: £{formatPrice(winningTicket.prize_value)}
                             </div>
                           </div>
                         </div>

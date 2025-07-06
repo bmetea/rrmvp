@@ -23,7 +23,7 @@ import {
 } from "../actions";
 import { OverrideDialog } from "../override-dialog";
 import type { Competition } from "@/domains/competitions/services/competition.service";
-import { poundsToPence } from "@/shared/lib/utils/price";
+import { poundsToPence, formatPrice } from "@/shared/lib/utils/price";
 import { CompetitionForm } from "./competition-form";
 import { ProductList } from "./product-list";
 import { PrizePhases } from "./prize-phases";
@@ -223,7 +223,7 @@ export function CompetitionDialog({
         title: competition.title,
         description: competition.description,
         type: competition.type as "raffle" | "instant_win",
-        ticket_price: (competition.ticket_price / 100).toFixed(2),
+        ticket_price: formatPrice(competition.ticket_price, false),
         total_tickets: competition.total_tickets.toString(),
         start_date: new Date(competition.start_date)
           .toISOString()

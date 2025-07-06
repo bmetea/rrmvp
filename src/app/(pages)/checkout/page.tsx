@@ -11,9 +11,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert } from "@/shared/components/ui/alert";
 import { PaymentForm } from "@/domains/payments/components/payments/payment-form";
-import { formatPrice } from "@/shared/lib/utils/price";
+import { formatPrice, penceToPounds } from "@/shared/lib/utils/price";
 import { Separator } from "@/shared/components/ui/separator";
-import { penceToPounds } from "@/shared/lib/utils/price";
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance, processWalletOnlyCheckout } from "./actions";
 
@@ -399,7 +398,7 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                           <PaymentForm
-                            amount={penceToPounds(remainingToPay).toFixed(2)}
+                            amount={formatPrice(remainingToPay, false)}
                             className="mb-4"
                           />
                         </>

@@ -6,6 +6,7 @@ import { Ticket, ChevronDown, ChevronUp } from "lucide-react";
 import { Progress } from "@/shared/components/ui/progress";
 import { CompetitionPrizeDetail } from "./CompetitionPrizeDetail";
 import { useCart } from "@/shared/lib/context/cart-context";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 export default function CompetitionDetail({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
@@ -31,8 +32,8 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
   const quickSelect = [1, 3, 5, 10, 25, 50];
   const discounts = { 3: "-5%", 5: "-10%", 10: "-10%", 25: "-15%", 50: "-20%" };
   const maxTickets = 2500;
-  const savings = ((oldPrice - ticketPrice) * ticketCount).toFixed(2);
-  const totalPrice = (ticketPrice * ticketCount).toFixed(2);
+  const savings = oldPrice - ticketPrice;
+  const totalPrice = ticketPrice * ticketCount;
   const prizes = competitionWithPrizes.prizes || [];
 
   return (
@@ -65,7 +66,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           {/* Ticket price */}
           <div className="flex items-end gap-3 mb-2">
             <span className="text-[#E19841] text-[25px] md:text-[35px] leading-[140%] font-extrabold">
-              £{ticketPrice.toFixed(2)}
+              {formatPrice(ticketPrice)}
             </span>
           </div>
           {/* Sold vs available metrics */}
@@ -131,7 +132,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           {/* Total price calculator */}
           <div>
             <div className="bg-gray-100 dark:bg-[#232326] text-[#E19841] rounded-lg px-4 py-2 font-bold text-center">
-              x {ticketCount} Tickets: £{totalPrice}
+              x {ticketCount} Tickets: {formatPrice(totalPrice)}
             </div>
           </div>
           {/* Max tickets info */}
