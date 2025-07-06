@@ -434,14 +434,6 @@ export default function CheckoutPage() {
           </section>
         </div>
       )}
-
-      {/* Debug info */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="fixed top-4 right-4 bg-black text-white p-2 text-xs z-50">
-          Status: {purchaseStatus} | Show: {showPaymentForm.toString()} | Wallet
-          Balance: {walletBalance !== null ? formatPrice(walletBalance) : "N/A"}
-        </div>
-      )}
     </>
   );
 }
