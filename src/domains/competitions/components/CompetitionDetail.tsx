@@ -9,7 +9,8 @@ import { useCart } from "@/shared/lib/context/cart-context";
 import { formatPrice } from "@/shared/lib/utils/price";
 import Link from "next/link";
 
-export default function CompetitionDetail({ competitionWithPrizes }) {
+// Main component implementation
+function CompetitionDetailImpl({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
   const [expandedPrize, setExpandedPrize] = useState(null);
   const { addItem } = useCart();
@@ -168,7 +169,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                 <div className="grid grid-cols-3 gap-2">
                   {quickSelect.map((num) => (
                     <button
-                      key={num}
+                      key={`quick-select-${num}`}
                       onClick={() => setTicketCount(num)}
                       className={`w-full px-4 py-3 rounded-lg font-bold text-lg border-2 transition-colors
                         ${
@@ -238,17 +239,18 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           <div className="space-y-4">
             {prizes.map((prize, idx) => (
               <div
-                key={prize.id}
+                key={`${prize.id}-${prize.product?.id || idx}`}
                 className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
               >
                 <div className="flex items-center p-4 gap-4">
                   <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
                     <Image
                       src={
-                        prize.product.media_info?.images?.[0] ||
+                        prize.product?.media_info?.images?.[0] ||
+                        prize.product?.media_info?.thumbnail ||
                         "/images/placeholder.jpg"
                       }
-                      alt={prize.product.name}
+                      alt={prize.product?.name || "Prize"}
                       width={80}
                       height={80}
                       className="object-cover w-full h-full"
@@ -256,10 +258,22 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold mb-2">
-                      {prize.product.name}
+                      {prize.product?.name || "Prize"}
                     </h3>
-                    <div className="inline-block px-3 py-1 rounded bg-[#E5F3FF] text-[#0094FF] text-sm font-bold">
-                      To Be Won
+                    <div className="flex items-center gap-2">
+                      <div className="inline-block px-3 py-1 rounded bg-[#E5F3FF] text-[#0094FF] text-sm font-bold">
+                        {
+                          (prize.winning_ticket_numbers || []).filter(
+                            (t) =>
+                              !(prize.claimed_winning_tickets || []).includes(t)
+                          ).length
+                        }{" "}
+                        to Win!
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {(prize.claimed_winning_tickets || []).length}/
+                        {prize.total_quantity}
+                      </div>
                     </div>
                   </div>
                   <button
@@ -283,6 +297,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                     description={
                       prize.product.description || "No description available."
                     }
+                    totalPrizes={prize.total_quantity}
                   />
                 )}
               </div>
@@ -318,7 +333,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           <div className="grid grid-cols-3 gap-2">
             {quickSelect.map((num) => (
               <button
-                key={num}
+                key={`quick-select-${num}`}
                 onClick={() => setTicketCount(num)}
                 className={`w-full px-2 py-2 rounded-lg font-bold text-base border transition-colors
                   ${
@@ -385,17 +400,18 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
           <div className="space-y-3">
             {prizes.map((prize, idx) => (
               <div
-                key={prize.id}
+                key={`${prize.id}-${prize.product?.id || idx}`}
                 className="rounded-lg border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
               >
                 <div className="flex items-center p-3 gap-3">
                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
                     <Image
                       src={
-                        prize.product.media_info?.images?.[0] ||
+                        prize.product?.media_info?.images?.[0] ||
+                        prize.product?.media_info?.thumbnail ||
                         "/images/placeholder.jpg"
                       }
-                      alt={prize.product.name}
+                      alt={prize.product?.name || "Prize"}
                       width={64}
                       height={64}
                       className="object-cover w-full h-full"
@@ -403,10 +419,22 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base font-bold mb-1 truncate">
-                      {prize.product.name}
+                      {prize.product?.name || "Prize"}
                     </h3>
-                    <div className="inline-block px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-xs font-bold">
-                      To Be Won
+                    <div className="flex items-center gap-2">
+                      <div className="inline-block px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-xs font-bold">
+                        {
+                          (prize.winning_ticket_numbers || []).filter(
+                            (t) =>
+                              !(prize.claimed_winning_tickets || []).includes(t)
+                          ).length
+                        }{" "}
+                        to Win!
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {(prize.claimed_winning_tickets || []).length}/
+                        {prize.total_quantity}
+                      </div>
                     </div>
                   </div>
                   <button
@@ -430,6 +458,7 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
                     description={
                       prize.product.description || "No description available."
                     }
+                    totalPrizes={prize.total_quantity}
                   />
                 )}
               </div>
@@ -439,4 +468,9 @@ export default function CompetitionDetail({ competitionWithPrizes }) {
       </div>
     </div>
   );
+}
+
+// Client wrapper component
+export default function CompetitionDetail(props) {
+  return <CompetitionDetailImpl {...props} />;
 }

@@ -20,9 +20,15 @@ import { Separator } from "@/shared/components/ui/separator";
 import { cn } from "@/shared/lib/utils";
 
 export function CompetitionCartDialog() {
-  const [open, setOpen] = useState(false);
-  const { items, removeItem, updateQuantity, totalItems, totalPrice } =
-    useCart();
+  const {
+    items,
+    removeItem,
+    updateQuantity,
+    totalItems,
+    totalPrice,
+    isCartOpen,
+    setIsCartOpen,
+  } = useCart();
 
   const handleUpdateQuantity = (competitionId: string, newQuantity: number) => {
     updateQuantity(competitionId, newQuantity);
@@ -33,7 +39,7 @@ export function CompetitionCartDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -151,25 +157,34 @@ export function CompetitionCartDialog() {
               </span>
             </div>
             <Separator />
-            <Link
-              href="/checkout"
-              className="w-full"
-              onClick={() => setOpen(false)}
-            >
-              <Button
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/checkout"
                 className="w-full"
-                onClick={() =>
-                  analytics.then(([a]) =>
-                    a.track("Proceed to Checkout", {
-                      totalItems,
-                      totalPrice,
-                    })
-                  )
-                }
+                onClick={() => setIsCartOpen(false)}
               >
-                Proceed to Checkout
+                <Button
+                  className="w-full"
+                  onClick={() =>
+                    analytics.then(([a]) =>
+                      a.track("Proceed to Checkout", {
+                        totalItems,
+                        totalPrice,
+                      })
+                    )
+                  }
+                >
+                  Proceed to Checkout
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setIsCartOpen(false)}
+              >
+                Continue Shopping
               </Button>
-            </Link>
+            </div>
           </div>
         )}
       </DialogContent>

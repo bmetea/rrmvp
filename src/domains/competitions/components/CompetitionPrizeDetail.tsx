@@ -1,13 +1,27 @@
 import React, { useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/shared/components/ui/pagination";
+
+interface CompetitionPrizeDetailProps {
+  winningTickets: number[];
+  claimedTickets: number[];
+  description: string;
+}
 
 export function CompetitionPrizeDetail({
   winningTickets,
   claimedTickets,
   description,
-}) {
+}: CompetitionPrizeDetailProps) {
   const [tab, setTab] = useState("tickets");
   const [page, setPage] = useState(1);
-  const perPage = 96;
+  const perPage = 30;
   const totalPages = Math.ceil(
     new Set([...winningTickets, ...claimedTickets]).size / perPage
   );
@@ -21,121 +35,167 @@ export function CompetitionPrizeDetail({
   );
 
   return (
-    <div>
-      <div className="flex mb-4 rounded overflow-hidden border border-gray-200 dark:border-[#232326]">
+    <div className="bg-white dark:bg-[#18181b]">
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 dark:border-[#232326]">
         <button
-          className={`flex-1 py-2 font-bold text-[18px] md:text-[20px] leading-[150%] transition-colors ${
+          className={`flex-1 py-3 font-bold text-base transition-colors ${
             tab === "tickets"
-              ? "bg-white dark:bg-[#232326] text-black dark:text-white"
-              : "bg-gray-100 dark:bg-[#18181b] text-gray-500"
+              ? "border-b-2 border-[#E19841] text-black dark:text-white"
+              : "text-gray-500"
           }`}
           onClick={() => setTab("tickets")}
         >
           TICKETS
         </button>
         <button
-          className={`flex-1 py-2 font-bold text-[18px] md:text-[20px] leading-[150%] transition-colors ${
+          className={`flex-1 py-3 font-bold text-base transition-colors ${
             tab === "description"
-              ? "bg-white dark:bg-[#232326] text-black dark:text-white"
-              : "bg-gray-100 dark:bg-[#18181b] text-gray-500"
+              ? "border-b-2 border-[#E19841] text-black dark:text-white"
+              : "text-gray-500"
           }`}
           onClick={() => setTab("description")}
         >
           DESCRIPTION
         </button>
       </div>
+
       {tab === "tickets" && (
-        <>
-          {/* Responsive grid: 16x6 on mobile (scrollable), 6x16 on desktop (no scroll) */}
-          <div className="overflow-x-auto md:overflow-x-visible">
-            <div
-              className="grid mb-4"
-              style={{
-                gridTemplateColumns: "repeat(16, minmax(0, 1fr))",
-                gridTemplateRows: "repeat(6, minmax(0, 1fr))",
-                minWidth: "64rem",
-                width: "max(100%, 64rem)",
-                gap: "0.75rem",
-              }}
-            >
-              {/* Desktop override: 6x16 */}
-              <style>{`
-                @media (min-width: 768px) {
-                  .prize-ticket-grid {
-                    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-                    grid-template-rows: repeat(16, minmax(0, 1fr)) !important;
-                    min-width: 0 !important;
-                    width: 100% !important;
-                  }
-                }
-              `}</style>
-              <div className="prize-ticket-grid contents">
-                {Array.from({ length: 96 }).map((_, idx) => {
-                  const ticket = paginatedTickets[idx];
-                  const claimed = ticket && claimedTickets.includes(ticket);
-                  const isWinning = ticket && winningTickets.includes(ticket);
-                  if (!ticket)
-                    return <div key={"empty-" + idx} className="h-20" />;
-                  return (
-                    <div
-                      key={ticket + "-" + idx}
-                      className="flex flex-col items-center bg-white dark:bg-[#232326] rounded-lg shadow border border-gray-200 dark:border-[#232326] p-2 min-w-[72px] max-w-[90px] w-full h-20 justify-center"
+        <div className="p-4">
+          {/* Mobile Grid */}
+          <div className="grid grid-cols-5 gap-3">
+            {Array.from({ length: perPage }).map((_, idx) => {
+              const ticket = paginatedTickets[idx];
+              const claimed = ticket && claimedTickets.includes(ticket);
+              const isAvailable =
+                ticket && winningTickets.includes(ticket) && !claimed;
+              if (!ticket) return <div key={"empty-" + idx} />;
+              return (
+                <div
+                  key={ticket + "-" + idx}
+                  className="relative aspect-square flex flex-col"
+                >
+                  <div
+                    className={`absolute inset-0 rounded-lg flex items-center justify-center ${
+                      isAvailable
+                        ? "bg-[#E19841]/10 border-2 border-[#E19841]"
+                        : "bg-gray-100 dark:bg-[#232326]"
+                    }`}
+                  >
+                    <span
+                      className={`font-mono text-xl font-bold ${
+                        isAvailable
+                          ? "text-[#E19841]"
+                          : "text-black dark:text-white"
+                      }`}
                     >
-                      <span className="font-mono text-[16px] md:text-[18px] leading-[150%] font-bold mb-2 text-black dark:text-white">
-                        {ticket}
-                      </span>
-                      <span
-                        className={`w-full rounded py-1.5 font-bold text-[14px] leading-[150%] text-center transition-colors
-                          ${
-                            claimed
-                              ? "bg-gray-300 dark:bg-gray-700 text-gray-500"
-                              : isWinning
-                              ? "bg-[#E19841] text-black hover:bg-[#D18A33]"
-                              : ""
-                          }`}
-                        style={isWinning ? { cursor: "pointer" } : {}}
-                      >
-                        {claimed ? "ALREADY WON" : isWinning ? "WIN NOW" : ""}
+                      {ticket}
+                    </span>
+                  </div>
+                  {claimed && (
+                    <div className="absolute inset-x-0 bottom-0 bg-gray-200/90 dark:bg-gray-700/90 py-1 rounded-b-lg">
+                      <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center block">
+                        WON
                       </span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
+                  )}
+                  {isAvailable && (
+                    <div className="absolute inset-x-0 bottom-0 bg-[#E19841]/90 py-1 rounded-b-lg">
+                      <span className="text-[10px] font-bold text-white text-center block">
+                        AVAILABLE
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-2">
-              <button
-                className="px-2 py-1 rounded disabled:opacity-50"
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-                aria-label="Previous page"
-              >
-                &lt;
-              </button>
-              <span className="font-bold text-sm">
-                {page > 2 && <span>...</span>}
-                {page > 1 && <span className="mx-1">{page - 1}</span>}
-                <span className="mx-1 text-[#E19841]">{page}</span>
-                {page < totalPages && <span className="mx-1">{page + 1}</span>}
-                {page < totalPages - 1 && <span>...</span>}
-              </span>
-              <button
-                className="px-2 py-1 rounded disabled:opacity-50"
-                onClick={() => setPage(page + 1)}
-                disabled={page === totalPages}
-                aria-label="Next page"
-              >
-                &gt;
-              </button>
+            <div className="pt-6">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (page > 1) setPage(page - 1);
+                      }}
+                      className={
+                        page === 1 ? "pointer-events-none opacity-50" : ""
+                      }
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }).map((_, idx) => {
+                    const pageNum = idx + 1;
+                    // Show first page, current page, last page, and pages around current page
+                    if (
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= page - 1 && pageNum <= page + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setPage(pageNum);
+                            }}
+                            isActive={page === pageNum}
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+                    // Show ellipsis for gaps
+                    if (
+                      (pageNum === 2 && page > 3) ||
+                      (pageNum === totalPages - 1 && page < totalPages - 2)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            href="#"
+                            onClick={(e) => e.preventDefault()}
+                            className="pointer-events-none"
+                          >
+                            ...
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (page < totalPages) setPage(page + 1);
+                      }}
+                      className={
+                        page === totalPages
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           )}
-        </>
+        </div>
       )}
+
       {tab === "description" && (
-        <div className="text-[16px] md:text-[18px] leading-[150%] text-black dark:text-white">
-          {description}
+        <div className="p-4">
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {description}
+          </div>
         </div>
       )}
     </div>

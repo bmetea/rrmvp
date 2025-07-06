@@ -34,6 +34,8 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  isCartOpen: boolean;
+  setIsCartOpen: (open: boolean) => void;
 }
 
 const CART_STORAGE_KEY = "competition-cart";
@@ -43,6 +45,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Ensure items is always an array
   const safeItems = Array.isArray(items) ? items : [];
@@ -121,6 +124,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       return [...safeCurrentItems, { competition, quantity }];
     });
+
+    // Open cart dialog when item is added
+    setIsCartOpen(true);
   }, []);
 
   // Track add to cart analytics
@@ -213,6 +219,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       clearCart,
       totalItems,
       totalPrice,
+      isCartOpen,
+      setIsCartOpen,
     }),
     [
       safeItems,
@@ -222,6 +230,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       clearCart,
       totalItems,
       totalPrice,
+      isCartOpen,
+      setIsCartOpen,
     ]
   );
 
