@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { prepareCheckout } from "./actions";
+import { prepareCheckout } from "../(server)/payment.actions";
 import { useAuth } from "@clerk/nextjs";
 
 declare global {

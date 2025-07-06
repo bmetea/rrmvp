@@ -8,13 +8,13 @@ import { Minus, Plus, CreditCard } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Alert } from "@/shared/components/ui/alert";
-import { PaymentForm } from "@/domains/payments/components/payments/payment-form";
-import { formatPrice, penceToPounds } from "@/shared/lib/utils/price";
+import { PaymentForm } from "./(components)/payment-form";
+import { formatPrice } from "@/shared/lib/utils/price";
 import { Separator } from "@/shared/components/ui/separator";
 import { SignInButton, useAuth } from "@clerk/nextjs";
-import { getUserWalletBalance, processWalletOnlyCheckout } from "./actions";
+import { getUserWalletBalance } from "./(server)/payment.actions";
+import { processWalletOnlyCheckout } from "./(server)/checkout.actions";
 
 interface CartItem {
   competition: {

@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { PaymentTransactions } from "@/db/types";
+import { auth } from "@clerk/nextjs/server";
 
 const OPPWA_BASE_URL =
   process.env.OPPWA_BASE_URL || "https://eu-test.oppwa.com";
@@ -138,5 +139,54 @@ export async function checkPaymentStatus(
   } catch (error) {
     console.error("Payment status check error:", error);
     return { error: "Failed to check payment status" };
+  }
+}
+
+export async function getUserWalletBalance(): Promise<{
+  success: boolean;
+  balance?: number;
+  error?: string;
+}> {
+  try {
+    const session = await auth();
+
+    if (!session?.userId) {
+      return {
+        success: false,
+        error: "You must be logged in to view wallet balance",
+      };
+    }
+
+    // Get database user ID from Clerk user ID
+    const user = await db
+      .selectFrom("users")
+      .select("id")
+      .where("clerk_id", "=", session.userId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    // Get wallet balance
+    const wallet = await db
+      .selectFrom("wallets")
+      .select("balance")
+      .where("user_id", "=", user.id)
+      .executeTakeFirst();
+
+    return {
+      success: true,
+      balance: wallet?.balance ?? 0,
+    };
+  } catch (error) {
+    console.error("Error getting wallet balance:", error);
+    return {
+      success: false,
+      error: "Failed to get wallet balance",
+    };
   }
 }

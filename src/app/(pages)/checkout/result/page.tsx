@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { checkPaymentStatus } from "@/domains/payments/actions/payment.actions";
+import { checkPaymentStatus } from "../(server)/payment.actions";
 import { useCart } from "@/shared/lib/context/cart-context";
-import { checkoutWithTransaction } from "../actions";
+import { checkoutWithTransaction } from "../(server)/checkout.actions";
 
 export default function CheckoutResultPage() {
   const [status, setStatus] = useState<"loading" | "error">("loading");
