@@ -596,8 +596,10 @@ export function CompetitionDialog({
 
   // Check if prizes are locked (have winning tickets computed)
   const checkPrizesLocked = () => {
-    if (!currentCompetition || !isEdit || !currentCompetition.prizes)
+    // Only check for prize locking on existing competitions
+    if (!currentCompetition || !isEdit || !currentCompetition.prizes) {
       return false;
+    }
     return currentCompetition.prizes.some(
       (prize) =>
         prize &&
@@ -744,10 +746,13 @@ export function CompetitionDialog({
 
   // Update locked state when competition changes
   useEffect(() => {
-    if (currentCompetition) {
+    // Only set locked state for existing competitions
+    if (isEdit && currentCompetition) {
       setIsPrizesLocked(checkPrizesLocked());
+    } else {
+      setIsPrizesLocked(false); // Always false for new competitions
     }
-  }, [currentCompetition]);
+  }, [currentCompetition, isEdit]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

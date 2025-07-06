@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { prepareCheckout } from "../(server)/payment.actions";
 import { useAuth } from "@clerk/nextjs";
+import { PenceAmount, formatPrice } from "@/shared/lib/utils/price";
 
 declare global {
   interface Window {
@@ -11,7 +12,7 @@ declare global {
 }
 
 interface PaymentFormProps {
-  amount: string;
+  amount: PenceAmount; // Changed from string to PenceAmount
   currency?: string;
   paymentType?: string;
   brands?: string;
@@ -36,7 +37,7 @@ export function PaymentForm({
     const initializeCheckout = async () => {
       try {
         const result = await prepareCheckout({
-          amount,
+          amount: formatPrice(amount, false), // Convert pence to pounds string without symbol
           currency,
           paymentType,
           userId: userId || undefined,

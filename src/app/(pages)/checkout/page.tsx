@@ -398,7 +398,7 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                           <PaymentForm
-                            amount={formatPrice(remainingToPay, false)}
+                            amount={remainingToPay} // Pass the amount in pence directly
                             className="mb-4"
                           />
                         </>

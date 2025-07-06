@@ -1,16 +1,22 @@
 ## TODO
-- [ ] increment credit when credit is won
 - [ ] implement image upload s3
-- [ ] can i do ticket counter on the competition table?
+- [ ] increment credit when credit is won
+- [ ] all the prices are in pence and all the ui needs to handle that.
+- [ ] nomu
+  - [ ] apple pay
+    - [ ] Do i need another cert for prod ?
+    - [ ] do i need apple acount even if i use the hosted solution ? 
+  - [ ] google pay
+    - [ ] Nick to get merchantId
+- [ ] deploy prod
+- [ ] audit logs
+- [ ] Link winning ticket numbers to actual products
 - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
 - [ ]transform into monorepo
 - [ ]infra
   - hosting/dns
-  - deploy prod
   - how to do migrations automatically ? 
   - cicd?
-- [ ] audit logs
-- [ ] Link winning ticket numbers to actual products
 - [ ] db
   - [ ] use clerkid as primary key.
     - [ ] or store user-uuid in token

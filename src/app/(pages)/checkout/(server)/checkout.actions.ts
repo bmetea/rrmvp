@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 interface CartItem {
   competition: {
@@ -279,11 +280,9 @@ export async function processHybridCheckout(
           ? "Purchase completed using wallet credit only"
           : walletCreditUsed === 0
           ? "Purchase completed using card payment only"
-          : `Purchase completed using £${(walletCreditUsed / 100).toFixed(
-              2
-            )} wallet credit + £${(cardPaymentAmount / 100).toFixed(
-              2
-            )} card payment`;
+          : `Purchase completed using ${formatPrice(
+              walletCreditUsed
+            )} wallet credit + ${formatPrice(cardPaymentAmount)} card payment`;
 
       return {
         success: true,

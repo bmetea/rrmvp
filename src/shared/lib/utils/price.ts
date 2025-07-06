@@ -1,3 +1,7 @@
+// Types for monetary amounts
+export type PenceAmount = number;
+export type DisplayAmount = string;
+
 /**
  * Converts pence to pounds and returns a formatted string
  * @param pence - Amount in pence
@@ -5,9 +9,14 @@
  * @returns Formatted price string
  */
 export function formatPrice(
-  pence: number,
+  pence: PenceAmount,
   includeSymbol: boolean = true
-): string {
+): DisplayAmount {
+  if (typeof pence !== "number") {
+    console.warn("Invalid amount passed to formatPrice:", pence);
+    return includeSymbol ? "£0.00" : "0.00";
+  }
+
   const pounds = pence / 100;
   const formatted = pounds.toFixed(2);
   return includeSymbol ? `£${formatted}` : formatted;
@@ -18,7 +27,11 @@ export function formatPrice(
  * @param pounds - Amount in pounds
  * @returns Amount in pence
  */
-export function poundsToPence(pounds: number): number {
+export function poundsToPence(pounds: number): PenceAmount {
+  if (typeof pounds !== "number") {
+    console.warn("Invalid amount passed to poundsToPence:", pounds);
+    return 0;
+  }
   return Math.round(pounds * 100);
 }
 
@@ -27,6 +40,19 @@ export function poundsToPence(pounds: number): number {
  * @param pence - Amount in pence
  * @returns Amount in pounds
  */
-export function penceToPounds(pence: number): number {
+export function penceToPounds(pence: PenceAmount): number {
+  if (typeof pence !== "number") {
+    console.warn("Invalid amount passed to penceToPounds:", pence);
+    return 0;
+  }
   return pence / 100;
+}
+
+/**
+ * Validates if a value is a valid pence amount
+ * @param value - Value to validate
+ * @returns boolean
+ */
+export function isValidPenceAmount(value: unknown): value is PenceAmount {
+  return typeof value === "number" && !isNaN(value) && value >= 0;
 }

@@ -31,6 +31,7 @@ import {
 import { AddProductDialog } from "./add-product-dialog";
 import { EditProductDialog } from "./edit-product-dialog";
 import type { Product } from "@/(pages)/competitions/(server)/product.service";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 interface ProductsClientProps {
   products: Product[];
@@ -85,13 +86,6 @@ export function ProductsClient({
     const params = new URLSearchParams(searchParams);
     params.set("page", newPage.toString());
     router.push(`/admin/products?${params.toString()}`);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount / 100);
   };
 
   const normalizeMediaInfo = (
@@ -163,15 +157,13 @@ export function ProductsClient({
                       {product.name}
                     </TableCell>
                     <TableCell>{product.sub_name || "-"}</TableCell>
-                    <TableCell>
-                      {formatCurrency(product.market_value)}
-                    </TableCell>
+                    <TableCell>{formatPrice(product.market_value)}</TableCell>
                     <TableCell>
                       {product.is_wallet_credit ? "Wallet Credit" : "Physical"}
                     </TableCell>
                     <TableCell>
                       {product.is_wallet_credit && product.credit_amount
-                        ? formatCurrency(product.credit_amount)
+                        ? formatPrice(product.credit_amount)
                         : "-"}
                     </TableCell>
                     <TableCell>
