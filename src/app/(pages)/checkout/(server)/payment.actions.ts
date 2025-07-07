@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
+import { oppwaLogger } from "@/shared/lib/logger";
 
 const OPPWA_BASE_URL =
   process.env.OPPWA_BASE_URL || "https://eu-test.oppwa.com";
@@ -35,6 +36,8 @@ export async function prepareCheckout(
       integrity: "true",
     }).toString();
 
+    oppwaLogger.logRequest(path, "POST", data);
+
     const response = await fetch(`${OPPWA_BASE_URL}${path}`, {
       method: "POST",
       headers: {
@@ -46,6 +49,7 @@ export async function prepareCheckout(
     });
 
     const result = await response.json();
+    oppwaLogger.logResponse(path, "POST", result);
     console.log("result", result);
 
     // Get database user ID from Clerk user ID
@@ -89,6 +93,7 @@ export async function prepareCheckout(
       widgetUrl: `${OPPWA_BASE_URL}/v1/paymentWidgets.js?checkoutId=${result.id}`,
     };
   } catch (error) {
+    oppwaLogger.logResponse("/v1/checkouts", "POST", null, error);
     console.error("Checkout preparation error:", error);
     return { error: "Failed to prepare checkout" };
   }
@@ -111,6 +116,7 @@ export async function checkPaymentStatus(
     }
 
     const path = `/v1/checkouts/${checkoutId}/payment?entityId=${OPPWA_ENTITY_ID}`;
+    oppwaLogger.logRequest(path, "GET");
 
     const response = await fetch(`${OPPWA_BASE_URL}${path}`, {
       method: "GET",
@@ -120,6 +126,7 @@ export async function checkPaymentStatus(
     });
 
     const data = await response.json();
+    oppwaLogger.logResponse(path, "GET", data);
     console.log("payment status result:", data);
     if (data.result && data.result.parameterErrors) {
       console.log("parameterErrors:", data.result.parameterErrors);
@@ -141,6 +148,12 @@ export async function checkPaymentStatus(
 
     return { result: data.result };
   } catch (error) {
+    oppwaLogger.logResponse(
+      `/v1/checkouts/${checkoutId}/payment`,
+      "GET",
+      null,
+      error
+    );
     console.error("Payment status check error:", error);
     return { error: "Failed to check payment status" };
   }

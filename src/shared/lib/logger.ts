@@ -139,4 +139,36 @@ export const withLogging = (
   };
 };
 
+// OPPWA Logger
+export const oppwaLogger = {
+  logRequest: (path: string, method: string, data?: any) => {
+    console.log(`[OPPWA Request] ${method} ${path}`, {
+      timestamp: new Date().toISOString(),
+      data: data || "No data",
+    });
+  },
+
+  logResponse: (path: string, method: string, response: any, error?: any) => {
+    if (error) {
+      console.error(`[OPPWA Response Error] ${method} ${path}`, {
+        timestamp: new Date().toISOString(),
+        error,
+        response,
+      });
+    } else {
+      console.log(`[OPPWA Response] ${method} ${path}`, {
+        timestamp: new Date().toISOString(),
+        response,
+      });
+    }
+  },
+
+  logWidget: (event: string, data?: any) => {
+    console.log(`[OPPWA Widget] ${event}`, {
+      timestamp: new Date().toISOString(),
+      data: data || "No data",
+    });
+  },
+};
+
 export { logger };

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { prepareCheckout } from "./actions";
+import { useEffect, useState, useRef } from "react";
+import { prepareCheckout } from "../(server)/actions";
 import { useAuth } from "@clerk/nextjs";
+import { oppwaLogger } from "@/shared/lib/logger";
 
 declare global {
   interface Window {
@@ -28,13 +29,24 @@ export function PaymentForm({
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
+  const isInitializing = useRef(false);
 
   // Get gatewayMerchantId from env
   const gatewayMerchantId = process.env.NEXT_PUBLIC_OPPWA_ENTITY_ID;
 
   useEffect(() => {
     const initializeCheckout = async () => {
+      // Prevent duplicate initialization
+      if (isInitializing.current) {
+        oppwaLogger.logWidget("initializeCheckout:skipped", {
+          reason: "Already initializing",
+        });
+        return;
+      }
+
       try {
+        isInitializing.current = true;
+        oppwaLogger.logWidget("initializeCheckout:start");
         const result = await prepareCheckout({
           amount,
           currency,
@@ -44,20 +56,33 @@ export function PaymentForm({
 
         if (result.id) {
           setCheckoutId(result.id);
+          oppwaLogger.logWidget("initializeCheckout:success", {
+            checkoutId: result.id,
+          });
         } else {
           setError(result.error || "Failed to prepare checkout");
+          oppwaLogger.logWidget("initializeCheckout:error", {
+            error: result.error,
+          });
         }
       } catch (err) {
         setError("Error preparing checkout");
+        oppwaLogger.logWidget("initializeCheckout:error", { error: err });
         console.error(err);
+      } finally {
+        isInitializing.current = false;
       }
     };
 
-    initializeCheckout();
+    // Only initialize if we don't already have a checkoutId
+    if (!checkoutId) {
+      initializeCheckout();
+    }
   }, [amount, currency, paymentType, userId]);
 
   useEffect(() => {
     if (checkoutId) {
+      oppwaLogger.logWidget("loadingWidget:start", { checkoutId });
       // Inject jQuery first
       const jqueryScript = document.createElement("script");
       jqueryScript.src = "https://code.jquery.com/jquery.js";
@@ -85,7 +110,7 @@ export function PaymentForm({
             merchantId: 'BCR2DN4TWXD3VYDY'
           },
           onReady: function() {
-      
+            console.log('[OPPWA Widget] Widget ready');
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
@@ -98,6 +123,7 @@ export function PaymentForm({
               // $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
               $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton' ><center>Click to Pay</center></div>")
               $(".nomupaySubmitButton").click(function(){
+                console.log('[OPPWA Widget] Submit button clicked');
                 if (window.wpwl && window.wpwl.executePayment) {
                   wpwl.executePayment("wpwl-container-card")
                 }
@@ -105,6 +131,16 @@ export function PaymentForm({
             } else {
       
             }
+          },
+          onBeforeSubmit: function() {
+            console.log('[OPPWA Widget] Before submit');
+            return true;
+          },
+          onAfterSubmit: function() {
+            console.log('[OPPWA Widget] After submit');
+          },
+          onError: function(error) {
+            console.error('[OPPWA Widget] Error:', error);
           }
         }
       `;
@@ -169,7 +205,10 @@ export function PaymentForm({
       script.async = true;
       document.body.appendChild(script);
 
+      oppwaLogger.logWidget("loadingWidget:complete", { checkoutId });
+
       return () => {
+        oppwaLogger.logWidget("cleanupWidget", { checkoutId });
         document.body.removeChild(script);
         document.body.removeChild(optionsScript);
         document.body.removeChild(styleTag);
