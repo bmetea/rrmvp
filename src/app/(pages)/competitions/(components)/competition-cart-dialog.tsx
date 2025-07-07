@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/shared/components/ui/dialog";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
@@ -25,7 +26,7 @@ export function CompetitionCartDialog() {
     removeItem,
     updateQuantity,
     totalItems,
-    totalPrice,
+    totalPrice = 0,
     isCartOpen,
     setIsCartOpen,
   } = useCart();
@@ -58,6 +59,9 @@ export function CompetitionCartDialog() {
       <DialogContent className="sm:max-w-[425px] p-0">
         <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle className="text-xl font-semibold">Your Cart</DialogTitle>
+          <DialogDescription>
+            Review your selected competition tickets
+          </DialogDescription>
         </DialogHeader>
 
         <ScrollArea className="h-[400px] px-6">
@@ -129,11 +133,11 @@ export function CompetitionCartDialog() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">
-                        {formatPrice(item.competition.ticket_price)} each
+                        {formatPrice(item.competition.ticket_price || 0)} each
                       </span>
                       <span className="font-medium">
                         {formatPrice(
-                          item.competition.ticket_price * item.quantity
+                          (item.competition.ticket_price || 0) * item.quantity
                         )}
                       </span>
                     </div>

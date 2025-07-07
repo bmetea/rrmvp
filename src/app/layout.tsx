@@ -14,6 +14,7 @@ import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
 export const metadata: Metadata = {
   title: "Radiance Rewards",
   description: "Beauty and cosmetics competition platform",
+  manifest: "/manifest.json",
   icons: {
     icon: [
       {

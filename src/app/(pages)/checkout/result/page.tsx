@@ -26,15 +26,28 @@ export default function CheckoutResultPage() {
         // Verify payment first
         const paymentResult = await checkPaymentStatus(checkoutId);
 
-        if (
-          paymentResult.error ||
-          paymentResult.result?.code !== "000.100.110"
-        ) {
+        // Handle specific error codes
+        if (paymentResult.error || !paymentResult.result) {
           redirectToSummary(
             "error",
-            paymentResult.error ||
-              paymentResult.result?.description ||
-              "Payment failed"
+            paymentResult.error || "Payment verification failed"
+          );
+          return;
+        }
+
+        // Handle specific error codes
+        if (paymentResult.result.code === "200.300.404") {
+          redirectToSummary(
+            "error",
+            "Payment session has expired. Please try again."
+          );
+          return;
+        }
+
+        if (paymentResult.result.code !== "000.100.110") {
+          redirectToSummary(
+            "error",
+            `Payment failed: ${paymentResult.result.description}`
           );
           return;
         }

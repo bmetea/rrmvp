@@ -20,6 +20,7 @@ export type PrepareCheckoutResponse = {
   id?: string;
   transactionId?: string;
   error?: string;
+  widgetUrl?: string;
 };
 
 export async function prepareCheckout(
@@ -83,7 +84,11 @@ export async function prepareCheckout(
       );
     }
 
-    return { id: result.id, transactionId: insertResult?.id };
+    return {
+      id: result.id,
+      transactionId: insertResult?.id,
+      widgetUrl: `${OPPWA_BASE_URL}/v1/paymentWidgets.js?checkoutId=${result.id}`,
+    };
   } catch (error) {
     console.error("Checkout preparation error:", error);
     return { error: "Failed to prepare checkout" };

@@ -14,7 +14,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
   const [expandedPrize, setExpandedPrize] = useState(null);
   const { addItem } = useCart();
-  const ticketPrice = competitionWithPrizes.ticket_price;
+  const ticketPrice = competitionWithPrizes.ticket_price || 0;
   const oldPrice = ticketPrice * 2; // Placeholder for old price logic
   const totalTickets = competitionWithPrizes.total_tickets;
   const ticketsSold = competitionWithPrizes.tickets_sold;

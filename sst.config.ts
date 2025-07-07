@@ -56,13 +56,10 @@ export default $config({
         CLERK_WEBHOOK_SIGNING_SECRET: process.env.CLERK_WEBHOOK_SIGNING_SECRET!,
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
           process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
-        NEXT_PUBLIC_STRAPI_API_TOKEN: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN!,
-        NEXT_PUBLIC_STRAPI_API_URL: process.env.NEXT_PUBLIC_STRAPI_API_URL!,
         // Total Processing environment variables
         OPPWA_BASE_URL: process.env.OPPWA_BASE_URL!,
         OPPWA_ENTITY_ID: process.env.OPPWA_ENTITY_ID!,
         OPPWA_ACCESS_TOKEN: process.env.OPPWA_ACCESS_TOKEN!,
-        NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL!,
         // Analytics configuration with defaults
         NEXT_PUBLIC_ENABLE_ANALYTICS:
           process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "true",

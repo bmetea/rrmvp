@@ -12,12 +12,14 @@ interface CompetitionPrizeDetailProps {
   winningTickets: number[];
   claimedTickets: number[];
   description: string;
+  totalPrizes: number;
 }
 
 export function CompetitionPrizeDetail({
   winningTickets,
   claimedTickets,
   description,
+  totalPrizes,
 }: CompetitionPrizeDetailProps) {
   const [tab, setTab] = useState("tickets");
   const [page, setPage] = useState(1);

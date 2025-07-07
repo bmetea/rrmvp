@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/shared/components/ui/dialog";
 import { Label } from "@/shared/components/ui/label";
 import { formatPrice } from "@/shared/lib/utils/price";
@@ -66,7 +67,11 @@ export function WinningTicketsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] h-full overflow-hidden">
         <DialogHeader>
-          <DialogTitle>Winning Ticket Numbers</DialogTitle>
+          <DialogTitle>Winning Tickets</DialogTitle>
+          <DialogDescription>
+            View winning ticket numbers for{" "}
+            {prize?.product?.name || "this prize"}
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 max-h-[75vh] overflow-y-auto">
           <div className="space-y-2">

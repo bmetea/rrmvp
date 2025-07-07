@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/shared/components/ui/dialog";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import {
@@ -759,8 +760,13 @@ export function CompetitionDialog({
       <DialogContent className="sm:max-w-[1400px] h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? "Edit Competition" : "Add New Competition"}
+            {competition ? "Edit Competition" : "Create Competition"}
           </DialogTitle>
+          <DialogDescription>
+            {competition
+              ? "Modify the details of an existing competition"
+              : "Set up a new competition with prizes and ticket details"}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-3 gap-8 h-[calc(90vh-5rem)] overflow-hidden">
           {/* Left Column - Competition Details */}
