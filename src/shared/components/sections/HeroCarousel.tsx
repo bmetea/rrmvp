@@ -6,9 +6,14 @@ import "swiper/css";
 import Link from "next/link";
 import Image from "next/image";
 import { Ticket } from "lucide-react";
+import { Competition } from "@/(pages)/competitions/(server)/competition.service";
 
-function HeroCarousel({ competitions }) {
-  if (!competitions.length) {
+interface HeroCarouselProps {
+  competitions: Competition[];
+}
+
+function HeroCarousel({ competitions }: HeroCarouselProps) {
+  if (!Array.isArray(competitions) || competitions.length === 0) {
     return (
       <div className="relative bg-black text-white py-32 text-center">
         <h1 className="text-[45px] md:text-[89px] leading-[120%] md:leading-[90%] font-extrabold">
@@ -28,14 +33,20 @@ function HeroCarousel({ competitions }) {
         className="w-full h-[600px] md:h-[750px]"
       >
         {competitions.map((competition) => {
-          const endDate = new Date(competition.end_date);
-          const formattedEndDate = endDate.toLocaleDateString(undefined, {
+          if (!competition?.id) return null;
+
+          const endDate = competition.end_date
+            ? new Date(competition.end_date)
+            : null;
+          const formattedEndDate = endDate?.toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",
           });
-          const drawText =
-            competition.draw_time || `Draw ends ${formattedEndDate}`;
+          const drawText = formattedEndDate
+            ? `Draw ends ${formattedEndDate}`
+            : "Draw date to be announced";
+
           return (
             <SwiperSlide key={competition.id}>
               <Link
@@ -48,7 +59,7 @@ function HeroCarousel({ competitions }) {
                       competition.media_info?.thumbnail ||
                       "/images/hero-bg-optimized.jpg"
                     }
-                    alt={competition.title}
+                    alt={competition.title || "Competition"}
                     fill
                     className="object-cover"
                     sizes="100vw"
@@ -70,7 +81,7 @@ function HeroCarousel({ competitions }) {
                         className="text-white text-[35px] md:text-[85px] leading-[140%] md:leading-[120%] font-extrabold uppercase mb-2 drop-shadow-lg"
                         style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
                       >
-                        {competition.title}
+                        {competition.title || "Competition"}
                       </h2>
                       <p className="text-[#E19841] text-[14px] md:text-[20px] leading-[150%] font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
                         {drawText}

@@ -7,9 +7,14 @@ import { Competition } from "@/(pages)/competitions/(server)/competition.service
 import { ArrowRight } from "lucide-react";
 
 export function CompetitionCard({ competition }: { competition: Competition }) {
-  const soldPercentage = Math.round(
-    (Number(competition.tickets_sold) / Number(competition.total_tickets)) * 100
-  );
+  const soldPercentage =
+    competition.tickets_sold != null && competition.total_tickets != null
+      ? Math.round(
+          (Number(competition.tickets_sold) /
+            Number(competition.total_tickets)) *
+            100
+        )
+      : 0;
   const isActive =
     competition.status === "active" &&
     new Date(competition.end_date).getTime() > new Date().getTime();
@@ -89,7 +94,9 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             ))}
           </div>
           <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
-            {Number(competition.tickets_sold)}+ tickets sold
+            {competition.tickets_sold != null
+              ? `${Number(competition.tickets_sold)}+ tickets sold`
+              : "No tickets sold yet"}
           </div>
         </div>
         {/* Progress bar - desktop only */}
