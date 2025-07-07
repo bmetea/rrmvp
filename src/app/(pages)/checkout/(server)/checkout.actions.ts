@@ -315,14 +315,68 @@ export async function checkoutWithTransaction(
 ) {
   try {
     let paymentTransactionId: string | undefined = undefined;
+
     if (checkoutId) {
       const { db } = await import("@/db");
-      const tx = await db
+
+      // Get the payment transaction and validate its status
+      const paymentTransaction = await db
         .selectFrom("payment_transactions")
-        .select("id")
+        .select(["id", "status_code", "status_description"])
         .where("checkout_id", "=", checkoutId)
         .executeTakeFirst();
-      if (tx) paymentTransactionId = tx.id;
+
+      if (!paymentTransaction) {
+        return {
+          success: false,
+          message: "Payment transaction not found",
+          results: [],
+        };
+      }
+
+      // Validate that the payment transaction has a successful status
+      if (!paymentTransaction.status_code) {
+        return {
+          success: false,
+          message: "Payment transaction status not confirmed",
+          results: [],
+        };
+      }
+
+      // Helper function to check if payment is successful (same as in result page)
+      const isPaymentSuccessful = (code: string): boolean => {
+        const successCodes = [
+          "000.000.000", // Transaction succeeded
+          "000.000.100", // Successful request
+          "000.100.105", // Chargeback Representment is successful
+          "000.100.106", // Chargeback Representment cancellation is successful
+          "000.100.110", // Request successfully processed in 'Merchant in Integrator Test Mode'
+          "000.100.111", // Request successfully processed in 'Merchant in Validator Test Mode'
+          "000.100.112", // Request successfully processed in 'Merchant in Connector Test Mode'
+          "000.300.000", // Two-step transaction succeeded
+          "000.300.100", // Risk check successful
+          "000.300.101", // Risk bank account check successful
+          "000.300.102", // Risk report successful
+          "000.310.100", // Account updated
+          "000.310.101", // Account updated (Credit card expired)
+          "000.310.110", // No updates found, but account is valid
+          "000.600.000", // Transaction succeeded due to external update
+        ];
+        return successCodes.includes(code);
+      };
+
+      if (!isPaymentSuccessful(paymentTransaction.status_code)) {
+        return {
+          success: false,
+          message: `Payment failed: ${
+            paymentTransaction.status_description ||
+            `Error code: ${paymentTransaction.status_code}`
+          }`,
+          results: [],
+        };
+      }
+
+      paymentTransactionId = paymentTransaction.id;
     }
 
     return await processHybridCheckout(items, paymentTransactionId);
@@ -330,7 +384,10 @@ export async function checkoutWithTransaction(
     console.error("Checkout error:", error);
     return {
       success: false,
-      message: "An error occurred during checkout",
+      message:
+        error instanceof Error
+          ? error.message
+          : "An error occurred during checkout",
       results: [],
     };
   }

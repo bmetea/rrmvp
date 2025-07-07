@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { checkPaymentStatus } from "../(server)/payment.actions";
+import { checkPaymentStatus } from "../(components)/actions";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { checkoutWithTransaction } from "../(server)/checkout.actions";
 
@@ -26,28 +26,15 @@ export default function CheckoutResultPage() {
         // Verify payment first
         const paymentResult = await checkPaymentStatus(checkoutId);
 
-        // Handle specific error codes
-        if (paymentResult.error || !paymentResult.result) {
+        if (
+          paymentResult.error ||
+          paymentResult.result?.code !== "000.100.110"
+        ) {
           redirectToSummary(
             "error",
-            paymentResult.error || "Payment verification failed"
-          );
-          return;
-        }
-
-        // Handle specific error codes
-        if (paymentResult.result.code === "200.300.404") {
-          redirectToSummary(
-            "error",
-            "Payment session has expired. Please try again."
-          );
-          return;
-        }
-
-        if (paymentResult.result.code !== "000.100.110") {
-          redirectToSummary(
-            "error",
-            `Payment failed: ${paymentResult.result.description}`
+            paymentResult.error ||
+              paymentResult.result?.description ||
+              "Payment failed"
           );
           return;
         }

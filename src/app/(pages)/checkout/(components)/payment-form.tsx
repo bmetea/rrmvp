@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { prepareCheckout } from "../(server)/payment.actions";
+import { prepareCheckout } from "./actions";
 import { useAuth } from "@clerk/nextjs";
-import { PenceAmount, formatPrice } from "@/shared/lib/utils/price";
 
 declare global {
   interface Window {
@@ -12,7 +11,7 @@ declare global {
 }
 
 interface PaymentFormProps {
-  amount: PenceAmount;
+  amount: string;
   currency?: string;
   paymentType?: string;
   brands?: string;
@@ -27,23 +26,24 @@ export function PaymentForm({
   className = "",
 }: PaymentFormProps) {
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
-  const [widgetUrl, setWidgetUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
+
+  // Get gatewayMerchantId from env
+  const gatewayMerchantId = process.env.NEXT_PUBLIC_OPPWA_ENTITY_ID;
 
   useEffect(() => {
     const initializeCheckout = async () => {
       try {
         const result = await prepareCheckout({
-          amount: formatPrice(amount, false), // Convert pence to pounds string without symbol
+          amount,
           currency,
           paymentType,
           userId: userId || undefined,
         });
 
-        if (result.id && result.widgetUrl) {
+        if (result.id) {
           setCheckoutId(result.id);
-          setWidgetUrl(result.widgetUrl);
         } else {
           setError(result.error || "Failed to prepare checkout");
         }
@@ -53,37 +53,20 @@ export function PaymentForm({
       }
     };
 
-    // Reset error state and initialize checkout
-    setError(null);
     initializeCheckout();
   }, [amount, currency, paymentType, userId]);
 
   useEffect(() => {
-    if (checkoutId && widgetUrl) {
-      // Cleanup function to remove scripts
-      const cleanup = () => {
-        const scripts = document.querySelectorAll(
-          "script[data-payment-widget]"
-        );
-        scripts.forEach((script) => script.remove());
-        const styles = document.querySelectorAll("style[data-payment-widget]");
-        styles.forEach((style) => style.remove());
-      };
-
-      // Clean up any existing payment widget scripts
-      cleanup();
-
+    if (checkoutId) {
       // Inject jQuery first
       const jqueryScript = document.createElement("script");
       jqueryScript.src = "https://code.jquery.com/jquery.js";
       jqueryScript.async = false;
-      jqueryScript.setAttribute("data-payment-widget", "true");
       document.body.appendChild(jqueryScript);
 
       // Inject wpwlOptions config script
       const optionsScript = document.createElement("script");
       optionsScript.type = "text/javascript";
-      optionsScript.setAttribute("data-payment-widget", "true");
       optionsScript.innerHTML = `
         window.wpwlOptions = {
           style: 'card',
@@ -92,32 +75,35 @@ export function PaymentForm({
             buttonStyle: "black",
             buttonSource: "js",
             displayName: "MyStore",
-            total: { label: "COMPANY, INC." }
+            total: { label: "COMPANY, INC." },
+            merchantIdentifier: '${gatewayMerchantId}',
           },
           googlePay: {
             buttonColor: 'black',
             buttonSizeMode: 'fill',
+            gatewayMerchantId: '${gatewayMerchantId}',
             merchantId: 'BCR2DN4TWXD3VYDY'
           },
           onReady: function() {
+      
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
-              $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton'><center>Click to Pay</center></div>")
+              // The following lines are commented out to restore browser autofill:
+              // $(".wpwl-control-cardHolder").attr("placeholder", "Name on card")
+              // $(".wpwl-control-cardNumber").attr("placeholder", "1234 1234 1234 1234")
+              // $(".wpwl-control-expiry").attr("placeholder", "MM / YY")
+              // $(".wpwl-control-cardExpiryMonth").attr("placeholder", "MM")
+              // $(".wpwl-control-cardExpiryYear").attr("placeholder", "YY")
+              // $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
+              $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton' ><center>Click to Pay</center></div>")
               $(".nomupaySubmitButton").click(function(){
                 if (window.wpwl && window.wpwl.executePayment) {
                   wpwl.executePayment("wpwl-container-card")
                 }
               })
-            }
-          },
-          onError: function(error) {
-            console.error("Payment widget error:", error);
-            // Handle specific error codes
-            if (error.code === "200.300.404") {
-              setError("Payment session has expired. Please try again.");
             } else {
-              setError("Payment processing error. Please try again.");
+      
             }
           }
         }
@@ -126,7 +112,6 @@ export function PaymentForm({
 
       // Inject custom CSS
       const styleTag = document.createElement("style");
-      styleTag.setAttribute("data-payment-widget", "true");
       styleTag.innerHTML = `
         .wpwl-wrapper:focus {
           border-color: #3b82f6;
@@ -180,42 +165,21 @@ export function PaymentForm({
 
       // Load the payment widget script
       const script = document.createElement("script");
-      script.src = widgetUrl;
+      script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
       script.async = true;
-      script.setAttribute("data-payment-widget", "true");
-      script.onerror = () => {
-        setError("Failed to load payment form. Please try again.");
-      };
       document.body.appendChild(script);
 
-      return cleanup;
+      return () => {
+        document.body.removeChild(script);
+        document.body.removeChild(optionsScript);
+        document.body.removeChild(styleTag);
+        document.body.removeChild(jqueryScript);
+      };
     }
-  }, [checkoutId, widgetUrl]);
+  }, [checkoutId]);
 
   if (error) {
-    return (
-      <div className="rounded-md bg-red-50 p-4 mb-4">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-red-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">Payment Error</h3>
-            <div className="mt-2 text-sm text-red-700">{error}</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="text-red-500">{error}</div>;
   }
 
   return (
@@ -227,10 +191,7 @@ export function PaymentForm({
           data-brands={brands}
         />
       ) : (
-        <div className="flex items-center justify-center p-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-          <span className="ml-2">Loading payment form...</span>
-        </div>
+        <div>Loading payment form...</div>
       )}
     </div>
   );
