@@ -15,6 +15,11 @@ const stageConfigs = {
       maxACU: "10 ACU",
       proxy: true,
     },
+    domain: {
+      name: "prd.radiancerewards.co.uk",
+      cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
+      dns: false,
+    },
   },
   ppr: {
     vpc: {
@@ -28,6 +33,11 @@ const stageConfigs = {
       maxACU: "1 ACU",
       proxy: false,
     },
+    domain: {
+      name: "ppr.radiancerewards.co.uk",
+      cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
+      dns: false,
+    },
   },
   bmetea: {
     vpc: {
@@ -39,6 +49,7 @@ const stageConfigs = {
       maxACU: "1 ACU",
       proxy: false,
     },
+    domain: undefined,
   },
 } as const;
 
@@ -94,6 +105,8 @@ export default $config({
       server: {
         architecture: "arm64", // Using ARM for better cost/performance
       },
+      // Apply domain configuration from stage config
+      ...(config.domain && { domain: config.domain }),
       environment: {
         // Authentication configuration
         CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
