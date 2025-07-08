@@ -1,6 +1,47 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 
+// Stage-specific configurations
+const stageConfigs = {
+  prd: {
+    vpc: {
+      create: true,
+      nat: "managed" as const,
+      bastion: true,
+      az: 2,
+    },
+    aurora: {
+      minACU: "1 ACU",
+      maxACU: "10 ACU",
+      proxy: true,
+    },
+  },
+  ppr: {
+    vpc: {
+      create: true,
+      nat: "ec2" as const,
+      bastion: true,
+      az: 2,
+    },
+    aurora: {
+      minACU: "0 ACU",
+      maxACU: "1 ACU",
+      proxy: false,
+    },
+  },
+  bmetea: {
+    vpc: {
+      create: false,
+      existingVpcId: "vpc-0c3e161cd446a6dcf",
+    },
+    aurora: {
+      minACU: "0 ACU",
+      maxACU: "1 ACU",
+      proxy: false,
+    },
+  },
+} as const;
+
 export default $config({
   app(input) {
     return {
@@ -13,23 +54,26 @@ export default $config({
     };
   },
   async run() {
-    // Use existing VPC for bmetea stage, create new one for others
-    const vpc =
-      $app.stage === "bmetea"
-        ? sst.aws.Vpc.get("rrvpc", "vpc-0c3e161cd446a6dcf")
-        : new sst.aws.Vpc("rrvpc", { bastion: true, nat: "ec2", az: 2 });
+    // Get stage-specific configuration, defaulting to 'ppr' for unknown stages
+    const config =
+      stageConfigs[$app.stage as keyof typeof stageConfigs] || stageConfigs.ppr;
+
+    // Create or get VPC based on stage configuration
+    const vpc = config.vpc.create
+      ? new sst.aws.Vpc("rrvpc", {
+          bastion: config.vpc.bastion,
+          nat: config.vpc.nat,
+          az: config.vpc.az,
+        })
+      : sst.aws.Vpc.get("rrvpc", config.vpc.existingVpcId!);
 
     // Configure Aurora Serverless v2 database
     const rds = new sst.aws.Aurora("rrdb", {
       vpc,
       engine: "postgres",
       scaling: {
-        // Production: min 1 ACU to ensure baseline performance
-        // Other stages: min 0 ACU to minimize costs
-        min: $app.stage === "prd" ? "1 ACU" : "0 ACU",
-        // Production: max 10 ACU for high traffic periods
-        // Other stages: max 1 ACU to limit costs
-        max: $app.stage === "prd" ? "10 ACU" : "1 ACU",
+        min: config.aurora.minACU,
+        max: config.aurora.maxACU,
       },
       // Development configuration for local database connection
       dev: {
@@ -39,8 +83,8 @@ export default $config({
         host: process.env.DB_HOST!,
         port: parseInt(process.env.DB_PORT!) || 5432,
       },
-      // Enable RDS Proxy in production for better connection management
-      proxy: $app.stage === "prd",
+      // Enable RDS Proxy based on stage configuration
+      proxy: config.aurora.proxy,
     });
 
     // Deploy Next.js application with stage-specific name
