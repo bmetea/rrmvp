@@ -1,3 +1,7 @@
+## URLS
+prd= https://d2ykn6v8xpp12z.cloudfront.net
+ppr= https://d2qvkhcyrxsbba.cloudfront.net
+
 ## TODO
 - [ ] implement image upload s3
 - [ ] increment credit when credit is won
