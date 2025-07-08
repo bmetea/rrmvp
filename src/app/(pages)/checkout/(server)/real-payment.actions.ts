@@ -1,8 +1,143 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { prepareCheckout, checkPaymentStatus } from "./payment.actions";
+import { db } from "@/db";
+import { oppwaLogger } from "@/shared/lib/logger";
 import { penceToPounds } from "@/shared/lib/utils/price";
+
+const OPPWA_BASE_URL =
+  process.env.OPPWA_BASE_URL || "https://eu-test.oppwa.com";
+const OPPWA_ENTITY_ID = process.env.OPPWA_ENTITY_ID;
+const OPPWA_ACCESS_TOKEN = process.env.OPPWA_ACCESS_TOKEN;
+
+// --- Internal Helper Functions (previously in payment.actions.ts) ---
+
+async function _prepareCheckout(input: {
+  amount: string;
+  currency: string;
+  paymentType: string;
+  userId?: string;
+}): Promise<{
+  id?: string;
+  transactionId?: string;
+  error?: string;
+  widgetUrl?: string;
+}> {
+  try {
+    const path = "/v1/checkouts";
+    const data = new URLSearchParams({
+      entityId: OPPWA_ENTITY_ID!,
+      amount: input.amount,
+      currency: input.currency,
+      paymentType: input.paymentType,
+      integrity: "true",
+    }).toString();
+
+    oppwaLogger.logRequest(path, "POST", data);
+
+    const response = await fetch(`${OPPWA_BASE_URL}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Length": data.length.toString(),
+        Authorization: `Bearer ${OPPWA_ACCESS_TOKEN}`,
+      },
+      body: data,
+    });
+
+    const result = await response.json();
+    oppwaLogger.logResponse(path, "POST", result);
+
+    let databaseUserId: string | null = null;
+    if (input.userId) {
+      const user = await db
+        .selectFrom("users")
+        .select("id")
+        .where("clerk_id", "=", input.userId)
+        .executeTakeFirst();
+      if (user) {
+        databaseUserId = user.id;
+      }
+    }
+
+    const insertResult = await db
+      .insertInto("payment_transactions")
+      .values({
+        user_id: databaseUserId,
+        checkout_id: result.id,
+        amount: Number(input.amount),
+        currency: input.currency,
+        payment_type: input.paymentType,
+        raw_prepare_result: result,
+      })
+      .returning(["id"])
+      .executeTakeFirst();
+
+    if (result.result.code !== "000.200.100") {
+      throw new Error(
+        `Payment preparation failed: ${result.result.description}`
+      );
+    }
+
+    return {
+      id: result.id,
+      transactionId: insertResult?.id,
+      widgetUrl: `${OPPWA_BASE_URL}/v1/paymentWidgets.js?checkoutId=${result.id}`,
+    };
+  } catch (error) {
+    oppwaLogger.logResponse("/v1/checkouts", "POST", null, error);
+    console.error("Checkout preparation error:", error);
+    return { error: "Failed to prepare checkout" };
+  }
+}
+
+async function _checkPaymentStatus(
+  checkoutId: string
+): Promise<{ result?: { code: string; description: string }; error?: string }> {
+  try {
+    if (!checkoutId) {
+      return { error: "Missing checkoutId parameter" };
+    }
+
+    const path = `/v1/checkouts/${checkoutId}/payment?entityId=${OPPWA_ENTITY_ID}`;
+    oppwaLogger.logRequest(path, "GET");
+
+    const response = await fetch(`${OPPWA_BASE_URL}${path}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${OPPWA_ACCESS_TOKEN}`,
+      },
+    });
+
+    const data = await response.json();
+    oppwaLogger.logResponse(path, "GET", data);
+
+    await db
+      .updateTable("payment_transactions")
+      .set({
+        status_code: data.result?.code,
+        status_description: data.result?.description,
+        brand: data.paymentBrand || null,
+        payment_id: data.id || null,
+        raw_status_result: data,
+      })
+      .where("checkout_id", "=", checkoutId)
+      .execute();
+
+    return { result: data.result };
+  } catch (error) {
+    oppwaLogger.logResponse(
+      `/v1/checkouts/${checkoutId}/payment`,
+      "GET",
+      null,
+      error
+    );
+    console.error("Payment status check error:", error);
+    return { error: "Failed to check payment status" };
+  }
+}
+
+// --- Exported Functions ---
 
 export interface RealPaymentPreparation {
   success: boolean;
@@ -19,24 +154,23 @@ export interface RealPaymentResult {
   message: string;
 }
 
-// Helper function to check if payment is successful
 function isPaymentSuccessful(code: string): boolean {
   const successCodes = [
-    "000.000.000", // Transaction succeeded
-    "000.000.100", // Successful request
-    "000.100.105", // Chargeback Representment is successful
-    "000.100.106", // Chargeback Representment cancellation is successful
-    "000.100.110", // Request successfully processed in 'Merchant in Integrator Test Mode'
-    "000.100.111", // Request successfully processed in 'Merchant in Validator Test Mode'
-    "000.100.112", // Request successfully processed in 'Merchant in Connector Test Mode'
-    "000.300.000", // Two-step transaction succeeded
-    "000.300.100", // Risk check successful
-    "000.300.101", // Risk bank account check successful
-    "000.300.102", // Risk report successful
-    "000.310.100", // Account updated
-    "000.310.101", // Account updated (Credit card expired)
-    "000.310.110", // No updates found, but account is valid
-    "000.600.000", // Transaction succeeded due to external update
+    "000.000.000",
+    "000.000.100",
+    "000.100.105",
+    "000.100.106",
+    "000.100.110",
+    "000.100.111",
+    "000.100.112",
+    "000.300.000",
+    "000.300.100",
+    "000.300.101",
+    "000.300.102",
+    "000.310.100",
+    "000.310.101",
+    "000.310.110",
+    "000.600.000",
   ];
   return successCodes.includes(code);
 }
@@ -54,11 +188,9 @@ export async function prepareRealPayment(
       };
     }
 
-    // Convert pence to pounds for OPPWA
     const amountInPounds = penceToPounds(cardAmount).toFixed(2);
 
-    // Prepare checkout with OPPWA
-    const checkoutResult = await prepareCheckout({
+    const checkoutResult = await _prepareCheckout({
       amount: amountInPounds,
       currency: "GBP",
       paymentType: "DB",
@@ -96,8 +228,7 @@ export async function verifyRealPayment(
   checkoutId: string
 ): Promise<RealPaymentResult> {
   try {
-    // Check payment status
-    const paymentStatus = await checkPaymentStatus(checkoutId);
+    const paymentStatus = await _checkPaymentStatus(checkoutId);
     if (paymentStatus.error || !paymentStatus.result) {
       return {
         success: false,
@@ -117,8 +248,6 @@ export async function verifyRealPayment(
       };
     }
 
-    // Get payment transaction ID from database
-    const { db } = await import("@/db");
     const paymentTransaction = await db
       .selectFrom("payment_transactions")
       .select("id")

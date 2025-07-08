@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { getUserWalletBalance } from "./wallet.actions";
+import { getUserWalletBalance } from "./wallet-payment.actions";
 
 interface CartItem {
   competition: {

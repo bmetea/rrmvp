@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { prepareCheckout } from "../(server)/actions";
+import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { oppwaLogger } from "@/shared/lib/logger";
-import { penceToPounds } from "@/shared/lib/utils/price";
 
 declare global {
   interface Window {
@@ -13,76 +11,23 @@ declare global {
 }
 
 interface PaymentFormProps {
-  amount: string;
-  currency?: string;
-  paymentType?: string;
+  checkoutId: string;
+  widgetUrl: string;
   brands?: string;
   className?: string;
 }
 
 export function PaymentForm({
-  amount,
-  currency = "GBP",
-  paymentType = "DB",
+  checkoutId,
+  widgetUrl,
   brands = "VISA AMEX APPLEPAY GOOGLEPAY",
   className = "",
 }: PaymentFormProps) {
-  const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
-  const isInitializing = useRef(false);
 
   // Get gatewayMerchantId from env
   const gatewayMerchantId = process.env.NEXT_PUBLIC_OPPWA_ENTITY_ID;
-
-  useEffect(() => {
-    const initializeCheckout = async () => {
-      // Prevent duplicate initialization
-      if (isInitializing.current) {
-        oppwaLogger.logWidget("initializeCheckout:skipped", {
-          reason: "Already initializing",
-        });
-        return;
-      }
-
-      try {
-        isInitializing.current = true;
-        oppwaLogger.logWidget("initializeCheckout:start");
-        // Convert pence to pounds for OPPWA
-        const amountInPounds = penceToPounds(parseInt(amount)).toFixed(2);
-
-        const result = await prepareCheckout({
-          amount: amountInPounds,
-          currency,
-          paymentType,
-          userId: userId || undefined,
-        });
-
-        if (result.id) {
-          setCheckoutId(result.id);
-          oppwaLogger.logWidget("initializeCheckout:success", {
-            checkoutId: result.id,
-          });
-        } else {
-          setError(result.error || "Failed to prepare checkout");
-          oppwaLogger.logWidget("initializeCheckout:error", {
-            error: result.error,
-          });
-        }
-      } catch (err) {
-        setError("Error preparing checkout");
-        oppwaLogger.logWidget("initializeCheckout:error", { error: err });
-        console.error(err);
-      } finally {
-        isInitializing.current = false;
-      }
-    };
-
-    // Only initialize if we don't already have a checkoutId
-    if (!checkoutId) {
-      initializeCheckout();
-    }
-  }, [amount, currency, paymentType, userId]);
 
   useEffect(() => {
     if (checkoutId) {

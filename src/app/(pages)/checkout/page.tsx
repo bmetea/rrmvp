@@ -13,8 +13,8 @@ import { PaymentForm } from "./(components)/payment-form";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { Separator } from "@/shared/components/ui/separator";
 import { SignInButton, useAuth } from "@clerk/nextjs";
-import { getUserWalletBalance } from "./(server)/wallet.actions";
-import { startCheckoutFlow } from "./(server)/checkout-orchestrator.actions";
+import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
+import { checkout } from "./(server)/checkout-orchestrator.actions";
 
 interface CartItem {
   competition: {
@@ -38,11 +38,14 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const { userId, isSignedIn } = useAuth();
-  const [isProcessingWalletCheckout, setIsProcessingWalletCheckout] =
-    useState(false);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [purchaseStatus, setPurchaseStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const [paymentData, setPaymentData] = useState<{
+    checkoutId: string;
+    widgetUrl: string;
+  } | null>(null);
 
   // Fetch wallet balance when user is signed in
   useEffect(() => {
@@ -70,12 +73,44 @@ export default function CheckoutPage() {
     );
   }
 
-  const handlePayButtonClick = () => {
+  const handlePayButtonClick = async () => {
     if (!isSignedIn) {
       // The SignInButton will handle showing the modal
       return;
     }
-    setShowPaymentForm(true);
+
+    setIsProcessingCheckout(true);
+    setError(null);
+
+    try {
+      // Store items in sessionStorage for the result page
+      sessionStorage.setItem("checkout_items", JSON.stringify(items));
+
+      const result = await checkout(items);
+
+      if (result.success) {
+        if (
+          result.requiresPaymentForm &&
+          result.checkoutId &&
+          result.widgetUrl
+        ) {
+          // Show payment form
+          setPaymentData({
+            checkoutId: result.checkoutId,
+            widgetUrl: result.widgetUrl,
+          });
+          setShowPaymentForm(true);
+        }
+        // If no payment form is required, the checkout function will redirect automatically
+      } else {
+        setError(result.error || "Checkout failed");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setError("An error occurred during checkout");
+    } finally {
+      setIsProcessingCheckout(false);
+    }
   };
 
   const walletCreditUsed =
@@ -83,67 +118,6 @@ export default function CheckoutPage() {
   const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
   const hasSufficientBalance =
     walletBalance !== null && walletBalance >= totalPrice;
-
-  const handleHybridPurchase = async () => {
-    setPurchaseStatus("loading");
-    setIsProcessingWalletCheckout(true);
-
-    try {
-      const result = await startCheckoutFlow(items);
-
-      if (
-        result.success &&
-        result.step === "completed" &&
-        result.finalResults
-      ) {
-        // Clear cart first
-        clearCart();
-
-        // Prepare summary data
-        const summaryData = {
-          paymentMethod: "wallet",
-          results: result.finalResults.ticketResults.results || [],
-          paymentStatus: "success",
-          paymentMessage: result.finalResults.message,
-        };
-
-        // Refresh wallet balance
-        const balanceResult = await getUserWalletBalance();
-        if (balanceResult.success && balanceResult.balance !== undefined) {
-          setWalletBalance(balanceResult.balance);
-        }
-
-        // Redirect to summary page
-        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
-        router.push(`/checkout/summary?summary=${encodedSummary}`);
-      } else {
-        // Redirect to summary page with error
-        const summaryData = {
-          paymentMethod: "wallet",
-          results: [],
-          paymentStatus: "error",
-          paymentMessage: result.error || "Checkout failed",
-        };
-        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
-        router.push(`/checkout/summary?summary=${encodedSummary}`);
-      }
-    } catch (error) {
-      console.error("Purchase error:", error);
-      const errorMessage = "An error occurred during purchase";
-
-      // Redirect to summary page with error
-      const summaryData = {
-        paymentMethod: "wallet",
-        results: [],
-        paymentStatus: "error",
-        paymentMessage: errorMessage,
-      };
-      const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
-      router.push(`/checkout/summary?summary=${encodedSummary}`);
-    } finally {
-      setIsProcessingWalletCheckout(false);
-    }
-  };
 
   return (
     <>
@@ -355,10 +329,13 @@ export default function CheckoutPage() {
                       ) : (
                         <Button
                           onClick={handlePayButtonClick}
+                          disabled={isProcessingCheckout}
                           className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
                         >
                           <CreditCard className="h-5 w-5" />
-                          {remainingToPay === 0
+                          {isProcessingCheckout
+                            ? "Processing..."
+                            : remainingToPay === 0
                             ? "Complete Purchase"
                             : `Pay ${formatPrice(remainingToPay)}`}
                         </Button>
@@ -390,7 +367,7 @@ export default function CheckoutPage() {
                           {error}
                         </Alert>
                       )}
-                      {remainingToPay > 0 ? (
+                      {paymentData && (
                         <>
                           <div className="bg-blue-50 p-3 rounded-lg mb-4">
                             <p className="text-sm text-blue-800">
@@ -402,29 +379,11 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                           <PaymentForm
-                            amount={remainingToPay.toString()} // Pass the amount as string
+                            checkoutId={paymentData.checkoutId}
+                            widgetUrl={paymentData.widgetUrl}
                             className="mb-4"
                           />
                         </>
-                      ) : (
-                        <div className="bg-green-50 p-4 rounded-lg text-center">
-                          <p className="text-green-800 font-medium">
-                            No card payment required!
-                          </p>
-                          <p className="text-green-700 text-sm">
-                            This purchase is fully covered by your wallet
-                            credit.
-                          </p>
-                          <Button
-                            className="mt-3"
-                            onClick={handleHybridPurchase}
-                            disabled={isProcessingWalletCheckout}
-                          >
-                            {isProcessingWalletCheckout
-                              ? "Processing..."
-                              : "Complete Purchase"}
-                          </Button>
-                        </div>
                       )}
                       <div className="text-[14px] leading-[150%] text-muted-foreground">
                         By proceeding with payment, you agree to our terms and

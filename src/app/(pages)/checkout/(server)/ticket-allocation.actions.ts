@@ -1,21 +1,165 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import {
-  allocateTicketNumbers,
-  createCompetitionEntry,
-  claimWinningTickets,
-} from "./ticket.actions";
+import { db } from "@/db";
+import { sql } from "kysely";
 
-interface CartItem {
-  competition: {
-    id: string;
-    title: string;
-    type: string;
-    ticket_price: number;
-  };
-  quantity: number;
+// --- Internal Helper Functions (previously in ticket.actions.ts) ---
+
+async function _allocateTicketNumbers(
+  competitionId: string,
+  count: number,
+  trx: any
+): Promise<{ success: boolean; ticketNumbers?: number[]; error?: string }> {
+  try {
+    const result = await trx
+      .updateTable("ticket_counters")
+      .set({
+        last_ticket_number: sql`last_ticket_number + ${count}`,
+        updated_at: sql`CURRENT_TIMESTAMP`,
+      })
+      .where("competition_id", "=", competitionId)
+      .where(
+        sql`last_ticket_number + ${count} <= (
+        SELECT total_tickets FROM competitions WHERE id = ${competitionId}
+      )`
+      )
+      .returning(["last_ticket_number"])
+      .executeTakeFirst();
+
+    if (!result) {
+      return {
+        success: false,
+        error: "Not enough tickets available",
+      };
+    }
+
+    const startNumber = result.last_ticket_number - count + 1;
+    const ticketNumbers = Array.from(
+      { length: count },
+      (_, i) => startNumber + i
+    );
+
+    return {
+      success: true,
+      ticketNumbers,
+    };
+  } catch (error) {
+    console.error("Error allocating ticket numbers:", error);
+    return {
+      success: false,
+      error: "Failed to allocate tickets",
+    };
+  }
 }
+
+async function _createCompetitionEntry(
+  competitionId: string,
+  userId: string,
+  ticketNumbers: number[],
+  walletTransactionId: string | null,
+  paymentTransactionId: string | undefined,
+  trx: any
+): Promise<{ success: boolean; entryId?: string; error?: string }> {
+  try {
+    const competitionEntry = await trx
+      .insertInto("competition_entries")
+      .values({
+        competition_id: competitionId,
+        user_id: userId,
+        wallet_transaction_id: walletTransactionId,
+        payment_transaction_id: paymentTransactionId,
+        tickets: ticketNumbers,
+      })
+      .returning("id")
+      .executeTakeFirst();
+
+    if (!competitionEntry) {
+      return {
+        success: false,
+        error: "Failed to create competition entry",
+      };
+    }
+
+    await trx
+      .updateTable("competitions")
+      .set({
+        tickets_sold: sql`tickets_sold + ${ticketNumbers.length}`,
+      })
+      .where("id", "=", competitionId)
+      .execute();
+
+    return {
+      success: true,
+      entryId: competitionEntry.id,
+    };
+  } catch (error) {
+    console.error("Error creating competition entry:", error);
+    return {
+      success: false,
+      error: "Failed to create competition entry",
+    };
+  }
+}
+
+async function _claimWinningTickets(
+  competitionId: string,
+  ticketNumbers: number[],
+  userId: string,
+  entryId: string,
+  trx: any
+): Promise<{
+  success: boolean;
+  claimedTickets?: { ticketNumber: number; prizeId: string }[];
+  error?: string;
+}> {
+  try {
+    const winningTickets = await trx
+      .selectFrom("winning_tickets")
+      .select(["id", "ticket_number", "prize_id"])
+      .where("competition_id", "=", competitionId)
+      .where("ticket_number", "in", ticketNumbers)
+      .where("status", "=", "available")
+      .execute();
+
+    const claimedTickets: { ticketNumber: number; prizeId: string }[] = [];
+
+    for (const winningTicket of winningTickets) {
+      const claimedTicket = await trx
+        .updateTable("winning_tickets")
+        .set({
+          status: "claimed",
+          claimed_by_user_id: userId,
+          claimed_at: new Date(),
+          competition_entry_id: entryId,
+        })
+        .where("id", "=", winningTicket.id)
+        .where("status", "=", "available")
+        .returning("id")
+        .executeTakeFirst();
+
+      if (claimedTicket) {
+        claimedTickets.push({
+          ticketNumber: winningTicket.ticket_number,
+          prizeId: winningTicket.prize_id,
+        });
+      }
+    }
+
+    return {
+      success: true,
+      claimedTickets,
+    };
+  } catch (error) {
+    console.error("Error claiming winning tickets:", error);
+    return {
+      success: false,
+      error: "Failed to claim winning tickets",
+    };
+  }
+}
+
+// --- Exported Function ---
 
 export interface TicketAllocationResult {
   success: boolean;
@@ -32,7 +176,15 @@ export interface TicketAllocationResult {
 }
 
 export async function allocateTickets(
-  items: CartItem[],
+  items: Array<{
+    competition: {
+      id: string;
+      title: string;
+      type: string;
+      ticket_price: number;
+    };
+    quantity: number;
+  }>,
   walletTransactionIds: string[],
   paymentTransactionId?: string
 ): Promise<TicketAllocationResult> {
@@ -47,10 +199,7 @@ export async function allocateTickets(
       };
     }
 
-    const { db } = await import("@/db");
-
     return await db.transaction().execute(async (trx) => {
-      // Get database user ID from Clerk user ID
       const user = await trx
         .selectFrom("users")
         .select("id")
@@ -66,8 +215,7 @@ export async function allocateTickets(
 
       for (const item of items) {
         try {
-          // 1. Allocate ticket numbers
-          const allocation = await allocateTicketNumbers(
+          const allocation = await _allocateTicketNumbers(
             item.competition.id,
             item.quantity,
             trx
@@ -82,15 +230,13 @@ export async function allocateTickets(
 
           const ticketNumbers = allocation.ticketNumbers!;
 
-          // 2. Determine wallet transaction ID for this item
           const walletTransactionId =
             walletTransactionIds[walletTransactionIndex] || null;
           if (walletTransactionIds.length > 0) {
             walletTransactionIndex++;
           }
 
-          // 3. Create competition entry
-          const entryResult = await createCompetitionEntry(
+          const entryResult = await _createCompetitionEntry(
             item.competition.id,
             user.id,
             ticketNumbers,
@@ -106,8 +252,7 @@ export async function allocateTickets(
             );
           }
 
-          // 4. Claim any winning tickets
-          const claimResult = await claimWinningTickets(
+          const claimResult = await _claimWinningTickets(
             item.competition.id,
             ticketNumbers,
             user.id,
@@ -122,7 +267,6 @@ export async function allocateTickets(
             );
           }
 
-          // Generate success message with winning ticket info
           const winningMessage =
             claimResult.claimedTickets && claimResult.claimedTickets.length > 0
               ? ` 🎉 Congratulations! You won ${
@@ -157,7 +301,6 @@ export async function allocateTickets(
                 ? itemError.message
                 : `Failed to allocate tickets for ${item.competition.title}`,
           });
-          // If any item fails, we should fail the entire allocation
           throw itemError;
         }
       }

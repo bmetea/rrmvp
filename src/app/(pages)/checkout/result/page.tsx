@@ -2,112 +2,109 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { completeCheckoutAfterPayment } from "../(server)/checkout-orchestrator.actions";
+import { checkout } from "../(server)/checkout-orchestrator.actions";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { oppwaLogger } from "@/shared/lib/logger";
 
-export default function CheckoutResultPage() {
-  const [status, setStatus] = useState<"loading" | "error">("loading");
-  const [message, setMessage] = useState("");
+function CheckoutResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { clearCart, items } = useCart();
-  const isProcessing = useRef(false);
+  const { clearCart } = useCart();
+  const [isProcessing, setIsProcessing] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const processCheckout = async () => {
+      // Prevent double processing
+      if (hasProcessed.current) return;
+      hasProcessed.current = true;
 
-    const processPaymentAndCheckout = async () => {
       const checkoutId = searchParams.get("id");
+      const resourcePath = searchParams.get("resourcePath");
 
-      // Prevent duplicate processing
-      if (isProcessing.current) {
-        oppwaLogger.logWidget("resultPage:skipped", {
-          reason: "Already processing",
-        });
-        return;
-      }
+      oppwaLogger.logWidget("resultPage:start", { checkoutId, resourcePath });
 
       if (!checkoutId) {
-        oppwaLogger.logWidget("resultPage:error", {
-          error: "Invalid payment response - missing checkoutId",
-        });
-        redirectToSummary("error", "Invalid payment response");
+        setError("No checkout ID found");
+        setIsProcessing(false);
         return;
       }
 
       try {
-        isProcessing.current = true;
-        oppwaLogger.logWidget("resultPage:verifyingPayment", { checkoutId });
-
-        // Check if the request was aborted
-        if (controller.signal.aborted) {
+        // Get items from sessionStorage
+        const storedItems = sessionStorage.getItem("checkout_items");
+        if (!storedItems) {
+          setError("No checkout items found");
+          setIsProcessing(false);
           return;
         }
 
+        const items = JSON.parse(storedItems);
+
         // Process the checkout with the new flow
         oppwaLogger.logWidget("resultPage:processingCheckout", { checkoutId });
-        const result = await completeCheckoutAfterPayment(items, checkoutId);
+        const result = await checkout(items, checkoutId);
 
         // Clear cart before redirecting
         clearCart();
 
-        oppwaLogger.logWidget("resultPage:checkoutComplete", {
-          checkoutId,
-          success: result.success,
-          step: result.step,
-          error: result.error,
-        });
-
-        // Redirect to summary page with results
-        const summaryData = {
-          paymentMethod: "card",
-          results: result.finalResults?.ticketResults.results || [],
-          paymentStatus: result.success ? "success" : "error",
-          paymentMessage:
-            result.finalResults?.message || result.error || "Payment failed",
-        };
-
-        const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
-        router.replace(`/checkout/summary?summary=${encodedSummary}`);
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          oppwaLogger.logWidget("resultPage:error", {
-            checkoutId,
-            error: error instanceof Error ? error.message : "Unknown error",
-          });
-          console.error("Error processing payment and checkout:", error);
-          redirectToSummary("error", "Error processing payment and checkout");
+        // The checkout function will handle the redirect to summary page
+        // If we reach here, there was likely an error
+        if (!result.success) {
+          setError(result.error || "Checkout failed");
+          setIsProcessing(false);
         }
-      } finally {
-        isProcessing.current = false;
+      } catch (error) {
+        console.error("Checkout result processing error:", error);
+        setError("An error occurred processing your payment");
+        setIsProcessing(false);
       }
     };
 
-    processPaymentAndCheckout();
+    processCheckout();
+  }, [searchParams, clearCart]);
 
-    // Cleanup function to abort any pending requests when the component unmounts
-    // or when the dependencies change
-    return () => {
-      controller.abort();
-    };
-  }, [searchParams]); // Remove router, items, and clearCart from dependencies
+  if (isProcessing) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4" />
+          <p className="text-lg font-medium">Processing your payment...</p>
+          <p className="text-sm text-muted-foreground">Please wait</p>
+        </div>
+      </div>
+    );
+  }
 
-  const redirectToSummary = (status: "error", message: string) => {
-    const summaryData = {
-      paymentMethod: "card",
-      results: [],
-      paymentStatus: status,
-      paymentMessage: message,
-    };
-    const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
-    router.replace(`/checkout/summary?summary=${encodedSummary}`);
-  };
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="text-red-500 text-xl font-semibold">{error}</div>
+        <button
+          onClick={() => router.push("/checkout")}
+          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+        >
+          Back to Checkout
+        </button>
+      </div>
+    );
+  }
 
-  // Show loading spinner while processing
+  // This should not be reached due to redirect, but just in case
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+      <div className="text-center">
+        <p className="text-lg font-medium">Redirecting...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function CheckoutResultPage() {
+  return (
+    <div className="max-w-4xl mx-auto py-12 px-4">
+      <CheckoutResultContent />
     </div>
   );
 }
