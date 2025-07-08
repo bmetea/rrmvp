@@ -89,7 +89,11 @@ export default function CheckoutPage() {
       const result = await checkout(items);
 
       if (result.success) {
-        if (
+        if (result.shouldRedirect && result.redirectUrl) {
+          // Clear cart and redirect to summary
+          clearCart();
+          router.push(result.redirectUrl);
+        } else if (
           result.requiresPaymentForm &&
           result.checkoutId &&
           result.widgetUrl
@@ -101,7 +105,6 @@ export default function CheckoutPage() {
           });
           setShowPaymentForm(true);
         }
-        // If no payment form is required, the checkout function will redirect automatically
       } else {
         setError(result.error || "Checkout failed");
       }

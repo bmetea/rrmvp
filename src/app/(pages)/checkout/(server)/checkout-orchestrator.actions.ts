@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 // Import the 4 distinct steps
@@ -34,6 +33,8 @@ export interface CheckoutResult {
   checkoutId?: string;
   widgetUrl?: string;
   // For completed purchases
+  shouldRedirect?: boolean;
+  redirectUrl?: string;
   finalResults?: {
     strategy: string;
     walletAmount: number;
@@ -128,8 +129,30 @@ export async function checkout(
             )} card payment`
           : `Card Payment: ${formatPrice(recalculation.cardAmount)}`;
 
-      // Redirect to summary
-      redirect("/checkout/summary");
+      // Prepare summary data for redirect
+      const summaryData = {
+        paymentMethod: recalculation.strategy === "hybrid" ? "hybrid" : "card",
+        walletAmount: recalculation.walletAmount,
+        cardAmount: recalculation.cardAmount,
+        results: ticketAllocation.results || [],
+        paymentStatus: "success",
+        paymentMessage: `Purchase completed using ${strategyMessage.toLowerCase()}`,
+      };
+
+      const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+
+      return {
+        success: true,
+        shouldRedirect: true,
+        redirectUrl: `/checkout/summary?summary=${encodedSummary}`,
+        finalResults: {
+          strategy: strategyMessage,
+          walletAmount: recalculation.walletAmount,
+          cardAmount: recalculation.cardAmount,
+          ticketResults: ticketAllocation,
+          message: `Purchase completed using ${strategyMessage.toLowerCase()}`,
+        },
+      };
     }
 
     // First call - determine payment flow based on strategy
@@ -162,8 +185,34 @@ export async function checkout(
       // Revalidate paths
       revalidatePaths();
 
-      // Redirect to summary
-      redirect("/checkout/summary");
+      // Prepare summary data for redirect
+      const summaryData = {
+        paymentMethod: "wallet",
+        walletAmount: calculation.walletAmount,
+        cardAmount: 0,
+        results: ticketAllocation.results || [],
+        paymentStatus: "success",
+        paymentMessage: `Purchase completed using ${formatPrice(
+          calculation.walletAmount
+        )} wallet credit only`,
+      };
+
+      const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+
+      return {
+        success: true,
+        shouldRedirect: true,
+        redirectUrl: `/checkout/summary?summary=${encodedSummary}`,
+        finalResults: {
+          strategy: "Wallet Credit Only",
+          walletAmount: calculation.walletAmount,
+          cardAmount: 0,
+          ticketResults: ticketAllocation,
+          message: `Purchase completed using ${formatPrice(
+            calculation.walletAmount
+          )} wallet credit only`,
+        },
+      };
     } else if (
       !calculation.requiresWalletPayment &&
       calculation.requiresCardPayment

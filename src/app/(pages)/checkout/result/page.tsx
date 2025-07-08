@@ -49,9 +49,10 @@ function CheckoutResultContent() {
         // Clear cart before redirecting
         clearCart();
 
-        // The checkout function will handle the redirect to summary page
-        // If we reach here, there was likely an error
-        if (!result.success) {
+        if (result.success && result.shouldRedirect && result.redirectUrl) {
+          // Navigate to the summary page
+          router.push(result.redirectUrl);
+        } else if (!result.success) {
           setError(result.error || "Checkout failed");
           setIsProcessing(false);
         }
