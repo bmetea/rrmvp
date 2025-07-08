@@ -1,9 +1,23 @@
 ## URLS
-prd= https://d2ykn6v8xpp12z.cloudfront.net
+prd= https://d27p6ej8vra5wq.cloudfront.net
 ppr= https://d2qvkhcyrxsbba.cloudfront.net
 
+
+## PROD TODO
+- [x] clerk prod keys
+- [x] clerk prod webhook
+- [x] clerk dns
+- [ ] clerk social providers setup
+- [ ] nomu prod keys
+- [ ] GA prod keys?
+- [ ] Segment prod setuo
+- [ ] Facebook pixel
+
 ## TODO
+
 - [ ] implement image upload s3
+- [ ] think of edge cases 
+- [ ] change clerk webhook path
 - [ ] increment credit when credit is won
 - [ ] all the prices are in pence and all the ui needs to handle that.
 - [ ] nomu
@@ -12,7 +26,7 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
     - [ ] do i need apple acount even if i use the hosted solution ? 
   - [ ] google pay
     - [ ] Nick to get merchantId
-- [ ] deploy prod
+- [x] deploy prod
 - [ ] audit logs
 - [ ] Link winning ticket numbers to actual products
 - [ ] So, they seem to do it relative to end date. If it's within a week they say'ends this friday' if it's today or tomorrow they say that and if anything else, they say just launched.
