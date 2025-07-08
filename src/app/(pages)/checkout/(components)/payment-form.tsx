@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { prepareCheckout } from "../(server)/actions";
 import { useAuth } from "@clerk/nextjs";
 import { oppwaLogger } from "@/shared/lib/logger";
+import { penceToPounds } from "@/shared/lib/utils/price";
 
 declare global {
   interface Window {
@@ -47,8 +48,11 @@ export function PaymentForm({
       try {
         isInitializing.current = true;
         oppwaLogger.logWidget("initializeCheckout:start");
+        // Convert pence to pounds for OPPWA
+        const amountInPounds = penceToPounds(parseInt(amount)).toFixed(2);
+
         const result = await prepareCheckout({
-          amount,
+          amount: amountInPounds,
           currency,
           paymentType,
           userId: userId || undefined,

@@ -8,7 +8,8 @@ export interface CompetitionEntry {
   id: string;
   competition_id: string;
   user_id: string;
-  wallet_transaction_id: string;
+  wallet_transaction_id: string | null;
+  payment_transaction_id: string | null;
   created_at: Date;
   updated_at: Date;
   tickets: number[];
@@ -69,6 +70,7 @@ export async function getUserCompetitionEntries(): Promise<{
         "ce.competition_id",
         "ce.user_id",
         "ce.wallet_transaction_id",
+        "ce.payment_transaction_id",
         "ce.tickets",
         "ce.created_at",
         "ce.updated_at",
@@ -170,9 +172,9 @@ export async function getUserCompetitionEntries(): Promise<{
 export async function purchaseCompetitionEntry(
   competitionId: string,
   userId: string,
-  walletTransactionId: string,
+  walletTransactionId: string | null,
   numberOfTickets: number,
-  paymentTransactionId: string
+  paymentTransactionId: string | null
 ): Promise<{
   success: boolean;
   entry?: CompetitionEntry;
@@ -215,6 +217,7 @@ export async function purchaseCompetitionEntry(
           "ce.competition_id",
           "ce.user_id",
           "ce.wallet_transaction_id",
+          "ce.payment_transaction_id",
           "ce.tickets",
           "ce.created_at",
           "ce.updated_at",

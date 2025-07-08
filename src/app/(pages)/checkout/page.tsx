@@ -13,8 +13,8 @@ import { PaymentForm } from "./(components)/payment-form";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { Separator } from "@/shared/components/ui/separator";
 import { SignInButton, useAuth } from "@clerk/nextjs";
-import { getUserWalletBalance } from "./(server)/payment.actions";
-import { processWalletOnlyCheckout } from "./(server)/checkout.actions";
+import { getUserWalletBalance } from "./(server)/wallet.actions";
+import { startCheckoutFlow } from "./(server)/checkout-orchestrator.actions";
 
 interface CartItem {
   competition: {
@@ -89,18 +89,22 @@ export default function CheckoutPage() {
     setIsProcessingWalletCheckout(true);
 
     try {
-      const result = await processWalletOnlyCheckout(items);
+      const result = await startCheckoutFlow(items);
 
-      if (result.success) {
+      if (
+        result.success &&
+        result.step === "completed" &&
+        result.finalResults
+      ) {
         // Clear cart first
         clearCart();
 
         // Prepare summary data
         const summaryData = {
           paymentMethod: "wallet",
-          results: result.results || [],
+          results: result.finalResults.ticketResults.results || [],
           paymentStatus: "success",
-          paymentMessage: result.message,
+          paymentMessage: result.finalResults.message,
         };
 
         // Refresh wallet balance
@@ -118,7 +122,7 @@ export default function CheckoutPage() {
           paymentMethod: "wallet",
           results: [],
           paymentStatus: "error",
-          paymentMessage: result.message,
+          paymentMessage: result.error || "Checkout failed",
         };
         const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
         router.push(`/checkout/summary?summary=${encodedSummary}`);
@@ -398,7 +402,7 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                           <PaymentForm
-                            amount={remainingToPay} // Pass the amount in pence directly
+                            amount={remainingToPay.toString()} // Pass the amount as string
                             className="mb-4"
                           />
                         </>
