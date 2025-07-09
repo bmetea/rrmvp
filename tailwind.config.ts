@@ -18,6 +18,10 @@ const config = {
   		}
   	},
   	extend: {
+  		fontFamily: {
+  			sans: ["var(--font-crimson-pro)", "Crimson Pro", "serif"],
+  			"open-sans": ["var(--font-open-sans)", "Open Sans", "sans-serif"],
+  		},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',

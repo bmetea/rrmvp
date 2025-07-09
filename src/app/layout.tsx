@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Crimson_Pro, Open_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/shared/components/layout/navigation/Navbar";
 import Footer from "@/shared/components/layout/navigation/Footer";
@@ -10,6 +11,20 @@ import { Toaster } from "sonner";
 import GoogleAnalytics from "@/shared/components/analytics/GoogleAnalytics";
 import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
 // import SegmentProvider from "@/shared/components/analytics/SegmentProvider";
+
+const crimsonPro = Crimson_Pro({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-crimson-pro",
+  display: "swap",
+});
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-open-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Radiance Rewards",
@@ -77,7 +92,10 @@ export default async function RootLayout({
             `}
           </Script>
         </head>
-        <body className="antialiased" suppressHydrationWarning>
+        <body
+          className={`${crimsonPro.variable} ${openSans.variable} antialiased`}
+          suppressHydrationWarning
+        >
           <Toaster />
           <GoogleAnalytics />
           <PageViewTracker />
