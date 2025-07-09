@@ -50,13 +50,86 @@ export function PaymentForm({
             buttonSource: "js",
             displayName: "MyStore",
             total: { label: "COMPANY, INC." },
-            merchantIdentifier: '${gatewayMerchantId}',
           },
           googlePay: {
             buttonColor: 'black',
             buttonSizeMode: 'fill',
             gatewayMerchantId: '${gatewayMerchantId}',
-            merchantId: 'BCR2DN4TWXD3VYDY'
+            merchantId: 'BCR2DN7TZCX3RQQL',
+            allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+            onPaymentAuthorized: function(paymentData) {
+              console.log('[Google Pay] Payment authorized:', paymentData);
+              
+              // Log the payment authorization event
+              if (window.oppwaLogger) {
+                window.oppwaLogger.logWidget('googlePay:paymentAuthorized', { 
+                  paymentMethodType: paymentData.paymentMethodData?.type,
+                  cardNetwork: paymentData.paymentMethodData?.info?.cardNetwork
+                });
+              }
+              
+              // Return success to continue with payment processing
+              return {
+                transactionState: 'SUCCESS'
+              };
+            },
+            onPaymentDataChanged: function(intermediatePaymentData) {
+              console.log('[Google Pay] Payment data changed:', intermediatePaymentData);
+              
+              // Log the payment data change event
+              if (window.oppwaLogger) {
+                window.oppwaLogger.logWidget('googlePay:paymentDataChanged', {
+                  callbackTrigger: intermediatePaymentData.callbackTrigger,
+                  hasShippingAddress: !!intermediatePaymentData.shippingAddress,
+                  hasOfferData: !!intermediatePaymentData.offerData
+                });
+              }
+              
+              // Handle different types of data changes
+              switch (intermediatePaymentData.callbackTrigger) {
+                case 'INITIALIZE':
+                  console.log('[Google Pay] Initializing payment data');
+                  break;
+                case 'SHIPPING_ADDRESS':
+                  console.log('[Google Pay] Shipping address changed:', intermediatePaymentData.shippingAddress);
+                  break;
+                case 'SHIPPING_OPTION':
+                  console.log('[Google Pay] Shipping option changed:', intermediatePaymentData.shippingOptionData);
+                  break;
+                case 'OFFER':
+                  console.log('[Google Pay] Offer data changed:', intermediatePaymentData.offerData);
+                  break;
+                default:
+                  console.log('[Google Pay] Unknown callback trigger:', intermediatePaymentData.callbackTrigger);
+              }
+              
+              // Return updated payment data (if needed)
+              // For basic implementation, we just resolve without changes
+              return Promise.resolve({});
+            },
+            onError: function(error) {
+              console.error('[Google Pay] Error occurred:', error);
+              
+              // Log the error event
+              if (window.oppwaLogger) {
+                window.oppwaLogger.logWidget('googlePay:error', {
+                  errorCode: error.statusCode || 'UNKNOWN',
+                  errorMessage: error.statusMessage || error.message || 'Unknown error'
+                });
+              }
+              
+              // Handle different types of errors
+              switch (error.statusCode) {
+                case 'CANCELED':
+                  console.log('[Google Pay] Payment was canceled by user');
+                  break;
+                case 'DEVELOPER_ERROR':
+                  console.error('[Google Pay] Developer configuration error:', error);
+                  break;
+                default:
+                  console.error('[Google Pay] Unexpected error:', error);
+              }
+            }
           },
           onReady: function() {
             console.log('[OPPWA Widget] Widget ready');
@@ -145,12 +218,15 @@ export function PaymentForm({
           border-radius: 5px;
           margin-bottom: 20px;
         }
+        
       `;
       document.body.appendChild(styleTag);
 
       // Load the payment widget script
       const script = document.createElement("script");
-      script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
+      const oppwaBaseUrl =
+        process.env.NEXT_PUBLIC_OPPWA_BASE_URL || "https://eu-test.oppwa.com";
+      script.src = `${oppwaBaseUrl}/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
       script.async = true;
       document.body.appendChild(script);
 
@@ -174,7 +250,7 @@ export function PaymentForm({
     <div className={className}>
       {checkoutId ? (
         <form
-          action="/checkout/result"
+          action={`${window.location.origin}/checkout/result`}
           className="paymentWidgets"
           data-brands={brands}
         />

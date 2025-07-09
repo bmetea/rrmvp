@@ -3,31 +3,28 @@ prd= https://d27p6ej8vra5wq.cloudfront.net
 ppr= https://d2qvkhcyrxsbba.cloudfront.net
 
 
-## PROD TODO
-- [x] clerk prod keys
-- [x] clerk prod webhook
-- [x] clerk dns
-- [ ] clerk social providers setup
-- [ ] nomu prod keys
-- [ ] GA prod keys?
-- [ ] Segment prod setuo
-- [ ] Facebook pixel
 
 ## TODO
 
 - [ ] implement image upload s3
-- [ ] clerk webhook duplicate email problem when google and email
-- [ ] referral system
+- [ ] Segment prod setuo
+  - [ ] Send event when someone wins
+    - [ ] should contain products
+    - [ ] Nick will show example
+  - [ ] or find a solution
+- [ ] increment credit when credit is won
+- [ ] Design stuff.
+- [ ] clerk social providers setup
+- [ ] nomu
+  - [ ] google pay
+    - [ ] Implement callback
+- [ ] Facebook pixel
+  - [x] got the pixel
+  - [ ] implement the pixel
 - [ ] think of edge cases 
 - [ ] change clerk webhook path
-- [ ] increment credit when credit is won
-- [ ] all the prices are in pence and all the ui needs to handle that.
-- [ ] nomu
-  - [ ] apple pay
-    - [ ] Do i need another cert for prod ?
-    - [ ] do i need apple acount even if i use the hosted solution ? 
-  - [ ] google pay
-    - [ ] Nick to get merchantId
+
+
 - [x] deploy prod
 - [ ] audit logs
 - [ ] Link winning ticket numbers to actual products
