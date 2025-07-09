@@ -1,10 +1,4 @@
 import { Button } from "@/shared/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import Link from "next/link";
 
 const steps = [
@@ -36,49 +30,76 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <div className="py-16 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-4">
-            How it works
-          </h2>
-          <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground">
-            Four simple steps to start your Radiance Rewards journey.
-          </p>
+    <div className="relative bg-[#F7F7F7] overflow-hidden">
+      <div className="px-4 py-16 lg:px-16 lg:py-28 flex flex-col justify-start items-center gap-8 lg:gap-16">
+        {/* Header section */}
+        <div className="w-full max-w-3xl flex flex-col justify-start items-center gap-4">
+          <div className="w-full flex flex-col justify-start items-center gap-4">
+            <div className="w-full text-center text-foreground text-4xl md:text-6xl lg:text-[84px] font-medium leading-tight lg:leading-[100.8px] font-sans">
+              How it works
+            </div>
+            <div className="w-full text-center text-[#313131] text-lg lg:text-2xl font-normal leading-relaxed lg:leading-9 font-open-sans">
+              Four simple steps to start your Radiance Rewards journey.
+            </div>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
+        {/* Cards grid */}
+        <div className="w-full max-w-[1312px] flex flex-col lg:flex-row justify-start items-start gap-6 lg:gap-12">
           {steps.map((step) => (
-            <Card
+            <div
               key={step.number}
-              className="text-center bg-[#E19841]/5 border-[#E19841]/20"
+              className="flex-1 p-8 bg-white rounded-3xl flex flex-col justify-start items-center gap-6"
             >
-              <CardHeader>
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#E19841]/10 text-[#E19841] text-2xl font-bold mb-4 mx-auto">
+              <div className="w-full flex flex-col justify-start items-center gap-4">
+                {/* Large number */}
+                <div className="w-full text-center text-foreground text-5xl md:text-7xl lg:text-[84px] font-medium leading-tight lg:leading-[100.8px] font-sans">
                   {step.number}
                 </div>
-                <CardTitle className="text-[20px] md:text-[25px] leading-[150%] font-bold text-foreground">
+                {/* Title */}
+                <div className="w-full text-center text-foreground text-xl md:text-2xl lg:text-[35px] font-medium leading-tight lg:leading-[42px] font-sans">
                   {step.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[14px] md:text-[16px] leading-[150%] text-muted-foreground">
+                </div>
+                {/* Description */}
+                <div className="w-full text-center text-[#313131] text-base lg:text-lg font-normal leading-relaxed lg:leading-[27px] font-open-sans">
                   {step.description}
-                </p>
-              </CardContent>
-            </Card>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
-        <div className="text-center">
+        {/* CTA Button */}
+        <div className="flex justify-start items-start gap-6">
           <Link href="/competitions">
-            <Button
-              variant="outline"
-              className="border-[#E19841]/20 hover:bg-[#E19841]/5"
-            >
-              View all Competitions →
-            </Button>
+            <div className="px-6 py-3 bg-[#3D2C8D] rounded-full border-2 border-[#3D2C8D] flex justify-center items-center gap-2">
+              <div className="text-white text-base font-semibold leading-6 font-open-sans">
+                Enter now
+              </div>
+              <div className="w-6 h-6 relative overflow-hidden">
+                <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-white" />
+              </div>
+            </div>
           </Link>
+        </div>
+      </div>
+
+      {/* Decorative play icon on the right */}
+      <div className="hidden lg:block absolute right-16 top-12 w-58 h-59 overflow-hidden">
+        <div className="absolute right-0 top-0">
+          <svg width="233" height="236" viewBox="0 0 233 236" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text
+              x="116"
+              y="50"
+              textAnchor="middle"
+              className="text-sm font-open-sans font-medium text-[#151515]"
+              transform="rotate(-15 116 50)"
+            >
+              Watch how it works
+            </text>
+            <circle cx="116" cy="118" r="45" fill="#151515" />
+            <polygon points="105,100 105,136 135,118" fill="white" />
+          </svg>
         </div>
       </div>
     </div>

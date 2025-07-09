@@ -19,6 +19,31 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
     competition.status === "active" &&
     new Date(competition.end_date).getTime() > new Date().getTime();
 
+  // Function to get tag styling based on competition type
+  const getTagStyling = (type: string) => {
+    const typeValue = type?.toLowerCase() || "";
+
+    switch (typeValue) {
+      case "instant_win":
+      case "instant win":
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200";
+      case "cash":
+        return "bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200";
+      case "haircare & skincare":
+      case "haircare":
+      case "skincare":
+        return "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200";
+      case "cosmetic enhancement":
+      case "cosmetic":
+        return "bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200";
+      case "automated draw":
+      case "draw":
+        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200";
+      default:
+        return "bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200";
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full">
       {/* Banner */}
@@ -66,7 +91,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
       </div>
       {/* Content */}
       <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
-        <span className="p-1 bg-orange-100 dark:bg-orange-900 rounded text-[12px] leading-[150%] font-semibold text-neutral-900 dark:text-white md:px-4 md:py-1 md:text-[14px]">
+        <span className={`p-1 rounded text-[12px] leading-[150%] font-semibold md:px-4 md:py-1 md:text-[14px] ${getTagStyling(competition.type)}`}>
           {competition.type}
         </span>
         <div className="w-full flex flex-col items-start gap-1 md:gap-2">

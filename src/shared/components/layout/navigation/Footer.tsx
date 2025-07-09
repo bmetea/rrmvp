@@ -37,6 +37,9 @@ const Footer = () => {
             </Link>
           </div>
 
+          {/* Gold divider line */}
+          <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent mb-8"></div>
+
           {/* Copyright */}
           <div className="text-xs text-gray-300">
             <p>© 2025 Radiance Rewards. All rights reserved.</p>
