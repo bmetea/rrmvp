@@ -16,6 +16,8 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
 ## TODO
 
 - [ ] implement image upload s3
+- [ ] clerk webhook duplicate email problem when google and email
+- [ ] referral system
 - [ ] think of edge cases 
 - [ ] change clerk webhook path
 - [ ] increment credit when credit is won
