@@ -31,7 +31,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     minute: "2-digit",
   });
 
-  const quickSelect = [1, 3, 5, 10, 25, 50];
+  const quickSelect = [5, 10, 15, 20, 25, 50];
   const maxTickets = 2500;
   const totalPrice = ticketPrice * ticketCount;
   const prizes = competitionWithPrizes.prizes || [];
