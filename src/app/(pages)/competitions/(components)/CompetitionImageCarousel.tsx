@@ -31,6 +31,7 @@ export default function CompetitionImageCarousel({
       <div className="relative mb-4">
         <Swiper
           spaceBetween={10}
+          loop={displayImages.length > 1}
           navigation={{
             prevEl: ".swiper-button-prev-custom",
             nextEl: ".swiper-button-next-custom",
