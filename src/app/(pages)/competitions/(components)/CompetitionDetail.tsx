@@ -92,6 +92,17 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               images={competitionWithPrizes.media_info?.images || []}
               title={competitionWithPrizes.title}
             />
+            
+            {/* Title and End Date - Desktop - Under carousel */}
+            <div className="mt-6">
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+                {competitionWithPrizes.title}
+              </h1>
+              <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
+                <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
+                {formattedEndDate} {formattedTime}
+              </span>
+            </div>
           </div>
 
           {/* Right Column */}
@@ -214,17 +225,6 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               </Link>
             </div>
           </div>
-        </div>
-
-        {/* Title and End Date - Desktop - Now below carousel */}
-        <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-            {competitionWithPrizes.title}
-          </h1>
-          <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
-            <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
-            {formattedEndDate} {formattedTime}
-          </span>
         </div>
 
         {/* Competition Description - Desktop */}
