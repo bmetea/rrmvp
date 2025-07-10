@@ -98,9 +98,6 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
           <h3 className="w-full text-neutral-900 dark:text-white text-[20px] md:text-[25px] leading-[150%] font-bold">
             {competition.title}
           </h3>
-          <div className="w-full text-zinc-800 dark:text-zinc-200 text-[16px] md:text-[18px] leading-[150%] font-normal">
-            {competition.description}
-          </div>
         </div>
         {/* Avatars and winners - desktop only */}
         <div className="hidden md:inline-flex justify-start items-center gap-2 w-full">

@@ -233,6 +233,15 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           </div>
         </div>
 
+        {/* Competition Description - Desktop */}
+        <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4">Competition Details</h2>
+          <div className="text-zinc-800 dark:text-zinc-200 text-[16px] md:text-[18px] leading-[150%] font-normal whitespace-pre-line">
+            {competitionWithPrizes.description ||
+              "No description available for this competition. Please check the prize details below for more information."}
+          </div>
+        </div>
+
         {/* Full Width Prize Section */}
         <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
@@ -392,6 +401,15 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         >
           Free Postal Entry Available
         </Link>
+
+        {/* Competition Description - Mobile */}
+        <div className="border-t border-gray-200 dark:border-[#232326] pt-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Competition Details</h2>
+          <div className="text-zinc-800 dark:text-zinc-200 text-[16px] leading-[150%] font-normal whitespace-pre-line">
+            {competitionWithPrizes.description ||
+              "No description available for this competition. Please check the prize details below for more information."}
+          </div>
+        </div>
 
         {/* Mobile Prizes Section */}
         <div className="border-t border-gray-200 dark:border-[#232326] pt-6">
