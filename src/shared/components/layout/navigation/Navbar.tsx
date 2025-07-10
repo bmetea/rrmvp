@@ -132,14 +132,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           <div className="md:hidden flex items-center gap-2">
             {/* Mobile Nav Icons - Match Figma Design */}
             <SignedIn>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-10 h-10 p-2"
-                aria-label="My Account"
-              >
-                <User className="w-6 h-6 text-[#E19841]" strokeWidth={2} />
-              </Button>
+              <CustomUserButton />
             </SignedIn>
 
             <CompetitionCartDialog />
