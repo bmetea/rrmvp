@@ -46,3 +46,6 @@ dist/
 
 # open-next
 .open-next
+
+# clerk configuration (can include secrets)
+/.clerk/

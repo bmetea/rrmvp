@@ -8,6 +8,7 @@ import { CompetitionPrizeDetail } from "./CompetitionPrizeDetail";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { formatPrice } from "@/shared/lib/utils/price";
 import Link from "next/link";
+import CompetitionImageCarousel from "./CompetitionImageCarousel";
 
 // Main component implementation
 function CompetitionDetailImpl({ competitionWithPrizes }) {
@@ -29,8 +30,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const image =
-    competitionWithPrizes.media_info?.images?.[0] || "/images/placeholder.jpg";
+
   const quickSelect = [1, 3, 5, 10, 25, 50];
   const maxTickets = 2500;
   const totalPrice = ticketPrice * ticketCount;
@@ -40,26 +40,24 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     <div className="max-w-7xl mx-auto py-4 lg:py-8 px-4">
       {/* Mobile Layout */}
       <div className="lg:hidden">
-        {/* Main Image Section */}
-        <div className="w-full aspect-[16/9] relative rounded-xl overflow-hidden shadow-lg mb-4">
-          <Image
-            src={image}
-            alt={competitionWithPrizes.title}
-            fill
-            className="object-cover"
-            priority
+        {/* Competition Image Carousel */}
+        <div className="mb-4">
+          <CompetitionImageCarousel
+            images={competitionWithPrizes.media_info?.images || []}
+            title={competitionWithPrizes.title}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <h1 className="text-3xl font-extrabold mb-2 text-white">
-              {competitionWithPrizes.title}
-            </h1>
-            <div className="flex items-center gap-2">
-              <span className="bg-[#E19841] px-3 py-0.5 rounded-full text-black text-sm font-semibold">
-                <Ticket className="w-3 h-3 inline-block mr-1" /> Ends{" "}
-                {formattedEndDate}
-              </span>
-            </div>
+        </div>
+
+        {/* Title and End Date - Now below carousel */}
+        <div className="mb-4">
+          <h1 className="text-3xl font-extrabold mb-2 text-foreground">
+            {competitionWithPrizes.title}
+          </h1>
+          <div className="flex items-center gap-2">
+            <span className="bg-[#E19841] px-3 py-0.5 rounded-full text-black text-sm font-semibold">
+              <Ticket className="w-3 h-3 inline-block mr-1" /> Ends{" "}
+              {formattedEndDate}
+            </span>
           </div>
         </div>
 
@@ -89,30 +87,15 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column */}
           <div>
-            {/* Main Image */}
-            <div className="aspect-[4/3] relative rounded-2xl overflow-hidden shadow-lg">
-              <Image
-                src={image}
-                alt={competitionWithPrizes.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
+            {/* Competition Image Carousel */}
+            <CompetitionImageCarousel
+              images={competitionWithPrizes.media_info?.images || []}
+              title={competitionWithPrizes.title}
+            />
           </div>
 
           {/* Right Column */}
           <div className="space-y-8">
-            {/* Title and End Date */}
-            <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-                {competitionWithPrizes.title}
-              </h1>
-              <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
-                <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
-                {formattedEndDate} {formattedTime}
-              </span>
-            </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-3 gap-4">
@@ -231,6 +214,17 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Title and End Date - Desktop - Now below carousel */}
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            {competitionWithPrizes.title}
+          </h1>
+          <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
+            <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
+            {formattedEndDate} {formattedTime}
+          </span>
         </div>
 
         {/* Competition Description - Desktop */}
