@@ -5,6 +5,7 @@ import Image from "next/image";
 import { generateAvatar } from "@/shared/lib/utils/avatar";
 import { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { ArrowRight } from "lucide-react";
+import { formatPrice } from "@/shared/lib/utils/price";
 
 export function CompetitionCard({ competition }: { competition: Competition }) {
   const soldPercentage =
@@ -99,45 +100,54 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             {competition.title}
           </h3>
         </div>
-        {/* Avatars and winners - desktop only */}
-        <div className="hidden md:inline-flex justify-start items-center gap-2 w-full">
-          <div className="flex items-center">
-            {Array.from({ length: 3 }, (_, i) => (
-              <Image
-                key={`winner-${i + 1}`}
-                src={generateAvatar(`${competition.id}-${i + 1}`)}
-                alt={`winner${i + 1}`}
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full border-2 border-white -ml-2 first:ml-0"
-                loading="lazy"
-                fetchPriority="low"
-              />
-            ))}
-          </div>
-          <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
-            {competition.tickets_sold != null
-              ? `${Number(competition.tickets_sold)}+ tickets sold`
-              : "No tickets sold yet"}
-          </div>
-        </div>
-        {/* Progress bar - desktop only */}
-        <div className="hidden md:flex flex-col gap-6 w-full">
-          <div className="w-full h-5 flex items-center gap-3">
-            <div className="flex-1 h-2 relative rounded-lg">
-              <div className="absolute left-0 top-0 w-full h-2 bg-neutral-200 rounded-full" />
-              <div
-                className="absolute left-0 top-0 h-2 bg-purple-500 rounded-full"
-                style={{ width: `${soldPercentage}%` }}
-              />
+        {/* Avatars and winners - desktop only - TEMPORARILY HIDDEN */}
+        {false && (
+          <div className="hidden md:inline-flex justify-start items-center gap-2 w-full">
+            <div className="flex items-center">
+              {Array.from({ length: 3 }, (_, i) => (
+                <Image
+                  key={`winner-${i + 1}`}
+                  src={generateAvatar(`${competition.id}-${i + 1}`)}
+                  alt={`winner${i + 1}`}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full border-2 border-white -ml-2 first:ml-0"
+                  loading="lazy"
+                  fetchPriority="low"
+                />
+              ))}
             </div>
             <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
-              {soldPercentage}% sold
+              {competition.tickets_sold != null
+                ? `${Number(competition.tickets_sold)}+ tickets sold`
+                : "No tickets sold yet"}
             </div>
           </div>
-        </div>
+        )}
+
         {/* Button */}
         <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
+          {/* Progress bar - desktop only - positioned above button */}
+          <div className="hidden md:flex flex-col gap-2 w-full">
+            {/* Ticket Price */}
+            <div className="text-center">
+              <span className="text-zinc-800 dark:text-zinc-200 text-2xl font-bold">
+                {formatPrice(competition.ticket_price || 0)}
+              </span>
+            </div>
+            <div className="w-full h-5 flex items-center gap-3">
+              <div className="flex-1 h-2 relative rounded-lg">
+                <div className="absolute left-0 top-0 w-full h-2 bg-neutral-200 rounded-full" />
+                <div
+                  className="absolute left-0 top-0 h-2 bg-purple-500 rounded-full"
+                  style={{ width: `${soldPercentage}%` }}
+                />
+              </div>
+              <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
+                {soldPercentage}% sold
+              </div>
+            </div>
+          </div>
           <Link href={`/competitions/${competition.id}`} className="w-full">
             <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer transition hover:bg-accent">
               <span className="text-white text-[16px] leading-[150%] font-semibold">
