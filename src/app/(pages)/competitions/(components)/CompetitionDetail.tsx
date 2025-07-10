@@ -236,11 +236,12 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           </div>
         </div>
 
-        {/* Full Width Prize Section */}
-        <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
-          <div className="space-y-4">
-            {prizes.map((prize, idx) => (
+        {/* Full Width Prize Section - Hidden for raffle competitions */}
+        {competitionWithPrizes.type?.toLowerCase().trim() !== "raffle" && prizes.length > 0 && (
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
+            <div className="space-y-4">
+              {prizes.map((prize, idx) => (
               <div
                 key={`${prize.id}-${prize.product?.id || idx}`}
                 className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
@@ -306,6 +307,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
             ))}
           </div>
         </div>
+        )}
       </div>
 
       {/* Mobile Content Card */}
@@ -405,11 +407,12 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           </div>
         </div>
 
-        {/* Mobile Prizes Section */}
-        <div className="border-t border-gray-200 dark:border-[#232326] pt-6">
-          <h2 className="text-xl font-bold mb-4">Available Prizes</h2>
-          <div className="space-y-3">
-            {prizes.map((prize, idx) => (
+        {/* Mobile Prizes Section - Hidden for raffle competitions */}
+        {competitionWithPrizes.type?.toLowerCase().trim() !== "raffle" && prizes.length > 0 && (
+          <div className="border-t border-gray-200 dark:border-[#232326] pt-6">
+            <h2 className="text-xl font-bold mb-4">Available Prizes</h2>
+            <div className="space-y-3">
+              {prizes.map((prize, idx) => (
               <div
                 key={`${prize.id}-${prize.product?.id || idx}`}
                 className="rounded-lg border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
@@ -475,6 +478,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
             ))}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
