@@ -22,11 +22,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
   const ticketsLeft = totalTickets - ticketsSold;
   const progress = Math.round((ticketsSold / totalTickets) * 100);
   const endDate = new Date(competitionWithPrizes.end_date);
-  const formattedEndDate = endDate.toLocaleString(undefined, {
+  const formattedEndDate = endDate.toLocaleString("en-GB", {
     month: "short",
     day: "numeric",
   });
-  const formattedTime = endDate.toLocaleTimeString(undefined, {
+  const formattedTime = endDate.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
   });
