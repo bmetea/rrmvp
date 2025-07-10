@@ -7,6 +7,8 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
 ## TODO
 
 - [ ] implement image upload s3
+- [ ] warm lambda ?
+  - [ ] https://sst.dev/docs/component/aws/nextjs/#warm
 - [ ] Segment prod setuo
   - [ ] Send event when someone wins
     - [ ] should contain products

@@ -44,10 +44,8 @@ const Footer = () => {
           <div className="text-xs text-gray-300">
             <p>© 2025 Radiance Rewards. All rights reserved.</p>
             <p className="mt-2">
-              You must be over 18 to enter. If you are under 18 your ticket will
-              be void and refunded. Prize descriptions and images are for
-              illustration purposes only. Your prize will be as it was approved
-              by Radiance at the time of purchase.
+            You must be 18 or over to enter. Entries submitted by anyone under 18 will be void and refunded.
+            Prize descriptions and images are for illustrative purposes only. The actual prize provided will be as approved by Radiance Rewards at the time of purchase.
             </p>
           </div>
         </div>

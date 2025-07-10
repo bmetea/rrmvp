@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -13,6 +14,8 @@ interface HeroCarouselProps {
 }
 
 function HeroCarousel({ competitions }: HeroCarouselProps) {
+  const [activeSlide, setActiveSlide] = useState(0);
+
   if (!Array.isArray(competitions) || competitions.length === 0) {
     return (
       <div className="relative bg-black text-white py-32 text-center">
@@ -23,37 +26,41 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
     );
   }
 
+  // Get the current active competition based on slide index
+  const activeCompetition = competitions[activeSlide] || competitions[0];
+  const endDate = activeCompetition?.end_date
+    ? new Date(activeCompetition.end_date)
+    : null;
+  const formattedEndDate = endDate?.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const drawText = formattedEndDate
+    ? `Draw ends ${formattedEndDate}`
+    : "Draw date to be announced";
+
   return (
-    <div className="relative bg-black text-white">
+    <div className="relative bg-white dark:bg-gray-900">
+      {/* Square Image Carousel */}
       <Swiper
         slidesPerView={1}
         loop
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         modules={[Autoplay]}
-        className="w-full h-[600px] md:h-[750px]"
+        className="w-full aspect-square"
+        onSlideChange={(swiper) => setActiveSlide(swiper.realIndex)}
       >
         {competitions.map((competition) => {
           if (!competition?.id) return null;
-
-          const endDate = competition.end_date
-            ? new Date(competition.end_date)
-            : null;
-          const formattedEndDate = endDate?.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-          const drawText = formattedEndDate
-            ? `Draw ends ${formattedEndDate}`
-            : "Draw date to be announced";
 
           return (
             <SwiperSlide key={competition.id}>
               <Link
                 href={`/competitions/${competition.id}`}
-                className="block w-full h-full"
+                className="block w-full aspect-square relative overflow-hidden"
               >
-                <div className="relative w-full h-[600px] md:h-[750px]">
+                <div className="w-full h-full relative pb-24 md:pb-32">
                   <Image
                     src={
                       competition.media_info?.images?.[0] ||
@@ -66,31 +73,26 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
                     quality={75}
                     priority
                   />
-                  {/* Gradient overlay */}
+                  {/* Gradient fade overlay */}
                   <div
-                    className="absolute bottom-0 left-0 w-full h-56 md:h-72 pointer-events-none"
+                    className="absolute bottom-0 left-0 w-full h-48 md:h-56 pointer-events-none"
                     style={{
                       background:
-                        "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%)",
+                        "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%)",
                     }}
                   />
-                  {/* Bottom overlay content */}
-                  <div className="absolute bottom-0 left-0 w-full z-10 flex justify-start items-end h-56 md:h-72">
-                    <div className="w-full max-w-3xl mx-auto px-6 pb-6 flex flex-col items-start">
+                  {/* Text content in the fade area */}
+                  <div className="absolute bottom-8 md:bottom-12 left-0 w-full z-10 pointer-events-none">
+                    <div className="w-full max-w-3xl mx-auto px-6 text-center">
                       <h2
-                        className="text-white text-[35px] md:text-[85px] leading-[140%] md:leading-[120%] font-extrabold uppercase mb-2 drop-shadow-lg"
+                        className="text-white text-[24px] md:text-[48px] leading-[140%] md:leading-[120%] font-extrabold mb-2 drop-shadow-lg font-crimson-pro"
                         style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
                       >
-                        {competition.title || "Competition"}
+                        {activeCompetition?.title || "Competition"}
                       </h2>
-                      <p className="text-[#E19841] text-[14px] md:text-[20px] leading-[150%] font-bold uppercase mb-4 tracking-wide drop-shadow-lg">
+                      <p className="text-[#E19841] text-[12px] md:text-[16px] leading-[150%] font-bold tracking-wide drop-shadow-lg font-crimson-pro">
                         {drawText}
                       </p>
-                      <div className="w-full flex justify-center">
-                        <span className="inline-flex items-center gap-2 bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[20px] md:text-[25px] leading-[150%] px-8 py-3 rounded-lg shadow-lg transition-colors w-full max-w-md mx-auto justify-center cursor-pointer">
-                          Enter now <Ticket size={22} />
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -99,6 +101,15 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
           );
         })}
       </Swiper>
+      
+      {/* Enter Now Button - Full Width, No Spacing */}
+      <Link href={`/competitions/${activeCompetition?.id || '#'}`} className="block w-full">
+        <div className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[18px] md:text-[25px] leading-[150%] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
+          <div className="flex items-center justify-center gap-2">
+            Enter now <Ticket size={20} />
+          </div>
+        </div>
+      </Link>
     </div>
   );
 }

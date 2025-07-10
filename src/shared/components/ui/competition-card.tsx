@@ -70,7 +70,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             />
           </svg>
         </span>
-        <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold">
+        <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
           {`Ends: ${new Date(competition.end_date).toLocaleDateString(
             undefined,
             { month: "long", day: "numeric" }
@@ -78,7 +78,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         </span>
       </div>
       {/* Image */}
-      <div className="w-full h-20 relative md:h-60">
+      <div className="w-full aspect-square relative">
         <Image
           src={competition.media_info?.images?.[0] || "/images/placeholder.jpg"}
           alt={competition.title}
@@ -150,7 +150,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
           </div>
           <Link href={`/competitions/${competition.id}`} className="w-full">
             <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer transition hover:bg-accent">
-              <span className="text-white text-[16px] leading-[150%] font-semibold">
+              <span className="text-white text-[16px] leading-[150%] font-semibold font-open-sans">
                 Enter Now
               </span>
               <ArrowRight className="w-6 h-6 text-white" />
