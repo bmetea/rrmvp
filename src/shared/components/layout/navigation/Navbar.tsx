@@ -15,11 +15,6 @@ import {
   User,
   Instagram,
   Facebook,
-  ShoppingCart,
-  LogOut,
-  CreditCard,
-  Heart,
-  Settings,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -40,18 +35,6 @@ const navLinks = [
   { href: "/how-it-works", label: "How it works", icon: HelpCircle },
   { href: "/about", label: "About us", icon: Info },
   { href: "/faq", label: "FAQ", icon: Users },
-];
-
-const mobileNavLinks = [
-  { href: "/user/my-entries", label: "My Entries", icon: Ticket },
-  { href: "/user/profile", label: "Edit Profile", icon: Settings },
-  { href: "/user/order-history", label: "Order History", icon: ShoppingCart },
-  {
-    href: "/user/billing",
-    label: "Billing & Payment Details",
-    icon: CreditCard,
-  },
-  { href: "/user/loyalty", label: "Loyalty & Referral", icon: Heart },
 ];
 
 const Navbar = ({ activePath = "/" }: NavbarProps) => {
@@ -239,52 +222,83 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           )}
         >
           <div className="px-5 py-5 space-y-1">
-            <SignedIn>
-              {mobileNavLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="flex items-center gap-3 px-2 py-3 text-[#151515] hover:bg-white/50 rounded-lg transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Icon className="w-6 h-6 text-[#151515]" strokeWidth={2} />
-                    <span className="text-[16px] font-semibold font-open-sans">
-                      {link.label}
-                    </span>
-                  </Link>
-                );
-              })}
-
-              <button
-                className="flex items-center gap-3 px-2 py-3 text-[#151515] hover:bg-white/50 rounded-lg transition-colors w-full text-left"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  // Add logout logic here
-                }}
-              >
-                <LogOut className="w-6 h-6 text-[#151515]" strokeWidth={2} />
-                <span className="text-[16px] font-semibold font-open-sans">
-                  Log out
-                </span>
-              </button>
-
-              <div className="pt-4 mt-4">
-                <Button
-                  className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
+            {/* Main Navigation Links */}
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                    activePath === link.href
+                      ? "bg-white text-[#E19841]"
+                      : "text-[#151515] hover:bg-white/50"
+                  )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
+                  <Icon
+                    className={cn(
+                      "w-6 h-6",
+                      activePath === link.href
+                        ? "text-[#E19841]"
+                        : "text-[#151515]"
+                    )}
+                    strokeWidth={2}
+                  />
+                  <span className="text-[16px] font-semibold font-open-sans">
+                    {link.label}
+                  </span>
+                </Link>
+              );
+            })}
+
+            {/* Admin Dashboard Link */}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                  activePath === "/admin"
+                    ? "bg-white text-[#E19841]"
+                    : "text-[#151515] hover:bg-white/50"
+                )}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Gift
+                  className={cn(
+                    "w-6 h-6",
+                    activePath === "/admin"
+                      ? "text-[#E19841]"
+                      : "text-[#151515]"
+                  )}
+                  strokeWidth={2}
+                />
+                <span className="text-[16px] font-semibold font-open-sans">
+                  Admin Dashboard
+                </span>
+              </Link>
+            )}
+
+            {/* CTA Button */}
+            <div className="pt-4 mt-4">
+              <Link
+                href="/competitions"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans">
                   Enter now
                 </Button>
-              </div>
-            </SignedIn>
+              </Link>
+            </div>
 
+            {/* Sign In Button for Non-Authenticated Users */}
             <SignedOut>
-              <div className="pt-4">
+              <div className="pt-2">
                 <SignInButton mode="modal">
                   <Button
-                    className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
+                    className="w-full bg-transparent hover:bg-white/50 text-[#151515] border-2 border-[#151515] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
+                    variant="outline"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
