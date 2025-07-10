@@ -31,7 +31,7 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
   const endDate = activeCompetition?.end_date
     ? new Date(activeCompetition.end_date)
     : null;
-  const formattedEndDate = endDate?.toLocaleDateString(undefined, {
+  const formattedEndDate = endDate?.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
