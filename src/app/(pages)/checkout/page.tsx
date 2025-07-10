@@ -1,33 +1,25 @@
 "use client";
 
-import { useCart } from "@/shared/lib/context/cart-context";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
-import { Minus, Plus, CreditCard } from "lucide-react";
-import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Alert } from "@/shared/components/ui/alert";
-import { PaymentForm } from "./(components)/payment-form";
-import { formatPrice } from "@/shared/lib/utils/price";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { Separator } from "@/shared/components/ui/separator";
-import { SignInButton, useAuth } from "@clerk/nextjs";
-import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
+import { Trash2, Plus, Minus } from "lucide-react";
+import { useCart } from "@/shared/lib/context/cart-context";
+import { formatPrice } from "@/shared/lib/utils/price";
+import { PaymentForm } from "./(components)/payment-form";
 import { checkout } from "./(server)/checkout-orchestrator.actions";
-
-interface CartItem {
-  competition: {
-    id: string;
-    title: string;
-    type: string;
-    ticket_price: number;
-    media_info?: {
-      images?: string[];
-    };
-  };
-  quantity: number;
-}
+import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
+import { useSegmentAnalytics } from "@/shared/hooks/use-segment-analytics";
 
 export default function CheckoutPage() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } =
@@ -46,6 +38,7 @@ export default function CheckoutPage() {
     checkoutId: string;
     widgetUrl: string;
   } | null>(null);
+  const { trackCheckoutStarted } = useSegmentAnalytics();
 
   // Fetch wallet balance when user is signed in
   useEffect(() => {
@@ -60,6 +53,22 @@ export default function CheckoutPage() {
 
     fetchWalletBalance();
   }, [isSignedIn]);
+
+  // Track checkout started when user visits checkout page with items
+  useEffect(() => {
+    if (items.length > 0) {
+      const checkoutItems = items.map((item) => ({
+        competitionId: item.competition.id,
+        competitionTitle: item.competition.title,
+        competitionType: item.competition.type,
+        price: item.competition.ticket_price,
+        quantity: item.quantity,
+        ticketPrice: item.competition.ticket_price,
+      }));
+
+      trackCheckoutStarted(checkoutItems, totalPrice);
+    }
+  }, [items, totalPrice, trackCheckoutStarted]);
 
   if (items.length === 0) {
     return (
@@ -122,284 +131,189 @@ export default function CheckoutPage() {
   const hasSufficientBalance =
     walletBalance !== null && walletBalance >= totalPrice;
 
-  return (
-    <>
-      {purchaseStatus === "loading" ? (
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
-        </div>
-      ) : purchaseStatus === "error" ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-          <div className="text-red-500 text-xl font-semibold">{error}</div>
-          <button
-            onClick={() => {
-              setPurchaseStatus("idle");
-              setError(null);
-            }}
-            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
-          >
-            Try Again
-          </button>
-        </div>
-      ) : (
-        <div className="max-w-6xl mx-auto py-12 px-4 flex flex-col md:flex-row gap-8 min-h-[80vh]">
-          {/* Basket Section */}
-          <section className="flex-1">
-            <div className="mb-6 flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Basket</span>
-              <span className="text-xs bg-gray-100 rounded px-2 py-0.5">1</span>
-              <span className="text-sm text-muted-foreground">Checkout</span>
-              <span className="text-sm text-muted-foreground">
-                Confirmation
-              </span>
+  if (showPaymentForm && paymentData) {
+    return (
+      <div className="max-w-4xl mx-auto py-8 px-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Complete Your Payment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground mb-2">
+                Amount to pay:{" "}
+                <span className="font-bold">{formatPrice(remainingToPay)}</span>
+              </p>
+              {walletCreditUsed > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Wallet credit used:{" "}
+                  <span className="font-bold">
+                    {formatPrice(walletCreditUsed)}
+                  </span>
+                </p>
+              )}
             </div>
-            <h1 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-2">
-              My Basket ({items.length})
-            </h1>
-            <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
-              View your competitions and ticket numbers
-            </p>
-            {items.map((item) => (
-              <Card key={item.competition.id} className="mb-6">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">
-                          {item.competition.type}
-                        </Badge>
-                        <div className="ml-auto flex items-center gap-2">
-                          <Badge className="bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full text-sm">
-                            {item.quantity} Tickets
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="relative w-20 h-20 rounded overflow-hidden border">
-                          <Image
-                            src={
-                              item.competition.media_info?.images?.[0] ||
-                              "/images/placeholder.jpg"
-                            }
-                            alt={item.competition.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-lg mb-1">
-                            {item.competition.title}
-                          </div>
-                          <div className="text-muted-foreground text-sm mb-1">
-                            {item.competition.type} Competition
-                          </div>
-                          <div className="text-sm mb-2">
-                            Price per entry{" "}
-                            <span className="font-medium">
-                              {formatPrice(item.competition.ticket_price)}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() =>
-                                updateQuantity(
-                                  item.competition.id,
-                                  Math.max(1, item.quantity - 1)
-                                )
-                              }
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() =>
-                                updateQuantity(
-                                  item.competition.id,
-                                  item.quantity + 1
-                                )
-                              }
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="link"
-                              size="sm"
-                              className="text-destructive ml-2"
-                              onClick={() => removeItem(item.competition.id)}
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+            <PaymentForm
+              checkoutId={paymentData.checkoutId}
+              widgetUrl={paymentData.widgetUrl}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto py-8 px-4">
+      <div className="grid md:grid-cols-3 gap-8">
+        {/* Cart Items */}
+        <div className="md:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Basket</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {items.map((item) => (
+                <div
+                  key={item.competition.id}
+                  className="flex items-center gap-4 p-4 border rounded-lg"
+                >
+                  <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
+                    {item.competition.media_info?.images?.[0] ? (
+                      <img
+                        src={item.competition.media_info.images[0]}
+                        alt={item.competition.title}
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    ) : (
+                      <span className="text-2xl">🎁</span>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </section>
-
-          {/* Payment Section */}
-          <section className="w-full md:w-96">
-            <Card className="sticky top-24">
-              <CardContent className="p-6">
-                <h2 className="text-[25px] md:text-[35px] leading-[140%] font-bold mb-4">
-                  Order Summary
-                </h2>
-
-                {/* Order Summary */}
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>{formatPrice(totalPrice)}</span>
+                  <div className="flex-1">
+                    <h3 className="font-medium">{item.competition.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {formatPrice(item.competition.ticket_price)} per entry
+                    </p>
                   </div>
-
-                  {isSignedIn && walletBalance !== null && (
-                    <>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Available Wallet Credit
-                        </span>
-                        <span className="text-green-600 font-medium">
-                          {formatPrice(walletBalance)}
-                        </span>
-                      </div>
-
-                      {walletCreditUsed > 0 && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            - Wallet Credit Applied
-                          </span>
-                          <span className="text-green-600 font-medium">
-                            -{formatPrice(walletCreditUsed)}
-                          </span>
-                        </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        updateQuantity(item.competition.id, item.quantity - 1)
+                      }
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-8 text-center">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        updateQuantity(item.competition.id, item.quantity + 1)
+                      }
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">
+                      {formatPrice(
+                        item.competition.ticket_price * item.quantity
                       )}
-                    </>
-                  )}
-
-                  <Separator />
-
-                  <div className="flex justify-between">
-                    <span className="font-medium">
-                      {remainingToPay > 0
-                        ? "Remaining to Pay"
-                        : "Total Payable"}
-                    </span>
-                    <span className="font-bold text-lg">
-                      {formatPrice(remainingToPay)}
-                    </span>
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeItem(item.competition.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
-
-                  {remainingToPay === 0 && isSignedIn && (
-                    <div className="text-xs text-green-600 text-center bg-green-50 p-2 rounded">
-                      🎉 This purchase is fully covered by your wallet credit!
-                    </div>
-                  )}
                 </div>
-
-                {/* Payment Section */}
-                <div className="space-y-4">
-                  {!showPaymentForm ? (
-                    <>
-                      <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
-                        Ready to Pay?
-                      </h3>
-                      <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
-                        {remainingToPay === 0
-                          ? "Your wallet credit covers the full amount. Click below to complete your purchase."
-                          : remainingToPay < totalPrice
-                          ? `Your wallet credit will be applied. You'll be charged ${formatPrice(
-                              remainingToPay
-                            )} on your card.`
-                          : "Review your basket and click below to proceed with payment"}
-                      </p>
-                      {!isSignedIn ? (
-                        <SignInButton mode="modal">
-                          <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
-                            <CreditCard className="h-5 w-5" />
-                            Sign in to Pay
-                          </Button>
-                        </SignInButton>
-                      ) : (
-                        <Button
-                          onClick={handlePayButtonClick}
-                          disabled={isProcessingCheckout}
-                          className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
-                        >
-                          <CreditCard className="h-5 w-5" />
-                          {isProcessingCheckout
-                            ? "Processing..."
-                            : remainingToPay === 0
-                            ? "Complete Purchase"
-                            : `Pay ${formatPrice(remainingToPay)}`}
-                        </Button>
-                      )}
-                      <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
-                        {!isSignedIn
-                          ? "You need to sign in to complete your purchase"
-                          : remainingToPay === 0
-                          ? "No card payment required - using wallet credit only"
-                          : "You can still modify quantities above before proceeding"}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
-                          Payment Details
-                        </h3>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowPaymentForm(false)}
-                        >
-                          Back to Review
-                        </Button>
-                      </div>
-                      {error && (
-                        <Alert variant="destructive" className="mb-4">
-                          {error}
-                        </Alert>
-                      )}
-                      {paymentData && (
-                        <>
-                          <div className="bg-blue-50 p-3 rounded-lg mb-4">
-                            <p className="text-sm text-blue-800">
-                              <strong>Payment Breakdown:</strong>
-                              <br />
-                              Wallet Credit: {formatPrice(walletCreditUsed)}
-                              <br />
-                              Card Payment: {formatPrice(remainingToPay)}
-                            </p>
-                          </div>
-                          <PaymentForm
-                            checkoutId={paymentData.checkoutId}
-                            widgetUrl={paymentData.widgetUrl}
-                            className="mb-4"
-                          />
-                        </>
-                      )}
-                      <div className="text-[14px] leading-[150%] text-muted-foreground">
-                        By proceeding with payment, you agree to our terms and
-                        conditions.
-                      </div>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
+              ))}
+            </CardContent>
+          </Card>
         </div>
-      )}
-    </>
+
+        {/* Order Summary */}
+        <div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(totalPrice)}</span>
+                </div>
+                {isSignedIn && walletBalance !== null && walletBalance > 0 && (
+                  <>
+                    <div className="flex justify-between text-green-600">
+                      <span>Wallet Credit</span>
+                      <span>-{formatPrice(walletCreditUsed)}</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between font-bold">
+                      <span>Amount to Pay</span>
+                      <span>{formatPrice(remainingToPay)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <Input
+                  placeholder="Discount code"
+                  value={discount}
+                  onChange={(e) => setDiscount(e.target.value)}
+                />
+                <Button variant="outline" className="w-full">
+                  Apply Discount
+                </Button>
+              </div>
+
+              <Separator />
+
+              {error && (
+                <div className="text-red-500 text-sm p-3 bg-red-50 rounded-md">
+                  {error}
+                </div>
+              )}
+
+              {isSignedIn ? (
+                <Button
+                  className="w-full"
+                  onClick={handlePayButtonClick}
+                  disabled={isProcessingCheckout}
+                >
+                  {isProcessingCheckout
+                    ? "Processing..."
+                    : hasSufficientBalance
+                    ? `Pay with Wallet Credit (${formatPrice(totalPrice)})`
+                    : remainingToPay > 0
+                    ? `Pay ${formatPrice(remainingToPay)}`
+                    : "Complete Purchase"}
+                </Button>
+              ) : (
+                <SignInButton mode="modal">
+                  <Button className="w-full">Sign In to Checkout</Button>
+                </SignInButton>
+              )}
+
+              {isSignedIn && walletBalance !== null && (
+                <p className="text-xs text-muted-foreground text-center">
+                  Wallet balance: {formatPrice(walletBalance)}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }

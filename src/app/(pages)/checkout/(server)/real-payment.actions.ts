@@ -112,6 +112,22 @@ async function _checkPaymentStatus(
     const data = await response.json();
     oppwaLogger.logResponse(path, "GET", data);
 
+    // Additional detailed logging for parameter errors
+    if (data.parameterErrors && Array.isArray(data.parameterErrors)) {
+      console.error("OPPWA Parameter Errors Details:", {
+        checkoutId,
+        parameterErrors: data.parameterErrors,
+        resultCode: data.result?.code,
+        resultDescription: data.result?.description,
+        fullResponse: data,
+      });
+
+      // Log each parameter error individually for clarity
+      data.parameterErrors.forEach((error: any, index: number) => {
+        console.error(`Parameter Error ${index + 1}:`, error);
+      });
+    }
+
     await db
       .updateTable("payment_transactions")
       .set({

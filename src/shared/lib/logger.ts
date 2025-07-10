@@ -156,10 +156,38 @@ export const oppwaLogger = {
         response,
       });
     } else {
-      console.log(`[OPPWA Response] ${method} ${path}`, {
+      const logData = {
         timestamp: new Date().toISOString(),
         response,
-      });
+      };
+
+      // Check for parameter errors and log them prominently
+      if (
+        response &&
+        response.parameterErrors &&
+        Array.isArray(response.parameterErrors)
+      ) {
+        console.error(`[OPPWA Response] ${method} ${path} - PARAMETER ERRORS`, {
+          ...logData,
+          parameterErrors: response.parameterErrors,
+          resultCode: response.result?.code,
+          resultDescription: response.result?.description,
+        });
+      } else if (
+        response &&
+        response.result &&
+        response.result.code &&
+        !response.result.code.startsWith("000.000")
+      ) {
+        // Log non-success codes as warnings
+        console.warn(`[OPPWA Response] ${method} ${path} - ERROR CODE`, {
+          ...logData,
+          resultCode: response.result.code,
+          resultDescription: response.result.description,
+        });
+      } else {
+        console.log(`[OPPWA Response] ${method} ${path}`, logData);
+      }
     }
   },
 

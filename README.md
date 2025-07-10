@@ -112,7 +112,7 @@ function CheckoutComponent() {
 
 ## Segment Analytics Setup
 
-This application also includes Segment Analytics for enhanced tracking capabilities.
+This application includes comprehensive Segment Analytics for detailed customer journey tracking.
 
 ### Environment Variables
 
@@ -128,20 +128,91 @@ NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key_here
 
 ### Features
 
-- **Automatic Cart Tracking**: Cart events are automatically tracked when items are added/removed
-- **Checkout Tracking**: Purchase events are tracked during checkout
-- **Conditional Loading**: Segment only loads when both `NEXT_PUBLIC_ENABLE_ANALYTICS` is `true` and a valid write key is provided
-- **Graceful Degradation**: If analytics is disabled or write key is missing, a no-op analytics instance is used
+- **User Identification**: Automatic user identification with signup date, email, and profile data
+- **Page View Tracking**: Enhanced page views with referrer, title, and custom properties
+- **E-commerce Tracking**: Complete funnel tracking including:
+  - Product viewed (competition pages)
+  - Add to cart / Remove from cart
+  - Cart viewed
+  - Checkout started
+  - Purchase completed
+  - Abandoned checkout (15-minute timeout)
+- **User Activity**: Last active tracking with 30-second intervals
+- **Signup Tracking**: New user registration events via Clerk webhooks
+- **Revenue Tracking**: Order values, payment methods, and wallet credit usage
+
+### Automatically Tracked Events
+
+The following events are tracked automatically without additional code:
+
+1. **User Signed Up** - When users register via Clerk
+2. **Product Added** - When items are added to cart
+3. **Product Removed** - When items are removed from cart
+4. **Cart Viewed** - When cart modal/page is opened
+5. **Checkout Started** - When users visit checkout page with items
+6. **Checkout Abandoned** - After 15 minutes on checkout without completion
+7. **Order Completed** - When purchases are successfully processed
+8. **User Active** - Every 30 seconds and on page visibility changes
+9. **Page Views** - All navigation with enhanced properties
 
 ### Usage
 
-Segment analytics is automatically used in the cart context and checkout flow. No additional setup is required.
+#### Using the Hook
+
+```tsx
+import { useSegmentAnalytics } from '@/shared/hooks/use-segment-analytics';
+
+function MyComponent() {
+  const { trackEvent, trackCompetitionViewed } = useSegmentAnalytics();
+
+  const handleCompetitionView = () => {
+    trackCompetitionViewed('competition-id', 'Competition Title', 'raffle');
+  };
+
+  const handleCustomEvent = () => {
+    trackEvent('Custom Event', {
+      category: 'engagement',
+      value: 100,
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleCompetitionView}>View Competition</button>
+      <button onClick={handleCustomEvent}>Custom Action</button>
+    </div>
+  );
+}
+```
+
+#### Available Tracking Methods
+
+- `trackPageView(page, properties?)` - Manual page view tracking
+- `trackSignUp(userData)` - Track user registrations
+- `trackAddToCart(item)` - Track cart additions
+- `trackRemoveFromCart(item)` - Track cart removals
+- `trackCartViewed(items, totalValue)` - Track cart views
+- `trackCheckoutStarted(items, totalValue, checkoutId?)` - Track checkout initiation
+- `trackPurchase(purchaseData)` - Track completed purchases
+- `trackCompetitionViewed(id, title, type?)` - Track competition page views
+- `trackSearch(query, results?)` - Track search events
+- `trackEvent(eventName, properties?)` - Track custom events
+
+### Data Structure
+
+Events include rich context such as:
+- **User Properties**: ID, email, signup date, last active
+- **Product Properties**: Competition ID, title, type, price, quantity
+- **Order Properties**: Payment method, wallet/card amounts, revenue
+- **Session Properties**: Page path, referrer, timestamp
 
 ### Configuration Notes
 
-- If `NEXT_PUBLIC_ENABLE_ANALYTICS` is set to `false`, both Google Analytics and Segment will be disabled
-- If `NEXT_PUBLIC_SEGMENT_WRITE_KEY` is not provided or is empty, Segment will be disabled but Google Analytics will still work (if enabled)
-- The application will not throw errors if Segment is not properly configured
+- Events only fire when `NEXT_PUBLIC_ENABLE_ANALYTICS=true` and valid write key provided
+- User identification happens automatically on sign-in
+- Activity tracking respects page visibility (pauses when tab inactive)
+- Checkout abandonment uses intelligent detection (checks if still on checkout pages)
+- All events include timestamps and additional context for better analysis
 
 ## Notes
 

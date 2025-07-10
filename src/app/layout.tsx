@@ -10,7 +10,7 @@ import Script from "next/script";
 import { Toaster } from "sonner";
 import GoogleAnalytics from "@/shared/components/analytics/GoogleAnalytics";
 import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
-// import SegmentProvider from "@/shared/components/analytics/SegmentProvider";
+import SegmentProvider from "@/shared/components/analytics/SegmentProvider";
 
 const crimsonPro = Crimson_Pro({
   subsets: ["latin"],
@@ -99,7 +99,7 @@ export default async function RootLayout({
           <Toaster />
           <GoogleAnalytics />
           <PageViewTracker />
-          {/* <SegmentProvider /> */}
+          <SegmentProvider />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
