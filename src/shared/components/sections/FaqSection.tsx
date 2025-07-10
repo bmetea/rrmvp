@@ -4,7 +4,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/shared/components/ui/accordion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 const faqItems = [
   {
@@ -116,10 +121,10 @@ export function FaqSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-center mb-2">
+            <CardTitle className="text-[42px] md:text-[52px] lg:text-[63px] font-medium leading-[1.2em] font-sans text-center mb-2">
               Frequently Asked Questions
             </CardTitle>
-            <p className="text-muted-foreground text-center">
+            <p className="text-muted-foreground text-center text-[16px] md:text-[17px] lg:text-[18px] font-normal leading-[1.5em] font-open-sans">
               Find answers to common questions about our competitions and prizes
             </p>
           </CardHeader>

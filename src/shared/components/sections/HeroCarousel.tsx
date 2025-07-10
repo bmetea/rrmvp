@@ -19,7 +19,7 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
   if (!Array.isArray(competitions) || competitions.length === 0) {
     return (
       <div className="relative bg-black text-white py-32 text-center">
-        <h1 className="text-[45px] md:text-[89px] leading-[120%] md:leading-[90%] font-extrabold">
+        <h1 className="text-[63px] font-medium leading-[1.2em] font-sans">
           No Active Competitions
         </h1>
       </div>
@@ -85,12 +85,12 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
                   <div className="absolute bottom-8 md:bottom-12 left-0 w-full z-10 pointer-events-none">
                     <div className="w-full max-w-3xl mx-auto px-6 text-center">
                       <h2
-                        className="text-white text-[24px] md:text-[48px] leading-[140%] md:leading-[120%] font-extrabold mb-2 drop-shadow-lg font-crimson-pro"
+                        className="text-white text-[35px] md:text-[63px] font-medium leading-[1.2em] mb-2 drop-shadow-lg font-sans"
                         style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
                       >
                         {activeCompetition?.title || "Competition"}
                       </h2>
-                      <p className="text-[#E19841] text-[12px] md:text-[16px] leading-[150%] font-bold tracking-wide drop-shadow-lg font-crimson-pro">
+                      <p className="text-[#E19841] text-[14px] md:text-[18px] font-normal leading-[1.5em] tracking-wide drop-shadow-lg font-open-sans">
                         {drawText}
                       </p>
                     </div>
@@ -101,10 +101,13 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
           );
         })}
       </Swiper>
-      
+
       {/* Enter Now Button - Full Width, No Spacing */}
-      <Link href={`/competitions/${activeCompetition?.id || '#'}`} className="block w-full">
-        <div className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[18px] md:text-[25px] leading-[150%] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
+      <Link
+        href={`/competitions/${activeCompetition?.id || "#"}`}
+        className="block w-full"
+      >
+        <div className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[16px] md:text-[18px] leading-[1.5em] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
           <div className="flex items-center justify-center gap-2">
             Enter now <Ticket size={20} />
           </div>

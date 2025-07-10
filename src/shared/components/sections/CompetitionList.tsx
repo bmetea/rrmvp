@@ -17,11 +17,11 @@ export function CompetitionList({
     <div className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-6">
+          <h2 className="text-[42px] md:text-[52px] lg:text-[63px] font-medium leading-[1.2em] font-sans mb-6">
             {title}
           </h2>
           {showFilters && (
-            <div className="flex flex-wrap justify-center gap-3 mb-8 text-[14px] leading-[150%]">
+            <div className="flex flex-wrap justify-center gap-3 mb-8 text-[14px] leading-[1.5em]">
               <Button variant="outline" size="sm">
                 All
               </Button>

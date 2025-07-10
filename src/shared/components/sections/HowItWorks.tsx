@@ -35,10 +35,10 @@ const HowItWorks = () => {
         {/* Header section */}
         <div className="w-full max-w-3xl flex flex-col justify-start items-center gap-4">
           <div className="w-full flex flex-col justify-start items-center gap-4">
-            <div className="w-full text-center text-foreground text-4xl md:text-6xl lg:text-[84px] font-medium leading-tight lg:leading-[100.8px] font-sans">
+            <div className="w-full text-center text-foreground text-[48px] md:text-[63px] lg:text-[84px] font-medium leading-[1.2em] font-sans">
               How it works
             </div>
-            <div className="w-full text-center text-[#313131] text-lg lg:text-2xl font-normal leading-relaxed lg:leading-9 font-open-sans">
+            <div className="w-full text-center text-[#313131] text-[18px] md:text-[20px] lg:text-[24px] font-normal leading-[1.5em] font-open-sans">
               Four simple steps to start your Radiance Rewards journey.
             </div>
           </div>
@@ -53,15 +53,15 @@ const HowItWorks = () => {
             >
               <div className="w-full flex flex-col justify-start items-center gap-4">
                 {/* Large number */}
-                <div className="w-full text-center text-foreground text-5xl md:text-7xl lg:text-[84px] font-medium leading-tight lg:leading-[100.8px] font-sans">
+                <div className="w-full text-center text-foreground text-[48px] md:text-[63px] lg:text-[84px] font-medium leading-[1.2em] font-sans">
                   {step.number}
                 </div>
                 {/* Title */}
-                <div className="w-full text-center text-foreground text-xl md:text-2xl lg:text-[35px] font-medium leading-tight lg:leading-[42px] font-sans">
+                <div className="w-full text-center text-foreground text-[24px] md:text-[28px] lg:text-[35px] font-medium leading-[1.2em] font-sans">
                   {step.title}
                 </div>
                 {/* Description */}
-                <div className="w-full text-center text-[#313131] text-base lg:text-lg font-normal leading-relaxed lg:leading-[27px] font-open-sans">
+                <div className="w-full text-center text-[#313131] text-[16px] md:text-[17px] lg:text-[18px] font-normal leading-[1.5em] font-open-sans">
                   {step.description}
                 </div>
               </div>
@@ -73,7 +73,7 @@ const HowItWorks = () => {
         <div className="flex justify-start items-start gap-6">
           <Link href="/competitions">
             <div className="px-6 py-3 bg-[#3D2C8D] rounded-full border-2 border-[#3D2C8D] flex justify-center items-center gap-2">
-              <div className="text-white text-base font-semibold leading-6 font-open-sans">
+              <div className="text-white text-[14px] font-semibold leading-[1.5em] font-open-sans">
                 Enter now
               </div>
               <div className="w-6 h-6 relative overflow-hidden">
@@ -87,12 +87,18 @@ const HowItWorks = () => {
       {/* Decorative play icon on the right */}
       <div className="hidden lg:block absolute right-16 top-12 w-58 h-59 overflow-hidden">
         <div className="absolute right-0 top-0">
-          <svg width="233" height="236" viewBox="0 0 233 236" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="233"
+            height="236"
+            viewBox="0 0 233 236"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <text
               x="116"
               y="50"
               textAnchor="middle"
-              className="text-sm font-open-sans font-medium text-[#151515]"
+              className="text-[14px] font-open-sans font-semibold text-[#151515]"
               transform="rotate(-15 116 50)"
             >
               Watch how it works
