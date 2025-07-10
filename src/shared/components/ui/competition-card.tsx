@@ -27,21 +27,21 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
     switch (typeValue) {
       case "instant_win":
       case "instant win":
-        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200";
+        return "bg-[#D7FFD5] text-[#151515] border-[#D7FFD5]";
       case "cash":
-        return "bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200";
+        return "bg-[#FFF2E5] text-[#151515] border-[#FFF2E5]";
       case "haircare & skincare":
       case "haircare":
       case "skincare":
-        return "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200";
+        return "bg-[#F3E8FF] text-[#151515] border-[#F3E8FF]";
       case "cosmetic enhancement":
       case "cosmetic":
-        return "bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200";
+        return "bg-[#FFF4E1] text-[#151515] border-[#FFF4E1]";
       case "automated draw":
       case "draw":
-        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200";
+        return "bg-[#E3F2FD] text-[#151515] border-[#E3F2FD]";
       default:
-        return "bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200";
+        return "bg-[#FFF4E1] text-[#151515] border-[#FFF4E1]";
     }
   };
 
@@ -92,7 +92,11 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
       </div>
       {/* Content */}
       <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
-        <span className={`p-1 rounded text-[12px] leading-[150%] font-semibold md:px-4 md:py-1 md:text-[14px] ${getTagStyling(competition.type)}`}>
+        <span
+          className={`p-1 rounded text-[12px] leading-[150%] font-semibold md:px-4 md:py-1 md:text-[14px] ${getTagStyling(
+            competition.type
+          )}`}
+        >
           {competition.type}
         </span>
         <div className="w-full flex flex-col items-start gap-1 md:gap-2">
@@ -139,7 +143,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               <div className="flex-1 h-2 relative rounded-lg">
                 <div className="absolute left-0 top-0 w-full h-2 bg-neutral-200 rounded-full" />
                 <div
-                  className="absolute left-0 top-0 h-2 bg-purple-500 rounded-full"
+                  className="absolute left-0 top-0 h-2 bg-[#3D2C8D] rounded-full"
                   style={{ width: `${soldPercentage}%` }}
                 />
               </div>
@@ -149,7 +153,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             </div>
           </div>
           <Link href={`/competitions/${competition.id}`} className="w-full">
-            <div className="w-full px-5 py-2 bg-indigo-900 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-indigo-900 flex justify-center items-center gap-2 cursor-pointer transition hover:bg-accent">
+            <div className="w-full px-5 py-2 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] flex justify-center items-center gap-2 cursor-pointer transition">
               <span className="text-white text-[16px] leading-[150%] font-semibold font-open-sans">
                 Enter Now
               </span>

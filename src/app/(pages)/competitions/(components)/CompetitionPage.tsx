@@ -257,7 +257,7 @@ export default function CompetitionPage({
                       </Badge>
                       {prize.is_instant_win && (
                         <Badge
-                          variant="destructive"
+                          variant="instant-win"
                           className="absolute top-3 right-3"
                         >
                           Instant Win
@@ -529,7 +529,7 @@ export default function CompetitionPage({
                   </Badge>
                   {prize.is_instant_win && (
                     <Badge
-                      variant="destructive"
+                      variant="instant-win"
                       className="absolute top-3 right-3"
                     >
                       Instant Win

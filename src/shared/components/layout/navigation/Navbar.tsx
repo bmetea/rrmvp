@@ -204,7 +204,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <SignInButton mode="modal">
                 <Button
                   variant="default"
-                  className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground hover:scale-105 transition-all duration-200"
                 >
                   Sign in
                 </Button>
@@ -265,7 +265,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                   <SignInButton mode="modal">
                     <Button
                       variant="default"
-                      className="bg-indigo-600 hover:bg-indigo-700 hover:scale-105 transition-all duration-200 w-full"
+                      className="bg-accent hover:bg-accent/90 text-accent-foreground hover:scale-105 transition-all duration-200 w-full"
                     >
                       Sign in
                     </Button>

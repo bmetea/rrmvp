@@ -51,7 +51,7 @@ const AboutSection = () => {
         {/* Right Column - Two Cards */}
         <div className="flex-1 w-full h-full flex flex-col justify-start items-start gap-12">
           {/* Beauty with a Cause Card */}
-          <div className="w-full flex-1 p-8 bg-[#F4E8D1] rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
+          <div className="w-full flex-1 p-8 bg-white rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
             <div className="w-full flex flex-col justify-start items-center gap-4">
               {/* Heart Icon */}
               <div className="w-[87px] h-[84px] relative overflow-hidden flex items-center justify-center">
@@ -86,7 +86,7 @@ const AboutSection = () => {
           </div>
 
           {/* Trusted Partnerships Card */}
-          <div className="w-full flex-1 p-8 bg-[#F4E8D1] rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
+          <div className="w-full flex-1 p-8 bg-white rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
             <div className="w-full flex flex-col justify-start items-center gap-4">
               {/* Avatar Icon */}
               <div className="w-[87px] h-[84px] relative overflow-hidden flex items-center justify-center">

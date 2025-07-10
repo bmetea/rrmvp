@@ -107,7 +107,7 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
         href={`/competitions/${activeCompetition?.id || "#"}`}
         className="block w-full"
       >
-        <div className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-semibold text-[16px] md:text-[18px] leading-[1.5em] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
+        <div className="w-full bg-[#E19841] hover:bg-[#E19841]/90 text-[#151515] font-semibold text-[16px] md:text-[18px] leading-[1.5em] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
           <div className="flex items-center justify-center gap-2">
             Enter now <Ticket size={20} />
           </div>

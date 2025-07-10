@@ -72,12 +72,12 @@ const HowItWorks = () => {
         {/* CTA Button */}
         <div className="flex justify-start items-start gap-6">
           <Link href="/competitions">
-            <div className="px-6 py-3 bg-[#3D2C8D] rounded-full border-2 border-[#3D2C8D] flex justify-center items-center gap-2">
-              <div className="text-white text-[14px] font-semibold leading-[1.5em] font-open-sans">
+            <div className="px-6 py-3 bg-accent hover:bg-accent/90 text-accent-foreground rounded-full border-2 border-accent flex justify-center items-center gap-2">
+              <div className="text-[14px] font-semibold leading-[1.5em] font-open-sans">
                 Enter now
               </div>
               <div className="w-6 h-6 relative overflow-hidden">
-                <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-white" />
+                <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-current" />
               </div>
             </div>
           </Link>
