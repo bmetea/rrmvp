@@ -79,7 +79,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
       {/* Image */}
       <div className="w-full h-20 relative md:h-60">
         <Image
-          src={competition.media_info?.thumbnail || "/images/placeholder.jpg"}
+          src={competition.media_info?.images?.[0] || "/images/placeholder.jpg"}
           alt={competition.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

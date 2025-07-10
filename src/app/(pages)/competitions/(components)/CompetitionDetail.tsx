@@ -30,7 +30,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     minute: "2-digit",
   });
   const image =
-    competitionWithPrizes.media_info?.thumbnail || "/images/placeholder.jpg";
+    competitionWithPrizes.media_info?.images?.[0] || "/images/placeholder.jpg";
   const quickSelect = [1, 3, 5, 10, 25, 50];
   const maxTickets = 2500;
   const totalPrice = ticketPrice * ticketCount;
@@ -247,7 +247,6 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                     <Image
                       src={
                         prize.product?.media_info?.images?.[0] ||
-                        prize.product?.media_info?.thumbnail ||
                         "/images/placeholder.jpg"
                       }
                       alt={prize.product?.name || "Prize"}
@@ -408,7 +407,6 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                     <Image
                       src={
                         prize.product?.media_info?.images?.[0] ||
-                        prize.product?.media_info?.thumbnail ||
                         "/images/placeholder.jpg"
                       }
                       alt={prize.product?.name || "Prize"}

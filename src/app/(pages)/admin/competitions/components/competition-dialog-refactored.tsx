@@ -82,6 +82,7 @@ export function CompetitionDialog({
     start_date: "",
     end_date: "",
     status: "draft" as "draft" | "active" | "ended" | "cancelled",
+    media_info: { images: [] },
   });
 
   const [products, setProducts] = useState<any[]>([]);
@@ -235,6 +236,11 @@ export function CompetitionDialog({
           | "active"
           | "ended"
           | "cancelled",
+        media_info: competition.media_info
+          ? typeof competition.media_info === "string"
+            ? JSON.parse(competition.media_info)
+            : competition.media_info
+          : { images: [] },
       });
     } else {
       setIsEdit(false);
@@ -248,6 +254,7 @@ export function CompetitionDialog({
         start_date: "",
         end_date: "",
         status: "draft",
+        media_info: { images: [] },
       });
       // Reset pending prizes and phase products
       setPendingPrizes([]);
@@ -288,6 +295,7 @@ export function CompetitionDialog({
       form.append("start_date", formData.start_date);
       form.append("end_date", formData.end_date);
       form.append("status", formData.status);
+      form.append("media_info", JSON.stringify(formData.media_info));
 
       const result = isEdit
         ? await updateCompetitionAction(competition!.id, form)

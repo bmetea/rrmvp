@@ -67,10 +67,8 @@ export default function CompetitionPage({
 
   const mediaInfo = competitionWithPrizes.media_info as {
     images?: string[];
-    thumbnail?: string;
   } | null;
-  const image =
-    mediaInfo?.thumbnail || mediaInfo?.images?.[0] || "/images/placeholder.jpg";
+  const image = mediaInfo?.images?.[0] || "/images/placeholder.jpg";
 
   const accordionSections = [
     {

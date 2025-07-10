@@ -88,18 +88,15 @@ export function ProductsClient({
     router.push(`/admin/products?${params.toString()}`);
   };
 
-  const normalizeMediaInfo = (
-    media_info: unknown
-  ): { images: string[]; videos: string[] } => {
+  const normalizeMediaInfo = (media_info: unknown): { images: string[] } => {
     if (
       media_info &&
       typeof media_info === "object" &&
-      "images" in media_info &&
-      "videos" in media_info
+      "images" in media_info
     ) {
-      return media_info as { images: string[]; videos: string[] };
+      return { images: (media_info as any).images || [] };
     }
-    return { images: [], videos: [] };
+    return { images: [] };
   };
 
   return (

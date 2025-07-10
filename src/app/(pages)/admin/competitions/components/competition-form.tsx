@@ -14,6 +14,7 @@ import {
 } from "@/shared/components/ui/select";
 import { Alert, AlertDescription } from "@/shared/components/ui/alert";
 import { Lock, Unlock, Calculator } from "lucide-react";
+import { CompetitionMediaInput } from "./competition-media-input";
 
 interface CompetitionFormProps {
   formData: {
@@ -25,6 +26,7 @@ interface CompetitionFormProps {
     start_date: string;
     end_date: string;
     status: "draft" | "active" | "ended" | "cancelled";
+    media_info: { images: string[] };
   };
   onFormDataChange: (field: string, value: any) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -109,6 +111,13 @@ export function CompetitionForm({
           id="description"
           value={formData.description}
           onChange={(e) => onFormDataChange("description", e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <CompetitionMediaInput
+          value={formData.media_info}
+          onChange={(value) => onFormDataChange("media_info", value)}
         />
       </div>
 

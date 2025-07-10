@@ -39,7 +39,6 @@ const formSchema = z.object({
   credit_amount: z.number().min(0, "Credit amount must be positive"),
   media_info: z.object({
     images: z.array(z.string()),
-    videos: z.array(z.string()),
   }),
 });
 
@@ -58,7 +57,7 @@ export function AddProductDialog() {
       description: "",
       is_wallet_credit: false,
       credit_amount: 0,
-      media_info: { images: [], videos: [] },
+      media_info: { images: [] },
     },
   });
 

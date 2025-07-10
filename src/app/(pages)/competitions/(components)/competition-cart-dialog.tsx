@@ -77,7 +77,7 @@ export function CompetitionCartDialog() {
                   <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
                     <Image
                       src={
-                        item.competition.media_info?.thumbnail ||
+                        item.competition.media_info?.images?.[0] ||
                         "/images/placeholder.jpg"
                       }
                       alt={item.competition.title}

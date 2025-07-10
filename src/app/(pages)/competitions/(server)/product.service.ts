@@ -122,7 +122,6 @@ export const fetchProductByIdServer = cache(
             ? JSON.parse(product.media_info)
             : product.media_info) as {
             images?: string[];
-            videos?: string[];
           })
         : null,
     };

@@ -17,7 +17,7 @@ interface Competition {
   type: string;
   ticket_price: number;
   media_info?: {
-    thumbnail?: string;
+    images?: string[];
   };
 }
 

@@ -56,7 +56,7 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
                 <div className="relative w-full h-[600px] md:h-[750px]">
                   <Image
                     src={
-                      competition.media_info?.thumbnail ||
+                      competition.media_info?.images?.[0] ||
                       "/images/hero-bg-optimized.jpg"
                     }
                     alt={competition.title || "Competition"}

@@ -37,7 +37,6 @@ const formSchema = z.object({
   credit_amount: z.number().min(0, "Credit amount must be positive"),
   media_info: z.object({
     images: z.array(z.string()),
-    videos: z.array(z.string()),
   }),
 });
 
@@ -52,7 +51,7 @@ interface EditProductDialogProps {
     description: string | null;
     is_wallet_credit: boolean;
     credit_amount: number | null;
-    media_info: { images: string[]; videos: string[] };
+    media_info: { images: string[] };
   };
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -74,7 +73,7 @@ export function EditProductDialog({
       description: product.description || "",
       is_wallet_credit: product.is_wallet_credit,
       credit_amount: product.credit_amount || 0,
-      media_info: product.media_info || { images: [], videos: [] },
+      media_info: product.media_info || { images: [] },
     },
   });
 
@@ -86,7 +85,7 @@ export function EditProductDialog({
       description: product.description || "",
       is_wallet_credit: product.is_wallet_credit,
       credit_amount: product.credit_amount || 0,
-      media_info: product.media_info || { images: [], videos: [] },
+      media_info: product.media_info || { images: [] },
     });
   }, [product, form]);
 

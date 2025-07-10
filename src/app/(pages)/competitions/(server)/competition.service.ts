@@ -82,7 +82,6 @@ export async function fetchCompetitionsServer() {
         ? ((typeof competition.media_info === "string"
             ? JSON.parse(competition.media_info)
             : competition.media_info) as {
-            thumbnail?: string;
             images?: string[];
           })
         : null,
@@ -129,7 +128,6 @@ export async function fetchCompetitionPrizesServer(
     ? ((typeof competition.media_info === "string"
         ? JSON.parse(competition.media_info)
         : competition.media_info) as {
-        thumbnail?: string;
         images?: string[];
       })
     : null;
@@ -193,7 +191,6 @@ export async function fetchAllCompetitionsServer() {
         ? ((typeof competition.media_info === "string"
             ? JSON.parse(competition.media_info)
             : competition.media_info) as {
-            thumbnail?: string;
             images?: string[];
           })
         : null,

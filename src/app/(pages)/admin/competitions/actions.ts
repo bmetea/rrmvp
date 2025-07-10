@@ -13,6 +13,8 @@ export async function createCompetitionAction(formData: FormData) {
     const start_date = new Date(formData.get("start_date") as string);
     const end_date = new Date(formData.get("end_date") as string);
     const status = formData.get("status") as string;
+    const media_info_string = formData.get("media_info") as string;
+    const media_info = media_info_string ? JSON.parse(media_info_string) : null;
 
     const newCompetition = await db
       .insertInto("competitions")
@@ -25,6 +27,7 @@ export async function createCompetitionAction(formData: FormData) {
         start_date,
         end_date,
         status,
+        media_info,
         tickets_sold: 0,
         created_at: new Date(),
         updated_at: new Date(),
@@ -62,6 +65,8 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
     const start_date = new Date(formData.get("start_date") as string);
     const end_date = new Date(formData.get("end_date") as string);
     const status = formData.get("status") as string;
+    const media_info_string = formData.get("media_info") as string;
+    const media_info = media_info_string ? JSON.parse(media_info_string) : null;
 
     // Check if prizes are locked (have winning tickets computed)
     const prizesWithWinningTickets = await db
@@ -102,6 +107,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
           start_date,
           end_date,
           status,
+          media_info,
           updated_at: new Date(),
         })
         .where("id", "=", id)
@@ -141,6 +147,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
         start_date,
         end_date,
         status,
+        media_info,
         updated_at: new Date(),
       })
       .where("id", "=", id)

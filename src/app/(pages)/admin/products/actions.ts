@@ -10,7 +10,7 @@ export async function createProductAction(formData: {
   description?: string | null;
   is_wallet_credit: boolean;
   credit_amount?: number | null;
-  media_info: { images: string[]; videos: string[] };
+  media_info: { images: string[] };
 }) {
   try {
     const product = await db
@@ -55,7 +55,7 @@ export async function updateProductAction(
     description?: string | null;
     is_wallet_credit: boolean;
     credit_amount?: number | null;
-    media_info: { images: string[]; videos: string[] };
+    media_info: { images: string[] };
   }
 ) {
   try {

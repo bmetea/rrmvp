@@ -146,10 +146,10 @@ export default function MyEntriesPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-start gap-4 mb-6">
-              {selectedEntry.competition.media_info?.thumbnail && (
+              {selectedEntry.competition.media_info?.images?.[0] && (
                 <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
                   <Image
-                    src={selectedEntry.competition.media_info.thumbnail}
+                    src={selectedEntry.competition.media_info.images[0]}
                     alt={selectedEntry.competition.title}
                     fill
                     className="object-cover"
@@ -261,10 +261,10 @@ export default function MyEntriesPage() {
               onClick={() => handleEntryClick(entry)}
             >
               <CardContent className="flex items-center gap-4 p-4">
-                {entry.competition.media_info?.thumbnail && (
+                {entry.competition.media_info?.images?.[0] && (
                   <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
                     <Image
-                      src={entry.competition.media_info.thumbnail}
+                      src={entry.competition.media_info.images[0]}
                       alt={entry.competition.title}
                       fill
                       className="object-cover"

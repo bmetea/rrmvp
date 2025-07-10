@@ -7,12 +7,15 @@ import { Label } from "@/shared/components/ui/label";
 import { Plus, X } from "lucide-react";
 import Image from "next/image";
 
-interface MediaInputProps {
+interface CompetitionMediaInputProps {
   value: { images: string[] };
   onChange: (value: { images: string[] }) => void;
 }
 
-export function MediaInput({ value, onChange }: MediaInputProps) {
+export function CompetitionMediaInput({
+  value,
+  onChange,
+}: CompetitionMediaInputProps) {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +59,7 @@ export function MediaInput({ value, onChange }: MediaInputProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Product Images</Label>
+        <Label>Competition Images</Label>
         <div className="flex gap-2">
           <Input
             placeholder="Enter image URL (supports Unsplash page URLs)"
@@ -86,16 +89,16 @@ export function MediaInput({ value, onChange }: MediaInputProps) {
       </div>
 
       {value.images.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4">
           {value.images.map((url, index) => (
             <div key={index} className="relative group">
-              <div className="aspect-square relative overflow-hidden rounded-lg border">
+              <div className="aspect-video relative overflow-hidden rounded-lg border">
                 <Image
                   src={url}
-                  alt={`Product image ${index + 1}`}
+                  alt={`Competition image ${index + 1}`}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                  sizes="(max-width: 768px) 50vw, 33vw"
                   unoptimized={url.includes("unsplash.com")}
                 />
               </div>

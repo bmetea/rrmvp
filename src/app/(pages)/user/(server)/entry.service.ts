@@ -20,7 +20,6 @@ export interface CompetitionEntry {
     status: string;
     end_date: Date;
     media_info: {
-      thumbnail?: string;
       images?: string[];
     } | null;
   };
@@ -148,7 +147,6 @@ export async function getUserCompetitionEntries(): Promise<{
           ? ((typeof entry.media_info === "string"
               ? JSON.parse(entry.media_info)
               : entry.media_info) as {
-              thumbnail?: string;
               images?: string[];
             })
           : null,
@@ -244,7 +242,6 @@ export async function purchaseCompetitionEntry(
               ? ((typeof completeEntry.media_info === "string"
                   ? JSON.parse(completeEntry.media_info)
                   : completeEntry.media_info) as {
-                  thumbnail?: string;
                   images?: string[];
                 })
               : null,

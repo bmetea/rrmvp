@@ -26,6 +26,18 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "store.storeimages.cdn-apple.com",
       },
+      {
+        protocol: "https",
+        hostname: "postimg.cc",
+      },
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+      },
+      {
+        protocol: "https",
+        hostname: "postimages.org",
+      },
     ],
   },
   async headers() {

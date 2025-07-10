@@ -23,7 +23,7 @@ interface CartItem {
     type: string;
     ticket_price: number;
     media_info?: {
-      thumbnail?: string;
+      images?: string[];
     };
   };
   quantity: number;
@@ -178,7 +178,7 @@ export default function CheckoutPage() {
                         <div className="relative w-20 h-20 rounded overflow-hidden border">
                           <Image
                             src={
-                              item.competition.media_info?.thumbnail ||
+                              item.competition.media_info?.images?.[0] ||
                               "/images/placeholder.jpg"
                             }
                             alt={item.competition.title}
