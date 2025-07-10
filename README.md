@@ -15,8 +15,10 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
     - [ ] Nick will show example
   - [ ] or find a solution
 - [ ] increment credit when credit is won
-- [ ] Design stuff.
+- [x] Design stuff.
 - [ ] clerk social providers setup
+  - [x] google
+  - [ ] facebook(doesnt work)
 - [ ] nomu
   - [ ] google pay
     - [ ] Implement callback
