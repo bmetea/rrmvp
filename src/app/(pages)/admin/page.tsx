@@ -1,8 +1,13 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
-import { Download, Calendar } from "lucide-react";
+import { Download, Calendar, HelpCircle } from "lucide-react";
 
 export default function AdminDashboard() {
   return (
@@ -29,20 +34,7 @@ export default function AdminDashboard() {
             </CardTitle>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <span className="sr-only">More info</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4" />
-                <path d="M12 8h.01" />
-              </svg>
+              <HelpCircle className="h-4 w-4" />
             </Button>
           </CardHeader>
           <CardContent>
@@ -58,20 +50,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-sm font-medium">New Orders</CardTitle>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <span className="sr-only">More info</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4" />
-                <path d="M12 8h.01" />
-              </svg>
+              <HelpCircle className="h-4 w-4" />
             </Button>
           </CardHeader>
           <CardContent>
@@ -89,20 +68,7 @@ export default function AdminDashboard() {
             </CardTitle>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <span className="sr-only">More info</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4" />
-                <path d="M12 8h.01" />
-              </svg>
+              <HelpCircle className="h-4 w-4" />
             </Button>
           </CardHeader>
           <CardContent>
@@ -118,20 +84,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <span className="sr-only">More info</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4" />
-                <path d="M12 8h.01" />
-              </svg>
+              <HelpCircle className="h-4 w-4" />
             </Button>
           </CardHeader>
           <CardContent>

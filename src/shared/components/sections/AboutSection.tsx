@@ -54,8 +54,8 @@ const AboutSection = () => {
           <div className="w-full flex-1 p-8 bg-white rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
             <div className="w-full flex flex-col justify-start items-center gap-4">
               {/* Heart Icon */}
-              <div className="w-[87px] h-[84px] relative overflow-hidden flex items-center justify-center">
-                <Heart className="w-14 h-12 text-[#E19841] fill-[#E19841]" />
+              <div className="w-[80px] h-[80px] relative overflow-hidden flex items-center justify-center">
+                <Heart className="w-12 h-12 md:w-14 md:h-14 text-[#E19841] fill-[#E19841]" />
               </div>
               <div className="w-full flex flex-col justify-start items-center gap-4">
                 {/* Title */}
@@ -88,9 +88,9 @@ const AboutSection = () => {
           {/* Trusted Partnerships Card */}
           <div className="w-full flex-1 p-8 bg-white rounded-3xl border border-[#E7E7E7] flex flex-col justify-center items-start gap-8">
             <div className="w-full flex flex-col justify-start items-center gap-4">
-              {/* Avatar Icon */}
-              <div className="w-[87px] h-[84px] relative overflow-hidden flex items-center justify-center">
-                <Users className="w-16 h-16 text-[#E19841] fill-[#E19841]" />
+              {/* Users Icon */}
+              <div className="w-[80px] h-[80px] relative overflow-hidden flex items-center justify-center">
+                <Users className="w-14 h-14 md:w-16 md:h-16 text-[#E19841] fill-[#E19841]" />
               </div>
               <div className="w-full flex flex-col justify-start items-start gap-4">
                 {/* Title */}

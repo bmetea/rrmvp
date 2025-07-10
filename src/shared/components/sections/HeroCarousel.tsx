@@ -109,7 +109,8 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
       >
         <div className="w-full bg-[#E19841] hover:bg-[#E19841]/90 text-[#151515] font-semibold text-[16px] md:text-[18px] leading-[1.5em] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
           <div className="flex items-center justify-center gap-2">
-            Enter now <Ticket size={20} />
+            <span>Enter now</span>
+            <Ticket className="w-5 h-5 md:w-6 md:h-6" />
           </div>
         </div>
       </Link>

@@ -15,6 +15,11 @@ import {
   User,
   Instagram,
   Facebook,
+  ShoppingCart,
+  LogOut,
+  CreditCard,
+  Heart,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -35,6 +40,18 @@ const navLinks = [
   { href: "/how-it-works", label: "How it works", icon: HelpCircle },
   { href: "/about", label: "About us", icon: Info },
   { href: "/faq", label: "FAQ", icon: Users },
+];
+
+const mobileNavLinks = [
+  { href: "/user/my-entries", label: "My Entries", icon: Ticket },
+  { href: "/user/profile", label: "Edit Profile", icon: Settings },
+  { href: "/user/order-history", label: "Order History", icon: ShoppingCart },
+  {
+    href: "/user/billing",
+    label: "Billing & Payment Details",
+    icon: CreditCard,
+  },
+  { href: "/user/loyalty", label: "Loyalty & Referral", icon: Heart },
 ];
 
 const Navbar = ({ activePath = "/" }: NavbarProps) => {
@@ -130,34 +147,32 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
 
           {/* Mobile menu button and right side items */}
           <div className="md:hidden flex items-center gap-2">
-            <CompetitionCartDialog />
+            {/* Mobile Nav Icons - Match Figma Design */}
             <SignedIn>
-              <CustomUserButton />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-10 h-10 p-2"
+                aria-label="My Account"
+              >
+                <User className="w-6 h-6 text-[#E19841]" strokeWidth={2} />
+              </Button>
             </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="border-accent text-accent"
-                  aria-label="Sign in"
-                >
-                  <User className="w-5 h-5" />
-                </Button>
-              </SignInButton>
-            </SignedOut>
+
+            <CompetitionCartDialog />
+
             <Button
               ref={burgerButtonRef}
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="hover:scale-110 transition-transform duration-200"
+              className="w-10 h-10 p-2 hover:bg-transparent"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className="h-6 w-6 text-[#151515]" strokeWidth={2} />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6 text-[#151515]" strokeWidth={2} />
               )}
             </Button>
           </div>
@@ -213,66 +228,70 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu - Match Figma Design */}
         <div
           ref={mobileMenuRef}
-          className={cn("md:hidden", isMobileMenuOpen ? "block" : "hidden")}
+          className={cn(
+            "md:hidden fixed inset-x-0 top-[64px] bg-[#F7F7F7] shadow-lg z-40 transition-all duration-300",
+            isMobileMenuOpen
+              ? "opacity-100 visible translate-y-0"
+              : "opacity-0 invisible -translate-y-2"
+          )}
         >
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium group transition-all duration-300",
-                    activePath === link.href
-                      ? "text-accent bg-accent/10"
-                      : "text-gray-600 hover:text-accent hover:bg-accent/10"
-                  )}
+          <div className="px-5 py-5 space-y-1">
+            <SignedIn>
+              {mobileNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="flex items-center gap-3 px-2 py-3 text-[#151515] hover:bg-white/50 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Icon className="w-6 h-6 text-[#151515]" strokeWidth={2} />
+                    <span className="text-[16px] font-semibold font-open-sans">
+                      {link.label}
+                    </span>
+                  </Link>
+                );
+              })}
+
+              <button
+                className="flex items-center gap-3 px-2 py-3 text-[#151515] hover:bg-white/50 rounded-lg transition-colors w-full text-left"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  // Add logout logic here
+                }}
+              >
+                <LogOut className="w-6 h-6 text-[#151515]" strokeWidth={2} />
+                <span className="text-[16px] font-semibold font-open-sans">
+                  Log out
+                </span>
+              </button>
+
+              <div className="pt-4 mt-4">
+                <Button
+                  className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {Icon && <Icon className="w-5 h-5 text-accent" />}
-                  <span className="relative inline-block">
-                    {link.label}
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                  </span>
-                </Link>
-              );
-            })}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={cn(
-                  "block px-3 py-2 rounded-md text-base font-medium group transition-all duration-300",
-                  activePath === "/admin"
-                    ? "text-orange-500 bg-orange-50"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="relative inline-block">
-                  Admin Dashboard
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                </span>
-              </Link>
-            )}
-            <div className="pt-4 pb-3 border-t border-gray-200">
-              <div className="flex items-center px-5 space-x-2">
-                <ThemeToggle />
-                <SignedOut>
-                  <SignInButton mode="modal">
-                    <Button
-                      variant="default"
-                      className="bg-accent hover:bg-accent/90 text-accent-foreground hover:scale-105 transition-all duration-200 w-full"
-                    >
-                      Sign in
-                    </Button>
-                  </SignInButton>
-                </SignedOut>
+                  Enter now
+                </Button>
               </div>
-            </div>
+            </SignedIn>
+
+            <SignedOut>
+              <div className="pt-4">
+                <SignInButton mode="modal">
+                  <Button
+                    className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Sign in
+                  </Button>
+                </SignInButton>
+              </div>
+            </SignedOut>
           </div>
         </div>
       </div>

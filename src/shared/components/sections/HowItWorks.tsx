@@ -1,4 +1,5 @@
 import { Button } from "@/shared/components/ui/button";
+import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 
 const steps = [
@@ -76,9 +77,7 @@ const HowItWorks = () => {
               <div className="text-[14px] font-semibold leading-[1.5em] font-open-sans">
                 Enter now
               </div>
-              <div className="w-6 h-6 relative overflow-hidden">
-                <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-current" />
-              </div>
+              <ArrowRight className="w-4 h-4" />
             </div>
           </Link>
         </div>
@@ -87,25 +86,16 @@ const HowItWorks = () => {
       {/* Decorative play icon on the right */}
       <div className="hidden lg:block absolute right-16 top-12 w-58 h-59 overflow-hidden">
         <div className="absolute right-0 top-0">
-          <svg
-            width="233"
-            height="236"
-            viewBox="0 0 233 236"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <text
-              x="116"
-              y="50"
-              textAnchor="middle"
-              className="text-[14px] font-open-sans font-semibold text-[#151515]"
-              transform="rotate(-15 116 50)"
-            >
-              Watch how it works
-            </text>
-            <circle cx="116" cy="118" r="45" fill="#151515" />
-            <polygon points="105,100 105,136 135,118" fill="white" />
-          </svg>
+          <div className="relative w-[200px] h-[200px] flex flex-col items-center justify-center">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -rotate-15">
+              <div className="text-[14px] font-open-sans font-semibold text-[#151515] whitespace-nowrap">
+                Watch how it works
+              </div>
+            </div>
+            <div className="w-20 h-20 bg-[#151515] rounded-full flex items-center justify-center mt-8">
+              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

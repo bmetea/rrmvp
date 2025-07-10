@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { generateAvatar } from "@/shared/lib/utils/avatar";
 import { Competition } from "@/(pages)/competitions/(server)/competition.service";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 export function CompetitionCard({ competition }: { competition: Competition }) {
@@ -52,24 +52,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
         style={{ backgroundColor: isActive ? "#E19841" : "#6B7280" }}
       >
-        <span className="w-5 h-5 flex items-center justify-center md:w-6 md:h-6">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path
-              d="M12 8V12L14.5 13.5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <circle
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-          </svg>
-        </span>
+        <Clock className="w-5 h-5 md:w-6 md:h-6" />
         <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
           {`Ends: ${new Date(competition.end_date).toLocaleDateString(
             undefined,
@@ -157,7 +140,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               <span className="text-white text-[16px] leading-[150%] font-semibold font-open-sans">
                 Enter Now
               </span>
-              <ArrowRight className="w-6 h-6 text-white" />
+              <ArrowRight className="w-5 h-5 text-white" />
             </div>
           </Link>
         </div>
