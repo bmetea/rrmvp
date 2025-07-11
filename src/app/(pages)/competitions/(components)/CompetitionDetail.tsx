@@ -193,10 +193,6 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                             }{" "}
                             to Win!
                           </div>
-                          <div className="text-xs text-gray-500">
-                            {(prize.claimed_winning_tickets || []).length}/
-                            {prize.total_quantity}
-                          </div>
                         </div>
                       </div>
                       <button
@@ -224,6 +220,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                           "No description available."
                         }
                         totalPrizes={prize.total_quantity}
+                        prizeName={prize.product?.name || "Prize"}
                       />
                     )}
                   </div>
@@ -377,24 +374,24 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2">
+                        <h3 className="font-['Crimson_Pro'] text-[35px] font-medium text-[#151515] dark:text-white mb-2">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <div className="inline-block px-3 py-1 rounded bg-[#E5F3FF] text-[#0094FF] text-sm font-bold">
-                            {
-                              (prize.winning_ticket_numbers || []).filter(
-                                (t) =>
-                                  !(
-                                    prize.claimed_winning_tickets || []
-                                  ).includes(t)
-                              ).length
-                            }{" "}
-                            to Win!
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {(prize.claimed_winning_tickets || []).length}/
-                            {prize.total_quantity}
+                          <div className="inline-flex items-center justify-center gap-2 px-4 py-1 bg-[#E19841] rounded-lg">
+                            <span className="font-['Crimson_Pro'] text-[22px] font-medium text-[#151515]">
+                              {
+                                (prize.winning_ticket_numbers || []).filter(
+                                  (t) =>
+                                    !(
+                                      prize.claimed_winning_tickets || []
+                                    ).includes(t)
+                                ).length
+                              }
+                            </span>
+                            <span className="font-['Open_Sans'] text-[18px] font-normal leading-[27px] text-[#313131]">
+                              to be won
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -423,6 +420,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                           "No description available."
                         }
                         totalPrizes={prize.total_quantity}
+                        prizeName={prize.product?.name || "Prize"}
                       />
                     )}
                   </div>

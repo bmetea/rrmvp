@@ -13,6 +13,7 @@ interface CompetitionPrizeDetailProps {
   claimedTickets: number[];
   description: string;
   totalPrizes: number;
+  prizeName: string;
 }
 
 export function CompetitionPrizeDetail({
@@ -20,6 +21,7 @@ export function CompetitionPrizeDetail({
   claimedTickets,
   description,
   totalPrizes,
+  prizeName,
 }: CompetitionPrizeDetailProps) {
   const [tab, setTab] = useState("tickets");
   const [page, setPage] = useState(1);
@@ -38,6 +40,28 @@ export function CompetitionPrizeDetail({
 
   return (
     <div className="bg-white dark:bg-[#18181b]">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-[#232326]">
+        <div>
+          <h3 className="font-['Crimson_Pro'] text-[35px] font-medium leading-[42px] text-[#151515] dark:text-white mb-2">
+            {prizeName}
+          </h3>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center gap-2 px-4 py-1 bg-[#E19841] rounded-lg">
+              <span className="font-['Crimson_Pro'] text-[22px] font-medium text-[#151515]">
+                {winningTickets.length - claimedTickets.length}
+              </span>
+              <span className="font-['Open_Sans'] text-[18px] font-normal leading-[27px] text-[#313131]">
+                to be won
+              </span>
+            </span>
+            <span className="text-sm text-gray-500">
+              {claimedTickets.length}/{totalPrizes} Claimed
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="flex border-b border-gray-200 dark:border-[#232326]">
         <button
