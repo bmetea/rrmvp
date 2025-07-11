@@ -46,7 +46,8 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full">
+    <Link href={`/competitions/${competition.id}`} className="block h-full">
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full hover:outline-2 hover:outline-[#E19841] transition-all cursor-pointer">
       {/* Banner */}
       <div
         className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
@@ -135,16 +136,15 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               </div>
             </div>
           </div>
-          <Link href={`/competitions/${competition.id}`} className="w-full">
-            <div className="w-full px-5 py-2 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] flex justify-center items-center gap-2 cursor-pointer transition">
-              <span className="text-white text-[16px] leading-[150%] font-semibold font-open-sans">
-                Enter Now
-              </span>
-              <ArrowRight className="w-5 h-5 text-white" />
-            </div>
-          </Link>
+          <div className="w-full px-5 py-2 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] flex justify-center items-center gap-2 cursor-pointer transition">
+            <span className="text-white text-[16px] leading-[150%] font-semibold font-open-sans">
+              Enter Now
+            </span>
+            <ArrowRight className="w-5 h-5 text-white" />
+          </div>
         </div>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }
