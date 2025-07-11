@@ -730,3 +730,38 @@ export async function fetchCompetitionEntriesAction(competitionId: string) {
     };
   }
 }
+
+export async function updateCompetitionMediaAction(
+  competitionId: string,
+  mediaInfo: { images: string[] }
+) {
+  try {
+    const updatedCompetition = await db
+      .updateTable("competitions")
+      .set({
+        media_info: mediaInfo,
+        updated_at: new Date(),
+      })
+      .where("id", "=", competitionId)
+      .returningAll()
+      .executeTakeFirst();
+
+    if (!updatedCompetition) {
+      throw new Error("Failed to update competition media");
+    }
+
+    // Revalidate all competition-related paths
+    revalidatePath("/");
+    revalidatePath("/competitions");
+    revalidatePath(`/competitions/${competitionId}`, "page");
+    revalidatePath("/admin/competitions");
+
+    // Revalidate the competitions tag
+    revalidateTag("competitions");
+
+    return { success: true, data: updatedCompetition };
+  } catch (error) {
+    console.error("Failed to update competition media:", error);
+    return { success: false, error: "Failed to update competition media" };
+  }
+}

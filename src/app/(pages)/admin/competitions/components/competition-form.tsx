@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Alert, AlertDescription } from "@/shared/components/ui/alert";
-import { Lock, Unlock, Calculator } from "lucide-react";
+import { Lock, Unlock, Calculator, Image as ImageIcon } from "lucide-react";
 import { CompetitionMediaInput } from "./competition-media-input";
 
 interface CompetitionFormProps {
@@ -39,6 +39,7 @@ interface CompetitionFormProps {
   isComputingTickets: boolean;
   onComputeWinningTickets: () => void;
   onOverrideLock: () => void;
+  onImagesClick: () => void;
 }
 
 export function CompetitionForm({
@@ -54,11 +55,24 @@ export function CompetitionForm({
   isComputingTickets,
   onComputeWinningTickets,
   onOverrideLock,
+  onImagesClick,
 }: CompetitionFormProps) {
   return (
     <form onSubmit={onSubmit} className="space-y-4 overflow-y-auto pr-2">
       <div className="space-y-2">
-        <Label htmlFor="title">Title</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="title">Title</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onImagesClick}
+            className="h-8"
+          >
+            <ImageIcon className="h-4 w-4 mr-2" />
+            Manage Images
+          </Button>
+        </div>
         <Input
           id="title"
           value={formData.title}
@@ -111,6 +125,7 @@ export function CompetitionForm({
           id="description"
           value={formData.description}
           onChange={(e) => onFormDataChange("description", e.target.value)}
+          required
         />
       </div>
 

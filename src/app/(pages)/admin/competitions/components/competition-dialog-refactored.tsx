@@ -28,6 +28,7 @@ import { poundsToPence, formatPrice } from "@/shared/lib/utils/price";
 import { CompetitionForm } from "./competition-form";
 import { ProductList } from "./product-list";
 import { PrizePhases } from "./prize-phases";
+import { CompetitionImagesDialog } from "./competition-images-dialog";
 
 interface CompetitionDialogProps {
   competition?: Competition;
@@ -100,6 +101,7 @@ export function CompetitionDialog({
   const [overrideDialogOpen, setOverrideDialogOpen] = useState(false);
   const [isPrizesLocked, setIsPrizesLocked] = useState(false);
   const [isComputingTickets, setIsComputingTickets] = useState(false);
+  const [imagesDialogOpen, setImagesDialogOpen] = useState(false);
 
   const debouncedSearch = useDebounce(search, 300);
 
@@ -791,6 +793,7 @@ export function CompetitionDialog({
             isComputingTickets={isComputingTickets}
             onComputeWinningTickets={handleComputeWinningTickets}
             onOverrideLock={() => setOverrideDialogOpen(true)}
+            onImagesClick={() => setImagesDialogOpen(true)}
           />
 
           {/* Middle Column - Product List */}
@@ -822,6 +825,32 @@ export function CompetitionDialog({
         open={overrideDialogOpen}
         onOpenChange={setOverrideDialogOpen}
         onConfirm={handleOverrideConfirm}
+      />
+
+      {/* Images Dialog */}
+      <CompetitionImagesDialog
+        competitionId={competition?.id || ""}
+        initialImages={formData.media_info?.images || []}
+        open={imagesDialogOpen}
+        onOpenChange={setImagesDialogOpen}
+        onSuccess={() => {
+          // Refresh the competition data
+          if (competition?.id) {
+            fetchCompetitionWithPrizesAction(competition.id).then((result) => {
+              if (result.success) {
+                setCurrentCompetition(result.data as CompetitionWithPrizes);
+                setFormData((prev) => ({
+                  ...prev,
+                  media_info: result.data.media_info
+                    ? typeof result.data.media_info === "string"
+                      ? JSON.parse(result.data.media_info)
+                      : result.data.media_info
+                    : { images: [] },
+                }));
+              }
+            });
+          }
+        }}
       />
     </Dialog>
   );

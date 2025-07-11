@@ -10,10 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-import { Pencil, Plus, ListFilter } from "lucide-react";
+import { Pencil, Plus, ListFilter, Image as ImageIcon } from "lucide-react";
 import type { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionDialog } from "./competition-dialog";
 import { CompetitionEntriesDialog } from "./components/competition-entries-dialog";
+import { CompetitionImagesDialog } from "./components/competition-images-dialog";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 interface CompetitionsClientProps {
@@ -25,8 +26,11 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
     useState<Competition | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [entriesDialogOpen, setEntriesDialogOpen] = useState(false);
+  const [imagesDialogOpen, setImagesDialogOpen] = useState(false);
   const [selectedCompetitionForEntries, setSelectedCompetitionForEntries] =
     useState<string | null>(null);
+  const [selectedCompetitionForImages, setSelectedCompetitionForImages] =
+    useState<Competition | null>(null);
 
   const handleEditClick = (competition: Competition) => {
     setSelectedCompetition(competition);
@@ -41,6 +45,11 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
   const handleViewEntriesClick = (competitionId: string) => {
     setSelectedCompetitionForEntries(competitionId);
     setEntriesDialogOpen(true);
+  };
+
+  const handleImagesClick = (competition: Competition) => {
+    setSelectedCompetitionForImages(competition);
+    setImagesDialogOpen(true);
   };
 
   const formatDate = (date: Date) => {
@@ -100,6 +109,13 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
                   >
                     <ListFilter className="h-4 w-4" />
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleImagesClick(competition)}
+                  >
+                    <ImageIcon className="h-4 w-4" />
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
@@ -118,6 +134,19 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
           competitionId={selectedCompetitionForEntries}
           open={entriesDialogOpen}
           onOpenChange={setEntriesDialogOpen}
+        />
+      )}
+
+      {selectedCompetitionForImages && (
+        <CompetitionImagesDialog
+          competitionId={selectedCompetitionForImages.id}
+          initialImages={selectedCompetitionForImages.media_info?.images || []}
+          open={imagesDialogOpen}
+          onOpenChange={setImagesDialogOpen}
+          onSuccess={() => {
+            // Refresh the page to get updated data
+            window.location.reload();
+          }}
         />
       )}
     </div>

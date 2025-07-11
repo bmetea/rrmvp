@@ -10,7 +10,7 @@ import {
 } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, X, Image as ImageIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -30,6 +30,7 @@ import {
 } from "@/shared/components/ui/pagination";
 import { AddProductDialog } from "./add-product-dialog";
 import { EditProductDialog } from "./edit-product-dialog";
+import { ProductImagesDialog } from "./product-images-dialog";
 import type { Product } from "@/(pages)/competitions/(server)/product.service";
 import { formatPrice } from "@/shared/lib/utils/price";
 
@@ -54,6 +55,9 @@ export function ProductsClient({
   const searchParams = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [imagesDialogOpen, setImagesDialogOpen] = useState(false);
+  const [selectedProductForImages, setSelectedProductForImages] =
+    useState<Product | null>(null);
   const [search, setSearch] = useState(initialSearch || "");
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -61,6 +65,11 @@ export function ProductsClient({
   const handleEditClick = (product: Product) => {
     setSelectedProduct(product);
     setEditDialogOpen(true);
+  };
+
+  const handleImagesClick = (product: Product) => {
+    setSelectedProductForImages(product);
+    setImagesDialogOpen(true);
   };
 
   const handleSearch = (newSearch: string) => {
@@ -172,6 +181,13 @@ export function ProductsClient({
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleImagesClick(product)}
+                        >
+                          <ImageIcon className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon">
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -260,6 +276,21 @@ export function ProductsClient({
           }}
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
+        />
+      )}
+
+      {selectedProductForImages && (
+        <ProductImagesDialog
+          productId={selectedProductForImages.id}
+          initialImages={
+            normalizeMediaInfo(selectedProductForImages.media_info).images
+          }
+          open={imagesDialogOpen}
+          onOpenChange={setImagesDialogOpen}
+          onSuccess={() => {
+            // Refresh the page to get updated data
+            window.location.reload();
+          }}
         />
       )}
     </div>
