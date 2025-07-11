@@ -9,11 +9,7 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
 - [ ] implement image upload s3
 - [ ] warm lambda ?
   - [ ] https://sst.dev/docs/component/aws/nextjs/#warm
-- [ ] Segment prod setuo
-  - [ ] Send event when someone wins
-    - [ ] should contain products
-    - [ ] Nick will show example
-  - [ ] or find a solution
+- [x] Segment prod setuo
 - [ ] increment credit when credit is won
 - [x] Design stuff.
 - [ ] clerk social providers setup
@@ -22,9 +18,9 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
 - [ ] nomu
   - [ ] google pay
     - [ ] Implement callback
-- [ ] Facebook pixel
+- [x] Facebook pixel
   - [x] got the pixel
-  - [ ] implement the pixel
+  - [x] implement the pixel
 - [ ] think of edge cases 
 - [ ] change clerk webhook path
 
@@ -281,3 +277,60 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Competition Details
+
+# 🏆 Ultimate Anti-Wrinkle Treatment Prize Draw
+
+## Win £2,400 in Cash! 
+### Transform Your Beauty Journey or Choose Your Own Path
+
+> Win £2,400 in cash—designed to cover the cost of anti-wrinkle treatments for up to 24 months, or spend it however you wish.
+
+**Important:** Please read our full Terms and Conditions, including Clause 6, before entering.
+
+### 🎁 Prize Overview
+
+*   **Prize Value:** £2,400 cash
+*   **Treatment Equivalent:** Up to 24 months of anti-wrinkle treatments
+*   **Usage Flexibility:** No restrictions on how the cash is used
+*   **Entry Requirements:** Open to UK residents aged 18 and over
+
+#### 📋 Detailed Information
+
+1. **Prize Breakdown**
+   - Total Cash Value: £2,400
+   - Monthly Treatment Value: ~£100
+   - Duration Coverage: 24 months
+
+2. **Treatment Options**
+   * Anti-wrinkle injections
+   * Facial treatments
+   * Or any personal choice
+
+3. **Winner's Freedom**
+   - [x] Use for treatments
+   - [x] Save for future
+   - [x] Spend on anything else
+
+##### 💫 Why Enter?
+
+* **Flexibility** - Your prize, your choice
+* **Value** - Full 2-year treatment coverage
+* **Freedom** - No strings attached
+* **Simplicity** - Direct cash prize
+
+###### 📝 Entry Notes
+
+~~~
+Terms and conditions apply
+Must be 18 or over
+UK residents only
+See Clause 6 for full details
+~~~
+
+---
+
+*Remember: This life-changing prize could be yours!*
+
+**Ready to Enter?** [Click Here](#) to join the draw.

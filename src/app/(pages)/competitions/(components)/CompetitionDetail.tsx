@@ -9,6 +9,7 @@ import { useCart } from "@/shared/lib/context/cart-context";
 import { formatPrice } from "@/shared/lib/utils/price";
 import Link from "next/link";
 import CompetitionImageCarousel from "./CompetitionImageCarousel";
+import ReactMarkdown from 'react-markdown';
 
 // Main component implementation
 function CompetitionDetailImpl({ competitionWithPrizes }) {
@@ -230,9 +231,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         {/* Competition Description - Desktop */}
         <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-4">Competition Details</h2>
-          <div className="text-zinc-800 dark:text-zinc-200 text-[16px] md:text-[18px] leading-[150%] font-normal whitespace-pre-line">
-            {competitionWithPrizes.description ||
-              "No description available for this competition. Please check the prize details below for more information."}
+          <div className="text-zinc-800 dark:text-zinc-200 text-[16px] md:text-[18px] leading-[150%] font-normal prose dark:prose-invert max-w-none">
+            <ReactMarkdown>
+              {competitionWithPrizes.description ||
+                "No description available for this competition. Please check the prize details below for more information."}
+            </ReactMarkdown>
           </div>
         </div>
 
