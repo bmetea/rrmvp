@@ -38,7 +38,7 @@ export default function CompetitionImageCarousel({
           }}
           thumbs={{ swiper: thumbsSwiper }}
           modules={[Thumbs, Navigation]}
-          className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-lg"
+          className="w-full aspect-square rounded-2xl overflow-hidden shadow-lg"
         >
           {displayImages.map((image, index) => (
             <SwiperSlide key={index}>
@@ -94,7 +94,7 @@ export default function CompetitionImageCarousel({
         >
           {displayImages.map((image, index) => (
             <SwiperSlide key={index}>
-              <div className="w-full aspect-[4/3] rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#E19841] transition-colors">
+              <div className="w-full aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#E19841] transition-colors">
                 <Image
                   src={image}
                   alt={`${title} - Thumbnail ${index + 1}`}
