@@ -116,12 +116,56 @@
   * {
     @apply border-border;
   }
+
+  /* Base font settings */
   html,
   body {
-    font-family: var(--font-sans);
+    font-family: var(--font-open-sans), "Open Sans", sans-serif;
   }
+
   body {
-    @apply bg-background text-foreground font-serif;
+    @apply bg-background text-foreground;
+  }
+
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-crimson-pro), "Crimson Pro", serif;
+  }
+
+  /* Specific heading sizes */
+  h1 {
+    @apply text-[34px] leading-[1.11em] font-medium;
+  }
+
+  h2 {
+    @apply text-[28px] leading-[1.2em] font-medium;
+  }
+
+  h3 {
+    @apply text-[24px] leading-[1.2em] font-medium;
+  }
+
+  h4 {
+    @apply text-[20px] leading-[1.2em] font-medium;
+  }
+
+  /* Body text */
+  p,
+  span,
+  div,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-open-sans), "Open Sans", sans-serif;
+  }
+
+  /* Default body text size */
+  p {
+    @apply text-[16px] leading-[1.5em];
   }
 }
 
