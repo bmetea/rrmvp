@@ -7,6 +7,9 @@ import { oppwaLogger } from "@/shared/lib/logger";
 declare global {
   interface Window {
     OPPWA: any;
+    wpwl: any;
+    wpwlOptions: any;
+    $: any;
   }
 }
 
@@ -32,15 +35,23 @@ export function PaymentForm({
   useEffect(() => {
     if (checkoutId) {
       oppwaLogger.logWidget("loadingWidget:start", { checkoutId });
+
+      // Store references to injected scripts for cleanup
+      const injectedScripts: HTMLScriptElement[] = [];
+      const injectedStyles: HTMLStyleElement[] = [];
+
       // Inject jQuery first
       const jqueryScript = document.createElement("script");
       jqueryScript.src = "https://code.jquery.com/jquery.js";
       jqueryScript.async = false;
+      jqueryScript.setAttribute("data-payment-widget", "true"); // Mark for cleanup
       document.body.appendChild(jqueryScript);
+      injectedScripts.push(jqueryScript);
 
       // Inject wpwlOptions config script
       const optionsScript = document.createElement("script");
       optionsScript.type = "text/javascript";
+      optionsScript.setAttribute("data-payment-widget", "true"); // Mark for cleanup
       optionsScript.innerHTML = `
         window.wpwlOptions = {
           style: 'card',
@@ -167,9 +178,11 @@ export function PaymentForm({
         }
       `;
       document.body.appendChild(optionsScript);
+      injectedScripts.push(optionsScript);
 
       // Inject custom CSS
       const styleTag = document.createElement("style");
+      styleTag.setAttribute('data-payment-widget', 'true'); // Mark for cleanup
       styleTag.innerHTML = `
         .wpwl-wrapper:focus {
           border-color: #3b82f6;
@@ -221,6 +234,7 @@ export function PaymentForm({
         
       `;
       document.body.appendChild(styleTag);
+      injectedStyles.push(styleTag);
 
       // Load the payment widget script
       const script = document.createElement("script");
@@ -228,16 +242,54 @@ export function PaymentForm({
         process.env.NEXT_PUBLIC_OPPWA_BASE_URL || "https://eu-test.oppwa.com";
       script.src = `${oppwaBaseUrl}/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
       script.async = true;
+      script.setAttribute("data-payment-widget", "true"); // Mark for cleanup
       document.body.appendChild(script);
+      injectedScripts.push(script);
 
       oppwaLogger.logWidget("loadingWidget:complete", { checkoutId });
 
       return () => {
         oppwaLogger.logWidget("cleanupWidget", { checkoutId });
-        document.body.removeChild(script);
-        document.body.removeChild(optionsScript);
-        document.body.removeChild(styleTag);
-        document.body.removeChild(jqueryScript);
+        
+        // Remove all injected scripts and styles
+        injectedScripts.forEach((script) => {
+          try {
+            script.remove();
+          } catch (e) {
+            console.warn('Error removing script:', e);
+          }
+        });
+        
+        injectedStyles.forEach((style) => {
+          try {
+            style.remove();
+          } catch (e) {
+            console.warn('Error removing style:', e);
+          }
+        });
+        
+        // Clean up global variables to prevent interference
+        try {
+          delete window.wpwl;
+          delete window.wpwlOptions;
+          delete window.OPPWA;
+          // Don't delete jQuery as it might be used elsewhere, but ensure it's not conflicting
+        } catch (e) {
+          console.warn('Error cleaning up global variables:', e);
+        }
+        
+        // Remove any remaining payment widget scripts that might have been missed
+        setTimeout(() => {
+          try {
+            const remainingScripts = document.querySelectorAll('script[data-payment-widget="true"]');
+            remainingScripts.forEach((script) => script.remove());
+            
+            const remainingStyles = document.querySelectorAll('style[data-payment-widget="true"]');
+            remainingStyles.forEach((style) => style.remove());
+          } catch (e) {
+            console.warn('Error in delayed cleanup:', e);
+          }
+        }, 100);
       };
     }
   }, [checkoutId]);

@@ -7,6 +7,7 @@ import { Button } from "@/shared/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { useAnalytics } from "@/shared/hooks/use-analytics";
+import { cleanupPaymentWidgetGlobals } from "@/shared/lib/utils";
 
 interface TicketResult {
   competitionId: string;
@@ -31,6 +32,28 @@ export default function CheckoutSummaryPage() {
   const router = useRouter();
   const { trackPurchase } = useAnalytics();
 
+  // Clean up payment widget scripts once on mount
+  useEffect(() => {
+    cleanupPaymentWidgetGlobals();
+
+    // Additional aggressive cleanup to ensure router works
+    setTimeout(() => {
+      cleanupPaymentWidgetGlobals();
+
+      // Force remove any jQuery event handlers that might be interfering
+      if (typeof window !== "undefined") {
+        try {
+          if ((window as any).$) {
+            (window as any).$("*").off();
+          }
+        } catch (e) {
+          // Silent cleanup
+        }
+      }
+    }, 1000);
+  }, []); // Empty dependency array - only run once on mount
+
+  // Handle summary data and analytics
   useEffect(() => {
     // Get summary data from URL state
     const summaryData = searchParams.get("summary");
@@ -111,12 +134,15 @@ export default function CheckoutSummaryPage() {
     } total)`;
   };
 
-  const handleViewEntries = () => {
-    router.push("/user/my-entries");
+  // Direct navigation handlers (bypassing potentially corrupted router)
+  const handleViewEntriesDirectly = () => {
+    console.log("Navigating to my-entries");
+    window.location.href = "/user/my-entries";
   };
 
-  const handleContinueShopping = () => {
-    router.push("/competitions");
+  const handleContinueShoppingDirectly = () => {
+    console.log("Navigating to competitions");
+    window.location.href = "/competitions";
   };
 
   return (
@@ -218,13 +244,13 @@ export default function CheckoutSummaryPage() {
 
           <div className="flex flex-col gap-3 pt-4">
             {purchaseSummary.paymentStatus === "success" && (
-              <Button onClick={handleViewEntries} className="w-full">
+              <Button onClick={handleViewEntriesDirectly} className="w-full">
                 View My Entries
               </Button>
             )}
             <Button
               variant="outline"
-              onClick={handleContinueShopping}
+              onClick={handleContinueShoppingDirectly}
               className="w-full"
             >
               Continue Shopping
