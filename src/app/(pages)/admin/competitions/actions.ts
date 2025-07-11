@@ -646,3 +646,87 @@ export async function clearWinningTicketsAction(
     };
   }
 }
+
+export async function fetchCompetitionEntriesAction(competitionId: string) {
+  try {
+    const entries = await db
+      .selectFrom("competition_entries as ce")
+      .innerJoin("users as u", "u.id", "ce.user_id")
+      .select([
+        "ce.id",
+        "ce.competition_id",
+        "ce.user_id",
+        "ce.wallet_transaction_id",
+        "ce.payment_transaction_id",
+        "ce.tickets",
+        "ce.created_at",
+        "ce.updated_at",
+        "u.clerk_id",
+        "u.email",
+      ])
+      .where("ce.competition_id", "=", competitionId)
+      .orderBy("ce.created_at", "desc")
+      .execute();
+
+    // Get all entry IDs
+    const entryIds = entries.map((entry) => entry.id);
+
+    // Get winning tickets for these entries with prize information
+    const winningTickets = await db
+      .selectFrom("winning_tickets as wt")
+      .innerJoin("competition_prizes as cp", "cp.id", "wt.prize_id")
+      .innerJoin("products as p", "p.id", "cp.product_id")
+      .select([
+        "wt.ticket_number",
+        "wt.competition_entry_id",
+        "wt.prize_id",
+        "p.name as prize_name",
+        "p.market_value as prize_value",
+      ])
+      .where("wt.competition_entry_id", "in", entryIds)
+      .where("wt.status", "=", "claimed")
+      .execute();
+
+    // Create a map of winning tickets by entry ID
+    const winningTicketsByEntryId = winningTickets.reduce(
+      (acc, ticket) => {
+        if (!acc[ticket.competition_entry_id]) {
+          acc[ticket.competition_entry_id] = [];
+        }
+        acc[ticket.competition_entry_id].push({
+          ticket_number: ticket.ticket_number,
+          prize_id: ticket.prize_id,
+          prize_name: ticket.prize_name,
+          prize_value: ticket.prize_value,
+        });
+        return acc;
+      },
+      {} as Record<
+        string,
+        Array<{
+          ticket_number: number;
+          prize_id: string;
+          prize_name: string;
+          prize_value: number;
+        }>
+      >
+    );
+
+    // Format entries with their tickets and winning tickets
+    const formattedEntries = entries.map((entry) => ({
+      ...entry,
+      winning_tickets: winningTicketsByEntryId[entry.id] || [],
+    }));
+
+    return {
+      success: true,
+      entries: formattedEntries,
+    };
+  } catch (error) {
+    console.error("Error fetching competition entries:", error);
+    return {
+      success: false,
+      error: "Failed to fetch competition entries",
+    };
+  }
+}

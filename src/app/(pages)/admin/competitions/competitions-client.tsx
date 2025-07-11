@@ -10,9 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, ListFilter } from "lucide-react";
 import type { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { CompetitionDialog } from "./competition-dialog";
+import { CompetitionEntriesDialog } from "./components/competition-entries-dialog";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 interface CompetitionsClientProps {
@@ -23,6 +24,9 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
   const [selectedCompetition, setSelectedCompetition] =
     useState<Competition | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [entriesDialogOpen, setEntriesDialogOpen] = useState(false);
+  const [selectedCompetitionForEntries, setSelectedCompetitionForEntries] =
+    useState<string | null>(null);
 
   const handleEditClick = (competition: Competition) => {
     setSelectedCompetition(competition);
@@ -34,11 +38,19 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
     setDialogOpen(true);
   };
 
+  const handleViewEntriesClick = (competitionId: string) => {
+    setSelectedCompetitionForEntries(competitionId);
+    setEntriesDialogOpen(true);
+  };
+
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-GB", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(date));
+    return new Date(date).toLocaleString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -73,13 +85,22 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
               <TableCell>{competition.tickets_sold}</TableCell>
               <TableCell>{formatDate(competition.end_date)}</TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleEditClick(competition)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEditClick(competition)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleViewEntriesClick(competition.id)}
+                  >
+                    <ListFilter className="h-4 w-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}
@@ -91,6 +112,14 @@ export function CompetitionsClient({ competitions }: CompetitionsClientProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+
+      {selectedCompetitionForEntries && (
+        <CompetitionEntriesDialog
+          competitionId={selectedCompetitionForEntries}
+          open={entriesDialogOpen}
+          onOpenChange={setEntriesDialogOpen}
+        />
+      )}
     </div>
   );
 }
