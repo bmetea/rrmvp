@@ -24,7 +24,6 @@ import { useAnalytics } from "@/shared/hooks/use-analytics";
 export default function CheckoutPage() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } =
     useCart();
-  const [discount, setDiscount] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const router = useRouter();
@@ -262,19 +261,6 @@ export default function CheckoutPage() {
                     </div>
                   </>
                 )}
-              </div>
-
-              <Separator />
-
-              <div className="space-y-3">
-                <Input
-                  placeholder="Discount code"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                />
-                <Button variant="outline" className="w-full">
-                  Apply Discount
-                </Button>
               </div>
 
               <Separator />

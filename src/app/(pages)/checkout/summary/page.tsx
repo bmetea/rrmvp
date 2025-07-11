@@ -4,24 +4,29 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { Separator } from "@/shared/components/ui/separator";
+import { ScrollArea } from "@/shared/components/ui/scroll-area";
+import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
-import { useAnalytics } from "@/shared/hooks/use-analytics";
-import { cleanupPaymentWidgetGlobals } from "@/shared/lib/utils";
 
-interface TicketResult {
+interface PurchaseResult {
   competitionId: string;
-  competitionTitle: string;
+  success: boolean;
+  message: string;
+  entryId: string;
   ticketNumbers: number[];
-  winningTickets: number[];
+  winningTickets: Array<{
+    ticketNumber: number;
+    prizeId: string;
+  }>;
 }
 
 interface PurchaseSummary {
   paymentMethod: "wallet" | "card" | "hybrid";
   walletAmount?: number;
   cardAmount?: number;
-  results: TicketResult[];
-  paymentStatus: "success" | "failed";
+  results: PurchaseResult[];
+  paymentStatus: "success" | "error";
   paymentMessage?: string;
 }
 
@@ -30,45 +35,7 @@ export default function CheckoutSummaryPage() {
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
   const router = useRouter();
-  const { trackPurchase } = useAnalytics();
 
-  // Clean up payment widget scripts once on mount
-  useEffect(() => {
-    cleanupPaymentWidgetGlobals();
-  }, []); // Empty dependency array - only run once on mount
-
-  // Override router navigation for this page since it's getting corrupted
-  useEffect(() => {
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest("a[href]") as HTMLAnchorElement;
-
-      if (link && link.href && link.href.startsWith(window.location.origin)) {
-        // Only override internal links
-        const href = link.getAttribute("href");
-        if (
-          href &&
-          !href.startsWith("#") &&
-          !href.startsWith("mailto:") &&
-          !href.startsWith("tel:")
-        ) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log("Router override: navigating to", href);
-          window.location.href = href;
-        }
-      }
-    };
-
-    // Add the event listener to capture link clicks
-    document.addEventListener("click", handleLinkClick, true);
-
-    return () => {
-      document.removeEventListener("click", handleLinkClick, true);
-    };
-  }, []);
-
-  // Handle summary data and analytics
   useEffect(() => {
     // Get summary data from URL state
     const summaryData = searchParams.get("summary");
@@ -76,44 +43,6 @@ export default function CheckoutSummaryPage() {
       try {
         const decodedSummary = JSON.parse(decodeURIComponent(summaryData));
         setPurchaseSummary(decodedSummary);
-
-        // Track purchase completion if successful
-        if (
-          decodedSummary.paymentStatus === "success" &&
-          decodedSummary.results?.length > 0
-        ) {
-          const orderId = `order_${Date.now()}`;
-          const totalRevenue =
-            (decodedSummary.walletAmount || 0) +
-            (decodedSummary.cardAmount || 0);
-
-          const purchaseItems = decodedSummary.results.map(
-            (result: TicketResult) => ({
-              competitionId: result.competitionId,
-              competitionTitle: result.competitionTitle,
-              competitionType: "competition",
-              price: totalRevenue / decodedSummary.results.length, // Distribute price evenly
-              quantity: result.ticketNumbers.length,
-              ticketPrice:
-                totalRevenue /
-                decodedSummary.results.reduce(
-                  (sum: number, r: TicketResult) =>
-                    sum + r.ticketNumbers.length,
-                  0
-                ),
-            })
-          );
-
-          trackPurchase({
-            orderId,
-            revenue: totalRevenue,
-            currency: "GBP",
-            paymentMethod: decodedSummary.paymentMethod,
-            items: purchaseItems,
-            walletAmount: decodedSummary.walletAmount,
-            cardAmount: decodedSummary.cardAmount,
-          });
-        }
       } catch (error) {
         console.error("Error parsing summary data:", error);
         router.push("/competitions");
@@ -121,7 +50,7 @@ export default function CheckoutSummaryPage() {
     } else {
       router.push("/competitions");
     }
-  }, [searchParams, router, trackPurchase]);
+  }, [searchParams, router]);
 
   if (!purchaseSummary) {
     return (
@@ -149,15 +78,12 @@ export default function CheckoutSummaryPage() {
     } total)`;
   };
 
-  // Direct navigation handlers (bypassing potentially corrupted router)
-  const handleViewEntriesDirectly = () => {
-    console.log("Navigating to my-entries");
-    window.location.href = "/user/my-entries";
+  const handleViewEntries = () => {
+    router.push("/user/my-entries");
   };
 
-  const handleContinueShoppingDirectly = () => {
-    console.log("Navigating to competitions");
-    window.location.href = "/competitions";
+  const handleContinueShopping = () => {
+    router.push("/competitions");
   };
 
   return (
@@ -200,75 +126,65 @@ export default function CheckoutSummaryPage() {
             </p>
           </div>
 
-          {purchaseSummary.paymentStatus === "success" && (
-            <>
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h2 className="font-semibold mb-2">Summary</h2>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">
-                      Total Tickets:
-                    </span>
-                    <p className="font-medium">{totalTickets}</p>
-                  </div>
-                  {totalWinningTickets > 0 && (
-                    <div>
-                      <span className="text-muted-foreground">
-                        Winning Tickets:
-                      </span>
-                      <p className="font-medium text-green-600">
-                        {totalWinningTickets}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Ticket className="h-5 w-5 text-blue-500" />
+                <span className="font-medium">Total Tickets:</span>
+              </div>
+              <span className="text-lg font-bold">{totalTickets}</span>
+            </div>
+
+            {totalWinningTickets > 0 && (
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Gift className="h-5 w-5 text-green-500" />
+                  <span className="font-medium">Winning Tickets:</span>
+                </div>
+                <span className="text-lg font-bold text-green-500">
+                  {totalWinningTickets}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+            <h2 className="font-semibold">Purchase Details</h2>
+            <ScrollArea className="h-[300px] rounded-md border p-4">
+              {purchaseSummary.results.map((result, index) => (
+                <div key={result.entryId} className="mb-6 last:mb-0">
+                  <h3 className="font-semibold mb-2">Entry {index + 1}</h3>
+                  <div className="space-y-2 text-sm">
+                    <p>Tickets: {formatTicketNumbers(result.ticketNumbers)}</p>
+                    {result.winningTickets.length > 0 && (
+                      <p className="text-green-600 font-medium">
+                        🎉 Winning tickets:{" "}
+                        {formatTicketNumbers(
+                          result.winningTickets.map((w) => w.ticketNumber)
+                        )}
                       </p>
-                    </div>
+                    )}
+                  </div>
+                  {index < purchaseSummary.results.length - 1 && (
+                    <Separator className="my-4" />
                   )}
                 </div>
-              </div>
+              ))}
+            </ScrollArea>
+          </div>
 
-              <div className="space-y-4">
-                <h2 className="font-semibold">Your Entries</h2>
-                {purchaseSummary.results.map((result, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <h3 className="font-medium mb-2">
-                      {result.competitionTitle}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">
-                          Ticket Numbers:
-                        </span>
-                        <p className="font-mono">
-                          {formatTicketNumbers(result.ticketNumbers)}
-                        </p>
-                      </div>
-                      {result.winningTickets.length > 0 && (
-                        <div>
-                          <span className="text-muted-foreground">
-                            Winning Tickets:
-                          </span>
-                          <p className="font-mono text-green-600">
-                            {formatTicketNumbers(result.winningTickets)}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          <div className="flex flex-col gap-3 pt-4">
-            {purchaseSummary.paymentStatus === "success" && (
-              <Button onClick={handleViewEntriesDirectly} className="w-full">
-                View My Entries
-              </Button>
-            )}
+          <div className="flex justify-between gap-4 pt-4">
             <Button
               variant="outline"
-              onClick={handleContinueShoppingDirectly}
-              className="w-full"
+              className="flex-1"
+              onClick={handleContinueShopping}
             >
               Continue Shopping
+            </Button>
+            <Button className="flex-1" onClick={handleViewEntries}>
+              View My Entries
             </Button>
           </div>
         </div>

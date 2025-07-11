@@ -1,7 +1,5 @@
 "use client";
 
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
 import MyEntriesPage from "@/app/(pages)/user/(components)/MyEntriesPage";
 
 export default function EntriesPage() {

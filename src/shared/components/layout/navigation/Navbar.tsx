@@ -15,6 +15,7 @@ import {
   User,
   Instagram,
   Facebook,
+  List,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -169,6 +170,19 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 {link.label}
               </Link>
             ))}
+            {userId && (
+              <Link
+                href="/user/my-entries"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-accent",
+                  activePath === "/user/my-entries"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                My Entries
+              </Link>
+            )}
             {isAdmin && (
               <Link
                 href="/admin"
@@ -245,6 +259,33 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </Link>
               );
             })}
+
+            {/* My Entries Link - For Authenticated Users */}
+            {userId && (
+              <Link
+                href="/user/my-entries"
+                className={cn(
+                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                  activePath === "/user/my-entries"
+                    ? "bg-white text-[#E19841]"
+                    : "text-[#151515] hover:bg-white/50"
+                )}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <List
+                  className={cn(
+                    "w-6 h-6",
+                    activePath === "/user/my-entries"
+                      ? "text-[#E19841]"
+                      : "text-[#151515]"
+                  )}
+                  strokeWidth={2}
+                />
+                <span className="text-[16px] font-semibold font-open-sans">
+                  My Entries
+                </span>
+              </Link>
+            )}
 
             {/* Admin Dashboard Link */}
             {isAdmin && (
