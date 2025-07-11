@@ -59,6 +59,7 @@ export interface Competitions {
   created_at: Generated<Timestamp | null>;
   description: string | null;
   end_date: Timestamp;
+  faq: string | null;
   id: Generated<string>;
   media_info: Json | null;
   start_date: Timestamp;

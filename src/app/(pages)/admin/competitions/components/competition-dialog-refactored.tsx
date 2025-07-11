@@ -77,6 +77,7 @@ export function CompetitionDialog({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    faq: "",
     type: "raffle" as "raffle" | "instant_win",
     ticket_price: "",
     total_tickets: "",
@@ -226,6 +227,7 @@ export function CompetitionDialog({
       setFormData({
         title: competition.title,
         description: competition.description,
+        faq: competition.faq || "",
         type: competition.type as "raffle" | "instant_win",
         ticket_price: formatPrice(competition.ticket_price, false),
         total_tickets: competition.total_tickets.toString(),
@@ -250,6 +252,7 @@ export function CompetitionDialog({
       setFormData({
         title: "",
         description: "",
+        faq: "",
         type: "raffle",
         ticket_price: "",
         total_tickets: "",

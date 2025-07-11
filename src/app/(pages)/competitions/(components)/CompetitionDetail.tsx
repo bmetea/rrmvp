@@ -52,7 +52,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
         {/* Title and End Date - Now below carousel */}
         <div className="mb-4">
-          <h1 className="text-3xl font-extrabold mb-2 text-foreground">
+          <h1 className="text-3xl font-extrabold mb-2 text-foreground font-serif">
             {competitionWithPrizes.title}
           </h1>
           <div className="flex items-center gap-2">
@@ -267,7 +267,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
             {/* Title and End Date - Desktop - Under carousel */}
             <div className="mt-6">
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 font-serif">
                 {competitionWithPrizes.title}
               </h1>
               <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">

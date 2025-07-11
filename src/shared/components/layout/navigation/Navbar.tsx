@@ -161,7 +161,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-accent",
+                  "text-sm font-medium transition-colors hover:text-accent font-sans",
                   activePath === link.href
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -174,7 +174,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <Link
                 href="/user/my-entries"
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-accent",
+                  "text-sm font-medium transition-colors hover:text-accent font-sans",
                   activePath === "/user/my-entries"
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -187,7 +187,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <Link
                 href="/admin"
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
+                  "text-sm font-medium transition-colors hover:text-primary font-sans",
                   activePath === "/admin"
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -237,7 +237,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                    "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors font-sans",
                     activePath === link.href
                       ? "bg-white text-[#E19841]"
                       : "text-[#151515] hover:bg-white/50"
@@ -265,7 +265,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <Link
                 href="/user/my-entries"
                 className={cn(
-                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors font-sans",
                   activePath === "/user/my-entries"
                     ? "bg-white text-[#E19841]"
                     : "text-[#151515] hover:bg-white/50"
@@ -292,7 +292,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <Link
                 href="/admin"
                 className={cn(
-                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors",
+                  "flex items-center gap-3 px-2 py-3 rounded-lg transition-colors font-sans",
                   activePath === "/admin"
                     ? "bg-white text-[#E19841]"
                     : "text-[#151515] hover:bg-white/50"

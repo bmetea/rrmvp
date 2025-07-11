@@ -1,6 +1,6 @@
 import { fetchCompetitionPrizesServer } from "@/(pages)/competitions/(server)/competition.service";
 import { notFound } from "next/navigation";
-import CompetitionDetail from "@/(pages)/competitions/(components)/CompetitionDetailNew";
+import CompetitionDetail from "@/(pages)/competitions/(components)/CompetitionDetail";
 
 export const dynamic = "force-dynamic";
 

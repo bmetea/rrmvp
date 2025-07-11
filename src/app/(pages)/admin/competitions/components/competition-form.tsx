@@ -20,6 +20,7 @@ interface CompetitionFormProps {
   formData: {
     title: string;
     description: string;
+    faq: string;
     type: "raffle" | "instant_win";
     ticket_price: string;
     total_tickets: string;
@@ -126,6 +127,15 @@ export function CompetitionForm({
           value={formData.description}
           onChange={(e) => onFormDataChange("description", e.target.value)}
           required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="faq">FAQ</Label>
+        <Textarea
+          id="faq"
+          value={formData.faq}
+          onChange={(e) => onFormDataChange("faq", e.target.value)}
         />
       </div>
 
