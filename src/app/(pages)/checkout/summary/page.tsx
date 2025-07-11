@@ -35,23 +35,38 @@ export default function CheckoutSummaryPage() {
   // Clean up payment widget scripts once on mount
   useEffect(() => {
     cleanupPaymentWidgetGlobals();
+  }, []); // Empty dependency array - only run once on mount
 
-    // Additional aggressive cleanup to ensure router works
-    setTimeout(() => {
-      cleanupPaymentWidgetGlobals();
+  // Override router navigation for this page since it's getting corrupted
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest("a[href]") as HTMLAnchorElement;
 
-      // Force remove any jQuery event handlers that might be interfering
-      if (typeof window !== "undefined") {
-        try {
-          if ((window as any).$) {
-            (window as any).$("*").off();
-          }
-        } catch (e) {
-          // Silent cleanup
+      if (link && link.href && link.href.startsWith(window.location.origin)) {
+        // Only override internal links
+        const href = link.getAttribute("href");
+        if (
+          href &&
+          !href.startsWith("#") &&
+          !href.startsWith("mailto:") &&
+          !href.startsWith("tel:")
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log("Router override: navigating to", href);
+          window.location.href = href;
         }
       }
-    }, 1000);
-  }, []); // Empty dependency array - only run once on mount
+    };
+
+    // Add the event listener to capture link clicks
+    document.addEventListener("click", handleLinkClick, true);
+
+    return () => {
+      document.removeEventListener("click", handleLinkClick, true);
+    };
+  }, []);
 
   // Handle summary data and analytics
   useEffect(() => {
