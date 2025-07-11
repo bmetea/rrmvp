@@ -50,37 +50,16 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           />
         </div>
 
-        {/* Title and End Date - Now below carousel */}
+        {/* Title and End Date */}
         <div className="mb-4">
-          <h1 className="text-3xl font-extrabold mb-2 text-foreground font-serif">
-            {competitionWithPrizes.title}
-          </h1>
-          <div className="flex items-center gap-2">
-            <span className="bg-[#E19841] px-3 py-0.5 rounded-full text-black text-sm font-semibold">
-              <Ticket className="w-3 h-3 inline-block mr-1" /> Ends{" "}
-              {formattedEndDate}
+          <div className="mb-2">
+            <span className="inline-flex items-center justify-center gap-2 bg-[#F4E8D1] px-4 py-1 rounded font-['Open_Sans'] text-[14px] font-semibold leading-[21px] text-[#151515]">
+              Ends {formattedEndDate}
             </span>
           </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          <div className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-2 text-center">
-            <p className="text-[#E19841] text-xl font-bold">{ticketsLeft}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Left</p>
-          </div>
-          <div className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-2 text-center">
-            <p className="text-[#E19841] text-xl font-bold">{ticketsSold}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Sold</p>
-          </div>
-          <div className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-2 text-center">
-            <p className="text-[#E19841] text-xl font-bold">
-              {formatPrice(ticketPrice)}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Per Ticket
-            </p>
-          </div>
+          <h1 className="font-['Crimson_Pro'] text-[34px] font-medium text-[#151515]">
+            {competitionWithPrizes.title}
+          </h1>
         </div>
 
         {/* Mobile Content Card */}
@@ -89,7 +68,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           <div className="mb-4">
             <div className="flex justify-between text-xs mb-1">
               <span className="text-gray-500 dark:text-gray-300">
-                {ticketsLeft} Left
+                {ticketsLeft} Tickets Left
               </span>
               <span className="text-gray-500 dark:text-gray-300">
                 {ticketsSold}/{totalTickets}
@@ -97,9 +76,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
             </div>
             <Progress
               value={progress}
-              className="h-3 bg-gray-200 dark:bg-[#232326] rounded-full"
+              className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 dark:bg-[#232326] rounded-full"
             />
-            <div className="text-[#E19841] font-bold text-xs mt-0.5">
+            <div className="text-gray-500 dark:text-gray-300 font-bold text-xs mt-0.5">
               {progress}%
             </div>
           </div>
@@ -114,13 +93,13 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 <button
                   key={`quick-select-${num}`}
                   onClick={() => setTicketCount(num)}
-                  className={`w-full px-2 py-2 rounded-lg font-bold text-base border transition-colors
+                  className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
                     ${
                       ticketCount === num
-                        ? "bg-[#E19841] text-black border-[#E19841]"
-                        : "bg-gray-100 dark:bg-[#232326] text-black dark:text-white border-gray-100 dark:border-[#232326]"
+                        ? "bg-[#151515] text-white border-[#151515]"
+                        : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
                     }
-                  `}
+                    rounded-lg flex items-center justify-center`}
                 >
                   {num}
                 </button>
@@ -147,11 +126,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Total Price */}
           <div className="mb-4">
-            <div className="bg-gray-100 dark:bg-[#232326] rounded-lg p-3 text-center">
-              <p className="text-[#E19841] text-xl font-bold mb-0.5">
+            <div className="bg-[#F7F7F7] dark:bg-[#232326] rounded-lg px-6 py-4 text-center">
+              <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] dark:text-white mb-1">
                 {formatPrice(totalPrice)}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515] dark:text-white">
                 {ticketCount} Tickets at {formatPrice(ticketPrice)} each
               </p>
             </div>
@@ -159,7 +138,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Add to Cart Button */}
           <button
-            className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-base py-3 rounded-lg transition-colors mb-3"
+            className="w-full btn-cta-lg mb-3"
             onClick={() => addItem(competitionWithPrizes, ticketCount)}
           >
             Add To Cart
@@ -168,7 +147,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           {/* Free Postal Entry */}
           <Link
             href="/free-postal-entry"
-            className="block text-center text-[#E19841] hover:text-[#D18A33]"
+            className="block text-center text-cta hover:text-cta-hover"
           >
             Free Postal Entry Available
           </Link>
@@ -381,7 +360,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
               {/* Add to Cart Button */}
               <button
-                className="w-full bg-[#E19841] hover:bg-[#D18A33] text-black font-extrabold text-lg py-4 rounded-xl transition-colors mb-6"
+                className="w-full btn-cta-lg mb-6"
                 onClick={() => addItem(competitionWithPrizes, ticketCount)}
               >
                 Add To Cart
@@ -390,7 +369,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               {/* Free Postal Entry */}
               <Link
                 href="/free-postal-entry"
-                className="block text-center text-[#E19841] hover:text-[#D18A33] font-medium"
+                className="block text-center text-cta hover:text-cta-hover font-medium"
               >
                 Free Postal Entry Available
               </Link>

@@ -56,6 +56,11 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        cta: {
+          DEFAULT: "#3D2C8D", // Royal Purple
+          hover: "#2A1E5C", // Darker shade for hover
+          foreground: "#FFFFFF", // White text
+        },
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",

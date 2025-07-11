@@ -58,21 +58,14 @@
     --secondary: 0 0% 97%; /* #F7F7F7 */
     --secondary-foreground: 0 0% 8%; /* #151515 */
     --muted: 0 0% 97%; /* #F7F7F7 */
-    --muted-foreground: 0 0% 19%; /* #313131 - Updated to match Figma */
-    --accent: 252 69% 40%; /* #3D2C8D - Updated to match Figma button color */
+    --muted-foreground: 0 0% 19%; /* #313131 */
+    --accent: 252 69% 40%; /* #3D2C8D */
     --accent-foreground: 0 0% 100%; /* #FFFFFF */
     --destructive: 0 84.2% 60.2%;
     --border: 0 0% 90.6%; /* #E7E7E7 */
     --input: 0 0% 90.6%; /* #E7E7E7 */
     --ring: 0 0% 8%; /* #151515 */
     --radius: 0.5rem;
-    --destructive-foreground: 0 0% 100%;
-    --chart-1: 271 96% 63%; /* #9747FF */
-    --chart-2: 266 89% 70%; /* #9F68FF */
-    --chart-3: 0 0% 90.6%; /* #E7E7E7 */
-    --chart-4: 0 0% 100%; /* #FFFFFF */
-    --chart-5: 0 0% 8%; /* #151515 */
-    --font-sans: var(--font-crimson-pro), "Crimson Pro", serif;
   }
 
   .dark {
@@ -166,6 +159,20 @@
   /* Default body text size */
   p {
     @apply text-[16px] leading-[1.5em];
+  }
+}
+
+@layer components {
+  .btn-cta {
+    @apply bg-cta text-cta-foreground hover:bg-cta-hover font-semibold rounded-full transition-colors;
+  }
+
+  .btn-cta-lg {
+    @apply btn-cta px-6 py-3 text-base;
+  }
+
+  .btn-cta-md {
+    @apply btn-cta px-4 py-2 text-sm;
   }
 }
 
