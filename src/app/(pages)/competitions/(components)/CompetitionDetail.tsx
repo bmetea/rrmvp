@@ -243,23 +243,24 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               images={competitionWithPrizes.media_info?.images || []}
               title={competitionWithPrizes.title}
             />
-
-            {/* Title and End Date - Desktop - Under carousel */}
-            <div className="mt-6">
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 font-serif">
-                {competitionWithPrizes.title}
-              </h1>
-              <span className="inline-block bg-[#E19841] px-4 py-1 rounded-full text-black text-sm font-semibold">
-                <Ticket className="w-4 h-4 inline-block mr-1" /> Ends{" "}
-                {formattedEndDate} {formattedTime}
-              </span>
-            </div>
           </div>
 
           {/* Right Column */}
           <div className="space-y-8">
             {/* Main Content Card */}
             <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+              {/* Title and End Date */}
+              <div className="mb-6">
+                <div className="mb-2">
+                  <span className="inline-flex items-center justify-center gap-2 bg-[#F4E8D1] px-4 py-1 rounded font-['Open_Sans'] text-[14px] font-semibold leading-[21px] text-[#151515]">
+                    Ends {formattedEndDate}
+                  </span>
+                </div>
+                <h1 className="font-['Crimson_Pro'] text-[45px] font-medium text-[#151515] dark:text-white">
+                  {competitionWithPrizes.title}
+                </h1>
+              </div>
+
               {/* Progress Bar */}
               <div className="mb-4">
                 <div className="flex justify-between text-xs mb-1">
