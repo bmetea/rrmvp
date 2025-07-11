@@ -258,38 +258,10 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Right Column */}
           <div className="space-y-8">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
-                <p className="text-[#E19841] text-2xl font-bold mb-1">
-                  {ticketsLeft}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Tickets Left
-                </p>
-              </div>
-              <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
-                <p className="text-[#E19841] text-2xl font-bold mb-1">
-                  {ticketsSold}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Tickets Sold
-                </p>
-              </div>
-              <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-md p-4 text-center">
-                <p className="text-[#E19841] text-2xl font-bold mb-1">
-                  {formatPrice(ticketPrice)}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Per Ticket
-                </p>
-              </div>
-            </div>
-
             {/* Main Content Card */}
             <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
               {/* Progress Bar */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-gray-500 dark:text-gray-300">
                     {ticketsLeft} Tickets Left
@@ -300,28 +272,30 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 </div>
                 <Progress
                   value={progress}
-                  className="h-4 bg-gray-200 dark:bg-[#232326] rounded-full"
+                  className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 dark:bg-[#232326] rounded-full"
                 />
-                <div className="text-[#E19841] font-bold text-sm mt-1">
+                <div className="text-gray-500 dark:text-gray-300 font-bold text-xs mt-0.5">
                   {progress}%
                 </div>
               </div>
 
               {/* Quick Ticket Selection */}
-              <div className="mb-6">
-                <label className="block font-bold mb-3">Select Tickets</label>
+              <div className="mb-4">
+                <label className="block font-bold text-sm mb-2">
+                  Select Tickets
+                </label>
                 <div className="grid grid-cols-3 gap-2">
                   {quickSelect.map((num) => (
                     <button
                       key={`quick-select-${num}`}
                       onClick={() => setTicketCount(num)}
-                      className={`w-full px-4 py-3 rounded-lg font-bold text-lg border-2 transition-colors
+                      className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
                         ${
                           ticketCount === num
-                            ? "bg-[#E19841] text-black border-[#E19841]"
-                            : "bg-gray-100 dark:bg-[#232326] text-black dark:text-white border-gray-100 dark:border-[#232326]"
+                            ? "bg-[#151515] text-white border-[#151515]"
+                            : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
                         }
-                      `}
+                        rounded-lg flex items-center justify-center`}
                     >
                       {num}
                     </button>
@@ -348,11 +322,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
               {/* Total Price */}
               <div className="mb-6">
-                <div className="bg-gray-100 dark:bg-[#232326] rounded-lg p-4 text-center">
-                  <p className="text-[#E19841] text-2xl font-bold mb-1">
+                <div className="bg-[#F7F7F7] dark:bg-[#232326] rounded-lg px-6 py-4 text-center">
+                  <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] dark:text-white mb-1">
                     {formatPrice(totalPrice)}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515] dark:text-white">
                     {ticketCount} Tickets at {formatPrice(ticketPrice)} each
                   </p>
                 </div>
