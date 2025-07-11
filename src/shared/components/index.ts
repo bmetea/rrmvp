@@ -9,6 +9,8 @@ export { default as Footer } from "./layout/navigation/Footer";
 export { default as GoogleAnalytics } from "./analytics/GoogleAnalytics";
 export { default as PageViewTracker } from "./analytics/PageViewTracker";
 export { default as SegmentProvider } from "./analytics/SegmentProvider";
+export { default as MetaPixel } from "./analytics/MetaPixel";
+export { default as MetaPixelPageTracker } from "./analytics/MetaPixelPageTracker";
 
 // Theme component exports
 export { ThemeProvider } from "./theme/theme-provider";

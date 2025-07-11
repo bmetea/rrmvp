@@ -9,7 +9,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { useSegmentAnalytics } from "@/shared/hooks/use-segment-analytics";
+import { useAnalytics } from "@/shared/hooks/use-analytics";
 
 interface Competition {
   id: string;
@@ -44,7 +44,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { trackAddToCart, trackRemoveFromCart, trackCartViewed } =
-    useSegmentAnalytics();
+    useAnalytics();
 
   // Ensure items is always an array
   const safeItems = useMemo(() => {

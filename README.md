@@ -160,10 +160,10 @@ The following events are tracked automatically without additional code:
 #### Using the Hook
 
 ```tsx
-import { useSegmentAnalytics } from '@/shared/hooks/use-segment-analytics';
+import { useAnalytics } from '@/shared/hooks/use-analytics';
 
 function MyComponent() {
-  const { trackEvent, trackCompetitionViewed } = useSegmentAnalytics();
+  const { trackEvent, trackCompetitionViewed } = useAnalytics();
 
   const handleCompetitionView = () => {
     trackCompetitionViewed('competition-id', 'Competition Title', 'raffle');

@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { analytics } from "@/shared/lib/segment";
+import { useMetaPixel } from "./use-meta-pixel";
 
 export interface SegmentUser {
   userId: string;
@@ -34,8 +35,9 @@ export interface PurchaseData {
   cardAmount?: number;
 }
 
-export const useSegmentAnalytics = () => {
+export const useAnalytics = () => {
   const { user, isSignedIn } = useUser();
+  const metaPixel = useMetaPixel();
 
   // Identify user when they sign in or user data is available
   useEffect(() => {
@@ -92,20 +94,32 @@ export const useSegmentAnalytics = () => {
   }, []);
 
   // Track add to cart
-  const trackAddToCart = useCallback((item: CartItem) => {
-    analytics.then(([analytics]) => {
-      analytics.track("Product Added", {
-        product_id: item.competitionId,
-        name: item.competitionTitle,
-        category: item.competitionType || "competition",
-        price: item.price,
-        quantity: item.quantity,
-        ticket_price: item.ticketPrice,
-        currency: "GBP",
-        value: item.price * item.quantity,
+  const trackAddToCart = useCallback(
+    (item: CartItem) => {
+      analytics.then(([analytics]) => {
+        analytics.track("Product Added", {
+          product_id: item.competitionId,
+          name: item.competitionTitle,
+          category: item.competitionType || "competition",
+          price: item.price,
+          quantity: item.quantity,
+          ticket_price: item.ticketPrice,
+          currency: "GBP",
+          value: item.price * item.quantity,
+        });
       });
-    });
-  }, []);
+
+      // Track in Meta Pixel
+      metaPixel.trackAddToCart({
+        content_ids: [item.competitionId],
+        content_name: item.competitionTitle,
+        content_type: "product",
+        value: (item.price * item.quantity) / 100, // Convert pence to pounds for Meta
+        currency: "GBP",
+      });
+    },
+    [metaPixel]
+  );
 
   // Track remove from cart
   const trackRemoveFromCart = useCallback((item: CartItem) => {
@@ -168,12 +182,20 @@ export const useSegmentAnalytics = () => {
         });
       });
 
+      // Track in Meta Pixel
+      metaPixel.trackInitiateCheckout({
+        content_ids: items.map((item) => item.competitionId),
+        num_items: items.length,
+        value: totalValue / 100, // Convert pence to pounds for Meta
+        currency: "GBP",
+      });
+
       // Set checkout abandonment timer
       setTimeout(() => {
         trackCheckoutAbandoned(items, totalValue, checkoutId);
       }, 15 * 60 * 1000); // 15 minutes
     },
-    []
+    [metaPixel]
   );
 
   // Track checkout abandoned
@@ -209,41 +231,52 @@ export const useSegmentAnalytics = () => {
   );
 
   // Track purchase completed
-  const trackPurchase = useCallback((purchaseData: PurchaseData) => {
-    const products = purchaseData.items.map((item) => ({
-      product_id: item.competitionId,
-      sku: item.competitionId,
-      name: item.competitionTitle,
-      category: item.competitionType || "competition",
-      price: item.price,
-      quantity: item.quantity,
-    }));
+  const trackPurchase = useCallback(
+    (purchaseData: PurchaseData) => {
+      const products = purchaseData.items.map((item) => ({
+        product_id: item.competitionId,
+        sku: item.competitionId,
+        name: item.competitionTitle,
+        category: item.competitionType || "competition",
+        price: item.price,
+        quantity: item.quantity,
+      }));
 
-    analytics.then(([analytics]) => {
-      analytics.track("Order Completed", {
-        order_id: purchaseData.orderId,
-        products,
-        revenue: purchaseData.revenue,
-        value: purchaseData.revenue,
+      analytics.then(([analytics]) => {
+        analytics.track("Order Completed", {
+          order_id: purchaseData.orderId,
+          products,
+          revenue: purchaseData.revenue,
+          value: purchaseData.revenue,
+          currency: purchaseData.currency || "GBP",
+          payment_method: purchaseData.paymentMethod,
+          wallet_amount: purchaseData.walletAmount,
+          card_amount: purchaseData.cardAmount,
+          num_items: purchaseData.items.length,
+          total_tickets: purchaseData.items.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          ),
+        });
+
+        // Track revenue
+        analytics.track("Revenue", {
+          revenue: purchaseData.revenue,
+          currency: purchaseData.currency || "GBP",
+          order_id: purchaseData.orderId,
+        });
+      });
+
+      // Track in Meta Pixel
+      metaPixel.trackPurchase({
+        content_ids: purchaseData.items.map((item) => item.competitionId),
+        value: purchaseData.revenue / 100, // Convert pence to pounds for Meta
         currency: purchaseData.currency || "GBP",
-        payment_method: purchaseData.paymentMethod,
-        wallet_amount: purchaseData.walletAmount,
-        card_amount: purchaseData.cardAmount,
         num_items: purchaseData.items.length,
-        total_tickets: purchaseData.items.reduce(
-          (sum, item) => sum + item.quantity,
-          0
-        ),
       });
-
-      // Track revenue
-      analytics.track("Revenue", {
-        revenue: purchaseData.revenue,
-        currency: purchaseData.currency || "GBP",
-        order_id: purchaseData.orderId,
-      });
-    });
-  }, []);
+    },
+    [metaPixel]
+  );
 
   // Track competition viewed
   const trackCompetitionViewed = useCallback(
@@ -259,19 +292,34 @@ export const useSegmentAnalytics = () => {
           category: competitionType || "competition",
         });
       });
+
+      // Track in Meta Pixel
+      metaPixel.trackViewContent({
+        content_ids: [competitionId],
+        content_name: competitionTitle,
+        content_type: "product",
+      });
     },
-    []
+    [metaPixel]
   );
 
   // Track search
-  const trackSearch = useCallback((query: string, results?: number) => {
-    analytics.then(([analytics]) => {
-      analytics.track("Products Searched", {
-        query,
-        results_count: results,
+  const trackSearch = useCallback(
+    (query: string, results?: number) => {
+      analytics.then(([analytics]) => {
+        analytics.track("Products Searched", {
+          query,
+          results_count: results,
+        });
       });
-    });
-  }, []);
+
+      // Track in Meta Pixel
+      metaPixel.trackSearch({
+        search_string: query,
+      });
+    },
+    [metaPixel]
+  );
 
   // Track last active (called periodically)
   const trackLastActive = useCallback(() => {

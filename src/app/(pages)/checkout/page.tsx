@@ -19,7 +19,7 @@ import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
-import { useSegmentAnalytics } from "@/shared/hooks/use-segment-analytics";
+import { useAnalytics } from "@/shared/hooks/use-analytics";
 
 export default function CheckoutPage() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } =
@@ -38,7 +38,7 @@ export default function CheckoutPage() {
     checkoutId: string;
     widgetUrl: string;
   } | null>(null);
-  const { trackCheckoutStarted } = useSegmentAnalytics();
+  const { trackCheckoutStarted } = useAnalytics();
 
   // Fetch wallet balance when user is signed in
   useEffect(() => {

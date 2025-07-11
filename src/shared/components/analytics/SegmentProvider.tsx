@@ -2,12 +2,12 @@
 
 import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useSegmentAnalytics } from "@/shared/hooks/use-segment-analytics";
+import { useAnalytics } from "@/shared/hooks/use-analytics";
 
 function SegmentPageTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { trackPageView } = useSegmentAnalytics();
+  const { trackPageView } = useAnalytics();
 
   useEffect(() => {
     if (pathname) {

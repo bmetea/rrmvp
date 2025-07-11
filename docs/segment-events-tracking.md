@@ -1,14 +1,49 @@
-****# Segment Analytics Events Documentation
+# Analytics Documentation (Legacy)
 
-This document outlines all the events tracked via Segment Analytics in the Radiance Rewards application.
+**⚠️ This document has been superseded by the new analytics documentation structure.**
+
+**Please use the new documentation:**
+- **[Main Analytics Overview](./analytics.md)** - Unified analytics documentation
+- **[Segment Analytics](./segment_analytics.md)** - Segment-specific documentation  
+- **[Meta Pixel](./meta_pixel.md)** - Facebook/Instagram advertising
+- **[Google Analytics](./google_analytics.md)** - Web analytics and reporting
+
+---
+
+## Legacy Content
+
+This document outlines all the events tracked via Segment Analytics in the Radiance Rewards application. **Note:** The hook has been renamed from `useSegmentAnalytics` to `useAnalytics`.
 
 ## Configuration
 
 **Environment Variables Required:**
 - `NEXT_PUBLIC_ENABLE_ANALYTICS=true`
 - `NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key`
+- `NEXT_PUBLIC_META_PIXEL_ID=your_meta_pixel_id` (optional)
+- `NEXT_PUBLIC_GA_TRACKING_ID=your_ga_tracking_id` (optional)
 
-**Implementation:** Uses `@segment/analytics-next` with custom `useSegmentAnalytics` hook.
+**Implementation:** Uses `@segment/analytics-next` with custom `useAnalytics` hook (formerly `useSegmentAnalytics`). Meta Pixel and Google Analytics events are automatically triggered alongside Segment events for unified tracking.
+
+---
+
+## Cross-Platform Event Tracking
+
+All events tracked through the `useAnalytics` hook are automatically sent to:
+- **Segment Analytics** - For data warehousing and downstream integrations
+- **Meta Pixel** - For Facebook/Instagram advertising optimization 
+- **Google Analytics** - For web analytics and reporting
+
+This unified approach ensures consistent tracking across all platforms without requiring separate implementation for each service.
+
+**Meta Pixel Events Automatically Tracked:**
+- `PageView` - All page visits
+- `AddToCart` - Product additions to cart
+- `InitiateCheckout` - Checkout process started
+- `Purchase` - Completed purchases
+- `ViewContent` - Product/competition page views
+- `Search` - Search queries
+
+**Currency Conversion:** Values are automatically converted from pence (internal format) to pounds for Meta Pixel compliance.
 
 ---
 
@@ -20,7 +55,7 @@ These events are tracked automatically without additional code requirements:
 
 #### `identify` Call
 - **When:** User signs in or user data becomes available
-- **Trigger:** `useSegmentAnalytics` hook on sign-in
+- **Trigger:** `useAnalytics` hook on sign-in
 - **Data:**
   ```javascript
   {
@@ -161,7 +196,7 @@ These events are tracked automatically without additional code requirements:
 
 #### `Checkout Abandoned`
 - **When:** 15 minutes after checkout started without completion
-- **Trigger:** Timeout in `useSegmentAnalytics` hook
+- **Trigger:** Timeout in `useAnalytics` hook
 - **Conditions:** Only fires if user still on checkout pages (not summary)
 - **Data:**
   ```javascript
@@ -219,7 +254,7 @@ These events are tracked automatically without additional code requirements:
 
 #### `User Active`
 - **When:** Every 30 seconds while user is active + page visibility changes
-- **Trigger:** `useSegmentAnalytics` hook with intervals
+- **Trigger:** `useAnalytics` hook with intervals
 - **Data:**
   ```javascript
   {
@@ -232,7 +267,7 @@ These events are tracked automatically without additional code requirements:
 
 ## Manual Tracking Methods
 
-These events can be triggered manually using the `useSegmentAnalytics` hook:
+These events can be triggered manually using the `useAnalytics` hook:
 
 ### Product Interactions
 
@@ -326,9 +361,15 @@ All events automatically include:
 ## Implementation Files
 
 ### Core Implementation
-- `src/shared/hooks/use-segment-analytics.ts` - Main analytics hook
+- `src/shared/hooks/use-analytics.ts` - Main analytics hook with cross-platform tracking (formerly use-segment-analytics.ts)
+- `src/shared/hooks/use-meta-pixel.ts` - Meta Pixel tracking functions
+- `src/shared/hooks/use-google-analytics.ts` - Google Analytics tracking functions  
 - `src/shared/lib/segment.ts` - Segment initialization
-- `src/shared/components/analytics/SegmentProvider.tsx` - Page tracking
+- `src/shared/components/analytics/SegmentProvider.tsx` - Segment page tracking
+- `src/shared/components/analytics/MetaPixel.tsx` - Meta Pixel initialization
+- `src/shared/components/analytics/MetaPixelPageTracker.tsx` - Meta Pixel page tracking
+- `src/shared/components/analytics/GoogleAnalytics.tsx` - Google Analytics initialization
+- `src/shared/components/analytics/PageViewTracker.tsx` - Google Analytics page tracking
 
 ### Integration Points
 - `src/app/api/webhooks/route.ts` - User signup/update tracking
@@ -342,14 +383,14 @@ All events automatically include:
 ## Data Flow
 
 ```
-User Action → Component/Hook → useSegmentAnalytics → Segment API → Your Analytics Platform
+User Action → Component/Hook → useAnalytics → Segment API → Your Analytics Platform
 ```
 
 ### Example: Add to Cart Flow
 1. User clicks "Add to Cart" button
 2. `CartProvider` calls `addItem()`
 3. Cart context triggers `trackAddToCart()` 
-4. `useSegmentAnalytics` formats event data
+4. `useAnalytics` formats event data
 5. Segment receives "Product Added" event
 6. Data flows to connected destinations (e.g., Amplitude, Mixpanel, etc.)
 

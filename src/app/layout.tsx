@@ -11,6 +11,8 @@ import { Toaster } from "sonner";
 import GoogleAnalytics from "@/shared/components/analytics/GoogleAnalytics";
 import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
 import SegmentProvider from "@/shared/components/analytics/SegmentProvider";
+import MetaPixel from "@/shared/components/analytics/MetaPixel";
+import MetaPixelPageTracker from "@/shared/components/analytics/MetaPixelPageTracker";
 
 const crimsonPro = Crimson_Pro({
   subsets: ["latin"],
@@ -100,6 +102,8 @@ export default async function RootLayout({
           <GoogleAnalytics />
           <PageViewTracker />
           <SegmentProvider />
+          <MetaPixel />
+          <MetaPixelPageTracker />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

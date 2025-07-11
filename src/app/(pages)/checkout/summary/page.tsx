@@ -6,7 +6,7 @@ import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
-import { useSegmentAnalytics } from "@/shared/hooks/use-segment-analytics";
+import { useAnalytics } from "@/shared/hooks/use-analytics";
 
 interface TicketResult {
   competitionId: string;
@@ -29,7 +29,7 @@ export default function CheckoutSummaryPage() {
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
   const router = useRouter();
-  const { trackPurchase } = useSegmentAnalytics();
+  const { trackPurchase } = useAnalytics();
 
   useEffect(() => {
     // Get summary data from URL state
