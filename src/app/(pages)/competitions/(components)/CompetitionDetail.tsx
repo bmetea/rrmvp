@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Ticket, ChevronDown, ChevronUp } from "lucide-react";
 import { Progress } from "@/shared/components/ui/progress";
-import { CompetitionPrizeDetail } from "./CompetitionPrizeDetail";
+import { CompetitionPrizeDetail } from "./CompetitionPrizeListDetail";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { formatPrice } from "@/shared/lib/utils/price";
 import Link from "next/link";
