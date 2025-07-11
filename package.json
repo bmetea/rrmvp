@@ -49,6 +49,7 @@
     "react-hook-form": "^7.57.0",
     "react-markdown": "^10.1.0",
     "react-scan": "^0.3.4",
+    "remark-gfm": "^4.0.1",
     "shadcn": "^2.6.3",
     "sonner": "^2.0.5",
     "sst": "3.14.28",

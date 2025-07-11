@@ -1,12 +1,13 @@
 import { fetchCompetitionPrizesServer } from "@/(pages)/competitions/(server)/competition.service";
 import { notFound } from "next/navigation";
-import CompetitionDetail from "@/(pages)/competitions/(components)/CompetitionDetail";
+import CompetitionDetail from "@/(pages)/competitions/(components)/CompetitionDetailNew";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: {
+    id: string;
+  };
 }
 
 export default async function CompetitionPageWrapper({ params }: PageProps) {

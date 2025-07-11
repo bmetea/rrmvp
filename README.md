@@ -278,6 +278,12 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+<div style="font-family: 'Crimson Pro', serif;">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+</style>
+
 ## Competition Details
 
 # 🏆 Ultimate Anti-Wrinkle Treatment Prize Draw
@@ -334,3 +340,5 @@ See Clause 6 for full details
 *Remember: This life-changing prize could be yours!*
 
 **Ready to Enter?** [Click Here](#) to join the draw.
+
+</div>
