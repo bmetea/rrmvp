@@ -162,36 +162,40 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 {prizes.map((prize, idx) => (
                   <div
                     key={`${prize.id}-${prize.product?.id || idx}`}
-                    className="rounded-lg border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
+                    className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
                   >
-                    <div className="flex items-center p-3 gap-3">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
+                    <div className="flex items-center p-4 gap-4">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
                         <Image
                           src={
                             prize.product?.media_info?.images?.[0] ||
                             "/images/placeholder.jpg"
                           }
                           alt={prize.product?.name || "Prize"}
-                          width={64}
-                          height={64}
+                          width={80}
+                          height={80}
                           className="object-cover w-full h-full"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-bold mb-1 truncate">
+                        <h3 className="font-['Crimson_Pro'] text-[35px] font-medium text-[#151515] dark:text-white mb-2 truncate">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <div className="inline-block px-2 py-0.5 rounded bg-[#E5F3FF] text-[#0094FF] text-xs font-bold">
-                            {
-                              (prize.winning_ticket_numbers || []).filter(
-                                (t) =>
-                                  !(
-                                    prize.claimed_winning_tickets || []
-                                  ).includes(t)
-                              ).length
-                            }{" "}
-                            to Win!
+                          <div className="inline-flex items-center justify-center gap-2 px-4 py-1 bg-[#E19841] rounded-lg">
+                            <span className="font-['Crimson_Pro'] text-[22px] font-medium text-[#151515]">
+                              {
+                                (prize.winning_ticket_numbers || []).filter(
+                                  (t) =>
+                                    !(
+                                      prize.claimed_winning_tickets || []
+                                    ).includes(t)
+                                ).length
+                              }
+                            </span>
+                            <span className="font-['Open_Sans'] text-[18px] font-normal leading-[27px] text-[#313131]">
+                              to be won
+                            </span>
                           </div>
                         </div>
                       </div>
