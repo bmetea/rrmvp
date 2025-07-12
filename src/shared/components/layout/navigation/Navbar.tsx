@@ -200,7 +200,6 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
             <CompetitionCartDialog />
             <SignedIn>
               <CustomUserButton />
