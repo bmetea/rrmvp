@@ -23,7 +23,7 @@ interface PaymentFormProps {
 export function PaymentForm({
   checkoutId,
   widgetUrl,
-  brands = "VISA AMEX APPLEPAY GOOGLEPAY",
+  brands = "VISA AMEX APPLEPAY",
   className = "",
 }: PaymentFormProps) {
   const [error, setError] = useState<string | null>(null);
@@ -54,86 +54,6 @@ export function PaymentForm({
             buttonSource: "js",
             displayName: "MyStore",
             total: { label: "COMPANY, INC." },
-          },
-          googlePay: {
-            buttonColor: 'black',
-            buttonSizeMode: 'fill',
-            gatewayMerchantId: '${gatewayMerchantId}',
-            merchantId: 'BCR2DN7TZCX3RQQL',
-            allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-            onPaymentAuthorized: function(paymentData) {
-              console.log('[Google Pay] Payment authorized:', paymentData);
-              
-              // Log the payment authorization event
-              if (window.oppwaLogger) {
-                window.oppwaLogger.logWidget('googlePay:paymentAuthorized', { 
-                  paymentMethodType: paymentData.paymentMethodData?.type,
-                  cardNetwork: paymentData.paymentMethodData?.info?.cardNetwork
-                });
-              }
-              
-              // Return success to continue with payment processing
-              return {
-                transactionState: 'SUCCESS'
-              };
-            },
-            onPaymentDataChanged: function(intermediatePaymentData) {
-              console.log('[Google Pay] Payment data changed:', intermediatePaymentData);
-              
-              // Log the payment data change event
-              if (window.oppwaLogger) {
-                window.oppwaLogger.logWidget('googlePay:paymentDataChanged', {
-                  callbackTrigger: intermediatePaymentData.callbackTrigger,
-                  hasShippingAddress: !!intermediatePaymentData.shippingAddress,
-                  hasOfferData: !!intermediatePaymentData.offerData
-                });
-              }
-              
-              // Handle different types of data changes
-              switch (intermediatePaymentData.callbackTrigger) {
-                case 'INITIALIZE':
-                  console.log('[Google Pay] Initializing payment data');
-                  break;
-                case 'SHIPPING_ADDRESS':
-                  console.log('[Google Pay] Shipping address changed:', intermediatePaymentData.shippingAddress);
-                  break;
-                case 'SHIPPING_OPTION':
-                  console.log('[Google Pay] Shipping option changed:', intermediatePaymentData.shippingOptionData);
-                  break;
-                case 'OFFER':
-                  console.log('[Google Pay] Offer data changed:', intermediatePaymentData.offerData);
-                  break;
-                default:
-                  console.log('[Google Pay] Unknown callback trigger:', intermediatePaymentData.callbackTrigger);
-              }
-              
-              // Return updated payment data (if needed)
-              // For basic implementation, we just resolve without changes
-              return Promise.resolve({});
-            },
-            onError: function(error) {
-              console.error('[Google Pay] Error occurred:', error);
-              
-              // Log the error event
-              if (window.oppwaLogger) {
-                window.oppwaLogger.logWidget('googlePay:error', {
-                  errorCode: error.statusCode || 'UNKNOWN',
-                  errorMessage: error.statusMessage || error.message || 'Unknown error'
-                });
-              }
-              
-              // Handle different types of errors
-              switch (error.statusCode) {
-                case 'CANCELED':
-                  console.log('[Google Pay] Payment was canceled by user');
-                  break;
-                case 'DEVELOPER_ERROR':
-                  console.error('[Google Pay] Developer configuration error:', error);
-                  break;
-                default:
-                  console.error('[Google Pay] Unexpected error:', error);
-              }
-            }
           },
           onReady: function() {
             console.log('[OPPWA Widget] Widget ready');
