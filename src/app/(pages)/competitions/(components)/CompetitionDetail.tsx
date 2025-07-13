@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Ticket, ChevronDown, ChevronUp } from "lucide-react";
+import { Ticket, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import { Progress } from "@/shared/components/ui/progress";
 import { CompetitionPrizeDetail } from "./CompetitionPrizeListDetail";
 import { useCart } from "@/shared/lib/context/cart-context";
@@ -172,10 +172,25 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Add to Cart Button (Mobile) */}
           <Button
-            className="w-full btn-cta-lg mb-3"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
+            style={{
+              fontWeight: 600,
+              fontFamily: "Open Sans, sans-serif",
+              lineHeight: "24px",
+            }}
             onClick={handleAddToCartClick}
           >
-            Add To Cart
+            <span
+              style={{
+                fontWeight: 600,
+                fontFamily: "Open Sans, sans-serif",
+                fontSize: 16,
+                lineHeight: "24px",
+              }}
+            >
+              Enter now
+            </span>
+            <ArrowRight className="w-5 h-5 text-white" />
           </Button>
 
           {/* Free Postal Entry */}
@@ -370,10 +385,25 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
               {/* Add to Cart Button (Desktop) */}
               <Button
-                className="w-full btn-cta-lg mb-6"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
+                style={{
+                  fontWeight: 600,
+                  fontFamily: "Open Sans, sans-serif",
+                  lineHeight: "24px",
+                }}
                 onClick={handleAddToCartClick}
               >
-                Add To Cart
+                <span
+                  style={{
+                    fontWeight: 600,
+                    fontFamily: "Open Sans, sans-serif",
+                    fontSize: 16,
+                    lineHeight: "24px",
+                  }}
+                >
+                  Enter now
+                </span>
+                <ArrowRight className="w-5 h-5 text-white" />
               </Button>
 
               {/* Free Postal Entry */}
