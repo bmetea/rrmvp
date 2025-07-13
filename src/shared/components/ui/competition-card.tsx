@@ -54,7 +54,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
 
   return (
     <Link href={`/competitions/${competition.id}`} className="block h-full">
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-1 outline-neutral-100 dark:outline-neutral-800 flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full hover:outline-2 hover:outline-[#E19841] transition-all cursor-pointer">
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-2 outline-[#E19841] flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full transition-all cursor-pointer">
         {/* Banner */}
         <div
           className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
