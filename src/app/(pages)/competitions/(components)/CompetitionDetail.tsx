@@ -11,6 +11,13 @@ import Link from "next/link";
 import CompetitionImageCarousel from "./CompetitionImageCarousel";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/components/ui/dialog";
+import { Button } from "@/shared/components/ui/button";
 
 // Main component implementation
 function CompetitionDetailImpl({ competitionWithPrizes }) {
@@ -37,6 +44,33 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
   const maxTickets = 2500;
   const totalPrice = ticketPrice * ticketCount;
   const prizes = competitionWithPrizes.prizes || [];
+
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [quizAnswer, setQuizAnswer] = useState("");
+  const [quizError, setQuizError] = useState("");
+  const [pendingAddToCart, setPendingAddToCart] = useState(false);
+
+  function handleQuizSubmit() {
+    if (quizAnswer === "London") {
+      setQuizError("");
+      setQuizOpen(false);
+      setTimeout(() => {
+        addItem(competitionWithPrizes, ticketCount);
+        setPendingAddToCart(false);
+      }, 100);
+    } else {
+      setQuizError("Sorry, that is incorrect. Please try again.");
+    }
+  }
+
+  function handleAddToCartClick() {
+    if (competitionWithPrizes.type?.toLowerCase().trim() === "raffle") {
+      setQuizOpen(true);
+      setPendingAddToCart(true);
+    } else {
+      addItem(competitionWithPrizes, ticketCount);
+    }
+  }
 
   return (
     <div className="max-w-7xl mx-auto py-4 lg:py-8 px-4">
@@ -136,13 +170,13 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
             </div>
           </div>
 
-          {/* Add to Cart Button */}
-          <button
+          {/* Add to Cart Button (Mobile) */}
+          <Button
             className="w-full btn-cta-lg mb-3"
-            onClick={() => addItem(competitionWithPrizes, ticketCount)}
+            onClick={handleAddToCartClick}
           >
             Add To Cart
-          </button>
+          </Button>
 
           {/* Free Postal Entry */}
           <Link
@@ -334,13 +368,13 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 </div>
               </div>
 
-              {/* Add to Cart Button */}
-              <button
+              {/* Add to Cart Button (Desktop) */}
+              <Button
                 className="w-full btn-cta-lg mb-6"
-                onClick={() => addItem(competitionWithPrizes, ticketCount)}
+                onClick={handleAddToCartClick}
               >
                 Add To Cart
-              </button>
+              </Button>
 
               {/* Free Postal Entry */}
               <Link
@@ -444,6 +478,46 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           </ReactMarkdown>
         </div>
       </div>
+
+      {/* Quiz Dialog */}
+      {competitionWithPrizes.type?.toLowerCase().trim() === "raffle" && (
+        <Dialog
+          open={quizOpen}
+          onOpenChange={(open) => {
+            setQuizOpen(open);
+            if (!open) setQuizError("");
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Skill-based Question</DialogTitle>
+            </DialogHeader>
+            <div className="mb-4">Where is Big Ben?</div>
+            <div className="flex flex-col gap-2 mb-2">
+              {["London", "Paris", "Rome", "Berlin"].map((option) => (
+                <Button
+                  key={option}
+                  variant={quizAnswer === option ? "default" : "outline"}
+                  onClick={() => setQuizAnswer(option)}
+                  className="w-full"
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+            {quizError && (
+              <div className="text-destructive text-sm mb-2">{quizError}</div>
+            )}
+            <Button
+              className="w-full mt-2"
+              onClick={handleQuizSubmit}
+              disabled={!quizAnswer}
+            >
+              Submit
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
