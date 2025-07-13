@@ -7,6 +7,13 @@ import { Competition } from "@/(pages)/competitions/(server)/competition.service
 import { ArrowRight, Clock } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 
+function formatEndDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString("en-GB", { month: "long" });
+  return `${day} ${month}`;
+}
+
 export function CompetitionCard({ competition }: { competition: Competition }) {
   const soldPercentage =
     competition.tickets_sold != null && competition.total_tickets != null
@@ -55,10 +62,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         >
           <Clock className="w-5 h-5 md:w-6 md:h-6" />
           <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
-            {`Ends: ${new Date(competition.end_date).toLocaleDateString(
-              undefined,
-              { month: "long", day: "numeric" }
-            )}`}
+            {`Ends: ${formatEndDate(competition.end_date)}`}
           </span>
         </div>
         {/* Image */}
