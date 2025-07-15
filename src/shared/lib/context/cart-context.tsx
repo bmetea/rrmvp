@@ -36,15 +36,47 @@ interface CartContextType {
   totalItems: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+  isHydrated: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CART_STORAGE_KEY = 'radiance-rewards-cart';
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const { trackAddToCart, trackRemoveFromCart, trackCartViewed } =
     useAnalytics();
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (savedCart) {
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart)) {
+          setItems(parsedCart);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load cart from localStorage:', error);
+    } finally {
+      setIsHydrated(true);
+    }
+  }, []);
+
+  // Save cart to localStorage whenever items change (but only after hydration)
+  useEffect(() => {
+    if (isHydrated) {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      } catch (error) {
+        console.error('Failed to save cart to localStorage:', error);
+      }
+    }
+  }, [items, isHydrated]);
 
   // Ensure items is always an array
   const safeItems = useMemo(() => {
@@ -165,6 +197,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => {
     setItems([]);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear cart from localStorage:', error);
+    }
   }, []);
 
   // Track cart viewed when cart is opened
@@ -193,6 +230,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     totalItems,
     isCartOpen,
     setIsCartOpen,
+    isHydrated,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
