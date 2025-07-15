@@ -29,9 +29,6 @@ export function PaymentForm({
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
 
-  // Get gatewayMerchantId from env
-  const gatewayMerchantId = process.env.NEXT_PUBLIC_OPPWA_ENTITY_ID;
-
   useEffect(() => {
     if (checkoutId) {
       oppwaLogger.logWidget("loadingWidget:start", { checkoutId });
@@ -148,9 +145,7 @@ export function PaymentForm({
 
       // Load the payment widget script
       const script = document.createElement("script");
-      const oppwaBaseUrl =
-        process.env.NEXT_PUBLIC_OPPWA_BASE_URL || "https://eu-test.oppwa.com";
-      script.src = `${oppwaBaseUrl}/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
+      script.src = widgetUrl;
       script.async = true;
       document.body.appendChild(script);
 
