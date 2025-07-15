@@ -8,6 +8,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
+import { useAnalytics } from "@/shared/hooks";
 
 interface PurchaseResult {
   competitionId: string;
@@ -35,6 +36,7 @@ export default function CheckoutSummaryPage() {
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
   const router = useRouter();
+  const { trackPurchase, trackPageView } = useAnalytics();
 
   useEffect(() => {
     // Get summary data from URL state
@@ -51,6 +53,85 @@ export default function CheckoutSummaryPage() {
       router.push("/competitions");
     }
   }, [searchParams, router]);
+
+  // Track purchase analytics when summary loads
+  useEffect(() => {
+    if (purchaseSummary && purchaseSummary.paymentStatus === "success") {
+      try {
+        // Get original cart items from sessionStorage
+        const storedItems = sessionStorage.getItem("checkout_items");
+        if (storedItems) {
+          const originalItems = JSON.parse(storedItems);
+
+          // Calculate total revenue
+          const totalRevenue =
+            (purchaseSummary.walletAmount || 0) +
+            (purchaseSummary.cardAmount || 0);
+
+          // Convert cart items to analytics format
+          const analyticsItems = originalItems.map((item: any) => ({
+            competitionId: item.competition.id,
+            competitionTitle: item.competition.title,
+            competitionType: item.competition.type,
+            price: item.competition.ticket_price,
+            quantity: item.quantity,
+            ticketPrice: item.competition.ticket_price,
+          }));
+
+          // Generate order ID from entry IDs or use timestamp
+          const orderIds = purchaseSummary.results.map(
+            (result) => result.entryId
+          );
+          const orderId =
+            orderIds.length > 0 ? orderIds.join("-") : `order_${Date.now()}`;
+
+          // Track the purchase
+          trackPurchase({
+            orderId,
+            revenue: totalRevenue,
+            currency: "GBP",
+            paymentMethod: purchaseSummary.paymentMethod,
+            items: analyticsItems,
+            walletAmount: purchaseSummary.walletAmount,
+            cardAmount: purchaseSummary.cardAmount,
+          });
+
+          // Clear the stored items after tracking
+          sessionStorage.removeItem("checkout_items");
+        }
+      } catch (error) {
+        console.error("Error tracking purchase analytics:", error);
+      }
+    }
+  }, [purchaseSummary, trackPurchase]);
+
+  // Track enhanced page view for checkout summary
+  useEffect(() => {
+    if (purchaseSummary) {
+      const totalTickets = purchaseSummary.results.reduce(
+        (sum, result) => sum + result.ticketNumbers.length,
+        0
+      );
+      const totalWinningTickets = purchaseSummary.results.reduce(
+        (sum, result) => sum + result.winningTickets.length,
+        0
+      );
+      const totalRevenue =
+        (purchaseSummary.walletAmount || 0) + (purchaseSummary.cardAmount || 0);
+
+      trackPageView("/checkout/summary", {
+        payment_status: purchaseSummary.paymentStatus,
+        payment_method: purchaseSummary.paymentMethod,
+        total_revenue: totalRevenue / 100, // Convert to pounds
+        wallet_amount: (purchaseSummary.walletAmount || 0) / 100,
+        card_amount: (purchaseSummary.cardAmount || 0) / 100,
+        total_tickets: totalTickets,
+        total_winning_tickets: totalWinningTickets,
+        competitions_count: purchaseSummary.results.length,
+        page_type: "checkout_summary",
+      });
+    }
+  }, [purchaseSummary, trackPageView]);
 
   if (!purchaseSummary) {
     return (

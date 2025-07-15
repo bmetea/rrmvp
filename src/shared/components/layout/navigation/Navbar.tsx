@@ -19,12 +19,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
-import { ThemeToggle } from "@/shared/components/theme/theme-toggle";
 import { useTheme } from "next-themes";
 import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/app/(pages)/competitions/(components)/competition-cart-dialog";
 import { useAdmin } from "@/shared/hooks/use-admin";
 import { CustomUserButton } from "@/app/(pages)/user/(components)/CustomUserButton";
+import { useAnalytics } from "@/shared/hooks";
 
 interface NavbarProps {
   activePath?: string;
@@ -46,6 +46,73 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const { isAdmin } = useAdmin();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const burgerButtonRef = useRef<HTMLButtonElement>(null);
+  const { trackEvent } = useAnalytics();
+
+  // Track mobile menu toggle
+  const handleMobileMenuToggle = () => {
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+
+    trackEvent("Mobile Menu Toggled", {
+      action: newState ? "opened" : "closed",
+      current_page: activePath,
+    });
+  };
+
+  // Track social media clicks
+  const handleSocialClick = (platform: string, url: string) => {
+    trackEvent("Social Media Link Clicked", {
+      platform,
+      url,
+      location: "navbar",
+      current_page: activePath,
+    });
+  };
+
+  // Track navigation link clicks
+  const handleNavLinkClick = (
+    href: string,
+    label: string,
+    isMobile = false
+  ) => {
+    trackEvent("Navigation Link Clicked", {
+      link_text: label,
+      link_url: href,
+      is_mobile: isMobile,
+      current_page: activePath,
+    });
+
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  // Track CTA button clicks
+  const handleCTAClick = (buttonText: string, isMobile = false) => {
+    trackEvent("CTA Button Clicked", {
+      button_text: buttonText,
+      location: "navbar",
+      is_mobile: isMobile,
+      current_page: activePath,
+    });
+
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  // Track sign-in button clicks
+  const handleSignInClick = (isMobile = false) => {
+    trackEvent("Sign In Button Clicked", {
+      location: "navbar",
+      is_mobile: isMobile,
+      current_page: activePath,
+    });
+
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   // After mounting, we can safely show the theme-dependent logo
   useEffect(() => {
@@ -84,7 +151,11 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Social Icons */}
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center">
+            <Link
+              href="/"
+              className="flex items-center"
+              onClick={() => handleNavLinkClick("/", "Logo")}
+            >
               {mounted ? (
                 <Image
                   src={
@@ -115,6 +186,12 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-accent transition-colors"
+                onClick={() =>
+                  handleSocialClick(
+                    "Instagram",
+                    "https://www.instagram.com/radiance.rewards"
+                  )
+                }
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -123,6 +200,12 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-accent transition-colors"
+                onClick={() =>
+                  handleSocialClick(
+                    "Facebook",
+                    "https://www.facebook.com/profile.php?id=61573382340671"
+                  )
+                }
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -142,7 +225,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               ref={burgerButtonRef}
               variant="ghost"
               size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={handleMobileMenuToggle}
               className="w-10 h-10 p-2 hover:bg-transparent"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -166,6 +249,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                     ? "text-foreground"
                     : "text-muted-foreground"
                 )}
+                onClick={() => handleNavLinkClick(link.href, link.label)}
               >
                 {link.label}
               </Link>
@@ -179,6 +263,9 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                     ? "text-foreground"
                     : "text-muted-foreground"
                 )}
+                onClick={() =>
+                  handleNavLinkClick("/user/my-entries", "My Entries")
+                }
               >
                 My Entries
               </Link>
@@ -192,6 +279,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                     ? "text-foreground"
                     : "text-muted-foreground"
                 )}
+                onClick={() => handleNavLinkClick("/admin", "Admin Dashboard")}
               >
                 Admin Dashboard
               </Link>
@@ -209,6 +297,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 <Button
                   variant="default"
                   className="bg-accent hover:bg-accent/90 text-accent-foreground hover:scale-105 transition-all duration-200"
+                  onClick={() => handleSignInClick(false)}
                 >
                   Sign in
                 </Button>
@@ -241,7 +330,9 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                       ? "bg-white text-[#E19841]"
                       : "text-[#151515] hover:bg-white/50"
                   )}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() =>
+                    handleNavLinkClick(link.href, link.label, true)
+                  }
                 >
                   <Icon
                     className={cn(
@@ -269,7 +360,9 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                     ? "bg-white text-[#E19841]"
                     : "text-[#151515] hover:bg-white/50"
                 )}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() =>
+                  handleNavLinkClick("/user/my-entries", "My Entries", true)
+                }
               >
                 <List
                   className={cn(
@@ -296,7 +389,9 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                     ? "bg-white text-[#E19841]"
                     : "text-[#151515] hover:bg-white/50"
                 )}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() =>
+                  handleNavLinkClick("/admin", "Admin Dashboard", true)
+                }
               >
                 <Gift
                   className={cn(
@@ -317,7 +412,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             <div className="pt-4 mt-4">
               <Link
                 href="/competitions"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => handleCTAClick("Enter now", true)}
               >
                 <Button className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans">
                   Enter now
@@ -332,7 +427,7 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                   <Button
                     className="w-full bg-transparent hover:bg-white/50 text-[#151515] border-2 border-[#151515] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
                     variant="outline"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => handleSignInClick(true)}
                   >
                     Sign in
                   </Button>

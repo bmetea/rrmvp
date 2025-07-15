@@ -2,6 +2,7 @@ import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { db } from "@/db";
 import { createWallet } from "@/(pages)/user/(server)/wallet.service";
 import { NextResponse, NextRequest } from "next/server";
+import { analytics } from "@/shared/lib/klaviyo";
 
 interface NewUser {
   clerk_id: string;
@@ -39,7 +40,20 @@ async function createUser(user: NewUser) {
     );
   }
 
-
+  // Track user sign-up in analytics
+  try {
+    await analytics.track("Account Created", {
+      userId: user.clerk_id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      signup_date: new Date().toISOString(),
+      signup_method: "clerk",
+      username: user.username,
+    });
+  } catch (error) {
+    console.error("Failed to track sign-up analytics:", error);
+  }
 
   return createdUser;
 }
@@ -51,8 +65,6 @@ async function updateUser(clerkId: string, userData: UpdatedUser) {
     .where("clerk_id", "=", clerkId)
     .returningAll()
     .executeTakeFirstOrThrow();
-
-
 
   return updatedUser;
 }

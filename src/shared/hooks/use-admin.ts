@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { isUserAdmin } from "@/(pages)/user/(server)/admin.actions";

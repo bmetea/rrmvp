@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/effect-fade";
 import Link from "next/link";
 import Image from "next/image";
 import { Ticket } from "lucide-react";
 import { Competition } from "@/(pages)/competitions/(server)/competition.service";
+import { useAnalytics } from "@/shared/hooks";
 
 interface HeroCarouselProps {
   competitions: Competition[];
@@ -15,6 +17,25 @@ interface HeroCarouselProps {
 
 function HeroCarousel({ competitions }: HeroCarouselProps) {
   const [activeSlide, setActiveSlide] = useState(0);
+  const { trackEvent } = useAnalytics();
+
+  // Track hero carousel interactions
+  const handleHeroImageClick = (competition: any) => {
+    trackEvent("Hero Image Clicked", {
+      competition_id: competition.id,
+      competition_title: competition.title,
+      image_url: competition.media_info?.images?.[0] || null,
+    });
+  };
+
+  const handleHeroCTAClick = (competition: any) => {
+    trackEvent("Hero CTA Clicked", {
+      button_text: "Enter now",
+      competition_id: competition.id,
+      competition_title: competition.title,
+      location: "hero_banner",
+    });
+  };
 
   if (!Array.isArray(competitions) || competitions.length === 0) {
     return (
@@ -36,20 +57,37 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
     month: "long",
     day: "numeric",
   });
-  const drawText = formattedEndDate
-    ? `Draw ends ${formattedEndDate}`
-    : "Draw date to be announced";
+  const drawText = activeCompetition
+    ? (() => {
+        const endDate = new Date(activeCompetition.end_date);
+        const now = new Date();
+        const timeDiff = endDate.getTime() - now.getTime();
+        const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        if (daysLeft <= 0) {
+          return "Draw has ended";
+        } else if (daysLeft === 1) {
+          return "Draw ends tomorrow";
+        } else if (daysLeft <= 7) {
+          return `Draw ends in ${daysLeft} days`;
+        } else {
+          return "Just launched";
+        }
+      })()
+    : "";
 
   return (
-    <div className="relative bg-white dark:bg-gray-900">
-      {/* Square Image Carousel */}
+    <div className="relative h-[400px] md:h-[500px] lg:h-[600px] w-full overflow-hidden">
       <Swiper
-        slidesPerView={1}
-        loop
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        modules={[Autoplay]}
-        className="w-full aspect-square"
-        onSlideChange={(swiper) => setActiveSlide(swiper.realIndex)}
+        modules={[Autoplay, EffectFade]}
+        effect="fade"
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        loop={true}
+        onSlideChange={(swiper) => {
+          const activeIndex = swiper.realIndex;
+          setActiveSlide(activeIndex);
+        }}
+        className="w-full h-full"
       >
         {competitions.map((competition) => {
           if (!competition?.id) return null;
@@ -58,30 +96,24 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
             <SwiperSlide key={competition.id}>
               <Link
                 href={`/competitions/${competition.id}`}
-                className="block w-full aspect-square relative overflow-hidden"
+                onClick={() => handleHeroImageClick(competition)}
               >
-                <div className="w-full h-full relative pb-24 md:pb-32">
+                <div className="relative w-full h-full">
                   <Image
                     src={
                       competition.media_info?.images?.[0] ||
-                      "/images/hero-bg-optimized.jpg"
+                      "/images/placeholder.jpg"
                     }
                     alt={competition.title || "Competition"}
                     fill
-                    className="object-cover"
                     sizes="100vw"
-                    quality={75}
+                    quality={90}
                     priority
+                    fetchPriority="high"
+                    className="object-cover"
                   />
-                  {/* Gradient fade overlay */}
-                  <div
-                    className="absolute bottom-0 left-0 w-full h-48 md:h-56 pointer-events-none"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%)",
-                    }}
-                  />
-                  {/* Text content in the fade area */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
                   <div className="absolute bottom-8 md:bottom-12 left-0 w-full z-10 pointer-events-none">
                     <div className="w-full max-w-3xl mx-auto px-6 text-center">
                       <h2
@@ -106,6 +138,9 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
       <Link
         href={`/competitions/${activeCompetition?.id || "#"}`}
         className="block w-full"
+        onClick={() =>
+          activeCompetition && handleHeroCTAClick(activeCompetition)
+        }
       >
         <div className="w-full bg-cta hover:bg-cta-hover text-cta-foreground font-semibold text-[16px] md:text-[18px] leading-[1.5em] py-4 md:py-6 transition-colors cursor-pointer font-open-sans">
           <div className="flex items-center justify-center gap-2">

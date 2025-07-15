@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Ticket, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import { Progress } from "@/shared/components/ui/progress";
 import { CompetitionPrizeDetail } from "./CompetitionPrizeListDetail";
@@ -18,12 +18,15 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
+import { useAnalytics } from "@/shared/hooks";
 
 // Main component implementation
 function CompetitionDetailImpl({ competitionWithPrizes }) {
   const [ticketCount, setTicketCount] = useState(25);
   const [expandedPrize, setExpandedPrize] = useState(null);
   const { addItem } = useCart();
+  const { trackCompetitionViewed, trackEvent } = useAnalytics();
+
   const ticketPrice = competitionWithPrizes.ticket_price || 0;
   const oldPrice = ticketPrice * 2; // Placeholder for old price logic
   const totalTickets = competitionWithPrizes.total_tickets;
@@ -50,20 +53,78 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
   const [quizError, setQuizError] = useState("");
   const [pendingAddToCart, setPendingAddToCart] = useState(false);
 
+  // Track competition viewed when component loads
+  useEffect(() => {
+    trackCompetitionViewed(
+      competitionWithPrizes.id,
+      competitionWithPrizes.title,
+      competitionWithPrizes.type
+    );
+
+    // Track page view for this specific competition
+    trackEvent("Competition Page Viewed", {
+      competition_id: competitionWithPrizes.id,
+      competition_title: competitionWithPrizes.title,
+      competition_type: competitionWithPrizes.type,
+      ticket_price: ticketPrice / 100, // Convert to pounds
+      total_tickets: totalTickets,
+      tickets_sold: ticketsSold,
+      tickets_remaining: ticketsLeft,
+      progress_percentage: progress,
+    });
+  }, [
+    competitionWithPrizes.id,
+    competitionWithPrizes.title,
+    competitionWithPrizes.type,
+    trackCompetitionViewed,
+    trackEvent,
+    ticketPrice,
+    totalTickets,
+    ticketsSold,
+    ticketsLeft,
+    progress,
+  ]);
+
   function handleQuizSubmit() {
     if (quizAnswer === "London") {
       setQuizError("");
       setQuizOpen(false);
+
+      // Track successful quiz completion
+      trackEvent("Competition Quiz Completed", {
+        competition_id: competitionWithPrizes.id,
+        competition_title: competitionWithPrizes.title,
+        answer: quizAnswer,
+        success: true,
+      });
+
       setTimeout(() => {
         addItem(competitionWithPrizes, ticketCount);
         setPendingAddToCart(false);
       }, 100);
     } else {
       setQuizError("Sorry, that is incorrect. Please try again.");
+
+      // Track failed quiz attempt
+      trackEvent("Competition Quiz Failed", {
+        competition_id: competitionWithPrizes.id,
+        competition_title: competitionWithPrizes.title,
+        answer: quizAnswer,
+        success: false,
+      });
     }
   }
 
   function handleAddToCartClick() {
+    // Track entry attempt
+    trackEvent("Competition Entry Initiated", {
+      competition_id: competitionWithPrizes.id,
+      competition_title: competitionWithPrizes.title,
+      ticket_count: ticketCount,
+      total_price: totalPrice / 100,
+      competition_type: competitionWithPrizes.type,
+    });
+
     if (competitionWithPrizes.type?.toLowerCase().trim() === "raffle") {
       setQuizOpen(true);
       setPendingAddToCart(true);
@@ -71,6 +132,17 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
       addItem(competitionWithPrizes, ticketCount);
     }
   }
+
+  // Track ticket quantity changes
+  const handleTicketCountChange = (newCount) => {
+    setTicketCount(newCount);
+    trackEvent("Competition Ticket Quantity Changed", {
+      competition_id: competitionWithPrizes.id,
+      previous_count: ticketCount,
+      new_count: newCount,
+      price_difference: ((newCount - ticketCount) * ticketPrice) / 100,
+    });
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-4 lg:py-8 px-4">
@@ -126,7 +198,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               {quickSelect.map((num) => (
                 <button
                   key={`quick-select-${num}`}
-                  onClick={() => setTicketCount(num)}
+                  onClick={() => handleTicketCountChange(num)}
                   className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
                     ${
                       ticketCount === num
@@ -149,7 +221,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 min={1}
                 max={maxTickets}
                 value={ticketCount}
-                onChange={(e) => setTicketCount(Number(e.target.value))}
+                onChange={(e) =>
+                  handleTicketCountChange(Number(e.target.value))
+                }
                 className="w-full accent-[#E19841]"
               />
               <span className="bg-gray-100 dark:bg-[#232326] px-3 py-1 rounded-lg font-bold text-base text-black dark:text-white min-w-[60px] text-center">
@@ -197,6 +271,13 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           <Link
             href="/free-postal-entry"
             className="block text-center text-cta hover:text-cta-hover"
+            onClick={() =>
+              trackEvent("Free Postal Entry Clicked", {
+                competition_id: competitionWithPrizes.id,
+                competition_title: competitionWithPrizes.title,
+                location: "mobile_competition_detail",
+              })
+            }
           >
             Free Postal Entry Available
           </Link>
@@ -339,7 +420,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                   {quickSelect.map((num) => (
                     <button
                       key={`quick-select-${num}`}
-                      onClick={() => setTicketCount(num)}
+                      onClick={() => handleTicketCountChange(num)}
                       className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
                         ${
                           ticketCount === num
@@ -362,7 +443,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                     min={1}
                     max={maxTickets}
                     value={ticketCount}
-                    onChange={(e) => setTicketCount(Number(e.target.value))}
+                    onChange={(e) =>
+                      handleTicketCountChange(Number(e.target.value))
+                    }
                     className="w-full accent-[#E19841]"
                   />
                   <span className="bg-gray-100 dark:bg-[#232326] px-4 py-2 rounded-lg font-bold text-lg text-black dark:text-white min-w-[80px] text-center">
@@ -410,6 +493,13 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               <Link
                 href="/free-postal-entry"
                 className="block text-center text-cta hover:text-cta-hover font-medium"
+                onClick={() =>
+                  trackEvent("Free Postal Entry Clicked", {
+                    competition_id: competitionWithPrizes.id,
+                    competition_title: competitionWithPrizes.title,
+                    location: "desktop_competition_detail",
+                  })
+                }
               >
                 Free Postal Entry Available
               </Link>

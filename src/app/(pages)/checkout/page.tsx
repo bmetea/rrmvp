@@ -15,6 +15,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
 import { checkout } from "./(server)/checkout-orchestrator.actions";
+import { useAnalytics } from "@/shared/hooks";
 
 interface CartItem {
   competition: {
@@ -46,6 +47,7 @@ export default function CheckoutPage() {
     checkoutId: string;
     widgetUrl: string;
   } | null>(null);
+  const { trackCheckoutStarted } = useAnalytics();
 
   // Fetch wallet balance when user is signed in
   useEffect(() => {
@@ -83,6 +85,18 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
+      // Track checkout started analytics event
+      const cartItems = items.map((item) => ({
+        competitionId: item.competition.id,
+        competitionTitle: item.competition.title,
+        competitionType: item.competition.type,
+        price: item.competition.ticket_price,
+        quantity: item.quantity,
+        ticketPrice: item.competition.ticket_price,
+      }));
+
+      trackCheckoutStarted(cartItems, totalPrice);
+
       // Store items in sessionStorage for the result page
       sessionStorage.setItem("checkout_items", JSON.stringify(items));
 

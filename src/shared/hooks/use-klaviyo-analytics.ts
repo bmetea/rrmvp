@@ -44,7 +44,19 @@ export const useKlaviyoAnalytics = () => {
     return user?.primaryEmailAddress?.emailAddress || undefined;
   }, [user]);
 
-  // Identify user when they sign in or user data is available
+  // Track sign-in events
+  const trackSignIn = useCallback((userData: KlaviyoUser) => {
+    analytics.track("User Signed In", {
+      userId: userData.userId,
+      email: userData.email,
+      first_name: userData.firstName,
+      last_name: userData.lastName,
+      signin_date: new Date().toISOString(),
+      signin_method: "clerk",
+    });
+  }, []);
+
+  // Identify user and track sign-in when they sign in or user data is available
   useEffect(() => {
     if (isSignedIn && user) {
       const userData: KlaviyoUser = {
@@ -56,7 +68,20 @@ export const useKlaviyoAnalytics = () => {
         lastActive: new Date().toISOString(),
       };
 
+      // Always identify user in Klaviyo (this updates their profile)
       analytics.identify(user.id, userData);
+
+      // Only track sign-in event once per session for this user
+      const sessionKey = `klaviyo_signin_tracked_${user.id}`;
+      const hasTrackedThisSession = typeof window !== "undefined" && 
+        sessionStorage.getItem(sessionKey);
+      
+      if (!hasTrackedThisSession) {
+        trackSignIn(userData);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(sessionKey, "true");
+        }
+      }
     }
   }, [isSignedIn, user]);
 
@@ -412,6 +437,7 @@ export const useKlaviyoAnalytics = () => {
   return {
     trackPageView,
     trackSignUp,
+    trackSignIn,
     trackAddToCart,
     trackRemoveFromCart,
     trackCartViewed,

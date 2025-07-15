@@ -12,6 +12,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { ChevronLeft, Trophy } from "lucide-react";
 import Image from "next/image";
 import { formatPrice } from "@/shared/lib/utils/price";
+import { useAnalytics } from "@/shared/hooks";
 
 type ViewMode = "list" | "detail";
 
@@ -28,6 +29,7 @@ export default function MyEntriesPage() {
     null
   );
   const isFetching = useRef(false);
+  const { trackPageView, trackEvent } = useAnalytics();
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -68,6 +70,50 @@ export default function MyEntriesPage() {
     return () => {};
   }, []);
 
+  // Track enhanced page view for user entries
+  useEffect(() => {
+    if (!loading && entries.length > 0) {
+      const totalEntries = entries.length;
+      const totalTickets = entries.reduce(
+        (sum, entry) => sum + entry.tickets.length,
+        0
+      );
+      const totalWinningTickets = entries.reduce(
+        (sum, entry) => sum + (entry.winning_tickets?.length || 0),
+        0
+      );
+      const activeCompetitions = entries.filter(
+        (entry) => entry.competition.status === "active"
+      ).length;
+      const competitionTypes = [
+        ...new Set(entries.map((entry) => entry.competition.type)),
+      ];
+
+      trackPageView("/user/my-entries", {
+        total_entries: totalEntries,
+        total_tickets: totalTickets,
+        total_winning_tickets: totalWinningTickets,
+        active_competitions: activeCompetitions,
+        competition_types: competitionTypes,
+        has_winning_tickets: totalWinningTickets > 0,
+        page_type: "user_entries",
+        view_mode: viewMode,
+      });
+    } else if (!loading && entries.length === 0) {
+      // Track page view for users with no entries
+      trackPageView("/user/my-entries", {
+        total_entries: 0,
+        total_tickets: 0,
+        total_winning_tickets: 0,
+        active_competitions: 0,
+        competition_types: [],
+        has_winning_tickets: false,
+        page_type: "user_entries_empty",
+        view_mode: viewMode,
+      });
+    }
+  }, [loading, entries, viewMode, trackPageView]);
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
@@ -91,11 +137,25 @@ export default function MyEntriesPage() {
   };
 
   const handleEntryClick = (entry: CompetitionEntry) => {
+    trackEvent("User Entry Clicked", {
+      entry_id: entry.id,
+      competition_id: entry.competition_id,
+      competition_title: entry.competition.title,
+      total_tickets: entry.tickets.length,
+      winning_tickets: entry.winning_tickets?.length || 0,
+      competition_status: entry.competition.status,
+    });
+
     setSelectedEntry(entry);
     setViewMode("detail");
   };
 
   const handleBackToList = () => {
+    trackEvent("Back to Entries List Clicked", {
+      from_entry_id: selectedEntry?.id,
+      from_competition_id: selectedEntry?.competition_id,
+    });
+
     setViewMode("list");
     setSelectedEntry(null);
   };
