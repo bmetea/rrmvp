@@ -9,7 +9,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { useAnalytics } from "@/shared/hooks/use-analytics";
+import { useAnalytics } from "@/shared/hooks";
 
 interface Competition {
   id: string;

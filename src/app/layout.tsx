@@ -10,9 +10,9 @@ import Script from "next/script";
 import { Toaster } from "sonner";
 import GoogleAnalytics from "@/shared/components/analytics/GoogleAnalytics";
 import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
-import SegmentProvider from "@/shared/components/analytics/SegmentProvider";
 import MetaPixel from "@/shared/components/analytics/MetaPixel";
 import MetaPixelPageTracker from "@/shared/components/analytics/MetaPixelPageTracker";
+import KlaviyoTest from "@/shared/components/debug/KlaviyoTest";
 
 const crimsonPro = Crimson_Pro({
   subsets: ["latin"],
@@ -101,7 +101,6 @@ export default async function RootLayout({
           <Toaster />
           <GoogleAnalytics />
           <PageViewTracker />
-          <SegmentProvider />
           <MetaPixel />
           <MetaPixelPageTracker />
           <ThemeProvider
@@ -116,6 +115,7 @@ export default async function RootLayout({
                 <main className="flex-1 pt-16">{children}</main>
                 <Footer />
               </div>
+              <KlaviyoTest />
             </CartProvider>
           </ThemeProvider>
         </body>

@@ -2,7 +2,6 @@ import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { db } from "@/db";
 import { createWallet } from "@/(pages)/user/(server)/wallet.service";
 import { NextResponse, NextRequest } from "next/server";
-import { analytics } from "@/shared/lib/segment";
 
 interface NewUser {
   clerk_id: string;
@@ -40,32 +39,7 @@ async function createUser(user: NewUser) {
     );
   }
 
-  // Track user signup with Segment
-  analytics.then(([analytics]) => {
-    // Identify the user
-    analytics.identify(user.clerk_id, {
-      userId: user.clerk_id,
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      username: user.username,
-      createdAt: new Date().toISOString(),
-      signupDate: new Date().toISOString(),
-      avatar: user.image_url,
-    });
 
-    // Track signup event
-    analytics.track("User Signed Up", {
-      userId: user.clerk_id,
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      username: user.username,
-      signupDate: new Date().toISOString(),
-      signupMethod: "clerk",
-      hasWallet: walletResult.success,
-    });
-  });
 
   return createdUser;
 }
@@ -78,25 +52,7 @@ async function updateUser(clerkId: string, userData: UpdatedUser) {
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  // Update user identification in Segment
-  analytics.then(([analytics]) => {
-    analytics.identify(clerkId, {
-      userId: clerkId,
-      email: userData.email,
-      firstName: userData.first_name,
-      lastName: userData.last_name,
-      username: userData.username,
-      avatar: userData.image_url,
-      lastUpdated: new Date().toISOString(),
-    });
 
-    // Track profile update event
-    analytics.track("Profile Updated", {
-      userId: clerkId,
-      email: userData.email,
-      updatedAt: new Date().toISOString(),
-    });
-  });
 
   return updatedUser;
 }

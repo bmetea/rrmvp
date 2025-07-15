@@ -6,7 +6,6 @@ This document provides comprehensive analytics tracking documentation for Radian
 
 ```
 User Action → useAnalytics Hook → Multiple Destinations
-                                 ├── Segment Analytics
                                  ├── Meta Pixel (Facebook)
                                  └── Google Analytics
 ```
@@ -14,12 +13,6 @@ User Action → useAnalytics Hook → Multiple Destinations
 All analytics tracking flows through a single hook (`useAnalytics`) that automatically dispatches events to all configured platforms, ensuring consistent tracking without code duplication.
 
 ## Platform-Specific Documentation
-
-### 📊 [Segment Analytics](./segment_analytics.md)
-- Data warehousing and customer data platform
-- Event schema and data modeling
-- Downstream integrations (Amplitude, Mixpanel, etc.)
-- Server-side tracking capabilities
 
 ### 📱 [Meta Pixel](./meta_pixel.md)  
 - Facebook and Instagram advertising optimization
@@ -41,14 +34,14 @@ All analytics tracking flows through a single hook (`useAnalytics`) that automat
 NEXT_PUBLIC_ENABLE_ANALYTICS=true
 
 # Platform-specific (optional)
-NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key
 NEXT_PUBLIC_META_PIXEL_ID=your_meta_pixel_id  
 NEXT_PUBLIC_GA_TRACKING_ID=your_ga_tracking_id
+NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY=your_klaviyo_public_key
 ```
 
 ### Basic Usage
 ```typescript
-import { useAnalytics } from '@/shared/hooks/use-analytics';
+import { useAnalytics } from '@/shared/hooks';
 
 function MyComponent() {
   const { trackEvent, trackCompetitionViewed } = useAnalytics();
@@ -81,30 +74,29 @@ function MyComponent() {
 
 ## Cross-Platform Event Mapping
 
-| `useAnalytics` Event | Segment Event | Meta Pixel Event | Google Analytics |
-|---------------------|---------------|------------------|------------------|
-| `trackAddToCart()` | Product Added | AddToCart | add_to_cart |
-| `trackCheckoutStarted()` | Checkout Started | InitiateCheckout | begin_checkout |
-| `trackPurchase()` | Order Completed | Purchase | purchase |
-| `trackCompetitionViewed()` | Product Viewed | ViewContent | view_item |
-| `trackSearch()` | Products Searched | Search | search |
+| `useAnalytics` Event | Meta Pixel Event | Google Analytics | Klaviyo Event |
+|---------------------|------------------|------------------|---------------|
+| `trackAddToCart()` | AddToCart | add_to_cart | Added to Cart |
+| `trackCheckoutStarted()` | InitiateCheckout | begin_checkout | Started Checkout |
+| `trackPurchase()` | Purchase | purchase | Placed Order |
+| `trackCompetitionViewed()` | ViewContent | view_item | Viewed Product |
+| `trackSearch()` | Search | search | Searched Site |
 
 ## File Structure
 
 ```
 src/shared/
 ├── hooks/
-│   ├── use-analytics.ts              # Main unified hook
+│   ├── use-klaviyo-analytics.ts      # Main unified analytics hook (Klaviyo)
 │   ├── use-meta-pixel.ts             # Meta Pixel specific
 │   └── use-google-analytics.ts       # Google Analytics specific
 ├── components/analytics/
-│   ├── SegmentProvider.tsx           # Segment page tracking
 │   ├── MetaPixel.tsx                 # Meta Pixel initialization
 │   ├── MetaPixelPageTracker.tsx      # Meta Pixel page tracking
 │   ├── GoogleAnalytics.tsx           # GA initialization
 │   └── PageViewTracker.tsx           # GA page tracking
 └── lib/
-    └── segment.ts                    # Segment configuration
+    └── klaviyo.ts                   # Klaviyo configuration
 ```
 
 ## Data Consistency
@@ -137,5 +129,5 @@ All platforms respect the global `NEXT_PUBLIC_ENABLE_ANALYTICS` setting and foll
 ---
 
 **Last Updated:** January 2025  
-**Hook Name:** `useAnalytics` (formerly `useSegmentAnalytics`)  
+**Hook Name:** `useAnalytics` (now using Klaviyo)  
 **Status:** ✅ Active and Tracking All Platforms 

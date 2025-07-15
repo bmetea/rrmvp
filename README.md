@@ -9,7 +9,7 @@ ppr= https://d2qvkhcyrxsbba.cloudfront.net
 - [ ] implement image upload s3
 - [ ] warm lambda ?
   - [ ] https://sst.dev/docs/component/aws/nextjs/#warm
-- [x] Segment prod setuo
+
 - [ ] increment credit when credit is won
 - [x] Design stuff.
 - [ ] clerk social providers setup
@@ -106,26 +106,14 @@ function CheckoutComponent() {
 - `PageViewTracker`: Automatically tracks page views
 - `useGoogleAnalytics`: Hook for tracking custom events
 
-## Segment Analytics Setup
+## Analytics Setup
 
-This application includes comprehensive Segment Analytics for detailed customer journey tracking.
-
-### Environment Variables
-
-Add these environment variables to your `.env.local` file:
-
-```bash
-# Enable/disable analytics (default: false)
-NEXT_PUBLIC_ENABLE_ANALYTICS=true
-
-# Segment Write Key (required for Segment analytics)
-NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key_here
-```
+This application includes comprehensive analytics tracking for detailed customer journey tracking using Klaviyo, Meta Pixel, and Google Analytics.
 
 ### Features
 
+- **Multi-Platform Tracking**: Events automatically sent to Klaviyo, Meta Pixel, and Google Analytics
 - **User Identification**: Automatic user identification with signup date, email, and profile data
-- **Page View Tracking**: Enhanced page views with referrer, title, and custom properties
 - **E-commerce Tracking**: Complete funnel tracking including:
   - Product viewed (competition pages)
   - Add to cart / Remove from cart
@@ -133,13 +121,7 @@ NEXT_PUBLIC_SEGMENT_WRITE_KEY=your_segment_write_key_here
   - Checkout started
   - Purchase completed
   - Abandoned checkout (15-minute timeout)
-- **User Activity**: Last active tracking with 30-second intervals
-- **Signup Tracking**: New user registration events via Clerk webhooks
 - **Revenue Tracking**: Order values, payment methods, and wallet credit usage
-
-### Automatically Tracked Events
-
-The following events are tracked automatically without additional code:
 
 1. **User Signed Up** - When users register via Clerk
 2. **Product Added** - When items are added to cart
@@ -156,7 +138,7 @@ The following events are tracked automatically without additional code:
 #### Using the Hook
 
 ```tsx
-import { useAnalytics } from '@/shared/hooks/use-analytics';
+import { useAnalytics } from '@/shared/hooks';
 
 function MyComponent() {
   const { trackEvent, trackCompetitionViewed } = useAnalytics();

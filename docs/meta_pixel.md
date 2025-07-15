@@ -22,11 +22,11 @@ Meta Pixel is a piece of JavaScript code that:
 ## Implementation Architecture
 
 ### Integration Strategy
-The Meta Pixel is integrated as part of a **unified analytics system** alongside Segment Analytics and Google Analytics, ensuring consistent event tracking across all platforms without code duplication.
+The Meta Pixel is integrated as part of a **unified analytics system** alongside Klaviyo and Google Analytics, ensuring consistent event tracking across all platforms without code duplication.
 
 ```
 User Action → useAnalytics Hook → Multiple Destinations
-                                 ├── Segment Analytics
+                                 ├── Klaviyo Analytics
                                  ├── Meta Pixel (Facebook)
                                  └── Google Analytics
 ```
@@ -244,7 +244,7 @@ window.fbq('track', 'ViewContent', {
 ### Unified Event Tracking
 When you call any tracking method in `useAnalytics`, events are automatically sent to:
 
-1. **Segment Analytics** (primary)
+1. **Klaviyo Analytics** (primary)
 2. **Meta Pixel** (conversion tracking)
 3. **Google Analytics** (web analytics)
 
@@ -261,7 +261,7 @@ trackAddToCart({
 });
 
 // Results in:
-// ✅ Segment: "Product Added" event
+// ✅ Klaviyo: "Added to Cart" event
 // ✅ Meta Pixel: AddToCart event (value: 2.99 GBP)
 // ✅ Google Analytics: add_to_cart event
 ```
@@ -279,7 +279,7 @@ src/
 │   │       └── MetaPixelPageTracker.tsx      # Page view tracking
 │   └── hooks/
 │       ├── use-meta-pixel.ts                 # Meta Pixel hook
-│       └── use-analytics.ts                  # Unified analytics
+│       └── use-klaviyo-analytics.ts          # Unified analytics (Klaviyo)
 ├── app/
 │   └── layout.tsx                            # Component integration
 └── docs/

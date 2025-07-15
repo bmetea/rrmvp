@@ -120,8 +120,10 @@ export default $config({
         // Analytics configuration with defaults
         NEXT_PUBLIC_ENABLE_ANALYTICS:
           process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "true",
-        NEXT_PUBLIC_SEGMENT_WRITE_KEY:
-          process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
+
+
+        NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY:
+          process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY || "",
         NEXT_PUBLIC_GA_TRACKING_ID:
           process.env.NEXT_PUBLIC_GA_TRACKING_ID || "G-TCT192NP1Q",
       },

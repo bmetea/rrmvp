@@ -22,11 +22,11 @@ Google Analytics is a web analytics service that:
 ## Implementation Architecture
 
 ### Integration Strategy
-Google Analytics is integrated as part of a **unified analytics system** alongside Segment Analytics and Meta Pixel, ensuring consistent event tracking across all platforms.
+Google Analytics is integrated as part of a **unified analytics system** alongside Klaviyo and Meta Pixel, ensuring consistent event tracking across all platforms.
 
 ```
 User Action → useAnalytics Hook → Multiple Destinations
-                                 ├── Segment Analytics
+                                 ├── Klaviyo Analytics
                                  ├── Meta Pixel (Facebook)
                                  └── Google Analytics (GA4)
 ```
@@ -273,7 +273,7 @@ trackEvent("action", "category", "label", value);
 ### Unified Event Tracking
 When you call any tracking method in `useAnalytics`, events are automatically sent to:
 
-1. **Segment Analytics** (primary data warehouse)
+1. **Klaviyo Analytics** (primary email marketing and analytics)
 2. **Meta Pixel** (advertising optimization)
 3. **Google Analytics** (web analytics and reporting)
 
@@ -290,7 +290,7 @@ trackAddToCart({
 });
 
 // Results in:
-// ✅ Segment: "Product Added" event
+// ✅ Klaviyo: "Added to Cart" event
 // ✅ Meta Pixel: AddToCart event
 // ✅ Google Analytics: add_to_cart event
 ```
@@ -308,7 +308,7 @@ src/
 │   │       └── PageViewTracker.tsx           # Page view tracking
 │   └── hooks/
 │       ├── use-google-analytics.ts           # GA4 hook
-│       └── use-analytics.ts                  # Unified analytics
+│       └── use-klaviyo-analytics.ts          # Unified analytics (Klaviyo)
 ├── app/
 │   └── layout.tsx                            # Component integration
 └── docs/
