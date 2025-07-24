@@ -8,8 +8,8 @@
 - [ ] Influencer CODE
 - [ ] Checkout, Checkout Summary and tickets cosmetic
 - [ ] Update docs
-  - [ ] Terms of Use
-  - [ ] FAQ
+  - [x] Terms of Use
+  - [x] FAQ
   - [ ] Terms and Conditions
   - [ ] Privacy Policy
   - [ ] Acceptable Use Policy

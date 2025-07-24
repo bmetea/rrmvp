@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 export default function TermsAndConditionsPage() {
   return (
@@ -10,7 +15,7 @@ export default function TermsAndConditionsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-4xl font-bold">
-                Terms and Conditions
+                Terms & Conditions
               </CardTitle>
               <p className="text-gray-600">Last updated: April 2025</p>
             </CardHeader>
@@ -18,8 +23,8 @@ export default function TermsAndConditionsPage() {
               <h2 className="text-xl font-bold mt-8 mb-4">1. The Promoter</h2>
               <p>
                 The promoter is: Claravue Ltd trading as Radiance Rewards,
-                Company Number 16388957 and whose registered office is at
-                Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
+                Company Number 16388957 and whose registered office is at 128
+                City Road, London, EC1V 2NX.
               </p>
 
               <h2 className="text-xl font-bold mt-8 mb-4">
@@ -274,10 +279,10 @@ export default function TermsAndConditionsPage() {
                   takes place.
                 </li>
                 <li>
-                  For help with entries, please contact us on 07403179394{" "}
+                  For help with entries, please contact us on 07936784864{" "}
                   <strong>OR</strong> email us at{" "}
-                  <a href="mailto:hello@radiancerewards.co.uk">
-                    hello@radiancerewards.co.uk
+                  <a href="mailto:contactus@radiancerewards.co.uk">
+                    contactus@radiancerewards.co.uk
                   </a>
                 </li>
               </ol>
@@ -426,10 +431,10 @@ export default function TermsAndConditionsPage() {
                 <li>The prize is not negotiable or transferable.</li>
                 <li>
                   <strong>
-                    If the Prize involves a cosmetic procedure or beauty product
-                    (including but not limited to cosmetic surgery, non-surgical
-                    aesthetic treatments, hair restoration, or skincare
-                    products):
+                    If the Prize involves a cash prize for a cosmetic procedure
+                    or beauty product (including but not limited to cosmetic
+                    surgery, non-surgical aesthetic treatments, hair
+                    restoration, or skincare products):
                   </strong>
                   <ol
                     className="list-decimal pl-6 mt-2"
@@ -500,7 +505,7 @@ export default function TermsAndConditionsPage() {
                   practicable after the Draw Date, using the telephone number or
                   email address provided with the competition entry. If the
                   winner cannot be contacted or is not available, or has not
-                  claimed the Prize within [14] of days of the Draw Date, the
+                  claimed the Prize within 14 of days of the Draw Date, the
                   Promoter reserves the right to offer the Prize to the next
                   eligible Entrant selected from the correct entries that were
                   received before the Closing Date.
@@ -518,8 +523,8 @@ export default function TermsAndConditionsPage() {
                 <li>
                   If you object to any or all of your surname, county and
                   winning entry being published or made available, please
-                  contact the Promoter at hello@radiancerewards.co.uk prior to
-                  the Closing Date. In such circumstances, the Promoter must
+                  contact the Promoter at contactus@radiancerewards.co.uk prior
+                  to the Closing Date. In such circumstances, the Promoter must
                   still provide the information to the Advertising Standards
                   Authority on request.
                 </li>
@@ -539,7 +544,7 @@ export default function TermsAndConditionsPage() {
                   If your personal details, including contact information,
                   changes at any time you should notify the Promoter as soon as
                   reasonably possible. Notifications should be sent to the
-                  Promoter via email to hello@radiancerewards.co.uk.
+                  Promoter via email to contactus@radiancerewards.co.uk.
                   Notifications must include details of the competition you have
                   entered, your old details and your new details. If your
                   details change within 5 days of the Closing Date, the Promoter
@@ -635,7 +640,7 @@ export default function TermsAndConditionsPage() {
                   withdraw from the competition. If you do not wish any of your
                   personal details to be used by the Promoter for promotional
                   purposes, please email the Promoter at
-                  hello@radiancerewards.co.uk prior to the Closing Date.
+                  contactus@radiancerewards.co.uk prior to the Closing Date.
                 </li>
               </ol>
 
