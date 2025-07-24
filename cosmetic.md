@@ -44,14 +44,14 @@ Firs pass
   - make cards white for contrast
     - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8755-22951&m=dev
   - mobile
-    - remove image
-    - have competition_type tag but not subtitle
-    - make entry card like design
+    - [ ] remove image
+    - [ ] have competition_type tag but not subtitle
+    - [ ] make entry card like design
     - make summary card like design
     - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8300-24567&m=dev
-- paymnet form
-  - use purple for pay button
-  - take out blue payment sumamry 
+- [ ]paymnet form
+  - [ ]use purple for pay button
+  - [ ]take out blue payment sumamry 
 - Order summary
   - Add order summary card to the right
   - Change title to : You're in the draw!!
