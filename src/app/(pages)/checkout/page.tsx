@@ -65,12 +65,14 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-6xl mx-auto py-12 px-4">
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            Your basket is empty.
-          </CardContent>
-        </Card>
+      <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
+        <div className="max-w-6xl mx-auto py-12 px-4">
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              Your basket is empty.
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -137,7 +139,7 @@ export default function CheckoutPage() {
     walletBalance !== null && walletBalance >= totalPrice;
 
   return (
-    <>
+    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
       {purchaseStatus === "loading" ? (
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
@@ -159,93 +161,127 @@ export default function CheckoutPage() {
         <div className="max-w-6xl mx-auto py-12 px-4 flex flex-col md:flex-row gap-8 min-h-[80vh]">
           {/* Basket Section */}
           <section className="flex-1">
-            <h1 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-2">
-              My Basket ({items.length})
+            <h1 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-2 pl-2">
+              My Basket
             </h1>
-            <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
+            <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4 pl-2">
               View your competitions and ticket numbers
             </p>
             {items.map((item) => (
-              <Card key={item.competition.id} className="mb-6">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">
-                          {item.competition.type}
-                        </Badge>
-                        <div className="ml-auto flex items-center gap-2">
-                          <Badge className="bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full text-sm">
-                            {item.quantity} Tickets
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="relative w-20 h-20 rounded overflow-hidden border">
-                          <Image
-                            src={
-                              item.competition.media_info?.images?.[0] ||
-                              "/images/placeholder.jpg"
-                            }
-                            alt={item.competition.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-lg mb-1">
+              <Card
+                key={item.competition.id}
+                className="bg-white rounded-xl border shadow-sm mb-6"
+              >
+                <CardContent className="px-8 py-0">
+                  {/* Content Section */}
+                  <div className="flex flex-col gap-4">
+                    {/* Top Row - Product Name and Ticket Number */}
+                    <div className="flex items-start justify-between gap-4">
+                      {/* Product Name Section */}
+                      <div className="flex-1">
+                        <div className="flex flex-col gap-1.5">
+                          {/* Tag */}
+                          <div className="inline-flex w-fit">
+                            <Badge
+                              className="bg-green-100 text-green-700 font-semibold px-4 py-1 rounded text-sm"
+                              style={{
+                                backgroundColor: "#D7FFD5",
+                                color: "#151515",
+                              }}
+                            >
+                              {item.competition.type === "raffle"
+                                ? "Instant win"
+                                : item.competition.type}
+                            </Badge>
+                          </div>
+                          {/* Title */}
+                          <h3
+                            className="font-medium text-[22px] leading-tight text-[#151515]"
+                            style={{ fontFamily: "Crimson Pro" }}
+                          >
                             {item.competition.title}
-                          </div>
-                          <div className="text-muted-foreground text-sm mb-1">
+                          </h3>
+                          {/* Description placeholder - you may want to add this to your data */}
+                          <p className="text-[#313131] text-base leading-relaxed">
                             {item.competition.type} Competition
-                          </div>
-                          <div className="text-sm mb-2">
-                            Price per entry{" "}
-                            <span className="font-medium">
-                              {formatPrice(item.competition.ticket_price)}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() =>
-                                updateQuantity(
-                                  item.competition.id,
-                                  Math.max(1, item.quantity - 1)
-                                )
-                              }
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() =>
-                                updateQuantity(
-                                  item.competition.id,
-                                  item.quantity + 1
-                                )
-                              }
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="link"
-                              size="sm"
-                              className="text-destructive ml-2"
-                              onClick={() => removeItem(item.competition.id)}
-                            >
-                              Remove
-                            </Button>
-                          </div>
+                          </p>
                         </div>
                       </div>
+
+                      {/* Ticket Number */}
+                      <div
+                        className="flex flex-col items-center justify-center rounded-lg px-1 py-1 min-w-[60px]"
+                        style={{ backgroundColor: "#FECA8D" }}
+                      >
+                        <span
+                          className="font-medium text-[26px] leading-none text-[#151515]"
+                          style={{ fontFamily: "Crimson Pro" }}
+                        >
+                          {item.quantity}
+                        </span>
+                        <span className="text-[#313131] text-sm leading-relaxed">
+                          Tickets
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Details Section */}
+                    <div className="flex items-center gap-6">
+                      <span className="font-semibold text-base text-[#151515]">
+                        Price per entry
+                      </span>
+                      <span className="text-base text-[#151515]">
+                        {formatPrice(item.competition.ticket_price)}
+                      </span>
+                    </div>
+
+                    {/* Actions Section */}
+                    <div className="flex items-center justify-between">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-4">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          onClick={() =>
+                            updateQuantity(
+                              item.competition.id,
+                              Math.max(1, item.quantity - 1)
+                            )
+                          }
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+
+                        <div className="w-12 h-12 rounded-lg border border-[#313131] flex items-center justify-center bg-white">
+                          <span className="text-base text-[#151515]">
+                            {item.quantity}
+                          </span>
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          onClick={() =>
+                            updateQuantity(
+                              item.competition.id,
+                              item.quantity + 1
+                            )
+                          }
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {/* Remove Button */}
+                      <Button
+                        variant="link"
+                        className="text-[#3D2C8D] font-semibold text-base p-0 h-auto underline-offset-4 hover:underline border-b-2 border-transparent hover:border-[#3D2C8D]"
+                        onClick={() => removeItem(item.competition.id)}
+                      >
+                        Remove
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -406,6 +442,6 @@ export default function CheckoutPage() {
           </section>
         </div>
       )}
-    </>
+    </div>
   );
 }

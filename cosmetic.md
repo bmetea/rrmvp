@@ -1,16 +1,25 @@
 ## TODO
 
+- [ ] Checkout, Checkout Summary and tickets cosmetic
+- [ ] Increment wallet credit on win
+- [ ] Influencer CODE
 - [ ] Categories implemened using buttons on figma
   - [ ] Cosmetic Enhancements
   - [ ] Haircare and Skincare
   - [ ] Instan Wins
   - [ ] Luxury & Lifestile
-- [ ] Influencer CODE
-- [ ] Checkout, Checkout Summary and tickets cosmetic
 - [ ] Give site credit to 
   - [ ] arobinson@mambamarketing.co.uk
   - [ ] lmorris@mambamarketing.co.uk
 - [ ] NomuPay How to test all cards
+- [ ] Clerk webhook edge cases
+  - [ ] user exists
+  - [ ] 
+
+
+
+Firs pass
+- [x] Meet with Josh to review design
 - [x] Small font on instan wins page as it doesnt seem to fit
 - [x] Meta pixel implemented
 - [x] All card payments are accepted
