@@ -183,6 +183,7 @@ async function updateWalletWithCredit(
           }`,
           reference_type: "prize_win",
           reference_id: entryIds.join(","), // Store entry IDs as comma-separated string
+          number_of_tickets: ticketCount, // Set the actual number of winning tickets with credits
         })
         .execute();
 
