@@ -31,6 +31,119 @@ export interface CompetitionEntry {
   }[];
 }
 
+export async function getCompetitionEntryById(entryId: string): Promise<{
+  success: boolean;
+  entry?: CompetitionEntry;
+  error?: string;
+}> {
+  const session = await auth();
+
+  if (!session?.userId) {
+    return {
+      success: false,
+      error: "You must be logged in to view entry details",
+    };
+  }
+
+  try {
+    // Get the user's database ID from their Clerk ID
+    const user = await db
+      .selectFrom("users")
+      .select(["id"])
+      .where("clerk_id", "=", session.userId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    // Fetch the specific entry with competition data
+    const entry = await db
+      .selectFrom("competition_entries as ce")
+      .innerJoin("competitions as c", "c.id", "ce.competition_id")
+      .select([
+        "ce.id",
+        "ce.competition_id",
+        "ce.user_id",
+        "ce.wallet_transaction_id",
+        "ce.payment_transaction_id",
+        "ce.tickets",
+        "ce.created_at",
+        "ce.updated_at",
+        "c.title",
+        "c.type",
+        "c.status",
+        "c.end_date",
+        "c.media_info",
+      ])
+      .where("ce.id", "=", entryId)
+      .where("ce.user_id", "=", user.id) // Ensure user owns this entry
+      .executeTakeFirst();
+
+    if (!entry) {
+      return {
+        success: false,
+        error:
+          "Competition entry not found or you don't have permission to view it",
+      };
+    }
+
+    // Get winning tickets for this entry with prize information
+    const winningTickets = await db
+      .selectFrom("winning_tickets as wt")
+      .innerJoin("competition_prizes as cp", "cp.id", "wt.prize_id")
+      .innerJoin("products as p", "p.id", "cp.product_id")
+      .select([
+        "wt.ticket_number",
+        "wt.prize_id",
+        "p.name as prize_name",
+        "p.market_value as prize_value",
+      ])
+      .where("wt.competition_entry_id", "=", entryId)
+      .where("wt.status", "=", "claimed")
+      .execute();
+
+    // Format the entry with its tickets and winning tickets
+    const formattedEntry: CompetitionEntry = {
+      ...entry,
+      competition: {
+        id: entry.competition_id,
+        title: entry.title,
+        type: entry.type,
+        status: entry.status,
+        end_date: entry.end_date,
+        media_info: entry.media_info
+          ? ((typeof entry.media_info === "string"
+              ? JSON.parse(entry.media_info)
+              : entry.media_info) as {
+              images?: string[];
+            })
+          : null,
+      },
+      winning_tickets: winningTickets.map((ticket) => ({
+        ticket_number: ticket.ticket_number,
+        prize_id: ticket.prize_id,
+        prize_name: ticket.prize_name,
+        prize_value: ticket.prize_value,
+      })),
+    };
+
+    return {
+      success: true,
+      entry: formattedEntry,
+    };
+  } catch (error) {
+    console.error("Error fetching competition entry:", error);
+    return {
+      success: false,
+      error: "Failed to fetch competition entry",
+    };
+  }
+}
+
 export async function getUserCompetitionEntries(): Promise<{
   success: boolean;
   entries?: CompetitionEntry[];

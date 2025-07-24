@@ -9,6 +9,11 @@ import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { useAnalytics } from "@/shared/hooks";
+import {
+  getCompetitionEntryById,
+  CompetitionEntry,
+} from "@/app/(pages)/user/(server)/entry.service";
+import { EntryCard } from "@/app/(pages)/user/(components)/EntryCard";
 
 interface PurchaseResult {
   competitionId: string;
@@ -35,6 +40,8 @@ export default function CheckoutSummaryPage() {
   const searchParams = useSearchParams();
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
+  const [entryData, setEntryData] = useState<CompetitionEntry[]>([]);
+  const [isLoadingEntries, setIsLoadingEntries] = useState(false);
   const router = useRouter();
   const { trackPurchase, trackPageView } = useAnalytics();
 
@@ -53,6 +60,35 @@ export default function CheckoutSummaryPage() {
       router.push("/competitions");
     }
   }, [searchParams, router]);
+
+  // Fetch entry data when purchase summary is loaded
+  useEffect(() => {
+    const fetchEntryData = async () => {
+      if (!purchaseSummary || purchaseSummary.paymentStatus !== "success") {
+        return;
+      }
+
+      setIsLoadingEntries(true);
+      try {
+        const entryPromises = purchaseSummary.results.map(async (result) => {
+          const entryResponse = await getCompetitionEntryById(result.entryId);
+          return entryResponse.success ? entryResponse.entry : null;
+        });
+
+        const entries = await Promise.all(entryPromises);
+        const validEntries = entries.filter(
+          (entry): entry is CompetitionEntry => entry !== null
+        );
+        setEntryData(validEntries);
+      } catch (error) {
+        console.error("Error fetching entry data:", error);
+      } finally {
+        setIsLoadingEntries(false);
+      }
+    };
+
+    fetchEntryData();
+  }, [purchaseSummary]);
 
   // Track purchase analytics when summary loads
   useEffect(() => {
@@ -232,28 +268,46 @@ export default function CheckoutSummaryPage() {
           <Separator />
 
           <div className="space-y-4">
-            <h2 className="font-semibold">Purchase Details</h2>
-            <ScrollArea className="h-[300px] rounded-md border p-4">
-              {purchaseSummary.results.map((result, index) => (
-                <div key={result.entryId} className="mb-6 last:mb-0">
-                  <h3 className="font-semibold mb-2">Entry {index + 1}</h3>
-                  <div className="space-y-2 text-sm">
-                    <p>Tickets: {formatTicketNumbers(result.ticketNumbers)}</p>
-                    {result.winningTickets.length > 0 && (
-                      <p className="text-green-600 font-medium">
-                        🎉 Winning tickets:{" "}
-                        {formatTicketNumbers(
-                          result.winningTickets.map((w) => w.ticketNumber)
-                        )}
+            <h2 className="font-semibold">Your Competition Entries</h2>
+            
+            {isLoadingEntries ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+                <span className="ml-2 text-muted-foreground">Loading entry details...</span>
+              </div>
+            ) : entryData.length > 0 ? (
+              <div className="space-y-4 max-h-[500px] overflow-y-auto">
+                {entryData.map((entry) => (
+                  <EntryCard key={entry.id} entry={entry} />
+                ))}
+              </div>
+            ) : (
+              // Fallback to basic display if entry data couldn't be loaded
+              <ScrollArea className="h-[300px] rounded-md border p-4">
+                {purchaseSummary.results.map((result, index) => (
+                  <div key={result.entryId} className="mb-6 last:mb-0">
+                    <h3 className="font-semibold mb-2">Entry {index + 1}</h3>
+                    <div className="space-y-2 text-sm">
+                      <p className="text-muted-foreground font-mono text-xs">
+                        Entry ID: {result.entryId}
                       </p>
+                      <p>Tickets: {formatTicketNumbers(result.ticketNumbers)}</p>
+                      {result.winningTickets.length > 0 && (
+                        <p className="text-green-600 font-medium">
+                          🎉 Winning tickets:{" "}
+                          {formatTicketNumbers(
+                            result.winningTickets.map((w) => w.ticketNumber)
+                          )}
+                        </p>
+                      )}
+                    </div>
+                    {index < purchaseSummary.results.length - 1 && (
+                      <Separator className="my-4" />
                     )}
                   </div>
-                  {index < purchaseSummary.results.length - 1 && (
-                    <Separator className="my-4" />
-                  )}
-                </div>
-              ))}
-            </ScrollArea>
+                ))}
+              </ScrollArea>
+            )}
           </div>
 
           <div className="flex justify-between gap-4 pt-4">
