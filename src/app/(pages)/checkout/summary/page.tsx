@@ -27,6 +27,15 @@ interface PurchaseResult {
   }>;
 }
 
+interface WalletCreditResult {
+  success: boolean;
+  error?: string;
+  creditAmount: number;
+  message: string;
+  entriesProcessed: number;
+  winningTicketsWithCredits: number;
+}
+
 interface PurchaseSummary {
   paymentMethod: "wallet" | "card" | "hybrid";
   walletAmount?: number;
@@ -34,6 +43,7 @@ interface PurchaseSummary {
   results: PurchaseResult[];
   paymentStatus: "success" | "error";
   paymentMessage?: string;
+  walletCreditResults?: WalletCreditResult;
 }
 
 export default function CheckoutSummaryPage() {
@@ -399,6 +409,29 @@ export default function CheckoutSummaryPage() {
                       "Wallet + Card"}
                   </span>
                 </div>
+                {purchaseSummary.walletCreditResults && 
+                 purchaseSummary.walletCreditResults.success && 
+                 purchaseSummary.walletCreditResults.creditAmount > 0 && (
+                  <>
+                    <Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-semibold text-green-700">
+                        Wallet Credit Earned
+                      </span>
+                      <span className="text-sm text-green-600 font-medium">
+                        +{formatPrice(purchaseSummary.walletCreditResults.creditAmount)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">
+                        From {purchaseSummary.walletCreditResults.winningTicketsWithCredits} winning ticket{purchaseSummary.walletCreditResults.winningTicketsWithCredits > 1 ? 's' : ''}
+                      </span>
+                      <span className="text-xs text-green-600">
+                        🎉 Congratulations!
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between items-center">
                   <span className="text-base font-semibold text-gray-900">
                     Date
@@ -456,6 +489,29 @@ export default function CheckoutSummaryPage() {
                     "Wallet + Card"}
                 </span>
               </div>
+              {purchaseSummary.walletCreditResults && 
+               purchaseSummary.walletCreditResults.success && 
+               purchaseSummary.walletCreditResults.creditAmount > 0 && (
+                <>
+                  <Separator />
+                  <div className="flex justify-between items-center">
+                    <span className="text-base font-semibold text-green-700">
+                      Wallet Credit Earned
+                    </span>
+                    <span className="text-sm text-green-600 font-medium">
+                      +{formatPrice(purchaseSummary.walletCreditResults.creditAmount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">
+                      From {purchaseSummary.walletCreditResults.winningTicketsWithCredits} winning ticket{purchaseSummary.walletCreditResults.winningTicketsWithCredits > 1 ? 's' : ''}
+                    </span>
+                    <span className="text-xs text-green-600">
+                      🎉 Congratulations!
+                    </span>
+                  </div>
+                </>
+              )}
               <div className="flex justify-between items-center">
                 <span className="text-base font-semibold text-gray-900">
                   Date
