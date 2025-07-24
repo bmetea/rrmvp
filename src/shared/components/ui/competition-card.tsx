@@ -90,7 +90,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             {competition.type}
           </span>
           <div className="w-full flex flex-col items-start gap-1 md:gap-2">
-            <h3 className="w-full font-['Crimson_Pro'] text-[22px] font-medium text-[#151515] dark:text-white">
+            <h3 className="w-full font-['Crimson_Pro'] text-lg sm:text-xl md:text-[22px] font-medium text-[#151515] dark:text-white leading-tight">
               {competition.title}
             </h3>
           </div>

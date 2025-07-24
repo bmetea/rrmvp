@@ -308,12 +308,12 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-['Crimson_Pro'] text-[35px] font-medium text-[#151515] dark:text-white mb-2 truncate">
+                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] dark:text-white mb-2 leading-tight">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <div className="inline-flex items-center justify-center gap-2 px-4 py-1 bg-[#E19841] rounded-lg">
-                            <span className="font-['Crimson_Pro'] text-[22px] font-medium text-[#151515]">
+                          <div className="inline-flex items-center justify-center gap-1 px-3 py-1 sm:px-4 sm:gap-1 bg-[#E19841] rounded-lg">
+                            <div className="font-['Crimson_Pro'] text-lg sm:text-xl lg:text-[22px] font-medium text-[#151515] break-words">
                               {
                                 (prize.winning_ticket_numbers || []).filter(
                                   (t) =>
@@ -322,10 +322,10 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                                     ).includes(t)
                                 ).length
                               }
-                            </span>
-                            <span className="font-['Open_Sans'] text-[18px] font-normal leading-[27px] text-[#313131]">
+                            </div>
+                            <div className="font-['Open_Sans'] text-sm sm:text-base lg:text-[18px] font-normal leading-[1.5] text-[#313131] break-words">
                               to be won
-                            </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -532,12 +532,12 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-['Crimson_Pro'] text-[35px] font-medium text-[#151515] dark:text-white mb-2">
+                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] dark:text-white mb-2 leading-tight">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <div className="inline-flex items-center justify-center gap-2 px-4 py-1 bg-[#E19841] rounded-lg">
-                            <span className="font-['Crimson_Pro'] text-[22px] font-medium text-[#151515]">
+                          <div className="inline-flex items-center justify-center gap-1 px-3 py-1 sm:px-4 sm:gap-1 bg-[#E19841] rounded-lg">
+                            <div className="font-['Crimson_Pro'] text-lg sm:text-xl lg:text-[22px] font-medium text-[#151515] break-words">
                               {
                                 (prize.winning_ticket_numbers || []).filter(
                                   (t) =>
@@ -546,10 +546,10 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                                     ).includes(t)
                                 ).length
                               }
-                            </span>
-                            <span className="font-['Open_Sans'] text-[18px] font-normal leading-[27px] text-[#313131]">
+                            </div>
+                            <div className="font-['Open_Sans'] text-sm sm:text-base lg:text-[18px] font-normal leading-[1.5] text-[#313131] break-words">
                               to be won
-                            </span>
+                            </div>
                           </div>
                         </div>
                       </div>
