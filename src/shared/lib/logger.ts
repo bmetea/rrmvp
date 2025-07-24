@@ -93,7 +93,7 @@ class Logger {
 // Create a logger instance with default configuration
 const logger = new Logger({
   serviceName: "rrmvp",
-  logLevel: (process.env.LOG_LEVEL as LogLevel) || "INFO",
+  logLevel: (process.env.LOG_LEVEL as LogLevel) || "ERROR",
   environment: process.env.NODE_ENV || "development",
 });
 
