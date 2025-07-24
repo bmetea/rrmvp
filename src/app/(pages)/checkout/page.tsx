@@ -159,14 +159,6 @@ export default function CheckoutPage() {
         <div className="max-w-6xl mx-auto py-12 px-4 flex flex-col md:flex-row gap-8 min-h-[80vh]">
           {/* Basket Section */}
           <section className="flex-1">
-            <div className="mb-6 flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Basket</span>
-              <span className="text-xs bg-gray-100 rounded px-2 py-0.5">1</span>
-              <span className="text-sm text-muted-foreground">Checkout</span>
-              <span className="text-sm text-muted-foreground">
-                Confirmation
-              </span>
-            </div>
             <h1 className="text-[35px] md:text-[47px] leading-[140%] md:leading-[130%] font-bold mb-2">
               My Basket ({items.length})
             </h1>

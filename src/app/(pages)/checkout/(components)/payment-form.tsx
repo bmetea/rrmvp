@@ -23,7 +23,7 @@ interface PaymentFormProps {
 export function PaymentForm({
   checkoutId,
   widgetUrl,
-  brands = "VISA AMEX APPLEPAY",
+  brands = "VISA VISADEBIT VISAELECTRON MASTER MASTERDEBIT MAESTRO AMEX APPLEPAY",
   className = "",
 }: PaymentFormProps) {
   const [error, setError] = useState<string | null>(null);
