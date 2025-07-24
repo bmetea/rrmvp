@@ -1,5 +1,10 @@
 import { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Acceptable Use Policy | Radiance Rewards",
@@ -19,29 +24,31 @@ export default function AcceptableUsePolicyPage() {
               <p className="text-gray-600">Last updated: April 2025</p>
             </CardHeader>
             <CardContent className="prose prose-gray max-w-none">
-              <h2 className="text-xl font-bold mt-8 mb-4">1. Introduction</h2>
+              <h2 className="text-xl font-bold mt-8 mb-4">About us</h2>
               <p>
                 This acceptable use policy sets out the terms between you and us
-                under which you may access our website www.radiancerewards.co.uk
-                (our site). This acceptable use policy applies to all users of,
-                and visitors to, our site.
+                under which you may access our website
+                www.radiancerewards/acceptableusepolicy.co.uk (
+                <strong>our site</strong>). This acceptable use policy applies
+                to all users of, and visitors to, our site.
               </p>
               <p>
                 Your use of our site means that you accept, and agree to abide
                 by, all the policies in this acceptable use policy, which
-                supplement our terms of website use.
+                supplement our terms of website use
+                www.radiancerewards/termsofuse.co.uk.
               </p>
               <p>
-                www.radiancerewards.co.uk is a site operated by Claravue Ltd
-                trading as Radiance Rewards (we or us). We are registered in
-                England and Wales under company number 16388957 and we have our
-                registered office at Oakfields Farm, Kingsland, Herefordshire,
-                HR6 9QU.
+                Our site is a site operated by Claravue Ltd (&quot;We&quot;). We
+                are registered in England and Wales under company number
+                16388957 and have our registered office at 128 City Road,
+                London, EC1V 2NX.
+              </p>
+              <p>
+                To contact us, please email contactus@radiancerewards.co.uk.
               </p>
 
-              <h2 className="text-xl font-bold mt-8 mb-4">
-                2. Prohibited uses
-              </h2>
+              <h2 className="text-xl font-bold mt-8 mb-4">Prohibited uses</h2>
               <p>
                 You may use our site only for lawful purposes. You may not use
                 our site:
@@ -61,7 +68,8 @@ export default function AcceptableUsePolicyPage() {
                 </li>
                 <li>
                   To send, knowingly receive, upload, download, use or re-use
-                  any material which does not comply with our content standards.
+                  any material which does not comply with our content standards
+                  as set out below.
                 </li>
                 <li>
                   To transmit, or procure the sending of, any unsolicited or
@@ -81,35 +89,37 @@ export default function AcceptableUsePolicyPage() {
                 <li>
                   Not to reproduce, duplicate, copy or re-sell any part of our
                   site in contravention of the provisions of our terms of
-                  website use.
+                  website use{" "}
+                  <a href="http://www.radiancerewards/termsofuse.co.uk">
+                    www.radiancerewards/termsofuse.co.uk
+                  </a>
                 </li>
                 <li>
                   Not to access without authority, interfere with, damage or
                   disrupt:
+                  <ul className="list-disc pl-6 mt-2">
+                    <li>any part of our site;</li>
+                    <li>
+                      any equipment or network on which our site is stored;
+                    </li>
+                    <li>any software used in the provision of our site; or</li>
+                    <li>
+                      any equipment or network or software owned or used by any
+                      third party.
+                    </li>
+                  </ul>
                 </li>
-                <ul className="list-disc pl-6 mb-4">
-                  <li>any part of our site;</li>
-                  <li>any equipment or network on which our site is stored;</li>
-                  <li>any software used in the provision of our site; or</li>
-                  <li>
-                    any equipment or network or software owned or used by any
-                    third party.
-                  </li>
-                </ul>
               </ul>
 
               <h2 className="text-xl font-bold mt-8 mb-4">
-                3. Interactive services
+                Interactive services
               </h2>
               <p>
                 We may from time to time provide interactive services on our
-                site, including, without limitation:
+                site, for example, the ability to participate in games,
+                competitions, comment on blog posts or post to our social media
+                accounts (<strong>interactive services</strong>).
               </p>
-              <ul className="list-disc pl-6 mb-4">
-                <li>Chat rooms.</li>
-                <li>Bulletin boards.</li>
-                <li>Competition entries.</li>
-              </ul>
               <p>
                 Where we do provide any interactive service, we will provide
                 clear information to you about the kind of service offered, if
@@ -134,7 +144,7 @@ export default function AcceptableUsePolicyPage() {
                 to the consent of their parent or guardian. We advise parents
                 who permit their children to use an interactive service that it
                 is important that they communicate with their children about
-                their safety online, as moderation is not foolproof. Minors who
+                their safety online, as moderation is not fool proof. Minors who
                 are using any interactive service should be made aware of the
                 potential risks to them.
               </p>
@@ -144,18 +154,16 @@ export default function AcceptableUsePolicyPage() {
                 concern or difficulty arise.
               </p>
 
-              <h2 className="text-xl font-bold mt-8 mb-4">
-                4. Content standards
-              </h2>
+              <h2 className="text-xl font-bold mt-8 mb-4">Content standards</h2>
               <p>
                 These content standards apply to any and all material which you
-                contribute to our site (contributions), and to any interactive
-                services associated with it.
+                contribute to our site (<strong>contributions</strong>), and to
+                any interactive services associated with it.
               </p>
               <p>
-                You must comply with the spirit of the following standards as
-                well as the letter. The standards apply to each part of any
-                contribution as well as to its whole.
+                You must comply with the spirit and the letter of the following
+                standards. The standards apply to each part of any contribution
+                as well as to its whole.
               </p>
               <p>Contributions must:</p>
               <ul className="list-disc pl-6 mb-4">
@@ -212,7 +220,7 @@ export default function AcceptableUsePolicyPage() {
               </ul>
 
               <h2 className="text-xl font-bold mt-8 mb-4">
-                5. Suspension and termination
+                Suspension and termination
               </h2>
               <p>
                 We will determine, in our discretion, whether there has been a
@@ -222,9 +230,12 @@ export default function AcceptableUsePolicyPage() {
               </p>
               <p>
                 Failure to comply with this acceptable use policy constitutes a
-                material breach of the terms of use upon which you are permitted
-                to use our site, and may result in our taking all or any of the
-                following actions:
+                material breach of the terms of use{" "}
+                <a href="http://www.radiancerewards/termsofuse.co.uk">
+                  www.radiancerewards/termsofuse.co.uk
+                </a>{" "}
+                upon which you are permitted to use our site, and may result in
+                our taking all or any of the following actions:
               </p>
               <ul className="list-disc pl-6 mb-4">
                 <li>
@@ -256,7 +267,7 @@ export default function AcceptableUsePolicyPage() {
               </p>
 
               <h2 className="text-xl font-bold mt-8 mb-4">
-                6. Changes to the acceptable use policy
+                Changes to the acceptable use policy
               </h2>
               <p>
                 We may revise this acceptable use policy at any time by amending

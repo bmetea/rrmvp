@@ -89,13 +89,13 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <ul className="list-disc pl-6 mb-4">
                   <li>Full name of legal entity: Claravue Ltd</li>
-                  <li>Name of data privacy manager: Privacy Manager</li>
+                  <li>Name of data privacy manager: Henry Borne</li>
                   <li>Email address: hello@radiancerewards.co.uk</li>
                   <li>
                     Postal address: Oakfields Farm, Kingsland, Herefordshire,
                     HR6 9QU
                   </li>
-                  <li>Telephone number: Privacy Manager Phone Number</li>
+                  <li>Telephone number: +1 646 652 8831</li>
                 </ul>
                 <p>
                   You have the right to make a complaint at any time to the

@@ -10,9 +10,9 @@
 - [ ] Update docs
   - [x] Terms of Use
   - [x] FAQ
-  - [ ] Terms and Conditions
-  - [ ] Privacy Policy
-  - [ ] Acceptable Use Policy
+  - [x] Terms and Conditions
+  - [x] Privacy Policy
+  - [x] Acceptable Use Policy
 - [ ] NomuPay How to test all cards
 - [x] Small font on instan wins page as it doesnt seem to fit
 - [x] Meta pixel implemented
