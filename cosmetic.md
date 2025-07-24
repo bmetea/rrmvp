@@ -13,6 +13,7 @@
   - [ ] Terms and Conditions
   - [ ] Privacy Policy
   - [ ] Acceptable Use Policy
+- [ ] NomuPay How to test all cards
 - [x] Small font on instan wins page as it doesnt seem to fit
 - [x] Meta pixel implemented
 - [x] All card payments are accepted

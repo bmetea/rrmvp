@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 export default function TermsPage() {
   return (
@@ -9,7 +14,9 @@ export default function TermsPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card>
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">Terms of use</CardTitle>
+              <CardTitle className="text-4xl font-bold">
+                Website Terms of Use
+              </CardTitle>
               <p className="text-gray-600">Last updated: April 2025</p>
             </CardHeader>
             <CardContent>
@@ -32,11 +39,11 @@ export default function TermsPage() {
                 <p>
                   Our site is a site operated by Claravue Ltd (&quot;We&quot;).
                   We are registered in England and Wales under company number
-                  16388957 and have our registered office at Oakfields Farm,
-                  Kingsland, Herefordshire, HR6 9QU. Our main trading address is
-                  at Oakfields Farm, Kingsland, Herefordshire, HR6 9QU.
+                  16388957 and have our registered office at 128 City Road,
+                  London, EC1V 2NX
                 </p>
                 <p>We are a limited company.</p>
+                <p>You can contact us at contactus@radiancerewards.co.uk</p>
 
                 <h3 className="font-semibold mt-6 mb-3">
                   By using our site you accept these terms
@@ -80,16 +87,16 @@ export default function TermsPage() {
                     our site. When using our site, you must comply with this
                     Acceptable Use Policy.
                   </li>
-                  <li>
-                    If you purchase goods or services from our site, participate
-                    in any promotions or enter any of our competitions, other
-                    terms and conditions will apply and which you must accept
-                    and abide by{" "}
-                    <a href="http://www.radiancerewards/termsandconditions.co.uk">
-                      www.radiancerewards/termsandconditions.co.uk
-                    </a>
-                  </li>
                 </ul>
+                <p>
+                  If you purchase goods or services from our site, participate
+                  in any promotions or enter any of our competitions, other
+                  terms and conditions will apply and which you must accept and
+                  abide by{" "}
+                  <a href="http://www.radiancerewards/termsandconditions.co.uk">
+                    www.radiancerewards/termsandconditions.co.uk
+                  </a>
+                </p>
 
                 <h3 className="font-semibold mt-6 mb-3">
                   We may make changes to these terms
@@ -163,8 +170,8 @@ export default function TermsPage() {
                   If you know or suspect that anyone other than you knows your
                   user identification code or password, you must promptly notify
                   us at{" "}
-                  <a href="mailto:hello@radiancerewards.co.uk">
-                    hello@radiancerewards.co.uk
+                  <a href="mailto:contactus@radiancerewards.co.uk">
+                    contactus@radiancerewards.co.uk
                   </a>
                 </p>
 
@@ -251,8 +258,8 @@ export default function TermsPage() {
                 <p>
                   If you wish to complain about information and materials
                   uploaded by other users please contact us at{" "}
-                  <a href="mailto:hello@radiancerewards.co.uk">
-                    hello@radiancerewards.co.uk
+                  <a href="mailto:contactus@radiancerewards.co.uk">
+                    contactus@radiancerewards.co.uk
                   </a>
                 </p>
 
@@ -479,8 +486,8 @@ export default function TermsPage() {
                 <p>
                   If you wish to link to or make any use of content on our site
                   other than that set out above, please contact{" "}
-                  <a href="mailto:hello@radiancerewards.co.uk">
-                    hello@radiancerewards.co.uk
+                  <a href="mailto:contactus@radiancerewards.co.uk">
+                    contactus@radiancerewards.co.uk
                   </a>
                 </p>
 
