@@ -201,10 +201,7 @@ export default function CheckoutPage() {
                           >
                             {item.competition.title}
                           </h3>
-                          {/* Description placeholder - you may want to add this to your data */}
-                          <p className="text-[#313131] text-base leading-relaxed">
-                            {item.competition.type} Competition
-                          </p>
+
                         </div>
                       </div>
 

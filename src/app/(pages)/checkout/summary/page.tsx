@@ -211,32 +211,74 @@ export default function CheckoutSummaryPage() {
           <Card className="p-3 sm:p-6">
             <div className="flex flex-col items-start mb-6 w-full">
               {purchaseSummary.paymentStatus === "success" ? (
-                totalWinningTickets > 0 ? (
-                  // Winning message
-                  <div className="flex flex-col items-start gap-2 w-full">
-                    <Star className="w-12 h-12 text-amber-500 fill-amber-500" />
+                (() => {
+                  // Determine if we have any instant win competitions
+                  const hasInstantWin = entryData.some(entry => entry.competition.type === "instant_win");
+                  const hasRaffle = entryData.some(entry => entry.competition.type === "raffle");
+                  
+                  // For raffle competitions - always show "You're in the draw!"
+                  if (hasRaffle) {
+                    return (
+                      <div className="flex flex-col items-start gap-2 w-full">
+                        <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
+                          You're in the draw!
+                        </h1>
+                        <p className="text-base text-gray-700 leading-6">
+                          To view your winning tickets visit{" "}
+                          <span className="font-bold">
+                            My Entries
+                          </span>{" "}
+                          in your account
+                        </p>
+                      </div>
+                    );
+                  }
+                  
+                  // For instant win competitions
+                  if (hasInstantWin && totalWinningTickets > 0) {
+                    return (
+                      <div className="flex flex-col items-start gap-2 w-full">
+                        <Star className="w-12 h-12 text-amber-500 fill-amber-500" />
+                        <div className="flex flex-col items-start gap-2 w-full">
+                          <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
+                            Congratulations!
+                          </h1>
+                          <p className="text-base text-gray-700 leading-6">
+                            You have <span className="font-bold">WON</span> one of
+                            our instant win prizes!
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  // For instant win with no winning tickets
+                  if (hasInstantWin && totalWinningTickets === 0) {
+                    return (
+                      <div className="flex flex-col items-start gap-2 w-full">
+                        <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
+                          Better luck next time..
+                        </h1>
+                        <p className="text-base text-gray-700 leading-6">
+                          Unfortunately, you didn't win this time. Enter another
+                          competition to try your luck again.
+                        </p>
+                      </div>
+                    );
+                  }
+                  
+                  // Default fallback message
+                  return (
                     <div className="flex flex-col items-start gap-2 w-full">
                       <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
-                        Congratulations!
+                        Purchase Complete!
                       </h1>
                       <p className="text-base text-gray-700 leading-6">
-                        You have <span className="font-bold">WON</span> one of
-                        our instant win prizes!
+                        Your entries have been confirmed.
                       </p>
                     </div>
-                  </div>
-                ) : (
-                  // No winning message
-                  <div className="flex flex-col items-start gap-2 w-full">
-                    <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
-                      Better luck next time..
-                    </h1>
-                    <p className="text-base text-gray-700 leading-6">
-                      Unfortunately, you didn't win this time. Enter another
-                      competition to try your luck again.
-                    </p>
-                  </div>
-                )
+                  );
+                })()
               ) : (
                 // Error state
                 <div className="flex flex-col items-center w-full">
