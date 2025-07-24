@@ -142,7 +142,14 @@ export function CompetitionCartDialog() {
               </span>
             </div>
             <Link href="/checkout" onClick={() => setIsCartOpen(false)}>
-              <Button className="w-full">Proceed to Checkout</Button>
+              <Button 
+                className="w-full text-white" 
+                style={{ backgroundColor: '#663399' }}
+                onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a2d80'}
+                onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#663399'}
+              >
+                Proceed to Checkout
+              </Button>
             </Link>
           </div>
         )}
