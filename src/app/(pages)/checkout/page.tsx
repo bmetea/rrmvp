@@ -375,7 +375,10 @@ export default function CheckoutPage() {
                         <Button
                           onClick={handlePayButtonClick}
                           disabled={isProcessingCheckout}
-                          className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
+                          className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold text-white"
+                          style={{ backgroundColor: '#663399' }}
+                          onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a2d80'}
+                          onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#663399'}
                         >
                           <CreditCard className="h-5 w-5" />
                           {isProcessingCheckout
@@ -413,22 +416,11 @@ export default function CheckoutPage() {
                         </Alert>
                       )}
                       {paymentData && (
-                        <>
-                          <div className="bg-blue-50 p-3 rounded-lg mb-4">
-                            <p className="text-sm text-blue-800">
-                              <strong>Payment Breakdown:</strong>
-                              <br />
-                              Wallet Credit: {formatPrice(walletCreditUsed)}
-                              <br />
-                              Card Payment: {formatPrice(remainingToPay)}
-                            </p>
-                          </div>
-                          <PaymentForm
-                            checkoutId={paymentData.checkoutId}
-                            widgetUrl={paymentData.widgetUrl}
-                            className="mb-4"
-                          />
-                        </>
+                        <PaymentForm
+                          checkoutId={paymentData.checkoutId}
+                          widgetUrl={paymentData.widgetUrl}
+                          className="mb-4"
+                        />
                       )}
                       <div className="text-[14px] leading-[150%] text-muted-foreground">
                         By proceeding with payment, you agree to our terms and

@@ -97,7 +97,7 @@ export function PaymentForm({
           box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         .nomupaySubmitButton {
-          background-color: #2563eb;
+          background-color: #663399;
           color: white;
           padding: 0.75rem 1rem;
           border: none;
@@ -108,6 +108,9 @@ export function PaymentForm({
           transition: background-color 0.2s ease;
           margin-bottom: 10px;
           justify-content: center;
+        }
+        .nomupaySubmitButton:hover {
+          background-color: #5a2d80;
         }
         .wpwl-form {
           max-width: none;
