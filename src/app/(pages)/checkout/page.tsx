@@ -5,7 +5,6 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Minus, Plus, CreditCard } from "lucide-react";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/shared/components/ui/alert";
@@ -16,6 +15,7 @@ import { SignInButton, useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
 import { checkout } from "./(server)/checkout-orchestrator.actions";
 import { useAnalytics } from "@/shared/hooks";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 interface CartItem {
   competition: {
@@ -53,15 +53,23 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchWalletBalance = async () => {
       if (isSignedIn) {
-        const result = await getUserWalletBalance();
-        if (result.success && result.balance !== undefined) {
-          setWalletBalance(result.balance);
+        try {
+          const result = await getUserWalletBalance();
+          if (result.success && result.balance !== undefined) {
+            setWalletBalance(result.balance);
+          }
+        } catch (error) {
+          logCheckoutError("wallet balance fetch", error, {
+            userId,
+            isSignedIn,
+          });
+          // Don't show error to user for wallet balance fetch failure
         }
       }
     };
 
     fetchWalletBalance();
-  }, [isSignedIn]);
+  }, [isSignedIn, userId]);
 
   if (items.length === 0) {
     return (
@@ -125,7 +133,13 @@ export default function CheckoutPage() {
         setError(result.error || "Checkout failed");
       }
     } catch (error) {
-      console.error("Checkout error:", error);
+      logCheckoutError("payment button click", error, {
+        userId,
+        totalPrice,
+        remainingToPay,
+        walletBalance,
+        itemCount: items.length,
+      });
       setError("An error occurred during checkout");
     } finally {
       setIsProcessingCheckout(false);
@@ -201,7 +215,6 @@ export default function CheckoutPage() {
                           >
                             {item.competition.title}
                           </h3>
-
                         </div>
                       </div>
 
@@ -373,9 +386,17 @@ export default function CheckoutPage() {
                           onClick={handlePayButtonClick}
                           disabled={isProcessingCheckout}
                           className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold text-white"
-                          style={{ backgroundColor: '#663399' }}
-                          onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a2d80'}
-                          onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#663399'}
+                          style={{ backgroundColor: "#663399" }}
+                          onMouseEnter={(e) =>
+                            ((
+                              e.target as HTMLButtonElement
+                            ).style.backgroundColor = "#5a2d80")
+                          }
+                          onMouseLeave={(e) =>
+                            ((
+                              e.target as HTMLButtonElement
+                            ).style.backgroundColor = "#663399")
+                          }
                         >
                           <CreditCard className="h-5 w-5" />
                           {isProcessingCheckout

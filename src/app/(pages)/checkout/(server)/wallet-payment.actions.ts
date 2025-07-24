@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 // --- Internal Helper Functions (previously in wallet.actions.ts) ---
 
@@ -34,7 +35,7 @@ async function _getUserWalletBalance(userId: string): Promise<{
       walletId: wallet?.id,
     };
   } catch (error) {
-    console.error("Error getting wallet balance:", error);
+    logCheckoutError("wallet balance fetch", error, { userId });
     return { success: false, error: "Failed to get wallet balance" };
   }
 }
@@ -71,7 +72,13 @@ async function _createWalletTransaction(
 
     return { success: true, transactionId: walletTransaction.id };
   } catch (error) {
-    console.error("Error creating wallet transaction:", error);
+    logCheckoutError("wallet transaction creation", error, {
+      walletId,
+      amount,
+      type,
+      referenceType,
+      referenceId,
+    });
     return { success: false, error: "Failed to create wallet transaction" };
   }
 }
@@ -90,7 +97,10 @@ async function _updateWalletBalance(
 
     return { success: true };
   } catch (error) {
-    console.error("Error updating wallet balance:", error);
+    logCheckoutError("wallet balance update", error, {
+      walletId,
+      newBalance,
+    });
     return { success: false, error: "Failed to update wallet balance" };
   }
 }
@@ -153,7 +163,13 @@ async function _debitWalletBalance(
       newBalance,
     };
   } catch (error) {
-    console.error("Error debiting wallet balance:", error);
+    logCheckoutError("wallet debit", error, {
+      walletId,
+      amount,
+      referenceType,
+      referenceId,
+      numberOfTickets,
+    });
     return { success: false, error: "Failed to debit wallet balance" };
   }
 }
@@ -236,7 +252,15 @@ export async function processWalletPayment(
       };
     });
   } catch (error) {
-    console.error("Wallet payment error:", error);
+    logCheckoutError("wallet payment processing", error, {
+      itemCount: items.length,
+      walletId,
+      walletAmount,
+      totalCost: items.reduce(
+        (sum, item) => sum + item.competition.ticket_price * item.quantity,
+        0
+      ),
+    });
     return {
       success: false,
       error:

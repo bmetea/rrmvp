@@ -17,6 +17,7 @@ interface ResponseContext extends LogContext {
 
 interface ErrorContext extends LogContext {
   error: string;
+  stack?: string;
   duration: number;
   statusCode?: number;
 }
@@ -88,6 +89,22 @@ class Logger {
       console.error(this.formatMessage("ERROR", message, context));
     }
   }
+
+  // Add method for logging errors with stack traces
+  errorWithStack(
+    message: string,
+    error: unknown,
+    context: LogContext = {}
+  ): void {
+    if (this.shouldLog("ERROR")) {
+      const errorContext = {
+        ...context,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      };
+      console.error(this.formatMessage("ERROR", message, errorContext));
+    }
+  }
 }
 
 // Create a logger instance with default configuration
@@ -129,6 +146,7 @@ export const withLogging = (
 
       const errorContext: ErrorContext = {
         error: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
         duration,
         statusCode: res.status,
       };
@@ -137,6 +155,19 @@ export const withLogging = (
       throw error;
     }
   };
+};
+
+// Add helper function for checkout error logging
+export const logCheckoutError = (
+  operation: string,
+  error: unknown,
+  context: LogContext = {}
+): void => {
+  const errorMessage = `Checkout ${operation} failed`;
+  logger.errorWithStack(errorMessage, error, {
+    operation,
+    ...context,
+  });
 };
 
 // OPPWA Logger

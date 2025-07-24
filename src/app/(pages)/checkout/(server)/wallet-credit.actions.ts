@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { updateWalletBalance } from "@/app/(pages)/user/(server)/wallet.service";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 // Types and Interfaces
 export interface WalletCreditResult {
@@ -42,7 +43,7 @@ async function getUserWalletBalance(userId: string): Promise<number | null> {
 
     return wallet?.balance ?? null;
   } catch (error) {
-    console.error("Error getting user wallet balance:", error);
+    logCheckoutError("user wallet balance fetch", error, { userId });
     return null;
   }
 }
@@ -107,7 +108,10 @@ async function getEntriesWithPrizeData(
 
     return Array.from(entriesMap.values());
   } catch (error) {
-    console.error("Error getting entries with prize data:", error);
+    logCheckoutError("entries with prize data fetch", error, {
+      entryIdsCount: entryIds.length,
+      entryIds: entryIds.slice(0, 3), // Log first 3 for debugging without flooding logs
+    });
     return [];
   }
 }
@@ -147,7 +151,11 @@ async function updateWalletWithCredit(
         .executeTakeFirst();
 
       if (!wallet) {
-        console.error("Wallet not found for user:", userId);
+        logCheckoutError(
+          "wallet not found for user",
+          new Error("Wallet not found"),
+          { userId }
+        );
         return false;
       }
 
@@ -190,7 +198,15 @@ async function updateWalletWithCredit(
       return true;
     });
   } catch (error) {
-    console.error("Error updating wallet with credit:", error);
+    logCheckoutError("wallet credit update", error, {
+      userId,
+      creditAmount,
+      entriesCount: entriesData.length,
+      totalTickets: entriesData.reduce(
+        (sum, entry) => sum + entry.winningTickets.length,
+        0
+      ),
+    });
     return false;
   }
 }
@@ -322,7 +338,11 @@ export async function processWalletCreditsForEntries(
       winningTicketsWithCredits: totalWinningTicketsWithCredits,
     };
   } catch (error) {
-    console.error("Error processing wallet credits:", error);
+    const session = await auth();
+    logCheckoutError("wallet credits processing", error, {
+      entryIdsCount: entryIds.length,
+      userId: session?.userId,
+    });
 
     return {
       success: false,

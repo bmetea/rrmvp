@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { formatPrice } from "@/shared/lib/utils/price";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 // Import the 4 distinct steps
 import {
@@ -316,7 +317,14 @@ export async function checkout(
       error: "Unknown checkout strategy",
     };
   } catch (error) {
-    console.error("Checkout flow error:", error);
+    logCheckoutError("flow", error, {
+      hasCheckoutId: !!checkoutId,
+      itemCount: items.length,
+      totalAmount: items.reduce(
+        (sum, item) => sum + item.competition.ticket_price * item.quantity,
+        0
+      ),
+    });
     const message =
       error instanceof Error ? error.message : "Checkout flow failed";
     return {

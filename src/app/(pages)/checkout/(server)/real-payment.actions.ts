@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { oppwaLogger } from "@/shared/lib/logger";
+import { logCheckoutError } from "@/shared/lib/logger";
 import { penceToPounds } from "@/shared/lib/utils/price";
 
 const OPPWA_BASE_URL =
@@ -86,7 +87,12 @@ async function _prepareCheckout(input: {
     };
   } catch (error) {
     oppwaLogger.logResponse("/v1/checkouts", "POST", null, error);
-    console.error("Checkout preparation error:", error);
+    logCheckoutError("payment preparation", error, {
+      amount: input.amount,
+      currency: input.currency,
+      paymentType: input.paymentType,
+      userId: input.userId,
+    });
     return { error: "Failed to prepare checkout" };
   }
 }
@@ -148,7 +154,7 @@ async function _checkPaymentStatus(
       null,
       error
     );
-    console.error("Payment status check error:", error);
+    logCheckoutError("payment status check", error, { checkoutId });
     return { error: "Failed to check payment status" };
   }
 }
@@ -194,8 +200,9 @@ function isPaymentSuccessful(code: string): boolean {
 export async function prepareRealPayment(
   cardAmount: number
 ): Promise<RealPaymentPreparation> {
+  let session: any = null;
   try {
-    const session = await auth();
+    session = await auth();
     if (!session?.userId) {
       return {
         success: false,
@@ -228,7 +235,10 @@ export async function prepareRealPayment(
       message: "Payment preparation successful",
     };
   } catch (error) {
-    console.error("Real payment preparation error:", error);
+    logCheckoutError("real payment preparation", error, {
+      cardAmount,
+      userId: session?.userId,
+    });
     return {
       success: false,
       error:
@@ -284,7 +294,7 @@ export async function verifyRealPayment(
       message: "Payment verification successful",
     };
   } catch (error) {
-    console.error("Real payment verification error:", error);
+    logCheckoutError("real payment verification", error, { checkoutId });
     return {
       success: false,
       error:

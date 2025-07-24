@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { getUserWalletBalance } from "./wallet-payment.actions";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 interface CartItem {
   competition: {
@@ -113,7 +114,13 @@ export async function calculateCheckoutStrategy(
       };
     }
   } catch (error) {
-    console.error("Checkout calculation error:", error);
+    logCheckoutError("calculation", error, {
+      itemCount: items.length,
+      totalAmount: items.reduce(
+        (sum, item) => sum + item.competition.ticket_price * item.quantity,
+        0
+      ),
+    });
     return {
       success: false,
       error:

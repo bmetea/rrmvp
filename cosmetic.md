@@ -1,6 +1,8 @@
 ## TODO
 
-- [ ] Increment wallet credit on win
+- [x] Increment wallet credit on win
+- [x] Implement better logging on checkout
+- [ ] Implement FAQ
 - [ ] Influencer CODE
 - [ ] Categories implemened using buttons on figma
   - [ ] Cosmetic Enhancements

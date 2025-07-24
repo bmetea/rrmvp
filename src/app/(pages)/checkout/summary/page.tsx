@@ -14,6 +14,7 @@ import {
   CompetitionEntry,
 } from "@/app/(pages)/user/(server)/entry.service";
 import { EntryCard } from "@/app/(pages)/user/(components)/EntryCard";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 interface PurchaseResult {
   competitionId: string;
@@ -63,7 +64,7 @@ export default function CheckoutSummaryPage() {
         const decodedSummary = JSON.parse(decodeURIComponent(summaryData));
         setPurchaseSummary(decodedSummary);
       } catch (error) {
-        console.error("Error parsing summary data:", error);
+        logCheckoutError("summary data parsing", error, { summaryData });
         router.push("/competitions");
       }
     } else {
@@ -91,7 +92,10 @@ export default function CheckoutSummaryPage() {
         );
         setEntryData(validEntries);
       } catch (error) {
-        console.error("Error fetching entry data:", error);
+        logCheckoutError("entry data fetching", error, {
+          purchaseSummaryExists: !!purchaseSummary,
+          resultsCount: purchaseSummary?.results.length || 0,
+        });
       } finally {
         setIsLoadingEntries(false);
       }
@@ -146,7 +150,11 @@ export default function CheckoutSummaryPage() {
           sessionStorage.removeItem("checkout_items");
         }
       } catch (error) {
-        console.error("Error tracking purchase analytics:", error);
+        const storedItems = sessionStorage.getItem("checkout_items");
+        logCheckoutError("purchase analytics tracking", error, {
+          purchaseSummaryExists: !!purchaseSummary,
+          hasStoredItems: !!storedItems,
+        });
       }
     }
   }, [purchaseSummary, trackPurchase]);
@@ -223,9 +231,13 @@ export default function CheckoutSummaryPage() {
               {purchaseSummary.paymentStatus === "success" ? (
                 (() => {
                   // Determine if we have any instant win competitions
-                  const hasInstantWin = entryData.some(entry => entry.competition.type === "instant_win");
-                  const hasRaffle = entryData.some(entry => entry.competition.type === "raffle");
-                  
+                  const hasInstantWin = entryData.some(
+                    (entry) => entry.competition.type === "instant_win"
+                  );
+                  const hasRaffle = entryData.some(
+                    (entry) => entry.competition.type === "raffle"
+                  );
+
                   // For raffle competitions - always show "You're in the draw!"
                   if (hasRaffle) {
                     return (
@@ -235,15 +247,13 @@ export default function CheckoutSummaryPage() {
                         </h1>
                         <p className="text-base text-gray-700 leading-6">
                           To view your winning tickets visit{" "}
-                          <span className="font-bold">
-                            My Entries
-                          </span>{" "}
-                          in your account
+                          <span className="font-bold">My Entries</span> in your
+                          account
                         </p>
                       </div>
                     );
                   }
-                  
+
                   // For instant win competitions
                   if (hasInstantWin && totalWinningTickets > 0) {
                     return (
@@ -254,14 +264,14 @@ export default function CheckoutSummaryPage() {
                             Congratulations!
                           </h1>
                           <p className="text-base text-gray-700 leading-6">
-                            You have <span className="font-bold">WON</span> one of
-                            our instant win prizes!
+                            You have <span className="font-bold">WON</span> one
+                            of our instant win prizes!
                           </p>
                         </div>
                       </div>
                     );
                   }
-                  
+
                   // For instant win with no winning tickets
                   if (hasInstantWin && totalWinningTickets === 0) {
                     return (
@@ -276,7 +286,7 @@ export default function CheckoutSummaryPage() {
                       </div>
                     );
                   }
-                  
+
                   // Default fallback message
                   return (
                     <div className="flex flex-col items-start gap-2 w-full">
@@ -409,29 +419,41 @@ export default function CheckoutSummaryPage() {
                       "Wallet + Card"}
                   </span>
                 </div>
-                {purchaseSummary.walletCreditResults && 
-                 purchaseSummary.walletCreditResults.success && 
-                 purchaseSummary.walletCreditResults.creditAmount > 0 && (
-                  <>
-                    <Separator />
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-semibold text-green-700">
-                        Wallet Credit Earned
-                      </span>
-                      <span className="text-sm text-green-600 font-medium">
-                        +{formatPrice(purchaseSummary.walletCreditResults.creditAmount)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        From {purchaseSummary.walletCreditResults.winningTicketsWithCredits} winning ticket{purchaseSummary.walletCreditResults.winningTicketsWithCredits > 1 ? 's' : ''}
-                      </span>
-                      <span className="text-xs text-green-600">
-                        🎉 Congratulations!
-                      </span>
-                    </div>
-                  </>
-                )}
+                {purchaseSummary.walletCreditResults &&
+                  purchaseSummary.walletCreditResults.success &&
+                  purchaseSummary.walletCreditResults.creditAmount > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between items-center">
+                        <span className="text-base font-semibold text-green-700">
+                          Wallet Credit Earned
+                        </span>
+                        <span className="text-sm text-green-600 font-medium">
+                          +
+                          {formatPrice(
+                            purchaseSummary.walletCreditResults.creditAmount
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          From{" "}
+                          {
+                            purchaseSummary.walletCreditResults
+                              .winningTicketsWithCredits
+                          }{" "}
+                          winning ticket
+                          {purchaseSummary.walletCreditResults
+                            .winningTicketsWithCredits > 1
+                            ? "s"
+                            : ""}
+                        </span>
+                        <span className="text-xs text-green-600">
+                          🎉 Congratulations!
+                        </span>
+                      </div>
+                    </>
+                  )}
                 <div className="flex justify-between items-center">
                   <span className="text-base font-semibold text-gray-900">
                     Date
@@ -489,29 +511,41 @@ export default function CheckoutSummaryPage() {
                     "Wallet + Card"}
                 </span>
               </div>
-              {purchaseSummary.walletCreditResults && 
-               purchaseSummary.walletCreditResults.success && 
-               purchaseSummary.walletCreditResults.creditAmount > 0 && (
-                <>
-                  <Separator />
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-green-700">
-                      Wallet Credit Earned
-                    </span>
-                    <span className="text-sm text-green-600 font-medium">
-                      +{formatPrice(purchaseSummary.walletCreditResults.creditAmount)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      From {purchaseSummary.walletCreditResults.winningTicketsWithCredits} winning ticket{purchaseSummary.walletCreditResults.winningTicketsWithCredits > 1 ? 's' : ''}
-                    </span>
-                    <span className="text-xs text-green-600">
-                      🎉 Congratulations!
-                    </span>
-                  </div>
-                </>
-              )}
+              {purchaseSummary.walletCreditResults &&
+                purchaseSummary.walletCreditResults.success &&
+                purchaseSummary.walletCreditResults.creditAmount > 0 && (
+                  <>
+                    <Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-semibold text-green-700">
+                        Wallet Credit Earned
+                      </span>
+                      <span className="text-sm text-green-600 font-medium">
+                        +
+                        {formatPrice(
+                          purchaseSummary.walletCreditResults.creditAmount
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">
+                        From{" "}
+                        {
+                          purchaseSummary.walletCreditResults
+                            .winningTicketsWithCredits
+                        }{" "}
+                        winning ticket
+                        {purchaseSummary.walletCreditResults
+                          .winningTicketsWithCredits > 1
+                          ? "s"
+                          : ""}
+                      </span>
+                      <span className="text-xs text-green-600">
+                        🎉 Congratulations!
+                      </span>
+                    </div>
+                  </>
+                )}
               <div className="flex justify-between items-center">
                 <span className="text-base font-semibold text-gray-900">
                   Date
