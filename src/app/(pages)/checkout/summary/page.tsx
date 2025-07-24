@@ -204,188 +204,124 @@ export default function CheckoutSummaryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]">
-      <div className="container max-w-6xl mx-auto py-8 px-4">
-        <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-          {/* Main content */}
-          <div className="lg:col-span-2">
-            <Card className="p-6">
-              <div className="flex flex-col items-start mb-6 w-full">
-                {purchaseSummary.paymentStatus === "success" ? (
-                  totalWinningTickets > 0 ? (
-                    // Winning message
-                    <div className="flex flex-col items-start gap-2 w-full">
-                      <Star className="w-12 h-12 text-amber-500 fill-amber-500" />
-                      <div className="flex flex-col items-start gap-2 w-full">
-                        <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
-                          Congratulations!
-                        </h1>
-                        <p className="text-base text-gray-700 leading-6">
-                          You have <span className="font-bold">WON</span> one of
-                          our instant win prizes!
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    // No winning message
+    <div className="container max-w-6xl mx-auto py-8 px-2 sm:px-4">
+      <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+        {/* Main content */}
+        <div className="lg:col-span-2">
+          <Card className="p-3 sm:p-6">
+            <div className="flex flex-col items-start mb-6 w-full">
+              {purchaseSummary.paymentStatus === "success" ? (
+                totalWinningTickets > 0 ? (
+                  // Winning message
+                  <div className="flex flex-col items-start gap-2 w-full">
+                    <Star className="w-12 h-12 text-amber-500 fill-amber-500" />
                     <div className="flex flex-col items-start gap-2 w-full">
                       <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
-                        Better luck next time..
+                        Congratulations!
                       </h1>
                       <p className="text-base text-gray-700 leading-6">
-                        Unfortunately, you didn't win this time. Enter another
-                        competition to try your luck again.
+                        You have <span className="font-bold">WON</span> one of
+                        our instant win prizes!
                       </p>
                     </div>
-                  )
-                ) : (
-                  // Error state
-                  <div className="flex flex-col items-center w-full">
-                    <XCircle className="h-16 w-16 text-red-500 mb-4" />
-                    <h1 className="text-2xl font-bold text-center mb-2">
-                      Purchase Failed
-                    </h1>
-                    {purchaseSummary.paymentMessage && (
-                      <p className="text-muted-foreground text-center">
-                        {purchaseSummary.paymentMessage}
-                      </p>
-                    )}
                   </div>
+                ) : (
+                  // No winning message
+                  <div className="flex flex-col items-start gap-2 w-full">
+                    <h1 className="text-[34px] font-medium text-gray-900 leading-tight">
+                      Better luck next time..
+                    </h1>
+                    <p className="text-base text-gray-700 leading-6">
+                      Unfortunately, you didn't win this time. Enter another
+                      competition to try your luck again.
+                    </p>
+                  </div>
+                )
+              ) : (
+                // Error state
+                <div className="flex flex-col items-center w-full">
+                  <XCircle className="h-16 w-16 text-red-500 mb-4" />
+                  <h1 className="text-2xl font-bold text-center mb-2">
+                    Purchase Failed
+                  </h1>
+                  {purchaseSummary.paymentMessage && (
+                    <p className="text-muted-foreground text-center">
+                      {purchaseSummary.paymentMessage}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-4">
+                {isLoadingEntries ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+                    <span className="ml-2 text-muted-foreground">
+                      Loading entry details...
+                    </span>
+                  </div>
+                ) : entryData.length > 0 ? (
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto">
+                    {entryData.map((entry) => (
+                      <EntryCard key={entry.id} entry={entry} />
+                    ))}
+                  </div>
+                ) : (
+                  // Fallback to basic display if entry data couldn't be loaded
+                  <ScrollArea className="h-[300px] rounded-md border p-4">
+                    {purchaseSummary.results.map((result, index) => (
+                      <div key={result.entryId} className="mb-6 last:mb-0">
+                        <h3 className="font-semibold mb-2">
+                          Entry {index + 1}
+                        </h3>
+                        <div className="space-y-2 text-sm">
+                          <p className="text-muted-foreground font-mono text-xs">
+                            Entry ID: {result.entryId}
+                          </p>
+                          <p>
+                            Tickets: {formatTicketNumbers(result.ticketNumbers)}
+                          </p>
+                          {result.winningTickets.length > 0 && (
+                            <p className="text-green-600 font-medium">
+                              🎉 Winning tickets:{" "}
+                              {formatTicketNumbers(
+                                result.winningTickets.map((w) => w.ticketNumber)
+                              )}
+                            </p>
+                          )}
+                        </div>
+                        {index < purchaseSummary.results.length - 1 && (
+                          <Separator className="my-4" />
+                        )}
+                      </div>
+                    ))}
+                  </ScrollArea>
                 )}
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  {isLoadingEntries ? (
-                    <div className="flex items-center justify-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-                      <span className="ml-2 text-muted-foreground">
-                        Loading entry details...
-                      </span>
-                    </div>
-                  ) : entryData.length > 0 ? (
-                    <div className="space-y-4 max-h-[500px] overflow-y-auto">
-                      {entryData.map((entry) => (
-                        <EntryCard key={entry.id} entry={entry} />
-                      ))}
-                    </div>
-                  ) : (
-                    // Fallback to basic display if entry data couldn't be loaded
-                    <ScrollArea className="h-[300px] rounded-md border p-4">
-                      {purchaseSummary.results.map((result, index) => (
-                        <div key={result.entryId} className="mb-6 last:mb-0">
-                          <h3 className="font-semibold mb-2">
-                            Entry {index + 1}
-                          </h3>
-                          <div className="space-y-2 text-sm">
-                            <p className="text-muted-foreground font-mono text-xs">
-                              Entry ID: {result.entryId}
-                            </p>
-                            <p>
-                              Tickets:{" "}
-                              {formatTicketNumbers(result.ticketNumbers)}
-                            </p>
-                            {result.winningTickets.length > 0 && (
-                              <p className="text-green-600 font-medium">
-                                🎉 Winning tickets:{" "}
-                                {formatTicketNumbers(
-                                  result.winningTickets.map(
-                                    (w) => w.ticketNumber
-                                  )
-                                )}
-                              </p>
-                            )}
-                          </div>
-                          {index < purchaseSummary.results.length - 1 && (
-                            <Separator className="my-4" />
-                          )}
-                        </div>
-                      ))}
-                    </ScrollArea>
-                  )}
-                </div>
-
-                <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
-                  <Button
-                    variant="outline"
-                    className="flex-1 w-full sm:w-auto"
-                    onClick={handleContinueShopping}
-                  >
-                    Continue Shopping
-                  </Button>
-                  <Button
-                    className="flex-1 w-full sm:w-auto"
-                    onClick={handleViewEntries}
-                  >
-                    View My Entries
-                  </Button>
-                </div>
+              <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
+                <Button
+                  variant="outline"
+                  className="flex-1 w-full sm:w-auto"
+                  onClick={handleContinueShopping}
+                >
+                  Continue Shopping
+                </Button>
+                <Button
+                  className="flex-1 w-full sm:w-auto"
+                  onClick={handleViewEntries}
+                >
+                  View My Entries
+                </Button>
               </div>
-            </Card>
-          </div>
-
-          {/* Desktop: Order Summary Sidebar */}
-          <div className="hidden lg:block">
-            <Card className="p-8">
-              <div className="space-y-6">
-                <h2 className="text-3xl font-medium text-gray-900">
-                  Order Summary
-                </h2>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-gray-900">
-                      Quantity
-                    </span>
-                    <span className="text-sm text-gray-700">
-                      {totalTickets}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-gray-900">
-                      Total cost
-                    </span>
-                    <span className="text-sm text-gray-700">
-                      {formatPrice(
-                        (purchaseSummary.walletAmount || 0) +
-                          (purchaseSummary.cardAmount || 0)
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-gray-900">
-                      Payment method
-                    </span>
-                    <span className="text-sm text-gray-700">
-                      {purchaseSummary.paymentMethod === "wallet" &&
-                        "Wallet credit"}
-                      {purchaseSummary.paymentMethod === "card" &&
-                        "Card payment"}
-                      {purchaseSummary.paymentMethod === "hybrid" &&
-                        "Wallet + Card"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-gray-900">
-                      Date
-                    </span>
-                    <span className="text-sm text-gray-700">
-                      {new Date().toLocaleDateString("en-GB", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
+            </div>
+          </Card>
         </div>
 
-        {/* Mobile: Order Summary */}
-        <div className="lg:hidden mt-6">
+        {/* Desktop: Order Summary Sidebar */}
+        <div className="hidden lg:block">
           <Card className="p-8">
             <div className="space-y-6">
               <h2 className="text-3xl font-medium text-gray-900">
@@ -439,6 +375,62 @@ export default function CheckoutSummaryPage() {
             </div>
           </Card>
         </div>
+      </div>
+
+      {/* Mobile: Order Summary */}
+      <div className="lg:hidden mt-6">
+        <Card className="p-8">
+          <div className="space-y-6">
+            <h2 className="text-3xl font-medium text-gray-900">
+              Order Summary
+            </h2>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-base font-semibold text-gray-900">
+                  Quantity
+                </span>
+                <span className="text-sm text-gray-700">{totalTickets}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-base font-semibold text-gray-900">
+                  Total cost
+                </span>
+                <span className="text-sm text-gray-700">
+                  {formatPrice(
+                    (purchaseSummary.walletAmount || 0) +
+                      (purchaseSummary.cardAmount || 0)
+                  )}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-base font-semibold text-gray-900">
+                  Payment method
+                </span>
+                <span className="text-sm text-gray-700">
+                  {purchaseSummary.paymentMethod === "wallet" &&
+                    "Wallet credit"}
+                  {purchaseSummary.paymentMethod === "card" && "Card payment"}
+                  {purchaseSummary.paymentMethod === "hybrid" &&
+                    "Wallet + Card"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-base font-semibold text-gray-900">
+                  Date
+                </span>
+                <span className="text-sm text-gray-700">
+                  {new Date().toLocaleDateString("en-GB", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

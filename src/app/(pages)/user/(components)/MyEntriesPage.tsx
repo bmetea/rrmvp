@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   getUserCompetitionEntries,
   CompetitionEntry,
-} from "@/(pages)/user/(server)/entry.service";
+} from "@/app/(pages)/user/(server)/entry.service";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useAnalytics } from "@/shared/hooks";
 import { EntryCard } from "./EntryCard";
@@ -103,7 +103,7 @@ export default function MyEntriesPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 px-1 sm:px-4 py-4">
         <Skeleton className="h-8 w-1/3" />
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -116,24 +116,14 @@ export default function MyEntriesPage() {
 
   if (entries.length === 0) {
     return (
-      <div className="p-4 text-center">
+      <div className="px-1 sm:px-4 py-4 text-center">
         <p>You haven&apos;t entered any competitions yet.</p>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "stretch",
-        gap: 16,
-        padding: "0px 20px 32px",
-      }}
-    >
+    <div className="flex flex-col justify-center items-center self-stretch gap-4 px-1 sm:px-5 pb-8">
       {entries.map((entry) => (
         <EntryCard key={entry.id} entry={entry} />
       ))}
