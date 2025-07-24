@@ -7,12 +7,9 @@
   - [ ] Luxury & Lifestile
 - [ ] Influencer CODE
 - [ ] Checkout, Checkout Summary and tickets cosmetic
-- [ ] Update docs
-  - [x] Terms of Use
-  - [x] FAQ
-  - [x] Terms and Conditions
-  - [x] Privacy Policy
-  - [x] Acceptable Use Policy
+- [ ] Give site credit to 
+  - [ ] arobinson@mambamarketing.co.uk
+  - [ ] lmorris@mambamarketing.co.uk
 - [ ] NomuPay How to test all cards
 - [x] Small font on instan wins page as it doesnt seem to fit
 - [x] Meta pixel implemented
@@ -21,6 +18,12 @@
 - [ ] GA4 Setup
   - [x] Implemented
   - [ ] Implemented with Ben
+- [x] Update docs
+  - [x] Terms of Use
+  - [x] FAQ
+  - [x] Terms and Conditions
+  - [x] Privacy Policy
+  - [x] Acceptable Use Policy
 
 
 
