@@ -3,40 +3,26 @@
 - [x] Increment wallet credit on win
 - [x] Implement better logging on checkout
 - [x] Remove straggling dark theme configs
+- [ ] Make how it works boxes uniform
+- [ ] Take title off carrousel
 - [ ] Implement FAQ
 - [ ] Influencer CODE
+- [ ] Clerk webhook edge cases
+  - [ ] user exists
+- [ ] NomuPay How to test all cards
 - [ ] Categories implemened using buttons on figma
   - [ ] Cosmetic Enhancements
   - [ ] Haircare and Skincare
   - [ ] Instan Wins
   - [ ] Luxury & Lifestile
+
+
+
 - [ ] Give site credit to 
   - [ ] arobinson@mambamarketing.co.uk
   - [x] lmorris@mambamarketing.co.uk
-- [ ] NomuPay How to test all cards
-- [ ] Clerk webhook edge cases
-  - [ ] user exists
-  - [ ] 
-
-
-
-Firs pass
 - [x] Meet with Josh to review design
-- [x] Small font on instan wins page as it doesnt seem to fit
-- [x] Meta pixel implemented
-- [x] All card payments are accepted
-  - [x] brands = "VISA VISADEBIT VISAELECTRON MASTER MASTERDEBIT MAESTRO AMEX APPLEPAY" 
-- [ ] GA4 Setup
-  - [x] Implemented
-  - [ ] Implemented with Ben
-- [x] Update docs
-  - [x] Terms of Use
-  - [x] FAQ
-  - [x] Terms and Conditions
-  - [x] Privacy Policy
-  - [x] Acceptable Use Policy
-
-- [ ] Checkout, Checkout Summary and tickets cosmetic
+- [x] Checkout, Checkout Summary and tickets cosmetic
   - cart dialog
     - [x] make button purple 
     - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8683-20749&m=dev
@@ -54,5 +40,18 @@ Firs pass
     - [x]use purple for pay button
     - [x]take out blue payment sumamry 
   - Order summary
-    - Add order summary card to the right
-    - Change title to : You're in the draw!!
+    - [x] Add order summary card to the right
+    - [x] Change title to : You're in the draw!!
+- [x] Small font on instan wins page as it doesnt seem to fit
+- [x] Meta pixel implemented
+- [x] All card payments are accepted
+  - [x] brands = "VISA VISADEBIT VISAELECTRON MASTER MASTERDEBIT MAESTRO AMEX APPLEPAY" 
+- [ ] GA4 Setup
+  - [x] Implemented
+  - [ ] Implemented with Ben
+- [x] Update docs
+  - [x] Terms of Use
+  - [x] FAQ
+  - [x] Terms and Conditions
+  - [x] Privacy Policy
+  - [x] Acceptable Use Policy
