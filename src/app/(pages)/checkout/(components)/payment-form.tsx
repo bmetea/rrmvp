@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { oppwaLogger } from "@/shared/lib/logger";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 declare global {
   interface Window {
@@ -163,6 +164,7 @@ export function PaymentForm({
           document.body.removeChild(jqueryScript);
         } catch (e) {
           // Elements might already be removed
+          logCheckoutError("payment widget cleanup", e, { checkoutId });
           console.warn("Some payment widget elements were already removed");
         }
       };

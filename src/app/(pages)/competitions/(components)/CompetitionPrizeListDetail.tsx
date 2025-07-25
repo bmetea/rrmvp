@@ -39,13 +39,13 @@ export function CompetitionPrizeDetail({
   );
 
   return (
-    <div className="bg-white dark:bg-[#18181b]">
+    <div className="bg-white">
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-[#232326]">
+              <div className="flex border-b border-gray-200">
         <button
           className={`flex-1 py-3 font-bold text-base transition-colors ${
             tab === "tickets"
-              ? "border-b-2 border-[#E19841] text-black dark:text-white"
+              ? "border-b-2 border-[#E19841] text-black"
               : "text-gray-500"
           }`}
           onClick={() => setTab("tickets")}
@@ -53,10 +53,10 @@ export function CompetitionPrizeDetail({
           TICKETS
         </button>
         <button
-          className={`flex-1 py-3 font-bold text-base transition-colors ${
-            tab === "description"
-              ? "border-b-2 border-[#E19841] text-black dark:text-white"
-              : "text-gray-500"
+                      className={`flex-1 py-3 font-bold text-base transition-colors ${
+              tab === "description"
+                ? "border-b-2 border-[#E19841] text-black"
+                : "text-gray-500"
           }`}
           onClick={() => setTab("description")}
         >
@@ -83,22 +83,22 @@ export function CompetitionPrizeDetail({
                     className={`absolute inset-0 rounded-lg flex items-center justify-center ${
                       isAvailable
                         ? "bg-[#E19841]/10 border-2 border-[#E19841]"
-                        : "bg-gray-100 dark:bg-[#232326]"
+                        : "bg-gray-100"
                     }`}
                   >
                     <span
                       className={`font-mono text-xl font-bold ${
                         isAvailable
                           ? "text-[#E19841]"
-                          : "text-black dark:text-white"
+                          : "text-black"
                       }`}
                     >
                       {ticket}
                     </span>
                   </div>
                   {claimed && (
-                    <div className="absolute inset-x-0 bottom-0 bg-gray-200/90 dark:bg-gray-700/90 py-1 rounded-b-lg">
-                      <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center block">
+                                    <div className="absolute inset-x-0 bottom-0 bg-gray-200/90 py-1 rounded-b-lg">
+                  <span className="text-[10px] font-bold text-gray-600 text-center block">
                         WON
                       </span>
                     </div>
@@ -197,7 +197,7 @@ export function CompetitionPrizeDetail({
 
       {tab === "description" && (
         <div className="p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-300">
+                        <div className="text-sm text-gray-600">
             {description}
           </div>
         </div>

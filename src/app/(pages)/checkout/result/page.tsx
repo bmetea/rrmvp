@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { checkout } from "../(server)/checkout-orchestrator.actions";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { oppwaLogger } from "@/shared/lib/logger";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 function CheckoutResultContent() {
   const searchParams = useSearchParams();
@@ -57,7 +58,12 @@ function CheckoutResultContent() {
           setIsProcessing(false);
         }
       } catch (error) {
-        console.error("Checkout result processing error:", error);
+        const storedItems = sessionStorage.getItem("checkout_items");
+        logCheckoutError("result processing", error, {
+          checkoutId,
+          resourcePath,
+          hasStoredItems: !!storedItems,
+        });
         setError("An error occurred processing your payment");
         setIsProcessing(false);
       }

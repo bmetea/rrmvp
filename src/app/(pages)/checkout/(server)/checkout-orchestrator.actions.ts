@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { formatPrice } from "@/shared/lib/utils/price";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 // Import the 4 distinct steps
 import {
@@ -14,6 +15,10 @@ import {
   allocateTickets,
   type TicketAllocationResult,
 } from "./ticket-allocation.actions";
+import {
+  processWalletCreditsForEntries,
+  type WalletCreditResult,
+} from "./wallet-credit.actions";
 
 interface CartItem {
   competition: {
@@ -40,6 +45,7 @@ export interface CheckoutResult {
     walletAmount: number;
     cardAmount: number;
     ticketResults: TicketAllocationResult;
+    walletCreditResults?: WalletCreditResult;
     message: string;
   };
 }
@@ -117,6 +123,28 @@ export async function checkout(
         };
       }
 
+      // Process wallet credits for winning tickets (if any)
+      const entryIds = ticketAllocation.results
+        .filter((result) => result.success && result.entryId)
+        .map((result) => result.entryId!);
+
+      let walletCreditResults: WalletCreditResult | undefined;
+      if (entryIds.length > 0) {
+        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        if (
+          walletCreditResults.success &&
+          walletCreditResults.creditAmount > 0
+        ) {
+          console.log(
+            `Wallet credit processed: £${(
+              walletCreditResults.creditAmount / 100
+            ).toFixed(2)} for ${
+              walletCreditResults.winningTicketsWithCredits
+            } winning tickets`
+          );
+        }
+      }
+
       // Revalidate paths
       revalidatePaths();
 
@@ -137,6 +165,7 @@ export async function checkout(
         results: ticketAllocation.results || [],
         paymentStatus: "success",
         paymentMessage: `Purchase completed using ${strategyMessage.toLowerCase()}`,
+        walletCreditResults,
       };
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
@@ -150,6 +179,7 @@ export async function checkout(
           walletAmount: recalculation.walletAmount,
           cardAmount: recalculation.cardAmount,
           ticketResults: ticketAllocation,
+          walletCreditResults,
           message: `Purchase completed using ${strategyMessage.toLowerCase()}`,
         },
       };
@@ -182,6 +212,28 @@ export async function checkout(
         };
       }
 
+      // Process wallet credits for winning tickets (if any)
+      const entryIds = ticketAllocation.results
+        .filter((result) => result.success && result.entryId)
+        .map((result) => result.entryId!);
+
+      let walletCreditResults: WalletCreditResult | undefined;
+      if (entryIds.length > 0) {
+        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        if (
+          walletCreditResults.success &&
+          walletCreditResults.creditAmount > 0
+        ) {
+          console.log(
+            `Wallet credit processed: £${(
+              walletCreditResults.creditAmount / 100
+            ).toFixed(2)} for ${
+              walletCreditResults.winningTicketsWithCredits
+            } winning tickets`
+          );
+        }
+      }
+
       // Revalidate paths
       revalidatePaths();
 
@@ -195,6 +247,7 @@ export async function checkout(
         paymentMessage: `Purchase completed using ${formatPrice(
           calculation.walletAmount
         )} wallet credit only`,
+        walletCreditResults,
       };
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
@@ -208,6 +261,7 @@ export async function checkout(
           walletAmount: calculation.walletAmount,
           cardAmount: 0,
           ticketResults: ticketAllocation,
+          walletCreditResults,
           message: `Purchase completed using ${formatPrice(
             calculation.walletAmount
           )} wallet credit only`,
@@ -263,7 +317,14 @@ export async function checkout(
       error: "Unknown checkout strategy",
     };
   } catch (error) {
-    console.error("Checkout flow error:", error);
+    logCheckoutError("flow", error, {
+      hasCheckoutId: !!checkoutId,
+      itemCount: items.length,
+      totalAmount: items.reduce(
+        (sum, item) => sum + item.competition.ticket_price * item.quantity,
+        0
+      ),
+    });
     const message =
       error instanceof Error ? error.message : "Checkout flow failed";
     return {

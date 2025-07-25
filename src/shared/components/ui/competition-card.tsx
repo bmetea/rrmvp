@@ -7,8 +7,8 @@ import { Competition } from "@/(pages)/competitions/(server)/competition.service
 import { ArrowRight, Clock } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 
-function formatEndDate(dateString: string) {
-  const date = new Date(dateString);
+function formatEndDate(dateString: string | Date) {
+  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
   const day = date.getDate();
   const month = date.toLocaleString("en-GB", { month: "long" });
   return `${day} ${month}`;
@@ -54,14 +54,14 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
 
   return (
     <Link href={`/competitions/${competition.id}`} className="block h-full">
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl outline outline-2 outline-[#E19841] flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full transition-all cursor-pointer">
+      <div className="bg-white rounded-2xl outline outline-2 outline-[#E19841] flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full transition-all cursor-pointer">
         {/* Banner */}
         <div
           className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
           style={{ backgroundColor: isActive ? "#E19841" : "#6B7280" }}
         >
           <Clock className="w-5 h-5 md:w-6 md:h-6" />
-          <span className="text-neutral-900 dark:text-white text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
+          <span className="text-neutral-900 text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
             {`Ends: ${formatEndDate(competition.end_date)}`}
           </span>
         </div>
@@ -90,7 +90,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             {competition.type}
           </span>
           <div className="w-full flex flex-col items-start gap-1 md:gap-2">
-            <h3 className="w-full font-['Crimson_Pro'] text-lg sm:text-xl md:text-[22px] font-medium text-[#151515] dark:text-white leading-tight">
+            <h3 className="w-full font-['Crimson_Pro'] text-lg sm:text-xl md:text-[22px] font-medium text-[#151515] leading-tight">
               {competition.title}
             </h3>
           </div>
@@ -111,7 +111,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
                   />
                 ))}
               </div>
-              <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
+              <div className="text-zinc-800 text-[14px] leading-[150%] font-normal">
                 {competition.tickets_sold != null
                   ? `${Number(competition.tickets_sold)}+ tickets sold`
                   : "No tickets sold yet"}
@@ -125,7 +125,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
             <div className="hidden md:flex flex-col gap-2 w-full">
               {/* Ticket Price */}
               <div className="text-center">
-                <span className="text-zinc-800 dark:text-zinc-200 text-2xl font-bold">
+                <span className="text-zinc-800 text-2xl font-bold">
                   {formatPrice(competition.ticket_price || 0)}
                 </span>
               </div>
@@ -137,7 +137,7 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
                     style={{ width: `${soldPercentage}%` }}
                   />
                 </div>
-                <div className="text-zinc-800 dark:text-zinc-200 text-[14px] leading-[150%] font-normal">
+                <div className="text-zinc-800 text-[14px] leading-[150%] font-normal">
                   {soldPercentage}% sold
                 </div>
               </div>

@@ -3,7 +3,7 @@ import { Crimson_Pro, Open_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/shared/components/layout/navigation/Navbar";
 import Footer from "@/shared/components/layout/navigation/Footer";
-import { ThemeProvider } from "@/shared/components/theme/theme-provider";
+
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/shared/lib/context/cart-context";
 import Script from "next/script";
@@ -67,6 +67,7 @@ export default async function RootLayout({
       {/* <ReactScan /> */}
       <html lang="en" suppressHydrationWarning>
         <head>
+          <meta name="color-scheme" content="light" />
           <link
             rel="icon"
             href="/svg/logo-favicon-black.svg"
@@ -103,21 +104,14 @@ export default async function RootLayout({
           <PageViewTracker />
           <MetaPixel />
           <MetaPixelPageTracker />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <CartProvider>
-              <div className="flex min-h-screen flex-col">
-                <Navbar />
-                <main className="flex-1 pt-16">{children}</main>
-                <Footer />
-              </div>
-              <KlaviyoTest />
-            </CartProvider>
-          </ThemeProvider>
+          <CartProvider>
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1 pt-16">{children}</main>
+              <Footer />
+            </div>
+            <KlaviyoTest />
+          </CartProvider>
         </body>
       </html>
     </ClerkProvider>

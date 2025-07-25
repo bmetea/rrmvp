@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { sql } from "kysely";
+import { logCheckoutError } from "@/shared/lib/logger";
 
 // --- Internal Helper Functions (previously in ticket.actions.ts) ---
 
@@ -45,7 +46,10 @@ async function _allocateTicketNumbers(
       ticketNumbers,
     };
   } catch (error) {
-    console.error("Error allocating ticket numbers:", error);
+    logCheckoutError("ticket number allocation", error, {
+      competitionId,
+      count,
+    });
     return {
       success: false,
       error: "Failed to allocate tickets",
@@ -94,7 +98,13 @@ async function _createCompetitionEntry(
       entryId: competitionEntry.id,
     };
   } catch (error) {
-    console.error("Error creating competition entry:", error);
+    logCheckoutError("competition entry creation", error, {
+      competitionId,
+      userId,
+      ticketCount: ticketNumbers.length,
+      walletTransactionId,
+      paymentTransactionId,
+    });
     return {
       success: false,
       error: "Failed to create competition entry",
@@ -151,7 +161,12 @@ async function _claimWinningTickets(
       claimedTickets,
     };
   } catch (error) {
-    console.error("Error claiming winning tickets:", error);
+    logCheckoutError("winning ticket claiming", error, {
+      competitionId,
+      userId,
+      entryId,
+      ticketCount: ticketNumbers.length,
+    });
     return {
       success: false,
       error: "Failed to claim winning tickets",
@@ -289,10 +304,12 @@ export async function allocateTickets(
             winningTickets: claimResult.claimedTickets,
           });
         } catch (itemError) {
-          console.error(
-            `Error allocating tickets for ${item.competition.id}:`,
-            itemError
-          );
+          logCheckoutError("ticket allocation for item", itemError, {
+            competitionId: item.competition.id,
+            competitionTitle: item.competition.title,
+            quantity: item.quantity,
+            userId: user.id,
+          });
           results.push({
             competitionId: item.competition.id,
             success: false,
@@ -324,7 +341,11 @@ export async function allocateTickets(
       };
     });
   } catch (error) {
-    console.error("Ticket allocation error:", error);
+    logCheckoutError("ticket allocation", error, {
+      itemCount: items.length,
+      walletTransactionIds: walletTransactionIds.length,
+      hasPaymentTransaction: !!paymentTransactionId,
+    });
     return {
       success: false,
       error:
