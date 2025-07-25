@@ -3,7 +3,8 @@
 - [x] Increment wallet credit on win
 - [x] Implement better logging on checkout
 - [x] Remove straggling dark theme configs
-- [ ] Make how it works boxes uniform
+- [ ] prd warm lambda
+- [x] Make how it works boxes uniform
 - [ ] Take title off carrousel
 - [ ] Implement FAQ
 - [ ] Influencer CODE

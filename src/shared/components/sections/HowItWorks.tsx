@@ -46,13 +46,13 @@ const HowItWorks = () => {
         </div>
 
         {/* Cards grid */}
-        <div className="w-full max-w-[1312px] flex flex-col lg:flex-row justify-start items-start gap-6 lg:gap-12">
+        <div className="w-full max-w-[1312px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-12">
           {steps.map((step) => (
             <div
               key={step.number}
-              className="flex-1 p-8 bg-white rounded-3xl flex flex-col justify-start items-center gap-6"
+              className="w-full h-auto min-h-[320px] p-8 bg-white rounded-3xl flex flex-col justify-start items-center gap-6"
             >
-              <div className="w-full flex flex-col justify-start items-center gap-4">
+              <div className="w-full h-full flex flex-col justify-start items-center gap-4">
                 {/* Large number */}
                 <div className="w-full text-center text-foreground text-[48px] md:text-[63px] lg:text-[84px] font-medium leading-[1.2em] font-sans">
                   {step.number}
@@ -62,7 +62,7 @@ const HowItWorks = () => {
                   {step.title}
                 </div>
                 {/* Description */}
-                <div className="w-full text-center text-[#313131] text-[16px] md:text-[17px] lg:text-[18px] font-normal leading-[1.5em] font-open-sans">
+                <div className="w-full text-center text-[#313131] text-[16px] md:text-[17px] lg:text-[18px] font-normal leading-[1.5em] font-open-sans flex-1 flex items-start justify-center">
                   {step.description}
                 </div>
               </div>
