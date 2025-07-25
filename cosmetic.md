@@ -12,7 +12,7 @@
   - [ ] Luxury & Lifestile
 - [ ] Give site credit to 
   - [ ] arobinson@mambamarketing.co.uk
-  - [ ] lmorris@mambamarketing.co.uk
+  - [x] lmorris@mambamarketing.co.uk
 - [ ] NomuPay How to test all cards
 - [ ] Clerk webhook edge cases
   - [ ] user exists
