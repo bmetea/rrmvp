@@ -9,8 +9,13 @@
 - [ ] Implement FAQ
 - [ ] Influencer CODE
 - [ ] Clerk webhook edge cases
-  - [ ] change the name of the function
-  - [ ] user exists
+  - [x] ppr
+    - [x] change the name of the function
+    - [x] user exists
+      - [x] handle in code, make a log first
+  - [ ] prd
+    - [ ] change the name of the function
+    - [ ] user exists
     - [ ] handle in code, make a log first
 - [ ] NomuPay How to test all cards
 - [ ] Categories implemened using buttons on figma
