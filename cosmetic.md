@@ -5,7 +5,7 @@
 - [x] Remove straggling dark theme configs
 - [ ] prd warm lambda
 - [x] Make how it works boxes uniform
-- [ ] Take title off carrousel
+- [x] Take title off carrousel
 - [ ] Implement FAQ
 - [ ] Influencer CODE
 - [ ] Clerk webhook edge cases
