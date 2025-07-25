@@ -2,6 +2,7 @@
 
 - [x] Increment wallet credit on win
 - [x] Implement better logging on checkout
+- [x] Remove straggling dark theme configs
 - [ ] Implement FAQ
 - [ ] Influencer CODE
 - [ ] Categories implemened using buttons on figma
@@ -34,8 +35,6 @@ Firs pass
   - [x] Terms and Conditions
   - [x] Privacy Policy
   - [x] Acceptable Use Policy
-
-
 
 - [ ] Checkout, Checkout Summary and tickets cosmetic
   - cart dialog
