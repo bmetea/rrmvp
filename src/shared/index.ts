@@ -7,5 +7,5 @@ export * from "./types";
 export * from "./components/ui";
 export * from "./components/layout";
 export * from "./components/analytics";
-export * from "./components/theme";
+
 export * from "./components/sections";

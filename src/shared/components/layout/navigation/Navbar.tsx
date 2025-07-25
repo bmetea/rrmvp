@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
+
 import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/app/(pages)/competitions/(components)/competition-cart-dialog";
 import { useAdmin } from "@/shared/hooks/use-admin";
@@ -40,8 +40,7 @@ const navLinks = [
 
 const Navbar = ({ activePath = "/" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+
   const { userId } = useAuth();
   const { isAdmin } = useAdmin();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -115,9 +114,6 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
   };
 
   // After mounting, we can safely show the theme-dependent logo
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Handle click outside for mobile menu
   useEffect(() => {
@@ -156,29 +152,14 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               className="flex items-center"
               onClick={() => handleNavLinkClick("/", "Logo")}
             >
-              {mounted ? (
-                <Image
-                  src={
-                    resolvedTheme === "dark"
-                      ? "/svg/text-logo-white.svg"
-                      : "/svg/text-logo-black.svg"
-                  }
-                  alt="Radiance Rewards"
-                  width={150}
-                  height={40}
-                  priority
-                  className="h-8 w-auto"
-                />
-              ) : (
-                <Image
-                  src="/svg/text-logo-black.svg"
-                  alt="Radiance Rewards"
-                  width={150}
-                  height={40}
-                  priority
-                  className="h-8 w-auto"
-                />
-              )}
+              <Image
+                src="/svg/text-logo-black.svg"
+                alt="Radiance Rewards"
+                width={150}
+                height={40}
+                priority
+                className="h-8 w-auto"
+              />
             </Link>
             <div className="flex items-center gap-2">
               <a

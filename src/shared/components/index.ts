@@ -12,9 +12,7 @@ export { default as PageViewTracker } from "./analytics/PageViewTracker";
 export { default as MetaPixel } from "./analytics/MetaPixel";
 export { default as MetaPixelPageTracker } from "./analytics/MetaPixelPageTracker";
 
-// Theme component exports
-export { ThemeProvider } from "./theme/theme-provider";
-export { default as ThemeToggle } from "./theme/theme-toggle";
+
 
 // Section component exports
 export { default as AboutSection } from "./sections/AboutSection";

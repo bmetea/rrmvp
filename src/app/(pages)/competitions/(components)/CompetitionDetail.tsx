@@ -169,22 +169,20 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         </div>
 
         {/* Mobile Content Card */}
-        <div className="bg-white dark:bg-[#18181b] rounded-xl shadow-lg p-4">
+        <div className="bg-white rounded-xl shadow-lg p-4">
           {/* Progress Bar */}
           <div className="mb-4">
             <div className="flex justify-between text-xs mb-1">
-              <span className="text-gray-500 dark:text-gray-300">
-                {ticketsLeft} Tickets Left
-              </span>
-              <span className="text-gray-500 dark:text-gray-300">
+              <span className="text-gray-500">{ticketsLeft} Tickets Left</span>
+              <span className="text-gray-500">
                 {ticketsSold}/{totalTickets}
               </span>
             </div>
             <Progress
               value={progress}
-              className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 dark:bg-[#232326] rounded-full"
+              className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 rounded-full"
             />
-            <div className="text-gray-500 dark:text-gray-300 font-bold text-xs mt-0.5">
+            <div className="text-gray-500 font-bold text-xs mt-0.5">
               {progress}%
             </div>
           </div>
@@ -226,7 +224,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 }
                 className="w-full accent-[#E19841]"
               />
-              <span className="bg-gray-100 dark:bg-[#232326] px-3 py-1 rounded-lg font-bold text-base text-black dark:text-white min-w-[60px] text-center">
+              <span className="bg-gray-100 px-3 py-1 rounded-lg font-bold text-base text-black min-w-[60px] text-center">
                 {ticketCount}
               </span>
             </div>
@@ -234,11 +232,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Total Price */}
           <div className="mb-4">
-            <div className="bg-[#F7F7F7] dark:bg-[#232326] rounded-lg px-6 py-4 text-center">
-              <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] dark:text-white mb-1">
+            <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+              <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
                 {formatPrice(totalPrice)}
               </p>
-              <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515] dark:text-white">
+              <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
                 {ticketCount} Tickets at {formatPrice(ticketPrice)} each
               </p>
             </div>
@@ -286,16 +284,16 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         {/* Mobile Prizes Section - Hidden for raffle competitions */}
         {competitionWithPrizes.type?.toLowerCase().trim() !== "raffle" &&
           prizes.length > 0 && (
-            <div className="border-t border-gray-200 dark:border-[#232326] pt-6">
+            <div className="border-t border-gray-200 pt-6">
               <h2 className="text-xl font-bold mb-4">Available Prizes</h2>
               <div className="space-y-3">
                 {prizes.map((prize, idx) => (
                   <div
                     key={`${prize.id}-${prize.product?.id || idx}`}
-                    className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
+                    className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden"
                   >
                     <div className="flex items-center p-4 gap-4">
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200">
                         <Image
                           src={
                             prize.product?.media_info?.images?.[0] ||
@@ -308,7 +306,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] dark:text-white mb-2 leading-tight">
+                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] mb-2 leading-tight">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
@@ -379,7 +377,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           {/* Right Column */}
           <div className="space-y-8">
             {/* Main Content Card */}
-            <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
               {/* Title and End Date */}
               <div className="mb-6">
                 <div className="mb-2">
@@ -387,7 +385,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                     Ends {formattedEndDate}
                   </span>
                 </div>
-                <h1 className="font-['Crimson_Pro'] text-[45px] font-medium text-[#151515] dark:text-white">
+                <h1 className="font-['Crimson_Pro'] text-[45px] font-medium text-[#151515]">
                   {competitionWithPrizes.title}
                 </h1>
               </div>
@@ -395,18 +393,18 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               {/* Progress Bar */}
               <div className="mb-4">
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-gray-500 dark:text-gray-300">
+                  <span className="text-gray-500">
                     {ticketsLeft} Tickets Left
                   </span>
-                  <span className="text-gray-500 dark:text-gray-300">
+                  <span className="text-gray-500">
                     {ticketsSold}/{totalTickets}
                   </span>
                 </div>
                 <Progress
                   value={progress}
-                  className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 dark:bg-[#232326] rounded-full"
+                  className="h-3 [&>div]:bg-[#9F68FF] bg-gray-200 rounded-full"
                 />
-                <div className="text-gray-500 dark:text-gray-300 font-bold text-xs mt-0.5">
+                <div className="text-gray-500 font-bold text-xs mt-0.5">
                   {progress}%
                 </div>
               </div>
@@ -448,7 +446,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                     }
                     className="w-full accent-[#E19841]"
                   />
-                  <span className="bg-gray-100 dark:bg-[#232326] px-4 py-2 rounded-lg font-bold text-lg text-black dark:text-white min-w-[80px] text-center">
+                  <span className="bg-gray-100 px-4 py-2 rounded-lg font-bold text-lg text-black min-w-[80px] text-center">
                     {ticketCount}
                   </span>
                 </div>
@@ -456,11 +454,11 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
               {/* Total Price */}
               <div className="mb-6">
-                <div className="bg-[#F7F7F7] dark:bg-[#232326] rounded-lg px-6 py-4 text-center">
-                  <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] dark:text-white mb-1">
+                <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+                  <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
                     {formatPrice(totalPrice)}
                   </p>
-                  <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515] dark:text-white">
+                  <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
                     {ticketCount} Tickets at {formatPrice(ticketPrice)} each
                   </p>
                 </div>
@@ -510,16 +508,16 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         {/* Full Width Prize Section - Hidden for raffle competitions */}
         {competitionWithPrizes.type?.toLowerCase().trim() !== "raffle" &&
           prizes.length > 0 && (
-            <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
               <h2 className="text-2xl font-bold mb-6">Available Prizes</h2>
               <div className="space-y-4">
                 {prizes.map((prize, idx) => (
                   <div
                     key={`${prize.id}-${prize.product?.id || idx}`}
-                    className="rounded-xl border border-gray-200 dark:border-[#232326] bg-gray-50 dark:bg-[#18181b] overflow-hidden"
+                    className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden"
                   >
                     <div className="flex items-center p-4 gap-4">
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-[#232326] border border-gray-200 dark:border-[#232326]">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200">
                         <Image
                           src={
                             prize.product?.media_info?.images?.[0] ||
@@ -532,7 +530,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] dark:text-white mb-2 leading-tight">
+                        <h3 className="font-['Crimson_Pro'] text-xl sm:text-2xl lg:text-[35px] font-medium text-[#151515] mb-2 leading-tight">
                           {prize.product?.name || "Prize"}
                         </h3>
                         <div className="flex items-center gap-2">
@@ -589,9 +587,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
       </div>
 
       {/* Competition Details Section - Visible on both mobile and desktop */}
-      <div className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-4 mt-8">
+      <div className="bg-white rounded-lg shadow-md p-4 mt-8">
         <h2 className="text-xl font-bold mb-3">Competition Details</h2>
-        <div className="prose prose-zinc dark:prose-invert prose-sm max-w-none">
+        <div className="prose prose-zinc prose-sm max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {competitionWithPrizes.description ||
               "No description available for this competition. Please check the prize details below for more information."}
