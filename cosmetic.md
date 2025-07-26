@@ -3,12 +3,20 @@
 - [x] Increment wallet credit on win
 - [x] Implement better logging on checkout
 - [x] Remove straggling dark theme configs
-- [ ] Make how it works boxes uniform
-- [ ] Take title off carrousel
+- [x] prd warm lambda
+- [x] Make how it works boxes uniform
+- [x] Take title off carrousel
 - [ ] Implement FAQ
 - [ ] Influencer CODE
 - [ ] Clerk webhook edge cases
-  - [ ] user exists
+  - [x] ppr
+    - [x] change the name of the function
+    - [x] user exists
+      - [x] handle in code, make a log first
+  - [x] prd
+    - [x] change the name of the function
+    - [x] user exists
+    - [x] handle in code, make a log first
 - [ ] NomuPay How to test all cards
 - [ ] Categories implemened using buttons on figma
   - [ ] Cosmetic Enhancements

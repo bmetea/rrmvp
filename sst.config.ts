@@ -20,6 +20,7 @@ const stageConfigs = {
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
     },
+    warm: 1, // Keep 1 Lambda instance warm in production
   },
   ppr: {
     vpc: {
@@ -38,6 +39,7 @@ const stageConfigs = {
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
     },
+    warm: 0, // No warm instances for pre-production
   },
   bmetea: {
     vpc: {
@@ -50,6 +52,7 @@ const stageConfigs = {
       proxy: false,
     },
     domain: undefined,
+    warm: 0, // No warm instances for development
   },
 } as const;
 
@@ -107,6 +110,8 @@ export default $config({
       },
       // Apply domain configuration from stage config
       ...(config.domain && { domain: config.domain }),
+      // Configure warm instances based on stage
+      warm: config.warm,
       environment: {
         // Authentication configuration
         CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
@@ -120,7 +125,6 @@ export default $config({
         // Analytics configuration with defaults
         NEXT_PUBLIC_ENABLE_ANALYTICS:
           process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || "true",
-
 
         NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY:
           process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY || "",

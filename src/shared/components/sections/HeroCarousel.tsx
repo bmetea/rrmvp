@@ -116,12 +116,6 @@ function HeroCarousel({ competitions }: HeroCarouselProps) {
 
                   <div className="absolute bottom-8 md:bottom-12 left-0 w-full z-10 pointer-events-none">
                     <div className="w-full max-w-3xl mx-auto px-6 text-center">
-                      <h2
-                        className="text-white text-[35px] md:text-[63px] font-medium leading-[1.2em] mb-2 drop-shadow-lg font-sans"
-                        style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
-                      >
-                        {activeCompetition?.title || "Competition"}
-                      </h2>
                       <p className="text-[#E19841] text-[14px] md:text-[18px] font-normal leading-[1.5em] tracking-wide drop-shadow-lg font-open-sans">
                         {drawText}
                       </p>
