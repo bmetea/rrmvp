@@ -139,7 +139,8 @@ function calculateTotalCreditAmount(entries: EntryWithPrizeData[]): number {
 async function updateWalletWithCredit(
   userId: string,
   creditAmount: number,
-  entriesData: EntryWithPrizeData[]
+  entriesData: EntryWithPrizeData[],
+  orderId: string
 ): Promise<boolean> {
   try {
     return await db.transaction().execute(async (trx) => {
@@ -191,6 +192,7 @@ async function updateWalletWithCredit(
           } (Entry IDs: ${entryIds.join(", ")})`,
           reference_type: "prize_win",
           number_of_tickets: ticketCount, // Set the actual number of winning tickets with credits
+          order_id: orderId,
         })
         .execute();
 
@@ -218,7 +220,8 @@ async function updateWalletWithCredit(
  * for any winning tickets that have wallet credit products
  */
 export async function processWalletCreditsForEntries(
-  entryIds: string[]
+  entryIds: string[],
+  orderId: string
 ): Promise<WalletCreditResult> {
   try {
     // Get current user
@@ -297,7 +300,8 @@ export async function processWalletCreditsForEntries(
     const updateSuccess = await updateWalletWithCredit(
       user.id,
       totalCreditAmount,
-      entriesWithPrizeData
+      entriesWithPrizeData,
+      orderId
     );
 
     if (!updateSuccess) {

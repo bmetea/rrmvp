@@ -171,7 +171,7 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
@@ -270,7 +270,7 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
