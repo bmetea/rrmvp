@@ -1,13 +1,33 @@
 ## TODO
 
+- [ ] NomuPay How to test all cards
+- [ ] Categories implemened using buttons on figma
+  - [ ] Cosmetic Enhancements
+  - [ ] Haircare and Skincare
+  - [ ] Instan Wins
+  - [ ] Luxury & Lifestile
+- [ ] Implement FAQ
+- [ ] Send Order Details evant to Klavyio
+
+- [x] introduce the concept of orders
+  - [ ] Major data structure changes, should be tested well in prd
 - [x] Increment wallet credit on win
 - [x] Implement better logging on checkout
 - [x] Remove straggling dark theme configs
 - [x] prd warm lambda
 - [x] Make how it works boxes uniform
 - [x] Take title off carrousel
-- [ ] Implement FAQ
-- [ ] Influencer CODE
+- [x] Influencer CODE
+  - [x] How It Works:
+    Influencer shares: yoursite.com/?ref=SARAH123
+    System captures: Code stored in session storage
+    User browses: Code persists across all pages
+    User purchases: Code automatically saved with the order
+    Zero Impact:
+    ✅ Completely invisible to users
+    ✅ No UI changes required
+    ✅ Works with existing checkout flow
+    ✅ Optional - doesn't break anything if missing
 - [ ] Clerk webhook edge cases
   - [x] ppr
     - [x] change the name of the function
@@ -17,12 +37,6 @@
     - [x] change the name of the function
     - [x] user exists
     - [x] handle in code, make a log first
-- [ ] NomuPay How to test all cards
-- [ ] Categories implemened using buttons on figma
-  - [ ] Cosmetic Enhancements
-  - [ ] Haircare and Skincare
-  - [ ] Instan Wins
-  - [ ] Luxury & Lifestile
 
 
 
@@ -33,17 +47,16 @@
 - [x] Checkout, Checkout Summary and tickets cosmetic
   - cart dialog
     - [x] make button purple 
-    - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8683-20749&m=dev
   - checkout page
     - [x] make background gray
     - [x] make cards white for contrast
-      - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8755-22951&m=dev
+  
     - mobile
       - [x] remove image
       - [x] have competition_type tag but not subtitle
       - [x] make entry card like design
       - [x] make summary card like design
-      - https://www.figma.com/design/nXeKMMvRWm87eHOilG16kN/Radiance-Rewards-----Rv2.10-?node-id=8300-24567&m=dev
+  
   - [x]paymnet form
     - [x]use purple for pay button
     - [x]take out blue payment sumamry 
