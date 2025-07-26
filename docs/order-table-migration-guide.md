@@ -45,8 +45,8 @@ export interface CompetitionEntry {
 }
 ```
 
-#### Step 3: Create Order Management Functions
-- [ ] Create new file: `src/app/(pages)/checkout/(server)/order.actions.ts`
+#### Step 3: Create Order Management Functions ✅
+- [x] Create new file: `src/app/(pages)/checkout/(server)/order.actions.ts`
 ```typescript
 "use server";
 
