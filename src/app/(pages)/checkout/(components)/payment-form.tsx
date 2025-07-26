@@ -51,7 +51,6 @@ export function PaymentForm({
             total: { label: "COMPANY, INC." },
           },
           onReady: function() {
-            console.log('[OPPWA Widget] Widget ready');
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
@@ -64,7 +63,6 @@ export function PaymentForm({
               // $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
               $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton' ><center>Click to Pay</center></div>")
               $(".nomupaySubmitButton").click(function(){
-                console.log('[OPPWA Widget] Submit button clicked');
                 if (window.wpwl && window.wpwl.executePayment) {
                   wpwl.executePayment("wpwl-container-card")
                 }
@@ -74,11 +72,9 @@ export function PaymentForm({
             }
           },
           onBeforeSubmit: function() {
-            console.log('[OPPWA Widget] Before submit');
             return true;
           },
           onAfterSubmit: function() {
-            console.log('[OPPWA Widget] After submit');
           },
           onError: function(error) {
             console.error('[OPPWA Widget] Error:', error);

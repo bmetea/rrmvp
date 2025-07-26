@@ -178,13 +178,7 @@ export async function checkout(
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
         ) {
-          console.log(
-            `Wallet credit processed: £${(
-              walletCreditResults.creditAmount / 100
-            ).toFixed(2)} for ${
-              walletCreditResults.winningTicketsWithCredits
-            } winning tickets`
-          );
+          // Wallet credit processed successfully
         }
       }
 
@@ -233,11 +227,6 @@ export async function checkout(
 
     // First call - determine payment flow based on strategy
     if (calculation.requiresWalletPayment && !calculation.requiresCardPayment) {
-      console.log("💰 Processing wallet-only payment...", {
-        walletAmount: calculation.walletAmount,
-        walletId: calculation.walletId,
-      });
-
       // Wallet only payment
       const walletPayment = await processWalletPayment(
         items,
@@ -245,10 +234,8 @@ export async function checkout(
         calculation.walletAmount,
         orderId
       );
-      console.log("💰 Wallet payment result:", walletPayment);
 
       if (!walletPayment.success) {
-        console.log("❌ Wallet payment failed:", walletPayment.error);
         await updateOrderStatus(orderId, "failed");
         return {
           success: false,
@@ -256,7 +243,6 @@ export async function checkout(
         };
       }
 
-      console.log("🎫 Allocating tickets...");
       // Allocate tickets
       const ticketAllocation = await allocateTickets(items, orderId);
       if (!ticketAllocation.success) {
@@ -279,13 +265,7 @@ export async function checkout(
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
         ) {
-          console.log(
-            `Wallet credit processed: £${(
-              walletCreditResults.creditAmount / 100
-            ).toFixed(2)} for ${
-              walletCreditResults.winningTicketsWithCredits
-            } winning tickets`
-          );
+          // Wallet credit processed successfully
         }
       }
 
@@ -308,13 +288,7 @@ export async function checkout(
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
 
       // Update order status to completed
-      console.log("✅ Updating order status to completed...");
       await updateOrderStatus(orderId, "completed");
-
-      console.log(
-        "🎉 Wallet-only checkout completed successfully! Redirecting to:",
-        `/checkout/summary?summary=${encodedSummary}`
-      );
 
       return {
         success: true,
