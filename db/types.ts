@@ -30,11 +30,9 @@ export interface CompetitionEntries {
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
   order_id: string | null;
-  payment_transaction_id: string | null;
   tickets: Generated<number[] | null>;
   updated_at: Generated<Timestamp | null>;
   user_id: string;
-  wallet_transaction_id: string | null;
 }
 
 export interface CompetitionPrizes {
