@@ -297,9 +297,9 @@ const entryResult = await _createCompetitionEntry(
 );
 ```
 
-#### Step 6: Update Wallet Payment Functions
-- [ ] Add `orderId` parameter to `processWalletPayment` function signature in `src/app/(pages)/checkout/(server)/wallet-payment.actions.ts`
-- [ ] Add `order_id: orderId` to all wallet transaction INSERT statements
+#### Step 6: Update Wallet Payment Functions ✅
+- [x] Add `orderId` parameter to `processWalletPayment` function signature in `src/app/(pages)/checkout/(server)/wallet-payment.actions.ts`
+- [x] Add `order_id: orderId` to all wallet transaction INSERT statements
 ```typescript
 .values({
   // ... existing fields

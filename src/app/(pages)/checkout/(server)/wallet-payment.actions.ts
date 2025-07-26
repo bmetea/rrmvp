@@ -48,6 +48,7 @@ async function _createWalletTransaction(
   referenceId: string,
   description: string,
   numberOfTickets: number | undefined,
+  orderId: string,
   trx: any
 ): Promise<{ success: boolean; transactionId?: string; error?: string }> {
   try {
@@ -62,6 +63,7 @@ async function _createWalletTransaction(
         reference_id: referenceId,
         description,
         number_of_tickets: numberOfTickets,
+        order_id: orderId,
       })
       .returning("id")
       .executeTakeFirst();
@@ -112,6 +114,7 @@ async function _debitWalletBalance(
   referenceId: string,
   description: string,
   numberOfTickets: number | undefined,
+  orderId: string,
   trx: any
 ): Promise<{
   success: boolean;
@@ -144,6 +147,7 @@ async function _debitWalletBalance(
       referenceId,
       description,
       numberOfTickets,
+      orderId,
       trx
     );
 
@@ -194,7 +198,8 @@ export async function processWalletPayment(
     quantity: number;
   }>,
   walletId: string,
-  walletAmount: number
+  walletAmount: number,
+  orderId: string
 ): Promise<WalletPaymentResult> {
   try {
     return await db.transaction().execute(async (trx) => {
@@ -230,6 +235,7 @@ export async function processWalletPayment(
             item.competition.id,
             `Wallet payment for ${item.quantity} tickets in ${item.competition.title}`,
             item.quantity,
+            orderId,
             trx
           );
 
