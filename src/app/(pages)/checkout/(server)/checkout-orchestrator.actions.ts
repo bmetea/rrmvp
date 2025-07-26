@@ -19,6 +19,12 @@ import {
   processWalletCreditsForEntries,
   type WalletCreditResult,
 } from "./wallet-credit.actions";
+import {
+  createOrder,
+  updateOrderStatus,
+  getOrderIdFromCheckoutId,
+  type OrderSummary,
+} from "./order.actions";
 
 interface CartItem {
   competition: {
@@ -57,10 +63,32 @@ function revalidatePaths() {
   revalidatePath("/checkout");
 }
 
+// Helper function to build order summary from items and calculation
+function buildOrderSummary(
+  items: CartItem[],
+  calculation: CheckoutCalculation
+): OrderSummary {
+  return {
+    items: items.map((item) => ({
+      competition_id: item.competition.id,
+      competition_title: item.competition.title,
+      quantity: item.quantity,
+      unit_price: item.competition.ticket_price,
+      total_price: item.competition.ticket_price * item.quantity,
+    })),
+    total_amount: calculation.totalAmount,
+    wallet_amount: calculation.walletAmount || 0,
+    payment_amount: calculation.cardAmount || 0,
+    currency: "GBP",
+  };
+}
+
 export async function checkout(
   items: CartItem[],
-  checkoutId?: string
+  checkoutId?: string,
+  userId?: string
 ): Promise<CheckoutResult> {
+  let orderId: string | null = null;
   try {
     // Step 1: Calculate checkout strategy
     const calculation = await calculateCheckoutStrategy(items);
@@ -71,8 +99,25 @@ export async function checkout(
       };
     }
 
+    if (!userId) {
+      return {
+        success: false,
+        error: "User authentication required",
+      };
+    }
+
     // If we have a checkoutId, this is the second call after payment form submission
     if (checkoutId) {
+      // Get the existing order ID from the checkout ID
+      const orderResult = await getOrderIdFromCheckoutId(checkoutId);
+      if (!orderResult.success) {
+        return {
+          success: false,
+          error: orderResult.error || "Failed to find existing order",
+        };
+      }
+      orderId = orderResult.orderId!;
+
       // Verify the real payment first
       const paymentVerification = await verifyRealPayment(checkoutId);
       if (!paymentVerification.success) {
@@ -91,32 +136,28 @@ export async function checkout(
         };
       }
 
-      let walletTransactionIds: string[] = [];
-
       // Process wallet payment if required (for hybrid payments)
       if (recalculation.requiresWalletPayment) {
         const walletPayment = await processWalletPayment(
           items,
           recalculation.walletId!,
-          recalculation.walletAmount
+          recalculation.walletAmount,
+          orderId
         );
         if (!walletPayment.success) {
+          await updateOrderStatus(orderId, "failed");
           return {
             success: false,
             error: walletPayment.error,
           };
         }
-        walletTransactionIds = walletPayment.walletTransactionIds;
       }
 
       // Allocate tickets
-      const ticketAllocation = await allocateTickets(
-        items,
-        walletTransactionIds,
-        paymentVerification.paymentTransactionId
-      );
+      const ticketAllocation = await allocateTickets(items, orderId);
 
       if (!ticketAllocation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: ticketAllocation.error,
@@ -130,18 +171,12 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
         ) {
-          console.log(
-            `Wallet credit processed: £${(
-              walletCreditResults.creditAmount / 100
-            ).toFixed(2)} for ${
-              walletCreditResults.winningTicketsWithCredits
-            } winning tickets`
-          );
+          // Wallet credit processed successfully
         }
       }
 
@@ -170,6 +205,9 @@ export async function checkout(
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
 
+      // Update order status to completed
+      await updateOrderStatus(orderId, "completed");
+
       return {
         success: true,
         shouldRedirect: true,
@@ -185,15 +223,30 @@ export async function checkout(
       };
     }
 
+    // Step 2: Create order for first call (no checkoutId)
+    const orderSummary = buildOrderSummary(items, calculation);
+    const orderResult = await createOrder(orderSummary, userId);
+
+    if (!orderResult.success) {
+      return {
+        success: false,
+        error: orderResult.error || "Failed to create order",
+      };
+    }
+    orderId = orderResult.orderId!;
+
     // First call - determine payment flow based on strategy
     if (calculation.requiresWalletPayment && !calculation.requiresCardPayment) {
       // Wallet only payment
       const walletPayment = await processWalletPayment(
         items,
         calculation.walletId!,
-        calculation.walletAmount
+        calculation.walletAmount,
+        orderId
       );
+
       if (!walletPayment.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: walletPayment.error,
@@ -201,11 +254,9 @@ export async function checkout(
       }
 
       // Allocate tickets
-      const ticketAllocation = await allocateTickets(
-        items,
-        walletPayment.walletTransactionIds
-      );
+      const ticketAllocation = await allocateTickets(items, orderId);
       if (!ticketAllocation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: ticketAllocation.error,
@@ -219,18 +270,12 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds);
+        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
         ) {
-          console.log(
-            `Wallet credit processed: £${(
-              walletCreditResults.creditAmount / 100
-            ).toFixed(2)} for ${
-              walletCreditResults.winningTicketsWithCredits
-            } winning tickets`
-          );
+          // Wallet credit processed successfully
         }
       }
 
@@ -251,6 +296,9 @@ export async function checkout(
       };
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
+
+      // Update order status to completed
+      await updateOrderStatus(orderId, "completed");
 
       return {
         success: true,
@@ -273,9 +321,12 @@ export async function checkout(
     ) {
       // Card only payment - prepare payment form
       const paymentPreparation = await prepareRealPayment(
-        calculation.cardAmount
+        calculation.cardAmount,
+        orderId,
+        userId
       );
       if (!paymentPreparation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: paymentPreparation.error,
@@ -294,9 +345,12 @@ export async function checkout(
     ) {
       // Hybrid payment - prepare payment form (wallet will be processed after card payment)
       const paymentPreparation = await prepareRealPayment(
-        calculation.cardAmount
+        calculation.cardAmount,
+        orderId,
+        userId
       );
       if (!paymentPreparation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: paymentPreparation.error,
@@ -312,11 +366,17 @@ export async function checkout(
     }
 
     // Fallback for unknown strategy
+    if (orderId) {
+      await updateOrderStatus(orderId, "failed");
+    }
     return {
       success: false,
       error: "Unknown checkout strategy",
     };
   } catch (error) {
+    if (orderId) {
+      await updateOrderStatus(orderId, "failed");
+    }
     logCheckoutError("flow", error, {
       hasCheckoutId: !!checkoutId,
       itemCount: items.length,

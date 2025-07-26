@@ -18,6 +18,7 @@ async function _prepareCheckout(input: {
   currency: string;
   paymentType: string;
   userId?: string;
+  orderId: string;
 }): Promise<{
   id?: string;
   transactionId?: string;
@@ -70,6 +71,7 @@ async function _prepareCheckout(input: {
         currency: input.currency,
         payment_type: input.paymentType,
         raw_prepare_result: result,
+        order_id: input.orderId,
       })
       .returning(["id"])
       .executeTakeFirst();
@@ -198,12 +200,12 @@ function isPaymentSuccessful(code: string): boolean {
 }
 
 export async function prepareRealPayment(
-  cardAmount: number
+  cardAmount: number,
+  orderId: string,
+  clerkUserId: string
 ): Promise<RealPaymentPreparation> {
-  let session: any = null;
   try {
-    session = await auth();
-    if (!session?.userId) {
+    if (!clerkUserId) {
       return {
         success: false,
         error: "You must be logged in to make payments",
@@ -217,7 +219,8 @@ export async function prepareRealPayment(
       amount: amountInPounds,
       currency: "GBP",
       paymentType: "DB",
-      userId: session.userId,
+      userId: clerkUserId,
+      orderId: orderId,
     });
 
     if (checkoutResult.error || !checkoutResult.id) {
@@ -237,7 +240,7 @@ export async function prepareRealPayment(
   } catch (error) {
     logCheckoutError("real payment preparation", error, {
       cardAmount,
-      userId: session?.userId,
+      userId: clerkUserId,
     });
     return {
       success: false,

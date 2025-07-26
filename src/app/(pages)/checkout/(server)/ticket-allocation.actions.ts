@@ -61,8 +61,7 @@ async function _createCompetitionEntry(
   competitionId: string,
   userId: string,
   ticketNumbers: number[],
-  walletTransactionId: string | null,
-  paymentTransactionId: string | undefined,
+  orderId: string,
   trx: any
 ): Promise<{ success: boolean; entryId?: string; error?: string }> {
   try {
@@ -71,8 +70,7 @@ async function _createCompetitionEntry(
       .values({
         competition_id: competitionId,
         user_id: userId,
-        wallet_transaction_id: walletTransactionId,
-        payment_transaction_id: paymentTransactionId,
+        order_id: orderId,
         tickets: ticketNumbers,
       })
       .returning("id")
@@ -102,8 +100,7 @@ async function _createCompetitionEntry(
       competitionId,
       userId,
       ticketCount: ticketNumbers.length,
-      walletTransactionId,
-      paymentTransactionId,
+      orderId,
     });
     return {
       success: false,
@@ -200,8 +197,7 @@ export async function allocateTickets(
     };
     quantity: number;
   }>,
-  walletTransactionIds: string[],
-  paymentTransactionId?: string
+  orderId: string
 ): Promise<TicketAllocationResult> {
   try {
     const session = await auth();
@@ -226,7 +222,6 @@ export async function allocateTickets(
       }
 
       const results = [];
-      let walletTransactionIndex = 0;
 
       for (const item of items) {
         try {
@@ -245,18 +240,11 @@ export async function allocateTickets(
 
           const ticketNumbers = allocation.ticketNumbers!;
 
-          const walletTransactionId =
-            walletTransactionIds[walletTransactionIndex] || null;
-          if (walletTransactionIds.length > 0) {
-            walletTransactionIndex++;
-          }
-
           const entryResult = await _createCompetitionEntry(
             item.competition.id,
             user.id,
             ticketNumbers,
-            walletTransactionId,
-            paymentTransactionId,
+            orderId,
             trx
           );
 
@@ -343,8 +331,7 @@ export async function allocateTickets(
   } catch (error) {
     logCheckoutError("ticket allocation", error, {
       itemCount: items.length,
-      walletTransactionIds: walletTransactionIds.length,
-      hasPaymentTransaction: !!paymentTransactionId,
+      orderId,
     });
     return {
       success: false,

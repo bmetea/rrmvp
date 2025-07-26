@@ -4,4 +4,4 @@ alwaysApply: true
 - we use pnpm as a package manager, please always use this when suggesting to run cli commands
 - always use branding colors and typography
 - when implementing design changes we want to implement them for both mobile and desktop
-- 
+- stop running commands, prompt me first.

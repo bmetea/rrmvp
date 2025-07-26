@@ -5,7 +5,7 @@
 
 declare module "sst" {
   export interface Resource {
-    "rr-prd": {
+    "rr-ppr": {
       "type": "sst.aws.Nextjs"
       "url": string
     }
@@ -15,6 +15,7 @@ declare module "sst" {
       "host": string
       "password": string
       "port": number
+      "reader": string
       "secretArn": string
       "type": "sst.aws.Aurora"
       "username": string

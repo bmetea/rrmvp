@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { oppwaLogger } from "@/shared/lib/logger";
 import { logCheckoutError } from "@/shared/lib/logger";
 
 declare global {
@@ -32,8 +31,6 @@ export function PaymentForm({
 
   useEffect(() => {
     if (checkoutId) {
-      oppwaLogger.logWidget("loadingWidget:start", { checkoutId });
-
       // Inject jQuery first
       const jqueryScript = document.createElement("script");
       jqueryScript.src = "https://code.jquery.com/jquery.js";
@@ -54,7 +51,6 @@ export function PaymentForm({
             total: { label: "COMPANY, INC." },
           },
           onReady: function() {
-            console.log('[OPPWA Widget] Widget ready');
             if (window.$) {
               $(".wpwl-container-card").before($(".wpwl-form-virtualAccount"))
               $(".wpwl-container-card").before('<hr class="rounded">')
@@ -67,7 +63,6 @@ export function PaymentForm({
               // $(".wpwl-control-cvv, .wpwl-control-cardCvv").attr("placeholder", "123")
               $(".wpwl-form-card:first").after("<div class='nomupaySubmitButton' ><center>Click to Pay</center></div>")
               $(".nomupaySubmitButton").click(function(){
-                console.log('[OPPWA Widget] Submit button clicked');
                 if (window.wpwl && window.wpwl.executePayment) {
                   wpwl.executePayment("wpwl-container-card")
                 }
@@ -77,11 +72,9 @@ export function PaymentForm({
             }
           },
           onBeforeSubmit: function() {
-            console.log('[OPPWA Widget] Before submit');
             return true;
           },
           onAfterSubmit: function() {
-            console.log('[OPPWA Widget] After submit');
           },
           onError: function(error) {
             console.error('[OPPWA Widget] Error:', error);
@@ -153,10 +146,7 @@ export function PaymentForm({
       script.async = true;
       document.body.appendChild(script);
 
-      oppwaLogger.logWidget("loadingWidget:complete", { checkoutId });
-
       return () => {
-        oppwaLogger.logWidget("cleanupWidget", { checkoutId });
         try {
           document.body.removeChild(script);
           document.body.removeChild(optionsScript);
