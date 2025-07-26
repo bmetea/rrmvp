@@ -18,12 +18,12 @@ This checklist outlines the step-by-step process for migrating from the current 
 
 ### Phase 2: Code Refactoring 🔄
 
-#### Step 1: Update Database Types
-- [ ] Run database migration: `pnpm run db:migrate`
-- [ ] Generate new types: `pnpm run db:generate-types`
+#### Step 1: Update Database Types ✅
+- [x] Run database migration: `pnpm run db:migrate`
+- [x] Generate new types: `pnpm run db:generate-types`
 
-#### Step 2: Update TypeScript Interfaces
-- [ ] Update `CompetitionEntry` interface in `src/app/(pages)/user/(server)/entry.service.ts`
+#### Step 2: Update TypeScript Interfaces ✅
+- [x] Update `CompetitionEntry` interface in `src/app/(pages)/user/(server)/entry.service.ts`
 ```typescript
 // UPDATE: CompetitionEntry interface
 export interface CompetitionEntry {
