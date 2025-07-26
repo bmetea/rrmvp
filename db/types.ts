@@ -72,6 +72,7 @@ export interface Competitions {
 }
 
 export interface Orders {
+  affiliate_code: string | null;
   created_at: Generated<Timestamp | null>;
   currency: Generated<string>;
   id: Generated<string>;

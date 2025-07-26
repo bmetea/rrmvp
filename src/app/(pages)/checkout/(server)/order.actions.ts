@@ -19,7 +19,8 @@ export interface OrderSummary {
 
 export async function createOrder(
   orderSummary: OrderSummary,
-  clerkUserId: string
+  clerkUserId: string,
+  affiliateCode?: string
 ): Promise<{ success: boolean; orderId?: string; error?: string }> {
   try {
     if (!clerkUserId) {
@@ -50,7 +51,8 @@ export async function createOrder(
         ),
         wallet_amount: orderSummary.wallet_amount,
         payment_amount: orderSummary.payment_amount,
-        order_summary: orderSummary,
+        order_summary: orderSummary as any,
+        affiliate_code: affiliateCode,
       })
       .returning("id")
       .executeTakeFirst();

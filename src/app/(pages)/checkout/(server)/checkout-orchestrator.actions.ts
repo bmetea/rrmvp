@@ -86,7 +86,8 @@ function buildOrderSummary(
 export async function checkout(
   items: CartItem[],
   checkoutId?: string,
-  userId?: string
+  userId?: string,
+  affiliateCode?: string
 ): Promise<CheckoutResult> {
   let orderId: string | null = null;
   try {
@@ -171,7 +172,10 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
+        walletCreditResults = await processWalletCreditsForEntries(
+          entryIds,
+          orderId
+        );
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
@@ -225,7 +229,7 @@ export async function checkout(
 
     // Step 2: Create order for first call (no checkoutId)
     const orderSummary = buildOrderSummary(items, calculation);
-    const orderResult = await createOrder(orderSummary, userId);
+    const orderResult = await createOrder(orderSummary, userId, affiliateCode);
 
     if (!orderResult.success) {
       return {
@@ -270,7 +274,10 @@ export async function checkout(
 
       let walletCreditResults: WalletCreditResult | undefined;
       if (entryIds.length > 0) {
-        walletCreditResults = await processWalletCreditsForEntries(entryIds, orderId);
+        walletCreditResults = await processWalletCreditsForEntries(
+          entryIds,
+          orderId
+        );
         if (
           walletCreditResults.success &&
           walletCreditResults.creditAmount > 0
