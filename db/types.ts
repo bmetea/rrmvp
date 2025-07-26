@@ -150,7 +150,6 @@ export interface WalletTransactions {
   id: Generated<string>;
   number_of_tickets: Generated<number | null>;
   order_id: string | null;
-  reference_id: string | null;
   reference_type: string;
   status: string;
   type: string;

@@ -188,9 +188,8 @@ async function updateWalletWithCredit(
             ticketCount > 1 ? "s" : ""
           } in ${entriesData.length} competition entr${
             entriesData.length > 1 ? "ies" : "y"
-          }`,
+          } (Entry IDs: ${entryIds.join(", ")})`,
           reference_type: "prize_win",
-          reference_id: entryIds.join(","), // Store entry IDs as comma-separated string
           number_of_tickets: ticketCount, // Set the actual number of winning tickets with credits
         })
         .execute();

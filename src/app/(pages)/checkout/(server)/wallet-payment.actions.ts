@@ -45,7 +45,6 @@ async function _createWalletTransaction(
   amount: number,
   type: "credit" | "debit",
   referenceType: string,
-  referenceId: string,
   description: string,
   numberOfTickets: number | undefined,
   orderId: string,
@@ -60,7 +59,6 @@ async function _createWalletTransaction(
         type,
         status: "completed",
         reference_type: referenceType,
-        reference_id: referenceId,
         description,
         number_of_tickets: numberOfTickets,
         order_id: orderId,
@@ -79,7 +77,6 @@ async function _createWalletTransaction(
       amount,
       type,
       referenceType,
-      referenceId,
     });
     return { success: false, error: "Failed to create wallet transaction" };
   }
@@ -111,7 +108,6 @@ async function _debitWalletBalance(
   walletId: string,
   amount: number,
   referenceType: string,
-  referenceId: string,
   description: string,
   numberOfTickets: number | undefined,
   orderId: string,
@@ -144,7 +140,6 @@ async function _debitWalletBalance(
       amount,
       "debit",
       referenceType,
-      referenceId,
       description,
       numberOfTickets,
       orderId,
@@ -171,7 +166,6 @@ async function _debitWalletBalance(
       walletId,
       amount,
       referenceType,
-      referenceId,
       numberOfTickets,
     });
     return { success: false, error: "Failed to debit wallet balance" };
@@ -203,53 +197,33 @@ export async function processWalletPayment(
 ): Promise<WalletPaymentResult> {
   try {
     return await db.transaction().execute(async (trx) => {
-      const walletTransactionIds: string[] = [];
-      const totalCost = items.reduce(
-        (sum, item) => sum + item.competition.ticket_price * item.quantity,
-        0
+      const totalTickets = items.reduce((sum, item) => sum + item.quantity, 0);
+      const competitionTitles = items.map((item) => item.competition.title);
+      const description = `Wallet payment for ${totalTickets} ticket${
+        totalTickets > 1 ? "s" : ""
+      } across ${items.length} competition${
+        items.length > 1 ? "s" : ""
+      }: ${competitionTitles.join(", ")}`;
+
+      const walletResult = await _debitWalletBalance(
+        walletId,
+        walletAmount,
+        "ticket_purchase",
+        description,
+        totalTickets,
+        orderId,
+        trx
       );
 
-      const itemWalletAmounts = items.map((item) => {
-        const itemCost = item.competition.ticket_price * item.quantity;
-        return Math.floor((walletAmount * itemCost) / totalCost);
-      });
-
-      const distributedSum = itemWalletAmounts.reduce(
-        (sum, amount) => sum + amount,
-        0
-      );
-      let remainder = walletAmount - distributedSum;
-
-      for (let i = 0; i < remainder; i++) {
-        itemWalletAmounts[i % itemWalletAmounts.length]++;
+      if (!walletResult.success) {
+        throw new Error(
+          `Failed to process wallet payment: ${walletResult.error}`
+        );
       }
 
-      for (const [index, item] of items.entries()) {
-        const itemWalletAmount = itemWalletAmounts[index];
-
-        if (itemWalletAmount > 0) {
-          const walletResult = await _debitWalletBalance(
-            walletId,
-            itemWalletAmount,
-            "ticket_purchase",
-            item.competition.id,
-            `Wallet payment for ${item.quantity} tickets in ${item.competition.title}`,
-            item.quantity,
-            orderId,
-            trx
-          );
-
-          if (!walletResult.success) {
-            throw new Error(
-              `Failed to process wallet payment for ${item.competition.title}: ${walletResult.error}`
-            );
-          }
-
-          if (walletResult.transactionId) {
-            walletTransactionIds.push(walletResult.transactionId);
-          }
-        }
-      }
+      const walletTransactionIds = walletResult.transactionId
+        ? [walletResult.transactionId]
+        : [];
 
       return {
         success: true,
