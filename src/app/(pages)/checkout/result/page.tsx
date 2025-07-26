@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { checkout } from "../(server)/checkout-orchestrator.actions";
 import { useCart } from "@/shared/lib/context/cart-context";
-import { oppwaLogger } from "@/shared/lib/logger";
 import { logCheckoutError } from "@/shared/lib/logger";
 import { useAuth } from "@clerk/nextjs";
 
@@ -31,8 +30,6 @@ function CheckoutResultContent() {
       const checkoutId = searchParams.get("id");
       const resourcePath = searchParams.get("resourcePath");
 
-      oppwaLogger.logWidget("resultPage:start", { checkoutId, resourcePath });
-
       if (!checkoutId) {
         setError("No checkout ID found");
         setIsProcessing(false);
@@ -51,11 +48,6 @@ function CheckoutResultContent() {
         const items = JSON.parse(storedItems);
 
         // Process the checkout with the new flow
-        oppwaLogger.logWidget("resultPage:processingCheckout", {
-          checkoutId,
-          userId,
-        });
-
         if (!userId) {
           setError("User not authenticated");
           setIsProcessing(false);

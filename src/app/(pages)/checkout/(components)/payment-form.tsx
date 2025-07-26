@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { oppwaLogger } from "@/shared/lib/logger";
 import { logCheckoutError } from "@/shared/lib/logger";
 
 declare global {
@@ -32,8 +31,6 @@ export function PaymentForm({
 
   useEffect(() => {
     if (checkoutId) {
-      oppwaLogger.logWidget("loadingWidget:start", { checkoutId });
-
       // Inject jQuery first
       const jqueryScript = document.createElement("script");
       jqueryScript.src = "https://code.jquery.com/jquery.js";
@@ -153,10 +150,7 @@ export function PaymentForm({
       script.async = true;
       document.body.appendChild(script);
 
-      oppwaLogger.logWidget("loadingWidget:complete", { checkoutId });
-
       return () => {
-        oppwaLogger.logWidget("cleanupWidget", { checkoutId });
         try {
           document.body.removeChild(script);
           document.body.removeChild(optionsScript);
