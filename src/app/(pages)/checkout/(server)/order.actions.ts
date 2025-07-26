@@ -124,3 +124,24 @@ export async function getOrderById(
     return { success: false, error: "Failed to get order" };
   }
 }
+
+export async function getOrderIdFromCheckoutId(
+  checkoutId: string
+): Promise<{ success: boolean; orderId?: string; error?: string }> {
+  try {
+    const paymentTransaction = await db
+      .selectFrom("payment_transactions")
+      .select("order_id")
+      .where("checkout_id", "=", checkoutId)
+      .executeTakeFirst();
+
+    if (!paymentTransaction || !paymentTransaction.order_id) {
+      return { success: false, error: "Order not found for checkout ID" };
+    }
+
+    return { success: true, orderId: paymentTransaction.order_id };
+  } catch (error) {
+    console.error("Get order ID from checkout ID error:", error);
+    return { success: false, error: "Failed to get order ID from checkout ID" };
+  }
+}

@@ -22,6 +22,7 @@ import {
 import {
   createOrder,
   updateOrderStatus,
+  getOrderIdFromCheckoutId,
   type OrderSummary,
 } from "./order.actions";
 
@@ -98,9 +99,6 @@ export async function checkout(
       };
     }
 
-    // Step 2: Create order first
-    const orderSummary = buildOrderSummary(items, calculation);
-
     if (!userId) {
       return {
         success: false,
@@ -108,18 +106,18 @@ export async function checkout(
       };
     }
 
-    const orderResult = await createOrder(orderSummary, userId);
-
-    if (!orderResult.success) {
-      return {
-        success: false,
-        error: orderResult.error || "Failed to create order",
-      };
-    }
-    orderId = orderResult.orderId!;
-
     // If we have a checkoutId, this is the second call after payment form submission
     if (checkoutId) {
+      // Get the existing order ID from the checkout ID
+      const orderResult = await getOrderIdFromCheckoutId(checkoutId);
+      if (!orderResult.success) {
+        return {
+          success: false,
+          error: orderResult.error || "Failed to find existing order",
+        };
+      }
+      orderId = orderResult.orderId!;
+
       // Verify the real payment first
       const paymentVerification = await verifyRealPayment(checkoutId);
       if (!paymentVerification.success) {
@@ -224,6 +222,18 @@ export async function checkout(
         },
       };
     }
+
+    // Step 2: Create order for first call (no checkoutId)
+    const orderSummary = buildOrderSummary(items, calculation);
+    const orderResult = await createOrder(orderSummary, userId);
+
+    if (!orderResult.success) {
+      return {
+        success: false,
+        error: orderResult.error || "Failed to create order",
+      };
+    }
+    orderId = orderResult.orderId!;
 
     // First call - determine payment flow based on strategy
     if (calculation.requiresWalletPayment && !calculation.requiresCardPayment) {
