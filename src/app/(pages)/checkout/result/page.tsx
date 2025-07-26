@@ -54,7 +54,9 @@ function CheckoutResultContent() {
           return;
         }
 
-        const result = await checkout(items, checkoutId, userId);
+        // Get affiliate code from session storage
+        const affiliateCode = sessionStorage.getItem("affiliate_code");
+        const result = await checkout(items, checkoutId, userId, affiliateCode || undefined);
 
         // Clear cart before redirecting
         clearCart();

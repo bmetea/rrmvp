@@ -110,7 +110,10 @@ export default function CheckoutPage() {
       // Store items in sessionStorage for the result page
       sessionStorage.setItem("checkout_items", JSON.stringify(items));
 
-      const result = await checkout(items, undefined, userId);
+      // Get affiliate code from session storage
+      const affiliateCode = sessionStorage.getItem("affiliate_code");
+
+      const result = await checkout(items, undefined, userId, affiliateCode || undefined);
 
       if (result.success) {
         if (result.shouldRedirect && result.redirectUrl) {
