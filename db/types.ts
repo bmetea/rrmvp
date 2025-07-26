@@ -29,6 +29,7 @@ export interface CompetitionEntries {
   competition_id: string;
   created_at: Generated<Timestamp | null>;
   id: Generated<string>;
+  order_id: string | null;
   payment_transaction_id: string | null;
   tickets: Generated<number[] | null>;
   updated_at: Generated<Timestamp | null>;
@@ -72,6 +73,20 @@ export interface Competitions {
   updated_at: Generated<Timestamp | null>;
 }
 
+export interface Orders {
+  created_at: Generated<Timestamp | null>;
+  currency: Generated<string>;
+  id: Generated<string>;
+  order_summary: Json | null;
+  payment_amount: Generated<number | null>;
+  status: Generated<string>;
+  total_amount: number;
+  total_tickets: Generated<number>;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string;
+  wallet_amount: Generated<number | null>;
+}
+
 export interface PaymentTransactions {
   amount: Numeric;
   brand: string | null;
@@ -79,6 +94,7 @@ export interface PaymentTransactions {
   created_at: Generated<Timestamp | null>;
   currency: string;
   id: Generated<string>;
+  order_id: string | null;
   payment_id: string | null;
   payment_type: string | null;
   raw_prepare_result: Json | null;
@@ -135,6 +151,7 @@ export interface WalletTransactions {
   description: string | null;
   id: Generated<string>;
   number_of_tickets: Generated<number | null>;
+  order_id: string | null;
   reference_id: string | null;
   reference_type: string;
   status: string;
@@ -160,6 +177,7 @@ export interface DB {
   competition_entries: CompetitionEntries;
   competition_prizes: CompetitionPrizes;
   competitions: Competitions;
+  orders: Orders;
   payment_transactions: PaymentTransactions;
   products: Products;
   ticket_counters: TicketCounters;

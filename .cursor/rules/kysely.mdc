@@ -18,6 +18,7 @@ alwaysApply: false
 - Define database migrations with clear up/down functions
 - Implement proper error handling for database operations
 - Use connection pooling for efficient database connections
+- Use RAW SQL for migrations
 
 
 # Config
