@@ -124,8 +124,8 @@ export async function updateOrderStatus(
 }
 ```
 
-#### Step 4: Update Entry Service Functions
-- [ ] Update SELECT queries in `src/app/(pages)/user/(server)/entry.service.ts` (lines ~70, 183, 329)
+#### Step 4: Update Entry Service Functions ✅
+- [x] Update SELECT queries in `src/app/(pages)/user/(server)/entry.service.ts` (lines ~70, 183, 329)
 ```typescript
 // Lines ~70, 183, 329 - FIND and REPLACE:
 // OLD:
@@ -192,8 +192,8 @@ const [entry] = await trx
   .execute();
 ```
 
-#### Step 5: Update Ticket Allocation Functions
-- [ ] Update `_createCompetitionEntry` function signature in `src/app/(pages)/checkout/(server)/ticket-allocation.actions.ts`
+#### Step 5: Update Ticket Allocation Functions ✅
+- [x] Update `_createCompetitionEntry` function signature in `src/app/(pages)/checkout/(server)/ticket-allocation.actions.ts`
 ```typescript
 // OLD SIGNATURE:
 async function _createCompetitionEntry(
@@ -215,7 +215,7 @@ async function _createCompetitionEntry(
 ): Promise<{ success: boolean; entryId?: string; error?: string }> {
 ```
 
-- [ ] Update INSERT statement in `_createCompetitionEntry` (line ~73-74)
+- [x] Update INSERT statement in `_createCompetitionEntry` (line ~73-74)
 ```typescript
 // OLD:
 const competitionEntry = await trx
@@ -243,7 +243,7 @@ const competitionEntry = await trx
   .executeTakeFirst();
 ```
 
-- [ ] Update `allocateTickets` function signature in `src/app/(pages)/checkout/(server)/ticket-allocation.actions.ts`
+- [x] Update `allocateTickets` function signature in `src/app/(pages)/checkout/(server)/ticket-allocation.actions.ts`
 ```typescript
 // OLD SIGNATURE:
 export async function allocateTickets(
@@ -275,7 +275,7 @@ export async function allocateTickets(
 ): Promise<TicketAllocationResult> {
 ```
 
-- [ ] Update function call to `_createCompetitionEntry` (line ~250)
+- [x] Update function call to `_createCompetitionEntry` (line ~250)
 ```typescript
 // OLD:
 const entryResult = await _createCompetitionEntry(
