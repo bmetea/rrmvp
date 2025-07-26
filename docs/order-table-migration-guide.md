@@ -316,11 +316,11 @@ const entryResult = await _createCompetitionEntry(
 })
 ```
 
-#### Step 8: Update Checkout Orchestrator
-- [ ] Import order functions at top of `src/app/(pages)/checkout/(server)/checkout-orchestrator.actions.ts`
-- [ ] Create `buildOrderSummary` helper function
-- [ ] Update `checkout` function to create order first
-- [ ] Pass `orderId` to all payment and allocation functions
+#### Step 8: Update Checkout Orchestrator ✅
+- [x] Import order functions at top of `src/app/(pages)/checkout/(server)/checkout-orchestrator.actions.ts`
+- [x] Create `buildOrderSummary` helper function
+- [x] Update `checkout` function to create order first
+- [x] Pass `orderId` to all payment and allocation functions
 ```typescript
 // NEW FLOW:
 export async function checkout(
@@ -426,14 +426,14 @@ export async function down(db: Kysely<any>): Promise<void> {
 ## 🧪 Testing Checklist
 
 ### After Phase 2 (Code Refactoring):
-- [ ] Database Migration: `pnpm run db:migrate`
-- [ ] Type Generation: `pnpm run db:generate-types`
-- [ ] Build Test: `pnpm run build`
-- [ ] Fix any TypeScript compilation errors
-- [ ] Test order creation function works
-- [ ] Test wallet payment with order_id
-- [ ] Test card payment with order_id
-- [ ] Test competition entry creation with order_id
+- [x] Database Migration: `pnpm run db:migrate`
+- [x] Type Generation: `pnpm run db:generate-types`
+- [x] Build Test: `pnpm run build`
+- [x] Fix any TypeScript compilation errors
+- [x] Test order creation function works
+- [x] Test wallet payment with order_id
+- [x] Test card payment with order_id
+- [x] Test competition entry creation with order_id
 
 ### After Phase 3 (Column Removal):
 - [ ] Run cleanup migration: `pnpm run db:migrate`

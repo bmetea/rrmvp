@@ -18,18 +18,29 @@ export interface OrderSummary {
 }
 
 export async function createOrder(
-  orderSummary: OrderSummary
+  orderSummary: OrderSummary,
+  clerkUserId: string
 ): Promise<{ success: boolean; orderId?: string; error?: string }> {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    if (!clerkUserId) {
       return { success: false, error: "User not authenticated" };
+    }
+
+    // Get the internal database user ID
+    const user = await db
+      .selectFrom("users")
+      .select("id")
+      .where("clerk_id", "=", clerkUserId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return { success: false, error: "User not found" };
     }
 
     const order = await db
       .insertInto("orders")
       .values({
-        user_id: userId,
+        user_id: user.id,
         total_amount: orderSummary.total_amount,
         currency: orderSummary.currency,
         status: "pending",
@@ -77,19 +88,30 @@ export async function updateOrderStatus(
 }
 
 export async function getOrderById(
-  orderId: string
+  orderId: string,
+  clerkUserId: string
 ): Promise<{ success: boolean; order?: any; error?: string }> {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    if (!clerkUserId) {
       return { success: false, error: "User not authenticated" };
+    }
+
+    // Get the internal database user ID
+    const user = await db
+      .selectFrom("users")
+      .select("id")
+      .where("clerk_id", "=", clerkUserId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return { success: false, error: "User not found" };
     }
 
     const order = await db
       .selectFrom("orders")
       .selectAll()
       .where("id", "=", orderId)
-      .where("user_id", "=", userId)
+      .where("user_id", "=", user.id)
       .executeTakeFirst();
 
     if (!order) {

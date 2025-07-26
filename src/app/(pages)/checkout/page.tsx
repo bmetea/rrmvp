@@ -110,7 +110,7 @@ export default function CheckoutPage() {
       // Store items in sessionStorage for the result page
       sessionStorage.setItem("checkout_items", JSON.stringify(items));
 
-      const result = await checkout(items);
+      const result = await checkout(items, undefined, userId);
 
       if (result.success) {
         if (result.shouldRedirect && result.redirectUrl) {
@@ -128,6 +128,8 @@ export default function CheckoutPage() {
             widgetUrl: result.widgetUrl,
           });
           setShowPaymentForm(true);
+        } else {
+          setError("Unexpected checkout result");
         }
       } else {
         setError(result.error || "Checkout failed");

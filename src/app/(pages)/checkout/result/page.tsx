@@ -6,17 +6,24 @@ import { checkout } from "../(server)/checkout-orchestrator.actions";
 import { useCart } from "@/shared/lib/context/cart-context";
 import { oppwaLogger } from "@/shared/lib/logger";
 import { logCheckoutError } from "@/shared/lib/logger";
+import { useAuth } from "@clerk/nextjs";
 
 function CheckoutResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { clearCart } = useCart();
+  const { userId, isSignedIn, isLoaded } = useAuth();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasProcessed = useRef(false);
 
   useEffect(() => {
     const processCheckout = async () => {
+      // Wait for auth to be loaded
+      if (!isLoaded) {
+        return;
+      }
+
       // Prevent double processing
       if (hasProcessed.current) return;
       hasProcessed.current = true;
@@ -44,8 +51,18 @@ function CheckoutResultContent() {
         const items = JSON.parse(storedItems);
 
         // Process the checkout with the new flow
-        oppwaLogger.logWidget("resultPage:processingCheckout", { checkoutId });
-        const result = await checkout(items, checkoutId);
+        oppwaLogger.logWidget("resultPage:processingCheckout", {
+          checkoutId,
+          userId,
+        });
+
+        if (!userId) {
+          setError("User not authenticated");
+          setIsProcessing(false);
+          return;
+        }
+
+        const result = await checkout(items, checkoutId, userId);
 
         // Clear cart before redirecting
         clearCart();
@@ -70,7 +87,7 @@ function CheckoutResultContent() {
     };
 
     processCheckout();
-  }, [searchParams, clearCart]);
+  }, [searchParams, clearCart, isLoaded, userId]);
 
   if (isProcessing) {
     return (

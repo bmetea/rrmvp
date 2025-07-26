@@ -201,12 +201,11 @@ function isPaymentSuccessful(code: string): boolean {
 
 export async function prepareRealPayment(
   cardAmount: number,
-  orderId: string
+  orderId: string,
+  clerkUserId: string
 ): Promise<RealPaymentPreparation> {
-  let session: any = null;
   try {
-    session = await auth();
-    if (!session?.userId) {
+    if (!clerkUserId) {
       return {
         success: false,
         error: "You must be logged in to make payments",
@@ -220,7 +219,7 @@ export async function prepareRealPayment(
       amount: amountInPounds,
       currency: "GBP",
       paymentType: "DB",
-      userId: session.userId,
+      userId: clerkUserId,
       orderId: orderId,
     });
 
@@ -241,7 +240,7 @@ export async function prepareRealPayment(
   } catch (error) {
     logCheckoutError("real payment preparation", error, {
       cardAmount,
-      userId: session?.userId,
+      userId: clerkUserId,
     });
     return {
       success: false,

@@ -19,6 +19,11 @@ import {
   processWalletCreditsForEntries,
   type WalletCreditResult,
 } from "./wallet-credit.actions";
+import {
+  createOrder,
+  updateOrderStatus,
+  type OrderSummary,
+} from "./order.actions";
 
 interface CartItem {
   competition: {
@@ -57,10 +62,32 @@ function revalidatePaths() {
   revalidatePath("/checkout");
 }
 
+// Helper function to build order summary from items and calculation
+function buildOrderSummary(
+  items: CartItem[],
+  calculation: CheckoutCalculation
+): OrderSummary {
+  return {
+    items: items.map((item) => ({
+      competition_id: item.competition.id,
+      competition_title: item.competition.title,
+      quantity: item.quantity,
+      unit_price: item.competition.ticket_price,
+      total_price: item.competition.ticket_price * item.quantity,
+    })),
+    total_amount: calculation.totalAmount,
+    wallet_amount: calculation.walletAmount || 0,
+    payment_amount: calculation.cardAmount || 0,
+    currency: "GBP",
+  };
+}
+
 export async function checkout(
   items: CartItem[],
-  checkoutId?: string
+  checkoutId?: string,
+  userId?: string
 ): Promise<CheckoutResult> {
+  let orderId: string | null = null;
   try {
     // Step 1: Calculate checkout strategy
     const calculation = await calculateCheckoutStrategy(items);
@@ -70,6 +97,26 @@ export async function checkout(
         error: calculation.error,
       };
     }
+
+    // Step 2: Create order first
+    const orderSummary = buildOrderSummary(items, calculation);
+
+    if (!userId) {
+      return {
+        success: false,
+        error: "User authentication required",
+      };
+    }
+
+    const orderResult = await createOrder(orderSummary, userId);
+
+    if (!orderResult.success) {
+      return {
+        success: false,
+        error: orderResult.error || "Failed to create order",
+      };
+    }
+    orderId = orderResult.orderId!;
 
     // If we have a checkoutId, this is the second call after payment form submission
     if (checkoutId) {
@@ -91,32 +138,28 @@ export async function checkout(
         };
       }
 
-      let walletTransactionIds: string[] = [];
-
       // Process wallet payment if required (for hybrid payments)
       if (recalculation.requiresWalletPayment) {
         const walletPayment = await processWalletPayment(
           items,
           recalculation.walletId!,
-          recalculation.walletAmount
+          recalculation.walletAmount,
+          orderId
         );
         if (!walletPayment.success) {
+          await updateOrderStatus(orderId, "failed");
           return {
             success: false,
             error: walletPayment.error,
           };
         }
-        walletTransactionIds = walletPayment.walletTransactionIds;
       }
 
       // Allocate tickets
-      const ticketAllocation = await allocateTickets(
-        items,
-        walletTransactionIds,
-        paymentVerification.paymentTransactionId
-      );
+      const ticketAllocation = await allocateTickets(items, orderId);
 
       if (!ticketAllocation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: ticketAllocation.error,
@@ -170,6 +213,9 @@ export async function checkout(
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
 
+      // Update order status to completed
+      await updateOrderStatus(orderId, "completed");
+
       return {
         success: true,
         shouldRedirect: true,
@@ -187,25 +233,34 @@ export async function checkout(
 
     // First call - determine payment flow based on strategy
     if (calculation.requiresWalletPayment && !calculation.requiresCardPayment) {
+      console.log("💰 Processing wallet-only payment...", {
+        walletAmount: calculation.walletAmount,
+        walletId: calculation.walletId,
+      });
+
       // Wallet only payment
       const walletPayment = await processWalletPayment(
         items,
         calculation.walletId!,
-        calculation.walletAmount
+        calculation.walletAmount,
+        orderId
       );
+      console.log("💰 Wallet payment result:", walletPayment);
+
       if (!walletPayment.success) {
+        console.log("❌ Wallet payment failed:", walletPayment.error);
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: walletPayment.error,
         };
       }
 
+      console.log("🎫 Allocating tickets...");
       // Allocate tickets
-      const ticketAllocation = await allocateTickets(
-        items,
-        walletPayment.walletTransactionIds
-      );
+      const ticketAllocation = await allocateTickets(items, orderId);
       if (!ticketAllocation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: ticketAllocation.error,
@@ -252,6 +307,15 @@ export async function checkout(
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
 
+      // Update order status to completed
+      console.log("✅ Updating order status to completed...");
+      await updateOrderStatus(orderId, "completed");
+
+      console.log(
+        "🎉 Wallet-only checkout completed successfully! Redirecting to:",
+        `/checkout/summary?summary=${encodedSummary}`
+      );
+
       return {
         success: true,
         shouldRedirect: true,
@@ -273,9 +337,12 @@ export async function checkout(
     ) {
       // Card only payment - prepare payment form
       const paymentPreparation = await prepareRealPayment(
-        calculation.cardAmount
+        calculation.cardAmount,
+        orderId,
+        userId
       );
       if (!paymentPreparation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: paymentPreparation.error,
@@ -294,9 +361,12 @@ export async function checkout(
     ) {
       // Hybrid payment - prepare payment form (wallet will be processed after card payment)
       const paymentPreparation = await prepareRealPayment(
-        calculation.cardAmount
+        calculation.cardAmount,
+        orderId,
+        userId
       );
       if (!paymentPreparation.success) {
+        await updateOrderStatus(orderId, "failed");
         return {
           success: false,
           error: paymentPreparation.error,
@@ -312,11 +382,17 @@ export async function checkout(
     }
 
     // Fallback for unknown strategy
+    if (orderId) {
+      await updateOrderStatus(orderId, "failed");
+    }
     return {
       success: false,
       error: "Unknown checkout strategy",
     };
   } catch (error) {
+    if (orderId) {
+      await updateOrderStatus(orderId, "failed");
+    }
     logCheckoutError("flow", error, {
       hasCheckoutId: !!checkoutId,
       itemCount: items.length,
