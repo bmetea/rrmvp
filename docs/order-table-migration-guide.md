@@ -386,7 +386,7 @@ export async function checkout(
 ```
 
 #### Step 9: Update Admin Competition Actions
-- [ ] Update SELECT query in `src/app/(pages)/admin/competitions/actions.ts` (lines 658-659)
+- [x] Update SELECT query in `src/app/(pages)/admin/competitions/actions.ts` (lines 658-659)
 ```typescript
 // OLD:
 "ce.wallet_transaction_id",
