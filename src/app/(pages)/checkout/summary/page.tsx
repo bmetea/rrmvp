@@ -15,6 +15,8 @@ import {
 } from "@/app/(pages)/user/(server)/entry.service";
 import { EntryCard } from "@/app/(pages)/user/(components)/EntryCard";
 import { logCheckoutError } from "@/shared/lib/logger";
+import { getOrderWithDetails } from "@/app/(pages)/checkout/(server)/order.actions";
+import { useAuth } from "@clerk/nextjs";
 
 interface PurchaseResult {
   competitionId: string;
@@ -45,6 +47,7 @@ interface PurchaseSummary {
   paymentStatus: "success" | "error";
   paymentMessage?: string;
   walletCreditResults?: WalletCreditResult;
+  orderId?: string; // Add orderId to interface
 }
 
 export default function CheckoutSummaryPage() {
@@ -52,17 +55,43 @@ export default function CheckoutSummaryPage() {
   const [purchaseSummary, setPurchaseSummary] =
     useState<PurchaseSummary | null>(null);
   const [entryData, setEntryData] = useState<CompetitionEntry[]>([]);
+  const [orderDetails, setOrderDetails] = useState<any>(null);
   const [isLoadingEntries, setIsLoadingEntries] = useState(false);
+  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
   const router = useRouter();
   const { trackPurchase, trackPageView } = useAnalytics();
+  const { userId } = useAuth();
 
   useEffect(() => {
+    const fetchOrderDetails = async (orderId: string) => {
+      if (!userId) return;
+
+      setIsLoadingOrder(true);
+      try {
+        const result = await getOrderWithDetails(orderId, userId);
+        if (result.success && result.orderDetails) {
+          setOrderDetails(result.orderDetails);
+        } else {
+          logCheckoutError("order details fetching", result.error, { orderId });
+        }
+      } catch (error) {
+        logCheckoutError("order details fetching", error, { orderId });
+      } finally {
+        setIsLoadingOrder(false);
+      }
+    };
+
     // Get summary data from URL state
     const summaryData = searchParams.get("summary");
     if (summaryData) {
       try {
         const decodedSummary = JSON.parse(decodeURIComponent(summaryData));
         setPurchaseSummary(decodedSummary);
+
+        // If we have an orderId, fetch from database instead of using legacy entry fetching
+        if (decodedSummary.orderId && userId) {
+          fetchOrderDetails(decodedSummary.orderId);
+        }
       } catch (error) {
         logCheckoutError("summary data parsing", error, { summaryData });
         router.push("/competitions");
@@ -70,13 +99,17 @@ export default function CheckoutSummaryPage() {
     } else {
       router.push("/competitions");
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, userId]);
 
-  // Fetch entry data when purchase summary is loaded
+  // Fetch entry data when purchase summary is loaded (legacy fallback)
   useEffect(() => {
     const fetchEntryData = async () => {
-      if (!purchaseSummary || purchaseSummary.paymentStatus !== "success") {
-        return;
+      if (
+        !purchaseSummary ||
+        purchaseSummary.paymentStatus !== "success" ||
+        orderDetails
+      ) {
+        return; // Skip if we already have order details from database
       }
 
       setIsLoadingEntries(true);
@@ -102,7 +135,7 @@ export default function CheckoutSummaryPage() {
     };
 
     fetchEntryData();
-  }, [purchaseSummary]);
+  }, [purchaseSummary, orderDetails]);
 
   // Track purchase analytics when summary loads
   useEffect(() => {
@@ -159,33 +192,63 @@ export default function CheckoutSummaryPage() {
     }
   }, [purchaseSummary, trackPurchase]);
 
+  // Use order details if available, otherwise fall back to legacy calculation
+  const totalTickets = orderDetails
+    ? orderDetails.totalTickets
+    : purchaseSummary?.results.reduce(
+        (sum, result) => sum + result.ticketNumbers.length,
+        0
+      ) || 0;
+
+  const totalWinningTickets = orderDetails
+    ? orderDetails.totalWinningTickets
+    : purchaseSummary?.results.reduce(
+        (sum, result) => sum + result.winningTickets.length,
+        0
+      ) || 0;
+
+  // Use order details for displaying entries if available
+  const displayEntries = orderDetails ? orderDetails.entries : entryData;
+  const isLoading = isLoadingOrder || isLoadingEntries;
+
   // Track enhanced page view for checkout summary
   useEffect(() => {
     if (purchaseSummary) {
-      const totalTickets = purchaseSummary.results.reduce(
-        (sum, result) => sum + result.ticketNumbers.length,
-        0
-      );
-      const totalWinningTickets = purchaseSummary.results.reduce(
-        (sum, result) => sum + result.winningTickets.length,
-        0
-      );
-      const totalRevenue =
-        (purchaseSummary.walletAmount || 0) + (purchaseSummary.cardAmount || 0);
+      const totalRevenue = orderDetails
+        ? orderDetails.order.total_amount
+        : (purchaseSummary.walletAmount || 0) +
+          (purchaseSummary.cardAmount || 0);
+
+      const walletAmount = orderDetails
+        ? orderDetails.order.wallet_amount || 0
+        : purchaseSummary.walletAmount || 0;
+
+      const cardAmount = orderDetails
+        ? orderDetails.order.payment_amount || 0
+        : purchaseSummary.cardAmount || 0;
 
       trackPageView("/checkout/summary", {
         payment_status: purchaseSummary.paymentStatus,
         payment_method: purchaseSummary.paymentMethod,
         total_revenue: totalRevenue / 100, // Convert to pounds
-        wallet_amount: (purchaseSummary.walletAmount || 0) / 100,
-        card_amount: (purchaseSummary.cardAmount || 0) / 100,
+        wallet_amount: walletAmount / 100,
+        card_amount: cardAmount / 100,
         total_tickets: totalTickets,
         total_winning_tickets: totalWinningTickets,
-        competitions_count: purchaseSummary.results.length,
+        competitions_count: orderDetails
+          ? orderDetails.entries.length
+          : purchaseSummary.results.length,
         page_type: "checkout_summary",
+        has_order_details: !!orderDetails, // Track if we're using new system
       });
     }
-  }, [purchaseSummary, trackPageView]);
+  }, [
+    purchaseSummary,
+    trackPageView,
+    orderDetails,
+    totalTickets,
+    totalWinningTickets,
+  ]);
 
   if (!purchaseSummary) {
     return (
@@ -194,15 +257,6 @@ export default function CheckoutSummaryPage() {
       </div>
     );
   }
-
-  const totalTickets = purchaseSummary.results.reduce(
-    (sum, result) => sum + result.ticketNumbers.length,
-    0
-  );
-  const totalWinningTickets = purchaseSummary.results.reduce(
-    (sum, result) => sum + result.winningTickets.length,
-    0
-  );
 
   const formatTicketNumbers = (tickets: number[]) => {
     if (tickets.length <= 5) {
@@ -317,16 +371,16 @@ export default function CheckoutSummaryPage() {
 
             <div className="space-y-6">
               <div className="space-y-4">
-                {isLoadingEntries ? (
+                {isLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
                     <span className="ml-2 text-muted-foreground">
                       Loading entry details...
                     </span>
                   </div>
-                ) : entryData.length > 0 ? (
+                ) : displayEntries.length > 0 ? (
                   <div className="space-y-4 max-h-[500px] overflow-y-auto">
-                    {entryData.map((entry) => (
+                    {displayEntries.map((entry) => (
                       <EntryCard key={entry.id} entry={entry} />
                     ))}
                   </div>
@@ -392,6 +446,16 @@ export default function CheckoutSummaryPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-base font-semibold text-gray-900">
+                    Order ID
+                  </span>
+                  <span className="text-sm text-gray-700 font-mono">
+                    {orderDetails
+                      ? orderDetails.order.id
+                      : purchaseSummary.orderId || "N/A"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-base font-semibold text-gray-900">
                     Quantity
                   </span>
                   <span className="text-sm text-gray-700">{totalTickets}</span>
@@ -402,8 +466,10 @@ export default function CheckoutSummaryPage() {
                   </span>
                   <span className="text-sm text-gray-700">
                     {formatPrice(
-                      (purchaseSummary.walletAmount || 0) +
-                        (purchaseSummary.cardAmount || 0)
+                      orderDetails
+                        ? orderDetails.order.total_amount
+                        : (purchaseSummary.walletAmount || 0) +
+                            (purchaseSummary.cardAmount || 0)
                     )}
                   </span>
                 </div>
@@ -412,11 +478,27 @@ export default function CheckoutSummaryPage() {
                     Payment method
                   </span>
                   <span className="text-sm text-gray-700">
-                    {purchaseSummary.paymentMethod === "wallet" &&
-                      "Wallet credit"}
-                    {purchaseSummary.paymentMethod === "card" && "Card payment"}
-                    {purchaseSummary.paymentMethod === "hybrid" &&
-                      "Wallet + Card"}
+                    {orderDetails ? (
+                      // Determine payment method from order details
+                      orderDetails.order.wallet_amount > 0 &&
+                      orderDetails.order.payment_amount > 0 ? (
+                        "Wallet + Card"
+                      ) : orderDetails.order.wallet_amount > 0 ? (
+                        "Wallet credit"
+                      ) : (
+                        "Card payment"
+                      )
+                    ) : (
+                      // Legacy fallback
+                      <>
+                        {purchaseSummary.paymentMethod === "wallet" &&
+                          "Wallet credit"}
+                        {purchaseSummary.paymentMethod === "card" &&
+                          "Card payment"}
+                        {purchaseSummary.paymentMethod === "hybrid" &&
+                          "Wallet + Card"}
+                      </>
+                    )}
                   </span>
                 </div>
                 {purchaseSummary.walletCreditResults &&
@@ -482,6 +564,16 @@ export default function CheckoutSummaryPage() {
               Order Summary
             </h2>
             <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-base font-semibold text-gray-900">
+                  Order ID
+                </span>
+                <span className="text-sm text-gray-700 font-mono">
+                  {orderDetails
+                    ? orderDetails.order.id
+                    : purchaseSummary.orderId || "N/A"}
+                </span>
+              </div>
               <div className="flex justify-between items-center">
                 <span className="text-base font-semibold text-gray-900">
                   Quantity

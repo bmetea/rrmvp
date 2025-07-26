@@ -205,6 +205,7 @@ export async function checkout(
         paymentStatus: "success",
         paymentMessage: `Purchase completed using ${strategyMessage.toLowerCase()}`,
         walletCreditResults,
+        orderId, // Add order ID to summary data
       };
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));
@@ -300,6 +301,7 @@ export async function checkout(
           calculation.walletAmount
         )} wallet credit only`,
         walletCreditResults,
+        orderId, // Add order ID to summary data
       };
 
       const encodedSummary = encodeURIComponent(JSON.stringify(summaryData));

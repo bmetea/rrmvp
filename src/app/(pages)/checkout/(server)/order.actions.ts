@@ -147,3 +147,122 @@ export async function getOrderIdFromCheckoutId(
     return { success: false, error: "Failed to get order ID from checkout ID" };
   }
 }
+
+export async function getOrderWithDetails(
+  orderId: string,
+  clerkUserId: string
+): Promise<{
+  success: boolean;
+  orderDetails?: {
+    order: any;
+    entries: any[];
+    totalTickets: number;
+    totalWinningTickets: number;
+  };
+  error?: string;
+}> {
+  try {
+    if (!clerkUserId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    // Get the internal database user ID
+    const user = await db
+      .selectFrom("users")
+      .select("id")
+      .where("clerk_id", "=", clerkUserId)
+      .executeTakeFirst();
+
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    // Fetch the order
+    const order = await db
+      .selectFrom("orders")
+      .selectAll()
+      .where("id", "=", orderId)
+      .where("user_id", "=", user.id)
+      .executeTakeFirst();
+
+    if (!order) {
+      return { success: false, error: "Order not found" };
+    }
+
+    // Fetch competition entries for this order with competition details
+    const entries = await db
+      .selectFrom("competition_entries as ce")
+      .leftJoin("competitions as c", "ce.competition_id", "c.id")
+      .leftJoin("winning_tickets as wt", "wt.competition_entry_id", "ce.id")
+      .select([
+        "ce.id as entry_id",
+        "ce.competition_id",
+        "ce.tickets",
+        "ce.created_at as entry_created_at",
+        "c.title as competition_title",
+        "c.type as competition_type",
+        "c.ticket_price",
+        "c.media_info",
+        "wt.ticket_number as winning_ticket_number",
+        "wt.prize_id",
+      ])
+      .where("ce.order_id", "=", orderId)
+      .execute();
+
+    // Group entries and calculate totals
+    const groupedEntries = entries.reduce((acc, row) => {
+      const entryId = row.entry_id;
+
+      if (!acc[entryId]) {
+        acc[entryId] = {
+          id: entryId,
+          competition_id: row.competition_id,
+          tickets: row.tickets,
+          created_at: row.entry_created_at,
+          competition: {
+            title: row.competition_title,
+            type: row.competition_type,
+            ticket_price: row.ticket_price,
+            media_info: row.media_info,
+          },
+          winning_tickets: [],
+        };
+      }
+
+      if (row.winning_ticket_number) {
+        acc[entryId].winning_tickets.push({
+          ticket_number: row.winning_ticket_number,
+          prize_id: row.prize_id,
+        });
+      }
+
+      return acc;
+    }, {} as Record<string, any>);
+
+    const processedEntries = Object.values(groupedEntries);
+
+    // Calculate totals
+    const totalTickets = processedEntries.reduce(
+      (sum, entry) => sum + (entry.tickets ? entry.tickets.length : 0),
+      0
+    );
+
+    const totalWinningTickets = processedEntries.reduce(
+      (sum, entry) => sum + entry.winning_tickets.length,
+      0
+    );
+
+    return {
+      success: true,
+      orderDetails: {
+        order,
+        entries: processedEntries,
+        totalTickets,
+        totalWinningTickets,
+      },
+    };
+  } catch (error) {
+    console.error("Get order with details error:", error);
+    return { success: false, error: "Failed to get order details" };
+  }
+}
