@@ -18,6 +18,7 @@ async function _prepareCheckout(input: {
   currency: string;
   paymentType: string;
   userId?: string;
+  orderId: string;
 }): Promise<{
   id?: string;
   transactionId?: string;
@@ -70,6 +71,7 @@ async function _prepareCheckout(input: {
         currency: input.currency,
         payment_type: input.paymentType,
         raw_prepare_result: result,
+        order_id: input.orderId,
       })
       .returning(["id"])
       .executeTakeFirst();
@@ -198,7 +200,8 @@ function isPaymentSuccessful(code: string): boolean {
 }
 
 export async function prepareRealPayment(
-  cardAmount: number
+  cardAmount: number,
+  orderId: string
 ): Promise<RealPaymentPreparation> {
   let session: any = null;
   try {
@@ -218,6 +221,7 @@ export async function prepareRealPayment(
       currency: "GBP",
       paymentType: "DB",
       userId: session.userId,
+      orderId: orderId,
     });
 
     if (checkoutResult.error || !checkoutResult.id) {

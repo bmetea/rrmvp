@@ -307,8 +307,8 @@ const entryResult = await _createCompetitionEntry(
 })
 ```
 
-#### Step 7: Update Real Payment Functions
-- [ ] Add `order_id: orderId` to all payment transaction INSERT statements in `src/app/(pages)/checkout/(server)/real-payment.actions.ts`
+#### Step 7: Update Real Payment Functions ✅
+- [x] Add `order_id: orderId` to all payment transaction INSERT statements in `src/app/(pages)/checkout/(server)/real-payment.actions.ts`
 ```typescript
 .values({
   // ... existing fields
