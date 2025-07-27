@@ -1,5 +1,4 @@
 import { Heart, Users } from "lucide-react";
-import Link from "next/link";
 
 const AboutSection = () => {
   return (
@@ -32,19 +31,6 @@ const AboutSection = () => {
                 opportunity, excitement, and rewards to every prize draw.
               </div>
             </div>
-            {/* Read more button */}
-            <div className="w-full pt-6 flex justify-start items-center gap-6">
-              <Link href="/about">
-                <div className="px-6 py-3 overflow-hidden rounded-full border-2 border-white flex justify-start items-center gap-2">
-                  <div className="text-white text-[14px] font-semibold leading-[1.5em] font-open-sans">
-                    Read more
-                  </div>
-                  <div className="w-6 h-6 relative overflow-hidden">
-                    <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-white" />
-                  </div>
-                </div>
-              </Link>
-            </div>
           </div>
         </div>
 
@@ -70,19 +56,6 @@ const AboutSection = () => {
                 </div>
               </div>
             </div>
-            {/* Read more button */}
-            <div className="w-full flex justify-center items-center gap-6">
-              <Link href="/about">
-                <div className="px-6 py-3 overflow-hidden rounded-full border-2 border-[#151515] flex justify-center items-center gap-2">
-                  <div className="text-[#151515] text-[14px] font-semibold leading-[1.5em] font-open-sans">
-                    Read more
-                  </div>
-                  <div className="w-6 h-6 relative overflow-hidden">
-                    <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-[#151515]" />
-                  </div>
-                </div>
-              </Link>
-            </div>
           </div>
 
           {/* Trusted Partnerships Card */}
@@ -103,19 +76,6 @@ const AboutSection = () => {
                   movement for beauty, confidence, and positive change.
                 </div>
               </div>
-            </div>
-            {/* Read more button */}
-            <div className="w-full flex justify-center items-center gap-6">
-              <Link href="/about">
-                <div className="px-6 py-3 overflow-hidden rounded-full border-2 border-[#151515] flex justify-center items-center gap-2">
-                  <div className="text-[#151515] text-[14px] font-semibold leading-[1.5em] font-open-sans">
-                    Read more
-                  </div>
-                  <div className="w-6 h-6 relative overflow-hidden">
-                    <div className="w-4 h-3 left-1 top-1.5 absolute border-2 border-[#151515]" />
-                  </div>
-                </div>
-              </Link>
             </div>
           </div>
         </div>
