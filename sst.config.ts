@@ -16,7 +16,8 @@ const stageConfigs = {
       proxy: true,
     },
     domain: {
-      name: "prd.radiancerewards.co.uk",
+      name: "www.radiancerewards.co.uk",
+      aliases: ["www.radiancerewards.co.uk", "radiancerewards.co.uk"] as string[],
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
     },

@@ -1,4 +1,7 @@
 ## TODO
+## DNS
+CNAME www proxy-ssl.webflow.com.
+CNAME www d27p6ej8vra5wq.cloudfront.net.
 
 - [ ] NomuPay How to test all cards
 - [ ] Categories implemened using buttons on figma
