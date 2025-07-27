@@ -53,6 +53,10 @@ export default function CompetitionPage({
   const [agreed, setAgreed] = useState(false);
   const { addItem } = useCart();
 
+  const ticketPrice = competitionWithPrizes.ticket_price || 0;
+  const isFreeCompetition = ticketPrice === 0;
+  const effectiveTicketCount = isFreeCompetition ? 1 : ticketCount;
+
   const handleAddToCart = () => {
     if (!agreed) {
       alert("Please agree to the terms and conditions first");
@@ -62,7 +66,7 @@ export default function CompetitionPage({
       alert("Please answer the skill-based question first");
       return;
     }
-    addItem(competitionWithPrizes, ticketCount);
+    addItem(competitionWithPrizes, effectiveTicketCount);
   };
 
   const mediaInfo = competitionWithPrizes.media_info as {
@@ -172,9 +176,14 @@ export default function CompetitionPage({
                   <Star className="w-4 h-4 text-muted-foreground" />
                 </div>
                 <p className="text-lg font-bold text-primary">
-                  {formatPrice(competitionWithPrizes.ticket_price)}
+                  {isFreeCompetition 
+                    ? "FREE" 
+                    : formatPrice(competitionWithPrizes.ticket_price)
+                  }
                 </p>
-                <p className="text-xs text-muted-foreground">Per Ticket</p>
+                <p className="text-xs text-muted-foreground">
+                  {isFreeCompetition ? "Entry" : "Per Ticket"}
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -340,60 +349,79 @@ export default function CompetitionPage({
 
                 <Separator className="hidden lg:block" />
 
-                {/* Ticket selection */}
-                <div className="space-y-3">
-                  <Label className="text-base font-medium">
-                    Select tickets
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[10, 20, 40, 60].map((num) => (
+                {/* Ticket selection - Only show for paid competitions */}
+                {!isFreeCompetition && (
+                  <div className="space-y-3">
+                    <Label className="text-base font-medium">
+                      Select tickets
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[10, 20, 40, 60].map((num) => (
+                        <Button
+                          key={num}
+                          variant={ticketCount === num ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setTicketCount(num)}
+                          className="h-12"
+                        >
+                          {num} Tickets
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-3 justify-center">
                       <Button
-                        key={num}
-                        variant={ticketCount === num ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setTicketCount(num)}
-                        className="h-12"
+                        size="icon"
+                        variant="outline"
+                        onClick={() => setTicketCount((c) => Math.max(1, c - 1))}
+                        className="h-10 w-10"
+                        aria-label="Decrease ticket count"
                       >
-                        {num} Tickets
+                        -
                       </Button>
-                    ))}
+                      <span className="text-xl font-bold min-w-[60px] text-center">
+                        {ticketCount}
+                      </span>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={() => setTicketCount((c) => c + 1)}
+                        className="h-10 w-10"
+                        aria-label="Increase ticket count"
+                      >
+                        +
+                      </Button>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-primary">
+                        {formatPrice(competitionWithPrizes.ticket_price)} per
+                        ticket
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Total:{" "}
+                        {formatPrice(
+                          competitionWithPrizes.ticket_price * ticketCount
+                        )}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 justify-center">
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={() => setTicketCount((c) => Math.max(1, c - 1))}
-                      className="h-10 w-10"
-                      aria-label="Decrease ticket count"
-                    >
-                      -
-                    </Button>
-                    <span className="text-xl font-bold min-w-[60px] text-center">
-                      {ticketCount}
-                    </span>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={() => setTicketCount((c) => c + 1)}
-                      className="h-10 w-10"
-                      aria-label="Increase ticket count"
-                    >
-                      +
-                    </Button>
+                )}
+
+                {/* Free Competition Info */}
+                {isFreeCompetition && (
+                  <div className="space-y-3">
+                    <Label className="text-base font-medium">
+                      Free Entry
+                    </Label>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <p className="text-lg font-bold text-primary">
+                        Free Entry
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        1 Free Entry
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-primary">
-                      {formatPrice(competitionWithPrizes.ticket_price)} per
-                      ticket
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Total:{" "}
-                      {formatPrice(
-                        competitionWithPrizes.ticket_price * ticketCount
-                      )}
-                    </p>
-                  </div>
-                </div>
+                )}
 
                 <Separator />
 

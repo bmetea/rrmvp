@@ -28,6 +28,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
   const { trackCompetitionViewed, trackEvent } = useAnalytics();
 
   const ticketPrice = competitionWithPrizes.ticket_price || 0;
+  const isFreeCompetition = ticketPrice === 0;
   const oldPrice = ticketPrice * 2; // Placeholder for old price logic
   const totalTickets = competitionWithPrizes.total_tickets;
   const ticketsSold = competitionWithPrizes.tickets_sold;
@@ -45,7 +46,8 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
   const quickSelect = [5, 10, 15, 20, 25, 50];
   const maxTickets = 2500;
-  const totalPrice = ticketPrice * ticketCount;
+  const effectiveTicketCount = isFreeCompetition ? 1 : ticketCount;
+  const totalPrice = ticketPrice * effectiveTicketCount;
   const prizes = competitionWithPrizes.prizes || [];
 
   const [quizOpen, setQuizOpen] = useState(false);
@@ -99,7 +101,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
       });
 
       setTimeout(() => {
-        addItem(competitionWithPrizes, ticketCount);
+        addItem(competitionWithPrizes, effectiveTicketCount);
         setPendingAddToCart(false);
       }, 100);
     } else {
@@ -120,28 +122,31 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     trackEvent("Competition Entry Initiated", {
       competition_id: competitionWithPrizes.id,
       competition_title: competitionWithPrizes.title,
-      ticket_count: ticketCount,
+      ticket_count: effectiveTicketCount,
       total_price: totalPrice / 100,
       competition_type: competitionWithPrizes.type,
+      is_free_competition: isFreeCompetition,
     });
 
     if (competitionWithPrizes.type?.toLowerCase().trim() === "raffle") {
       setQuizOpen(true);
       setPendingAddToCart(true);
     } else {
-      addItem(competitionWithPrizes, ticketCount);
+      addItem(competitionWithPrizes, effectiveTicketCount);
     }
   }
 
-  // Track ticket quantity changes
+  // Track ticket quantity changes (only for paid competitions)
   const handleTicketCountChange = (newCount) => {
-    setTicketCount(newCount);
-    trackEvent("Competition Ticket Quantity Changed", {
-      competition_id: competitionWithPrizes.id,
-      previous_count: ticketCount,
-      new_count: newCount,
-      price_difference: ((newCount - ticketCount) * ticketPrice) / 100,
-    });
+    if (!isFreeCompetition) {
+      setTicketCount(newCount);
+      trackEvent("Competition Ticket Quantity Changed", {
+        competition_id: competitionWithPrizes.id,
+        previous_count: ticketCount,
+        new_count: newCount,
+        price_difference: ((newCount - ticketCount) * ticketPrice) / 100,
+      });
+    }
   };
 
   return (
@@ -187,60 +192,80 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
             </div>
           </div>
 
-          {/* Quick Ticket Selection */}
-          <div className="mb-4">
-            <label className="block font-bold text-sm mb-2">
-              Select Tickets
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {quickSelect.map((num) => (
-                <button
-                  key={`quick-select-${num}`}
-                  onClick={() => handleTicketCountChange(num)}
-                  className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
-                    ${
-                      ticketCount === num
-                        ? "bg-[#151515] text-white border-[#151515]"
-                        : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
+          {/* Ticket Selection - Only show for paid competitions */}
+          {!isFreeCompetition && (
+            <>
+              {/* Quick Ticket Selection */}
+              <div className="mb-4">
+                <label className="block font-bold text-sm mb-2">
+                  Select Tickets
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {quickSelect.map((num) => (
+                    <button
+                      key={`quick-select-${num}`}
+                      onClick={() => handleTicketCountChange(num)}
+                      className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
+                        ${
+                          ticketCount === num
+                            ? "bg-[#151515] text-white border-[#151515]"
+                            : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
+                        }
+                        rounded-lg flex items-center justify-center`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Ticket Input */}
+              <div className="mb-4">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={1}
+                    max={maxTickets}
+                    value={ticketCount}
+                    onChange={(e) =>
+                      handleTicketCountChange(Number(e.target.value))
                     }
-                    rounded-lg flex items-center justify-center`}
-                >
-                  {num}
-                </button>
-              ))}
-            </div>
-          </div>
+                    className="w-full accent-[#E19841]"
+                  />
+                  <span className="bg-gray-100 px-3 py-1 rounded-lg font-bold text-base text-black min-w-[60px] text-center">
+                    {ticketCount}
+                  </span>
+                </div>
+              </div>
 
-          {/* Custom Ticket Input */}
-          <div className="mb-4">
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={1}
-                max={maxTickets}
-                value={ticketCount}
-                onChange={(e) =>
-                  handleTicketCountChange(Number(e.target.value))
-                }
-                className="w-full accent-[#E19841]"
-              />
-              <span className="bg-gray-100 px-3 py-1 rounded-lg font-bold text-base text-black min-w-[60px] text-center">
-                {ticketCount}
-              </span>
-            </div>
-          </div>
+              {/* Total Price */}
+              <div className="mb-4">
+                <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+                  <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
+                    {formatPrice(totalPrice)}
+                  </p>
+                  <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
+                    {effectiveTicketCount} Tickets at {formatPrice(ticketPrice)}{" "}
+                    each
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
 
-          {/* Total Price */}
-          <div className="mb-4">
-            <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
-              <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
-                {formatPrice(totalPrice)}
-              </p>
-              <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
-                {ticketCount} Tickets at {formatPrice(ticketPrice)} each
-              </p>
+          {/* Free Competition Info */}
+          {isFreeCompetition && (
+            <div className="mb-4">
+              <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+                <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
+                  Free Entry
+                </p>
+                <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
+                  1 Free Entry
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Add to Cart Button (Mobile) */}
           <Button
@@ -409,60 +434,80 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                 </div>
               </div>
 
-              {/* Quick Ticket Selection */}
-              <div className="mb-4">
-                <label className="block font-bold text-sm mb-2">
-                  Select Tickets
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {quickSelect.map((num) => (
-                    <button
-                      key={`quick-select-${num}`}
-                      onClick={() => handleTicketCountChange(num)}
-                      className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
-                        ${
-                          ticketCount === num
-                            ? "bg-[#151515] text-white border-[#151515]"
-                            : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
+              {/* Ticket Selection - Only show for paid competitions */}
+              {!isFreeCompetition && (
+                <>
+                  {/* Quick Ticket Selection */}
+                  <div className="mb-4">
+                    <label className="block font-bold text-sm mb-2">
+                      Select Tickets
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {quickSelect.map((num) => (
+                        <button
+                          key={`quick-select-${num}`}
+                          onClick={() => handleTicketCountChange(num)}
+                          className={`w-full h-[56px] font-['Open_Sans'] text-[16px] font-semibold leading-[24px] transition-colors
+                            ${
+                              ticketCount === num
+                                ? "bg-[#151515] text-white border-[#151515]"
+                                : "bg-[#F7F7F7] text-[#151515] border border-[#313131]"
+                            }
+                            rounded-lg flex items-center justify-center`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Custom Ticket Input */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="range"
+                        min={1}
+                        max={maxTickets}
+                        value={ticketCount}
+                        onChange={(e) =>
+                          handleTicketCountChange(Number(e.target.value))
                         }
-                        rounded-lg flex items-center justify-center`}
-                    >
-                      {num}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                        className="w-full accent-[#E19841]"
+                      />
+                      <span className="bg-gray-100 px-4 py-2 rounded-lg font-bold text-lg text-black min-w-[80px] text-center">
+                        {ticketCount}
+                      </span>
+                    </div>
+                  </div>
 
-              {/* Custom Ticket Input */}
-              <div className="mb-6">
-                <div className="flex items-center gap-4">
-                  <input
-                    type="range"
-                    min={1}
-                    max={maxTickets}
-                    value={ticketCount}
-                    onChange={(e) =>
-                      handleTicketCountChange(Number(e.target.value))
-                    }
-                    className="w-full accent-[#E19841]"
-                  />
-                  <span className="bg-gray-100 px-4 py-2 rounded-lg font-bold text-lg text-black min-w-[80px] text-center">
-                    {ticketCount}
-                  </span>
-                </div>
-              </div>
+                  {/* Total Price */}
+                  <div className="mb-6">
+                    <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+                      <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
+                        {formatPrice(totalPrice)}
+                      </p>
+                      <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
+                        {effectiveTicketCount} Tickets at{" "}
+                        {formatPrice(ticketPrice)} each
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
 
-              {/* Total Price */}
-              <div className="mb-6">
-                <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
-                  <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
-                    {formatPrice(totalPrice)}
-                  </p>
-                  <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
-                    {ticketCount} Tickets at {formatPrice(ticketPrice)} each
-                  </p>
+              {/* Free Competition Info (Desktop) */}
+              {isFreeCompetition && (
+                <div className="mb-6">
+                  <div className="bg-[#F7F7F7] rounded-lg px-6 py-4 text-center">
+                    <p className="font-['Crimson_Pro'] text-[22px] leading-[1.11em] font-medium text-[#151515] mb-1">
+                      Free Entry
+                    </p>
+                    <p className="font-['Open_Sans'] text-[14px] leading-[1.5em] text-[#151515]">
+                      1 Free Entry
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Add to Cart Button (Desktop) */}
               <Button
