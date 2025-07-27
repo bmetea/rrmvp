@@ -385,19 +385,36 @@ export default function CheckoutPage() {
                       <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
                         Ready to Pay?
                       </h3>
-                      
+
                       {/* Minimum spend warning */}
                       {!canProceedWithPayment && (
-                        <Alert className="border-amber-200 bg-amber-50">
-                          <div className="text-amber-800">
-                            <p className="font-semibold mb-1">
-                              Minimum payment of {formatPrice(MINIMUM_CARD_PAYMENT)} required
-                            </p>
-                            <p className="text-sm">
-                              Add {formatPrice(amountNeededToReachMinimum)} more in tickets to proceed with card payment.
-                            </p>
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-lg p-4 mb-4">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0">
+                              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                                <span className="text-blue-600 text-sm font-bold">
+                                  !
+                                </span>
+                              </div>
+                            </div>
+                            <div className="ml-3 flex-1">
+                              <h4 className="text-blue-900 font-semibold text-lg mb-1">
+                                Nearly there!
+                              </h4>
+                              <p className="text-blue-800 text-sm leading-relaxed">
+                                Add{" "}
+                                <span className="font-semibold text-blue-900">
+                                  {formatPrice(amountNeededToReachMinimum)}
+                                </span>{" "}
+                                more in tickets to reach our minimum payment of{" "}
+                                <span className="font-semibold text-blue-900">
+                                  {formatPrice(MINIMUM_CARD_PAYMENT)}
+                                </span>
+                                .
+                              </p>
+                            </div>
                           </div>
-                        </Alert>
+                        </div>
                       )}
 
                       <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
@@ -409,7 +426,7 @@ export default function CheckoutPage() {
                             )} on your card.`
                           : "Review your basket and click below to proceed with payment"}
                       </p>
-                      
+
                       {!isSignedIn ? (
                         <SignInButton mode="modal">
                           <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
@@ -444,19 +461,20 @@ export default function CheckoutPage() {
                       ) : (
                         <Button
                           disabled={true}
-                          className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold text-white opacity-50 cursor-not-allowed"
-                          style={{ backgroundColor: "#663399" }}
+                          className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold bg-gray-100 text-gray-500 cursor-not-allowed border-2 border-dashed border-gray-300 hover:bg-gray-100"
                         >
                           <CreditCard className="h-5 w-5" />
-                          Add More Tickets
+                          Pay Now
                         </Button>
                       )}
-                      
+
                       <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                         {!isSignedIn
                           ? "You need to sign in to complete your purchase"
                           : !canProceedWithPayment
-                          ? `Add ${formatPrice(amountNeededToReachMinimum)} more to meet the minimum payment requirement`
+                          ? `Add ${formatPrice(
+                              amountNeededToReachMinimum
+                            )} more to meet the minimum payment requirement`
                           : remainingToPay === 0
                           ? "No card payment required - using wallet credit only"
                           : "You can still modify quantities above before proceeding"}
