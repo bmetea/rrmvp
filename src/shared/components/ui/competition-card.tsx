@@ -126,7 +126,10 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               {/* Ticket Price */}
               <div className="text-center">
                 <span className="text-zinc-800 text-2xl font-bold">
-                  {formatPrice(competition.ticket_price || 0)}
+                  {(competition.ticket_price || 0) === 0 
+                    ? "FREE" 
+                    : formatPrice(competition.ticket_price || 0)
+                  }
                 </span>
               </div>
               <div className="w-full h-5 flex items-center gap-3">

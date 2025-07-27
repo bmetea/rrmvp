@@ -100,7 +100,11 @@ export function CompetitionCartDialog() {
                       {item.competition.title}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {formatPrice(item.competition.ticket_price)} per ticket
+                      {(item.competition.ticket_price || 0) === 0
+                        ? "FREE"
+                        : `${formatPrice(
+                            item.competition.ticket_price
+                          )} per ticket`}
                     </p>
                     <div className="flex items-center gap-2">
                       <Button
