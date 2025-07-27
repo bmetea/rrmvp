@@ -27,7 +27,14 @@ export async function getWinningTicketsByProduct(
   }[]
 > {
   try {
-    const tickets = await db
+    // First get the competition to check its type
+    const competition = await db
+      .selectFrom("competitions")
+      .select("type")
+      .where("id", "=", competitionId)
+      .executeTakeFirst();
+
+    let query = db
       .selectFrom("winning_tickets as wt")
       .innerJoin("competition_prizes as cp", "wt.prize_id", "cp.id")
       .innerJoin("products as p", "cp.product_id", "p.id")
@@ -47,9 +54,19 @@ export async function getWinningTicketsByProduct(
         "cp.phase",
         "cp.is_instant_win",
       ])
-      .where("wt.competition_id", "=", competitionId)
-      .orderBy("wt.ticket_number", "asc")
-      .execute();
+      .where("wt.competition_id", "=", competitionId);
+
+    // For instant win competitions, order by market_value descending, then by ticket_number
+    // For other competition types, keep the original ordering by ticket_number
+    if (competition?.type === "instant_win") {
+      query = query
+        .orderBy("p.market_value", "desc")
+        .orderBy("wt.ticket_number", "asc");
+    } else {
+      query = query.orderBy("wt.ticket_number", "asc");
+    }
+
+    const tickets = await query.execute();
 
     // Group tickets by product
     const productMap = new Map<
@@ -103,7 +120,15 @@ export async function getWinningTicketsByProduct(
       });
     }
 
-    return Array.from(productMap.values());
+    const products = Array.from(productMap.values());
+
+    // For instant win competitions, sort the final products array by market value descending
+    // to ensure consistent ordering even after grouping
+    if (competition?.type === "instant_win") {
+      products.sort((a, b) => b.marketValue - a.marketValue);
+    }
+
+    return products;
   } catch (error) {
     console.error("Error getting winning tickets by product:", error);
     return [];
