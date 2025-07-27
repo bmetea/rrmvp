@@ -16,8 +16,7 @@ const stageConfigs = {
       proxy: true,
     },
     domain: {
-      name: "radiancerewards.co.uk",
-      redirects: ["www.radiancerewards.co.uk"] as string[],
+      name: "prd.radiancerewards.co.uk",
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
     },
