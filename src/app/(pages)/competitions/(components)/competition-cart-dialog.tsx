@@ -107,50 +107,60 @@ export function CompetitionCartDialog() {
                           )} per ticket`}
                     </p>
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={`h-8 w-8 ${
-                          isPaymentFormActive
-                            ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                            : "hover:bg-gray-50"
-                        }`}
-                        disabled={isPaymentFormActive}
-                        onClick={() =>
-                          !isPaymentFormActive &&
-                          updateQuantity(
-                            item.competition.id,
-                            Math.max(1, item.quantity - 1)
-                          )
-                        }
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span
-                        className={`text-sm ${
-                          isPaymentFormActive
-                            ? "text-gray-400"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {item.quantity} tickets
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={`h-8 w-8 ${
-                          isPaymentFormActive
-                            ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                            : "hover:bg-gray-50"
-                        }`}
-                        disabled={isPaymentFormActive}
-                        onClick={() =>
-                          !isPaymentFormActive &&
-                          updateQuantity(item.competition.id, item.quantity + 1)
-                        }
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                      {(item.competition.ticket_price || 0) === 0 ? (
+                        // Free competition - show fixed quantity without controls
+                        <span className="text-sm text-muted-foreground px-2">
+                          1 free entry
+                        </span>
+                      ) : (
+                        // Paid competition - show quantity controls
+                        <>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className={`h-8 w-8 ${
+                              isPaymentFormActive
+                                ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                                : "hover:bg-gray-50"
+                            }`}
+                            disabled={isPaymentFormActive}
+                            onClick={() =>
+                              !isPaymentFormActive &&
+                              updateQuantity(
+                                item.competition.id,
+                                Math.max(1, item.quantity - 1)
+                              )
+                            }
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span
+                            className={`text-sm ${
+                              isPaymentFormActive
+                                ? "text-gray-400"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {item.quantity} tickets
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className={`h-8 w-8 ${
+                              isPaymentFormActive
+                                ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                                : "hover:bg-gray-50"
+                            }`}
+                            disabled={isPaymentFormActive}
+                            onClick={() =>
+                              !isPaymentFormActive &&
+                              updateQuantity(item.competition.id, item.quantity + 1)
+                            }
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"

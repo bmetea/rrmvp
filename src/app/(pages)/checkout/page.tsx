@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                           {item.quantity}
                         </span>
                         <span className="text-[#313131] text-sm leading-relaxed">
-                          Tickets
+                          {(item.competition.ticket_price || 0) === 0 ? "Entry" : "Tickets"}
                         </span>
                       </div>
                     </div>
@@ -287,7 +287,10 @@ export default function CheckoutPage() {
                         Price per entry
                       </span>
                       <span className="text-base text-[#151515]">
-                        {formatPrice(item.competition.ticket_price)}
+                        {(item.competition.ticket_price || 0) === 0 
+                          ? "FREE" 
+                          : formatPrice(item.competition.ticket_price)
+                        }
                       </span>
                     </div>
 
@@ -295,63 +298,75 @@ export default function CheckoutPage() {
                     <div className="flex items-center justify-between">
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-4">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className={`h-8 w-8 rounded-full border-2 ${
-                            showPaymentForm
-                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                              : "border-[#151515] hover:bg-gray-50"
-                          }`}
-                          disabled={showPaymentForm}
-                          onClick={() =>
-                            !showPaymentForm &&
-                            updateQuantity(
-                              item.competition.id,
-                              Math.max(1, item.quantity - 1)
-                            )
-                          }
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
+                        {(item.competition.ticket_price || 0) === 0 ? (
+                          // Free competition - static display
+                          <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border">
+                            <span className="text-base text-[#151515] font-medium">
+                              1 free entry
+                            </span>
+                          </div>
+                        ) : (
+                          // Paid competition - editable controls
+                          <>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className={`h-8 w-8 rounded-full border-2 ${
+                                showPaymentForm
+                                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                                  : "border-[#151515] hover:bg-gray-50"
+                              }`}
+                              disabled={showPaymentForm}
+                              onClick={() =>
+                                !showPaymentForm &&
+                                updateQuantity(
+                                  item.competition.id,
+                                  Math.max(1, item.quantity - 1)
+                                )
+                              }
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
 
-                        <div
-                          className={`w-12 h-12 rounded-lg border flex items-center justify-center ${
-                            showPaymentForm
-                              ? "border-gray-300 bg-gray-50"
-                              : "border-[#313131] bg-white"
-                          }`}
-                        >
-                          <span
-                            className={`text-base ${
-                              showPaymentForm
-                                ? "text-gray-400"
-                                : "text-[#151515]"
-                            }`}
-                          >
-                            {item.quantity}
-                          </span>
-                        </div>
+                            <div
+                              className={`w-12 h-12 rounded-lg border flex items-center justify-center ${
+                                showPaymentForm
+                                  ? "border-gray-300 bg-gray-50"
+                                  : "border-[#313131] bg-white"
+                              }`}
+                            >
+                              <span
+                                className={`text-base ${
+                                  showPaymentForm
+                                    ? "text-gray-400"
+                                    : "text-[#151515]"
+                                }`}
+                              >
+                                {item.quantity}
+                              </span>
+                            </div>
 
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className={`h-8 w-8 rounded-full border-2 ${
-                            showPaymentForm
-                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                              : "border-[#151515] hover:bg-gray-50"
-                          }`}
-                          disabled={showPaymentForm}
-                          onClick={() =>
-                            !showPaymentForm &&
-                            updateQuantity(
-                              item.competition.id,
-                              item.quantity + 1
-                            )
-                          }
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className={`h-8 w-8 rounded-full border-2 ${
+                                showPaymentForm
+                                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                                  : "border-[#151515] hover:bg-gray-50"
+                              }`}
+                              disabled={showPaymentForm}
+                              onClick={() =>
+                                !showPaymentForm &&
+                                updateQuantity(
+                                  item.competition.id,
+                                  item.quantity + 1
+                                )
+                              }
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
 
                       {/* Remove Button */}
