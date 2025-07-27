@@ -9,6 +9,7 @@ import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { CheckCircle2, Gift, Ticket, XCircle, Star } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { useAnalytics } from "@/shared/hooks";
+import { useKlaviyoAnalytics } from "@/shared/hooks/use-klaviyo-analytics";
 import {
   getCompetitionEntryById,
   CompetitionEntry,
@@ -60,6 +61,7 @@ export default function CheckoutSummaryPage() {
   const [isLoadingOrder, setIsLoadingOrder] = useState(false);
   const router = useRouter();
   const { trackPurchase, trackPageView } = useAnalytics();
+  const { trackOrderCompleted } = useKlaviyoAnalytics();
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function CheckoutSummaryPage() {
       setIsLoadingOrder(true);
       try {
         const result = await getOrderWithDetails(orderId, userId);
+
         if (result.success && result.orderDetails) {
           setOrderDetails(result.orderDetails);
         } else {
@@ -191,6 +194,32 @@ export default function CheckoutSummaryPage() {
       }
     }
   }, [purchaseSummary, trackPurchase]);
+
+  // Track comprehensive order completion to Klaviyo
+  useEffect(() => {
+    if (purchaseSummary && purchaseSummary.paymentStatus === "success") {
+      // If we have an orderId, wait for order details to load before tracking
+      const shouldWaitForOrderDetails =
+        purchaseSummary.orderId && !orderDetails && isLoadingOrder;
+
+      if (shouldWaitForOrderDetails) {
+        return;
+      }
+
+      try {
+        // Track comprehensive order details to Klaviyo
+        trackOrderCompleted({
+          orderDetails,
+          purchaseSummary,
+        });
+      } catch (error) {
+        logCheckoutError("klaviyo order completion tracking", error, {
+          purchaseSummaryExists: !!purchaseSummary,
+          hasOrderDetails: !!orderDetails,
+        });
+      }
+    }
+  }, [purchaseSummary, orderDetails, trackOrderCompleted, isLoadingOrder]);
 
   // Use order details if available, otherwise fall back to legacy calculation
   const totalTickets = orderDetails
