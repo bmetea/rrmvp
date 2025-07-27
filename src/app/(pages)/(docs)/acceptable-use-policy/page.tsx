@@ -28,7 +28,7 @@ export default function AcceptableUsePolicyPage() {
               <p>
                 This acceptable use policy sets out the terms between you and us
                 under which you may access our website
-                www.radiancerewards/acceptableusepolicy.co.uk (
+                www.radiancerewards.co.uk/acceptable-use-policy (
                 <strong>our site</strong>). This acceptable use policy applies
                 to all users of, and visitors to, our site.
               </p>
@@ -36,7 +36,7 @@ export default function AcceptableUsePolicyPage() {
                 Your use of our site means that you accept, and agree to abide
                 by, all the policies in this acceptable use policy, which
                 supplement our terms of website use
-                www.radiancerewards/termsofuse.co.uk.
+                www.radiancerewards.co.uk/terms-use.
               </p>
               <p>
                 Our site is a site operated by Claravue Ltd (&quot;We&quot;). We
@@ -90,8 +90,8 @@ export default function AcceptableUsePolicyPage() {
                   Not to reproduce, duplicate, copy or re-sell any part of our
                   site in contravention of the provisions of our terms of
                   website use{" "}
-                  <a href="http://www.radiancerewards/termsofuse.co.uk">
-                    www.radiancerewards/termsofuse.co.uk
+                  <a href="https://www.radiancerewards.co.uk/terms-use">
+                    www.radiancerewards.co.uk/terms-use
                   </a>
                 </li>
                 <li>
@@ -231,8 +231,8 @@ export default function AcceptableUsePolicyPage() {
               <p>
                 Failure to comply with this acceptable use policy constitutes a
                 material breach of the terms of use{" "}
-                <a href="http://www.radiancerewards/termsofuse.co.uk">
-                  www.radiancerewards/termsofuse.co.uk
+                <a href="https://www.radiancerewards.co.uk/terms-use">
+                  www.radiancerewards.co.uk/terms-use
                 </a>{" "}
                 upon which you are permitted to use our site, and may result in
                 our taking all or any of the following actions:

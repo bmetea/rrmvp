@@ -34,8 +34,8 @@ export default function TermsAndConditionsPage() {
                 <li>
                   These terms and conditions apply to all competitions listed on
                   the Promoter&apos;s website at{" "}
-                  <a href="http://www.radiancerewards/termsandconditions.co.uk">
-                    www.radiancerewards/termsandconditions.co.uk
+                  <a href="https://www.radiancerewards.co.uk/terms-and-conditions">
+                    www.radiancerewards.co.uk/terms-and-conditions
                   </a>{" "}
                   (the &quot;Website&quot;)
                 </li>
@@ -591,8 +591,8 @@ export default function TermsAndConditionsPage() {
                   held and used only by the Promoter or its agents and suppliers
                   to administer the competition or as otherwise set out in the
                   Promoter&apos;s Privacy Policy{" "}
-                  <a href="http://www.radiancerewards/privacypolicy.co.uk">
-                    www.radiancerewards/privacypolicy.co.uk
+                  <a href="https://www.radiancerewards.co.uk/privacy-policy">
+                    www.radiancerewards.co.uk/privacy-policy
                   </a>
                   , a copy of which is available on the Website.
                 </li>

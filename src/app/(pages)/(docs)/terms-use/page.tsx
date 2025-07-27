@@ -27,7 +27,7 @@ export default function TermsPage() {
                 </h2>
                 <p className="text-sm text-gray-600 mb-8">
                   These terms tell you the rules for using our website{" "}
-                  <a href="http://www.radiancerewards.co.uk">
+                  <a href="https://www.radiancerewards.co.uk">
                     www.radiancerewards.co.uk
                   </a>{" "}
                   (<strong>our site</strong>).
@@ -70,8 +70,8 @@ export default function TermsPage() {
                 <ul className="list-disc pl-6 mb-4">
                   <li>
                     Our Privacy Policy{" "}
-                    <a href="http://www.radiancerewards/privacypolicy.co.uk">
-                      www.radiancerewards/privacypolicy.co.uk
+                    <a href="https://www.radiancerewards.co.uk/privacy-policy">
+                      www.radiancerewards.co.uk/privacy-policy
                     </a>
                     , which sets out the terms on which we process any personal
                     data we collect from you, or that you provide to us. By
@@ -80,8 +80,8 @@ export default function TermsPage() {
                   </li>
                   <li>
                     Our Acceptable Use Policy{" "}
-                    <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
-                      www.radiancerewards/acceptableusepolicy.co.uk
+                    <a href="https://www.radiancerewards.co.uk/acceptable-use-policy">
+                      www.radiancerewards.co.uk/acceptable-use-policy
                     </a>
                     , which sets out the permitted uses and prohibited uses of
                     our site. When using our site, you must comply with this
@@ -93,8 +93,8 @@ export default function TermsPage() {
                   in any promotions or enter any of our competitions, other
                   terms and conditions will apply and which you must accept and
                   abide by{" "}
-                  <a href="http://www.radiancerewards/termsandconditions.co.uk">
-                    www.radiancerewards/termsandconditions.co.uk
+                  <a href="https://www.radiancerewards.co.uk/terms-and-conditions">
+                    www.radiancerewards.co.uk/terms-and-conditions
                   </a>
                 </p>
 
@@ -347,8 +347,8 @@ export default function TermsPage() {
                     products or services to you or if you enter our
                     competitions, which will be set out in our Terms and
                     Conditions.{" "}
-                    <a href="http://www.radiancerewards/termsandconditions.co.uk">
-                      www.radiancerewards/termsandconditions.co.uk
+                    <a href="https://www.radiancerewards.co.uk/terms-and-conditions">
+                      www.radiancerewards.co.uk/terms-and-conditions
                     </a>
                   </li>
                   <li>
@@ -369,8 +369,8 @@ export default function TermsPage() {
                   make contact with other users of our site, you must comply
                   with the content standards set out in our Acceptable Use
                   Policy{" "}
-                  <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
-                    www.radiancerewards/acceptableusepolicy.co.uk
+                  <a href="https://www.radiancerewards.co.uk/acceptable-use-policy">
+                    www.radiancerewards.co.uk/acceptable-use-policy
                   </a>
                 </p>
                 <p>
@@ -398,8 +398,8 @@ export default function TermsPage() {
                   We have the right to remove any posting you make on our site
                   if, in our opinion, your post does not comply with the content
                   standards set out in our Acceptable Use Policy{" "}
-                  <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
-                    www.radiancerewards/acceptableusepolicy.co.uk
+                  <a href="https://www.radiancerewards.co.uk/acceptable-use-policy">
+                    www.radiancerewards.co.uk/acceptable-use-policy
                   </a>
                 </p>
                 <p>
@@ -479,8 +479,8 @@ export default function TermsPage() {
                   The website in which you are linking must comply in all
                   respects with the content standards set out in our Acceptable
                   Use Policy{" "}
-                  <a href="http://www.radiancerewards/acceptableusepolicy.co.uk">
-                    www.radiancerewards/acceptableusepolicy.co.uk
+                  <a href="https://www.radiancerewards.co.uk/acceptable-use-policy">
+                    www.radiancerewards.co.uk/acceptable-use-policy
                   </a>
                 </p>
                 <p>
