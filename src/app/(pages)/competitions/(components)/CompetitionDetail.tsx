@@ -17,6 +17,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/shared/components/ui/accordion";
 import { Button } from "@/shared/components/ui/button";
 import { useAnalytics } from "@/shared/hooks";
 
@@ -631,15 +637,38 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           )}
       </div>
 
-      {/* Competition Details Section - Visible on both mobile and desktop */}
+      {/* Competition Information Accordion - Visible on both mobile and desktop */}
       <div className="bg-white rounded-lg shadow-md p-4 mt-8">
-        <h2 className="text-xl font-bold mb-3">Competition Details</h2>
-        <div className="prose prose-zinc prose-sm max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {competitionWithPrizes.description ||
-              "No description available for this competition. Please check the prize details below for more information."}
-          </ReactMarkdown>
-        </div>
+        <Accordion type="multiple" className="w-full">
+          <AccordionItem value="competition-details">
+            <AccordionTrigger className="text-xl font-bold">
+              Competition Details
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="prose prose-zinc prose-sm max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {competitionWithPrizes.description ||
+                    "No description available for this competition. Please check the prize details below for more information."}
+                </ReactMarkdown>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          {competitionWithPrizes.faq && (
+            <AccordionItem value="faq">
+              <AccordionTrigger className="text-xl font-bold">
+                Frequently Asked Questions
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="prose prose-zinc prose-sm max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {competitionWithPrizes.faq}
+                  </ReactMarkdown>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+        </Accordion>
       </div>
 
       {/* Quiz Dialog */}

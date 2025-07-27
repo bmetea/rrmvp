@@ -7,7 +7,13 @@
   - [ ] Instan Wins
   - [ ] Luxury & Lifestile
 - [ ] Implement FAQ
-- [ ] Send Order Details evant to Klavyio
+- [ ] order prizes by value descending 
+- [ ] remove text from carrousel
+- [ ] remove tags
+- [ ] enter now ----> signup 
+  - [ ] it should open clerk sign-up
+  - [ ] 
+- [x] Send Order Details evant to Klavyio
 
 - [x] introduce the concept of orders
   - [ ] Major data structure changes, should be tested well in prd

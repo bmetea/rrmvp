@@ -291,6 +291,7 @@ export function CompetitionDialog({
       const form = new FormData();
       form.append("title", formData.title);
       form.append("description", formData.description);
+      form.append("faq", formData.faq);
       form.append("type", formData.type);
       form.append(
         "ticket_price",

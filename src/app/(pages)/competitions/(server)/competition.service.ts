@@ -5,6 +5,7 @@ export type Competition = {
   id: string;
   title: string;
   description: string | null;
+  faq: string | null;
   start_date: Date;
   end_date: Date;
   type: string;
@@ -51,6 +52,7 @@ export type CompetitionWithPrizes = {
   id: string;
   title: string;
   description: string;
+  faq: string | null;
   start_date: Date;
   end_date: Date;
   type: string;
@@ -101,6 +103,7 @@ export async function fetchCompetitionPrizesServer(
       "id",
       "title",
       "description",
+      "faq",
       "start_date",
       "end_date",
       "type",
