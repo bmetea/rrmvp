@@ -59,6 +59,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
   try {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
+    const faq = formData.get("faq") as string;
     const type = formData.get("type") as string;
     const ticket_price = parseInt(formData.get("ticket_price") as string);
     const total_tickets = parseInt(formData.get("total_tickets") as string);
@@ -101,6 +102,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
         .set({
           title,
           description,
+          faq,
           type,
           ticket_price: currentCompetition.ticket_price, // Preserve original value
           total_tickets: currentCompetition.total_tickets, // Preserve original value
@@ -141,6 +143,7 @@ export async function updateCompetitionAction(id: string, formData: FormData) {
       .set({
         title,
         description,
+        faq,
         type,
         ticket_price,
         total_tickets,
