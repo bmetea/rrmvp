@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Pagination,
   PaginationContent,
@@ -41,7 +43,7 @@ export function CompetitionPrizeDetail({
   return (
     <div className="bg-white">
       {/* Tabs */}
-              <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200">
         <button
           className={`flex-1 py-3 font-bold text-base transition-colors ${
             tab === "tickets"
@@ -53,10 +55,10 @@ export function CompetitionPrizeDetail({
           TICKETS
         </button>
         <button
-                      className={`flex-1 py-3 font-bold text-base transition-colors ${
-              tab === "description"
-                ? "border-b-2 border-[#E19841] text-black"
-                : "text-gray-500"
+          className={`flex-1 py-3 font-bold text-base transition-colors ${
+            tab === "description"
+              ? "border-b-2 border-[#E19841] text-black"
+              : "text-gray-500"
           }`}
           onClick={() => setTab("description")}
         >
@@ -88,17 +90,15 @@ export function CompetitionPrizeDetail({
                   >
                     <span
                       className={`font-mono text-xl font-bold ${
-                        isAvailable
-                          ? "text-[#E19841]"
-                          : "text-black"
+                        isAvailable ? "text-[#E19841]" : "text-black"
                       }`}
                     >
                       {ticket}
                     </span>
                   </div>
                   {claimed && (
-                                    <div className="absolute inset-x-0 bottom-0 bg-gray-200/90 py-1 rounded-b-lg">
-                  <span className="text-[10px] font-bold text-gray-600 text-center block">
+                    <div className="absolute inset-x-0 bottom-0 bg-gray-200/90 py-1 rounded-b-lg">
+                      <span className="text-[10px] font-bold text-gray-600 text-center block">
                         WON
                       </span>
                     </div>
@@ -197,8 +197,10 @@ export function CompetitionPrizeDetail({
 
       {tab === "description" && (
         <div className="p-4">
-                        <div className="text-sm text-gray-600">
-            {description}
+          <div className="prose prose-zinc prose-sm max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {description || "No description available."}
+            </ReactMarkdown>
           </div>
         </div>
       )}
