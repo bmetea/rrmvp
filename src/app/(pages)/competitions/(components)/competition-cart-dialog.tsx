@@ -25,6 +25,7 @@ export function CompetitionCartDialog() {
     removeItem,
     isCartOpen,
     setIsCartOpen,
+    isPaymentFormActive,
   } = useCart();
 
   return (
@@ -51,6 +52,21 @@ export function CompetitionCartDialog() {
             Review your selected competition tickets
           </DialogDescription>
         </DialogHeader>
+
+        {/* Payment Form Active Notice */}
+        {isPaymentFormActive && (
+          <div className="mx-6 mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <span className="text-blue-600 text-xs">🔒</span>
+              </div>
+              <p className="text-blue-800 text-sm font-medium">
+                Cart locked during payment - complete or cancel payment to make
+                changes
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="px-6 py-4 max-h-[400px] overflow-y-auto">
           {items.length === 0 ? (
@@ -90,8 +106,14 @@ export function CompetitionCartDialog() {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8"
+                        className={`h-8 w-8 ${
+                          isPaymentFormActive
+                            ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                            : "hover:bg-gray-50"
+                        }`}
+                        disabled={isPaymentFormActive}
                         onClick={() =>
+                          !isPaymentFormActive &&
                           updateQuantity(
                             item.competition.id,
                             Math.max(1, item.quantity - 1)
@@ -100,14 +122,26 @@ export function CompetitionCartDialog() {
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
-                      <span className="text-sm text-muted-foreground">
+                      <span
+                        className={`text-sm ${
+                          isPaymentFormActive
+                            ? "text-gray-400"
+                            : "text-muted-foreground"
+                        }`}
+                      >
                         {item.quantity} tickets
                       </span>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8"
+                        className={`h-8 w-8 ${
+                          isPaymentFormActive
+                            ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                            : "hover:bg-gray-50"
+                        }`}
+                        disabled={isPaymentFormActive}
                         onClick={() =>
+                          !isPaymentFormActive &&
                           updateQuantity(item.competition.id, item.quantity + 1)
                         }
                       >
@@ -116,8 +150,16 @@ export function CompetitionCartDialog() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => removeItem(item.competition.id)}
+                        className={`h-8 w-8 ${
+                          isPaymentFormActive
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-destructive hover:bg-red-50"
+                        }`}
+                        disabled={isPaymentFormActive}
+                        onClick={() =>
+                          !isPaymentFormActive &&
+                          removeItem(item.competition.id)
+                        }
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -142,11 +184,17 @@ export function CompetitionCartDialog() {
               </span>
             </div>
             <Link href="/checkout" onClick={() => setIsCartOpen(false)}>
-              <Button 
-                className="w-full text-white" 
-                style={{ backgroundColor: '#663399' }}
-                onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a2d80'}
-                onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#663399'}
+              <Button
+                className="w-full text-white"
+                style={{ backgroundColor: "#663399" }}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLButtonElement).style.backgroundColor =
+                    "#5a2d80")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLButtonElement).style.backgroundColor =
+                    "#663399")
+                }
               >
                 Proceed to Checkout
               </Button>

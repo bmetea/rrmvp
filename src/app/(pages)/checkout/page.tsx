@@ -34,8 +34,14 @@ interface CartItem {
 }
 
 export default function CheckoutPage() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } =
-    useCart();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    totalPrice,
+    clearCart,
+    setIsPaymentFormActive,
+  } = useCart();
   const [discount, setDiscount] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
@@ -73,6 +79,11 @@ export default function CheckoutPage() {
 
     fetchWalletBalance();
   }, [isSignedIn, userId]);
+
+  // Update cart context when payment form state changes
+  useEffect(() => {
+    setIsPaymentFormActive(showPaymentForm);
+  }, [showPaymentForm, setIsPaymentFormActive]);
 
   if (items.length === 0) {
     return (
@@ -201,6 +212,21 @@ export default function CheckoutPage() {
             <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4 pl-2">
               View your competitions and ticket numbers
             </p>
+
+            {/* Basket Locked Notice */}
+            {showPaymentForm && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 mx-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 text-xs">🔒</span>
+                  </div>
+                  <p className="text-blue-800 text-sm font-medium">
+                    Basket locked during payment - complete or cancel payment to
+                    make changes
+                  </p>
+                </div>
+              </div>
+            )}
             {items.map((item) => (
               <Card
                 key={item.competition.id}
@@ -272,8 +298,14 @@ export default function CheckoutPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          className={`h-8 w-8 rounded-full border-2 ${
+                            showPaymentForm
+                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                              : "border-[#151515] hover:bg-gray-50"
+                          }`}
+                          disabled={showPaymentForm}
                           onClick={() =>
+                            !showPaymentForm &&
                             updateQuantity(
                               item.competition.id,
                               Math.max(1, item.quantity - 1)
@@ -283,8 +315,20 @@ export default function CheckoutPage() {
                           <Minus className="h-4 w-4" />
                         </Button>
 
-                        <div className="w-12 h-12 rounded-lg border border-[#313131] flex items-center justify-center bg-white">
-                          <span className="text-base text-[#151515]">
+                        <div
+                          className={`w-12 h-12 rounded-lg border flex items-center justify-center ${
+                            showPaymentForm
+                              ? "border-gray-300 bg-gray-50"
+                              : "border-[#313131] bg-white"
+                          }`}
+                        >
+                          <span
+                            className={`text-base ${
+                              showPaymentForm
+                                ? "text-gray-400"
+                                : "text-[#151515]"
+                            }`}
+                          >
                             {item.quantity}
                           </span>
                         </div>
@@ -292,8 +336,14 @@ export default function CheckoutPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          className={`h-8 w-8 rounded-full border-2 ${
+                            showPaymentForm
+                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                              : "border-[#151515] hover:bg-gray-50"
+                          }`}
+                          disabled={showPaymentForm}
                           onClick={() =>
+                            !showPaymentForm &&
                             updateQuantity(
                               item.competition.id,
                               item.quantity + 1
@@ -307,8 +357,15 @@ export default function CheckoutPage() {
                       {/* Remove Button */}
                       <Button
                         variant="link"
-                        className="text-[#3D2C8D] font-semibold text-base p-0 h-auto underline-offset-4 hover:underline border-b-2 border-transparent hover:border-[#3D2C8D]"
-                        onClick={() => removeItem(item.competition.id)}
+                        className={`font-semibold text-base p-0 h-auto underline-offset-4 border-b-2 border-transparent ${
+                          showPaymentForm
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-[#3D2C8D] hover:underline hover:border-[#3D2C8D]"
+                        }`}
+                        disabled={showPaymentForm}
+                        onClick={() =>
+                          !showPaymentForm && removeItem(item.competition.id)
+                        }
                       >
                         Remove
                       </Button>
