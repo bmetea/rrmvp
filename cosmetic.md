@@ -10,9 +10,9 @@
 - [x] order prizes by value descending 
 - [x] remove text from carrousel
 - [x] remove tags
-- [ ] enter now ----> signup 
-  - [ ] it should open clerk sign-up
-  - [ ] 
+- [x] enter now ----> signup 
+  - [x] it should open clerk sign-up
+- [ ] Checkout with only free ticket edge case
 - [x] Send Order Details evant to Klavyio
 
 - [x] introduce the concept of orders

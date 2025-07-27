@@ -20,7 +20,13 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
 
-import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  useAuth,
+} from "@clerk/nextjs";
 import { CompetitionCartDialog } from "@/app/(pages)/competitions/(components)/competition-cart-dialog";
 import { useAdmin } from "@/shared/hooks/use-admin";
 import { CustomUserButton } from "@/app/(pages)/user/(components)/CustomUserButton";
@@ -274,15 +280,15 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <CustomUserButton />
             </SignedIn>
             <SignedOut>
-              <SignInButton mode="modal">
+              <SignUpButton mode="modal">
                 <Button
                   variant="default"
-                  className="bg-accent hover:bg-accent/90 text-accent-foreground hover:scale-105 transition-all duration-200"
+                  className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white hover:scale-105 transition-all duration-200"
                   onClick={() => handleSignInClick(false)}
                 >
-                  Sign in
+                  Sign up
                 </Button>
-              </SignInButton>
+              </SignUpButton>
             </SignedOut>
           </div>
         </div>
@@ -389,30 +395,18 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               </Link>
             )}
 
-            {/* CTA Button */}
-            <div className="pt-4 mt-4">
-              <Link
-                href="/competitions"
-                onClick={() => handleCTAClick("Enter now", true)}
-              >
-                <Button className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans">
-                  Enter now
-                </Button>
-              </Link>
-            </div>
-
-            {/* Sign In Button for Non-Authenticated Users */}
+            {/* Sign Up Button for Non-Authenticated Users */}
             <SignedOut>
               <div className="pt-2">
-                <SignInButton mode="modal">
+                <SignUpButton mode="modal">
                   <Button
-                    className="w-full bg-transparent hover:bg-white/50 text-[#151515] border-2 border-[#151515] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
-                    variant="outline"
+                    className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
+                    variant="default"
                     onClick={() => handleSignInClick(true)}
                   >
-                    Sign in
+                    Sign up
                   </Button>
-                </SignInButton>
+                </SignUpButton>
               </div>
             </SignedOut>
           </div>

@@ -11,7 +11,7 @@ import { Alert } from "@/shared/components/ui/alert";
 import { PaymentForm } from "./(components)/payment-form";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { Separator } from "@/shared/components/ui/separator";
-import { SignInButton, useAuth } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance } from "./(server)/wallet-payment.actions";
 import { checkout } from "./(server)/checkout-orchestrator.actions";
 import { useAnalytics } from "@/shared/hooks";
@@ -487,12 +487,12 @@ export default function CheckoutPage() {
                       </p>
 
                       {!isSignedIn ? (
-                        <SignInButton mode="modal">
+                        <SignUpButton mode="modal">
                           <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
                             <CreditCard className="h-5 w-5" />
-                            Sign in to Pay
+                            Sign up to Pay
                           </Button>
-                        </SignInButton>
+                        </SignUpButton>
                       ) : canProceedWithPayment ? (
                         <Button
                           onClick={handlePayButtonClick}
@@ -529,7 +529,7 @@ export default function CheckoutPage() {
 
                       <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                         {!isSignedIn
-                          ? "You need to sign in to complete your purchase"
+                          ? "You need to sign up to complete your purchase"
                           : !canProceedWithPayment
                           ? `Add ${formatPrice(
                               amountNeededToReachMinimum
