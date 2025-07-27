@@ -17,6 +17,9 @@ import { checkout } from "./(server)/checkout-orchestrator.actions";
 import { useAnalytics } from "@/shared/hooks";
 import { logCheckoutError } from "@/shared/lib/logger";
 
+// Minimum card payment threshold (199 pence = £1.99)
+const MINIMUM_CARD_PAYMENT = 199;
+
 interface CartItem {
   competition: {
     id: string;
@@ -85,6 +88,19 @@ export default function CheckoutPage() {
     );
   }
 
+  // Calculate payment amounts
+  const walletCreditUsed =
+    walletBalance !== null ? Math.min(walletBalance, totalPrice) : 0;
+  const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
+  const hasSufficientBalance =
+    walletBalance !== null && walletBalance >= totalPrice;
+
+  // Check if payment can proceed based on minimum spend limit
+  const canProceedWithPayment =
+    remainingToPay === 0 || remainingToPay >= MINIMUM_CARD_PAYMENT;
+  const amountNeededToReachMinimum =
+    remainingToPay > 0 ? Math.max(0, MINIMUM_CARD_PAYMENT - remainingToPay) : 0;
+
   const handlePayButtonClick = async () => {
     if (!isSignedIn) {
       // The SignInButton will handle showing the modal
@@ -113,7 +129,12 @@ export default function CheckoutPage() {
       // Get affiliate code from session storage
       const affiliateCode = sessionStorage.getItem("affiliate_code");
 
-      const result = await checkout(items, undefined, userId, affiliateCode || undefined);
+      const result = await checkout(
+        items,
+        undefined,
+        userId,
+        affiliateCode || undefined
+      );
 
       if (result.success) {
         if (result.shouldRedirect && result.redirectUrl) {
@@ -150,12 +171,6 @@ export default function CheckoutPage() {
       setIsProcessingCheckout(false);
     }
   };
-
-  const walletCreditUsed =
-    walletBalance !== null ? Math.min(walletBalance, totalPrice) : 0;
-  const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
-  const hasSufficientBalance =
-    walletBalance !== null && walletBalance >= totalPrice;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
@@ -370,6 +385,21 @@ export default function CheckoutPage() {
                       <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
                         Ready to Pay?
                       </h3>
+                      
+                      {/* Minimum spend warning */}
+                      {!canProceedWithPayment && (
+                        <Alert className="border-amber-200 bg-amber-50">
+                          <div className="text-amber-800">
+                            <p className="font-semibold mb-1">
+                              Minimum payment of {formatPrice(MINIMUM_CARD_PAYMENT)} required
+                            </p>
+                            <p className="text-sm">
+                              Add {formatPrice(amountNeededToReachMinimum)} more in tickets to proceed with card payment.
+                            </p>
+                          </div>
+                        </Alert>
+                      )}
+
                       <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
                         {remainingToPay === 0
                           ? "Your wallet credit covers the full amount. Click below to complete your purchase."
@@ -379,6 +409,7 @@ export default function CheckoutPage() {
                             )} on your card.`
                           : "Review your basket and click below to proceed with payment"}
                       </p>
+                      
                       {!isSignedIn ? (
                         <SignInButton mode="modal">
                           <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
@@ -386,7 +417,7 @@ export default function CheckoutPage() {
                             Sign in to Pay
                           </Button>
                         </SignInButton>
-                      ) : (
+                      ) : canProceedWithPayment ? (
                         <Button
                           onClick={handlePayButtonClick}
                           disabled={isProcessingCheckout}
@@ -410,10 +441,22 @@ export default function CheckoutPage() {
                             ? "Complete Purchase"
                             : `Pay ${formatPrice(remainingToPay)}`}
                         </Button>
+                      ) : (
+                        <Button
+                          disabled={true}
+                          className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold text-white opacity-50 cursor-not-allowed"
+                          style={{ backgroundColor: "#663399" }}
+                        >
+                          <CreditCard className="h-5 w-5" />
+                          Add More Tickets
+                        </Button>
                       )}
+                      
                       <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                         {!isSignedIn
                           ? "You need to sign in to complete your purchase"
+                          : !canProceedWithPayment
+                          ? `Add ${formatPrice(amountNeededToReachMinimum)} more to meet the minimum payment requirement`
                           : remainingToPay === 0
                           ? "No card payment required - using wallet credit only"
                           : "You can still modify quantities above before proceeding"}
