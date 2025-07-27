@@ -33,11 +33,11 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
       <div className="bg-white rounded-2xl outline outline-2 outline-[#E19841] flex flex-col justify-between items-start overflow-hidden w-full max-w-full md:w-96 md:max-w-96 md:min-w-80 h-full transition-all cursor-pointer">
         {/* Banner */}
         <div
-          className="w-full flex items-center justify-center gap-2 py-1 md:py-2"
+          className="w-full flex items-center justify-center gap-2 py-2"
           style={{ backgroundColor: isActive ? "#E19841" : "#6B7280" }}
         >
-          <Clock className="w-5 h-5 md:w-6 md:h-6" />
-          <span className="text-neutral-900 text-[16px] md:text-[18px] leading-[150%] font-semibold font-open-sans">
+          <Clock className="w-4 h-4 md:w-5 md:h-5" />
+          <span className="text-neutral-900 text-[14px] md:text-[16px] leading-[150%] font-semibold font-open-sans">
             {`Ends: ${formatEndDate(competition.end_date)}`}
           </span>
         </div>
