@@ -642,6 +642,18 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
         </div>
       </div>
 
+      {/* FAQ Section - Only show if FAQ content exists */}
+      {competitionWithPrizes.faq && (
+        <div className="bg-white rounded-lg shadow-md p-4 mt-8">
+          <h2 className="text-xl font-bold mb-3">Frequently Asked Questions</h2>
+          <div className="prose prose-zinc prose-sm max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {competitionWithPrizes.faq}
+            </ReactMarkdown>
+          </div>
+        </div>
+      )}
+
       {/* Quiz Dialog */}
       {competitionWithPrizes.type?.toLowerCase().trim() === "raffle" && (
         <Dialog
