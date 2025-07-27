@@ -17,6 +17,9 @@ import { checkout } from "./(server)/checkout-orchestrator.actions";
 import { useAnalytics } from "@/shared/hooks";
 import { logCheckoutError } from "@/shared/lib/logger";
 
+// Minimum card payment threshold (199 pence = £1.99)
+const MINIMUM_CARD_PAYMENT = 199;
+
 interface CartItem {
   competition: {
     id: string;
@@ -31,8 +34,14 @@ interface CartItem {
 }
 
 export default function CheckoutPage() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } =
-    useCart();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    totalPrice,
+    clearCart,
+    setIsPaymentFormActive,
+  } = useCart();
   const [discount, setDiscount] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
@@ -71,6 +80,11 @@ export default function CheckoutPage() {
     fetchWalletBalance();
   }, [isSignedIn, userId]);
 
+  // Update cart context when payment form state changes
+  useEffect(() => {
+    setIsPaymentFormActive(showPaymentForm);
+  }, [showPaymentForm, setIsPaymentFormActive]);
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
@@ -84,6 +98,19 @@ export default function CheckoutPage() {
       </div>
     );
   }
+
+  // Calculate payment amounts
+  const walletCreditUsed =
+    walletBalance !== null ? Math.min(walletBalance, totalPrice) : 0;
+  const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
+  const hasSufficientBalance =
+    walletBalance !== null && walletBalance >= totalPrice;
+
+  // Check if payment can proceed based on minimum spend limit
+  const canProceedWithPayment =
+    remainingToPay === 0 || remainingToPay >= MINIMUM_CARD_PAYMENT;
+  const amountNeededToReachMinimum =
+    remainingToPay > 0 ? Math.max(0, MINIMUM_CARD_PAYMENT - remainingToPay) : 0;
 
   const handlePayButtonClick = async () => {
     if (!isSignedIn) {
@@ -113,7 +140,12 @@ export default function CheckoutPage() {
       // Get affiliate code from session storage
       const affiliateCode = sessionStorage.getItem("affiliate_code");
 
-      const result = await checkout(items, undefined, userId, affiliateCode || undefined);
+      const result = await checkout(
+        items,
+        undefined,
+        userId,
+        affiliateCode || undefined
+      );
 
       if (result.success) {
         if (result.shouldRedirect && result.redirectUrl) {
@@ -151,12 +183,6 @@ export default function CheckoutPage() {
     }
   };
 
-  const walletCreditUsed =
-    walletBalance !== null ? Math.min(walletBalance, totalPrice) : 0;
-  const remainingToPay = Math.max(0, totalPrice - walletCreditUsed);
-  const hasSufficientBalance =
-    walletBalance !== null && walletBalance >= totalPrice;
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
       {purchaseStatus === "loading" ? (
@@ -186,6 +212,21 @@ export default function CheckoutPage() {
             <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4 pl-2">
               View your competitions and ticket numbers
             </p>
+
+            {/* Basket Locked Notice */}
+            {showPaymentForm && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 mx-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 text-xs">🔒</span>
+                  </div>
+                  <p className="text-blue-800 text-sm font-medium">
+                    Basket locked during payment - complete or cancel payment to
+                    make changes
+                  </p>
+                </div>
+              </div>
+            )}
             {items.map((item) => (
               <Card
                 key={item.competition.id}
@@ -257,8 +298,14 @@ export default function CheckoutPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          className={`h-8 w-8 rounded-full border-2 ${
+                            showPaymentForm
+                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                              : "border-[#151515] hover:bg-gray-50"
+                          }`}
+                          disabled={showPaymentForm}
                           onClick={() =>
+                            !showPaymentForm &&
                             updateQuantity(
                               item.competition.id,
                               Math.max(1, item.quantity - 1)
@@ -268,8 +315,20 @@ export default function CheckoutPage() {
                           <Minus className="h-4 w-4" />
                         </Button>
 
-                        <div className="w-12 h-12 rounded-lg border border-[#313131] flex items-center justify-center bg-white">
-                          <span className="text-base text-[#151515]">
+                        <div
+                          className={`w-12 h-12 rounded-lg border flex items-center justify-center ${
+                            showPaymentForm
+                              ? "border-gray-300 bg-gray-50"
+                              : "border-[#313131] bg-white"
+                          }`}
+                        >
+                          <span
+                            className={`text-base ${
+                              showPaymentForm
+                                ? "text-gray-400"
+                                : "text-[#151515]"
+                            }`}
+                          >
                             {item.quantity}
                           </span>
                         </div>
@@ -277,8 +336,14 @@ export default function CheckoutPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full border-2 border-[#151515]"
+                          className={`h-8 w-8 rounded-full border-2 ${
+                            showPaymentForm
+                              ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                              : "border-[#151515] hover:bg-gray-50"
+                          }`}
+                          disabled={showPaymentForm}
                           onClick={() =>
+                            !showPaymentForm &&
                             updateQuantity(
                               item.competition.id,
                               item.quantity + 1
@@ -292,8 +357,15 @@ export default function CheckoutPage() {
                       {/* Remove Button */}
                       <Button
                         variant="link"
-                        className="text-[#3D2C8D] font-semibold text-base p-0 h-auto underline-offset-4 hover:underline border-b-2 border-transparent hover:border-[#3D2C8D]"
-                        onClick={() => removeItem(item.competition.id)}
+                        className={`font-semibold text-base p-0 h-auto underline-offset-4 border-b-2 border-transparent ${
+                          showPaymentForm
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-[#3D2C8D] hover:underline hover:border-[#3D2C8D]"
+                        }`}
+                        disabled={showPaymentForm}
+                        onClick={() =>
+                          !showPaymentForm && removeItem(item.competition.id)
+                        }
                       >
                         Remove
                       </Button>
@@ -370,6 +442,38 @@ export default function CheckoutPage() {
                       <h3 className="text-[20px] md:text-[25px] leading-[150%] font-bold">
                         Ready to Pay?
                       </h3>
+
+                      {/* Minimum spend warning */}
+                      {!canProceedWithPayment && (
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-lg p-4 mb-4">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0">
+                              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                                <span className="text-blue-600 text-sm font-bold">
+                                  !
+                                </span>
+                              </div>
+                            </div>
+                            <div className="ml-3 flex-1">
+                              <h4 className="text-blue-900 font-semibold text-lg mb-1">
+                                Nearly there!
+                              </h4>
+                              <p className="text-blue-800 text-sm leading-relaxed">
+                                Add{" "}
+                                <span className="font-semibold text-blue-900">
+                                  {formatPrice(amountNeededToReachMinimum)}
+                                </span>{" "}
+                                more in tickets to reach our minimum payment of{" "}
+                                <span className="font-semibold text-blue-900">
+                                  {formatPrice(MINIMUM_CARD_PAYMENT)}
+                                </span>
+                                .
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
                         {remainingToPay === 0
                           ? "Your wallet credit covers the full amount. Click below to complete your purchase."
@@ -379,6 +483,7 @@ export default function CheckoutPage() {
                             )} on your card.`
                           : "Review your basket and click below to proceed with payment"}
                       </p>
+
                       {!isSignedIn ? (
                         <SignInButton mode="modal">
                           <Button className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold">
@@ -386,7 +491,7 @@ export default function CheckoutPage() {
                             Sign in to Pay
                           </Button>
                         </SignInButton>
-                      ) : (
+                      ) : canProceedWithPayment ? (
                         <Button
                           onClick={handlePayButtonClick}
                           disabled={isProcessingCheckout}
@@ -410,10 +515,23 @@ export default function CheckoutPage() {
                             ? "Complete Purchase"
                             : `Pay ${formatPrice(remainingToPay)}`}
                         </Button>
+                      ) : (
+                        <Button
+                          disabled={true}
+                          className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold bg-gray-100 text-gray-500 cursor-not-allowed border-2 border-dashed border-gray-300 hover:bg-gray-100"
+                        >
+                          <CreditCard className="h-5 w-5" />
+                          Pay Now
+                        </Button>
                       )}
+
                       <div className="text-[14px] leading-[150%] text-muted-foreground text-center">
                         {!isSignedIn
                           ? "You need to sign in to complete your purchase"
+                          : !canProceedWithPayment
+                          ? `Add ${formatPrice(
+                              amountNeededToReachMinimum
+                            )} more to meet the minimum payment requirement`
                           : remainingToPay === 0
                           ? "No card payment required - using wallet credit only"
                           : "You can still modify quantities above before proceeding"}

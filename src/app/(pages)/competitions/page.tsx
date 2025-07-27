@@ -11,7 +11,6 @@ export default async function CompetitionsPage() {
       <CompetitionList
         competitions={competitions}
         title="Explore Prizes"
-        showFilters={true}
       />
     </main>
   );

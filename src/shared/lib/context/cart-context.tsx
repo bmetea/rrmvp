@@ -37,16 +37,19 @@ interface CartContextType {
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   isHydrated: boolean;
+  isPaymentFormActive: boolean;
+  setIsPaymentFormActive: (active: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = 'radiance-rewards-cart';
+const CART_STORAGE_KEY = "radiance-rewards-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isPaymentFormActive, setIsPaymentFormActive] = useState(false);
   const { trackAddToCart, trackRemoveFromCart, trackCartViewed } =
     useAnalytics();
 
@@ -61,7 +64,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
     } catch (error) {
-      console.error('Failed to load cart from localStorage:', error);
+      console.error("Failed to load cart from localStorage:", error);
     } finally {
       setIsHydrated(true);
     }
@@ -73,7 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
       } catch (error) {
-        console.error('Failed to save cart to localStorage:', error);
+        console.error("Failed to save cart to localStorage:", error);
       }
     }
   }, [items, isHydrated]);
@@ -200,7 +203,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.removeItem(CART_STORAGE_KEY);
     } catch (error) {
-      console.error('Failed to clear cart from localStorage:', error);
+      console.error("Failed to clear cart from localStorage:", error);
     }
   }, []);
 
@@ -231,6 +234,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     isCartOpen,
     setIsCartOpen,
     isHydrated,
+    isPaymentFormActive,
+    setIsPaymentFormActive,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
