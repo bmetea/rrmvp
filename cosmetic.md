@@ -6,10 +6,10 @@
   - [ ] Haircare and Skincare
   - [ ] Instan Wins
   - [ ] Luxury & Lifestile
-- [ ] Implement FAQ
-- [ ] order prizes by value descending 
-- [ ] remove text from carrousel
-- [ ] remove tags
+- [x] Implement FAQ
+- [x] order prizes by value descending 
+- [x] remove text from carrousel
+- [x] remove tags
 - [ ] enter now ----> signup 
   - [ ] it should open clerk sign-up
   - [ ] 
