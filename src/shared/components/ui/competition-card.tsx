@@ -8,7 +8,8 @@ import { ArrowRight, Clock } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
 
 function formatEndDate(dateString: string | Date) {
-  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+  const date =
+    typeof dateString === "string" ? new Date(dateString) : dateString;
   const day = date.getDate();
   const month = date.toLocaleString("en-GB", { month: "long" });
   return `${day} ${month}`;
@@ -26,31 +27,6 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
   const isActive =
     competition.status === "active" &&
     new Date(competition.end_date).getTime() > new Date().getTime();
-
-  // Function to get tag styling based on competition type
-  const getTagStyling = (type: string) => {
-    const typeValue = type?.toLowerCase() || "";
-
-    switch (typeValue) {
-      case "instant_win":
-      case "instant win":
-        return "bg-[#D7FFD5] text-[#151515] border-[#D7FFD5]";
-      case "cash":
-        return "bg-[#FFF2E5] text-[#151515] border-[#FFF2E5]";
-      case "haircare & skincare":
-      case "haircare":
-      case "skincare":
-        return "bg-[#F3E8FF] text-[#151515] border-[#F3E8FF]";
-      case "cosmetic enhancement":
-      case "cosmetic":
-        return "bg-[#FFF4E1] text-[#151515] border-[#FFF4E1]";
-      case "automated draw":
-      case "draw":
-        return "bg-[#E3F2FD] text-[#151515] border-[#E3F2FD]";
-      default:
-        return "bg-[#FFF4E1] text-[#151515] border-[#FFF4E1]";
-    }
-  };
 
   return (
     <Link href={`/competitions/${competition.id}`} className="block h-full">
@@ -82,13 +58,6 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
         </div>
         {/* Content */}
         <div className="w-full p-3 flex flex-col items-start gap-2 md:p-6 md:gap-4 flex-1">
-          <span
-            className={`p-1 rounded text-[12px] leading-[150%] font-semibold md:px-4 md:py-1 md:text-[14px] ${getTagStyling(
-              competition.type
-            )}`}
-          >
-            {competition.type}
-          </span>
           <div className="w-full flex flex-col items-start gap-1 md:gap-2">
             <h3 className="w-full font-['Crimson_Pro'] text-lg sm:text-xl md:text-[22px] font-medium text-[#151515] leading-tight">
               {competition.title}
@@ -126,10 +95,9 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
               {/* Ticket Price */}
               <div className="text-center">
                 <span className="text-zinc-800 text-2xl font-bold">
-                  {(competition.ticket_price || 0) === 0 
-                    ? "FREE" 
-                    : formatPrice(competition.ticket_price || 0)
-                  }
+                  {(competition.ticket_price || 0) === 0
+                    ? "FREE"
+                    : formatPrice(competition.ticket_price || 0)}
                 </span>
               </div>
               <div className="w-full h-5 flex items-center gap-3">

@@ -92,11 +92,9 @@ export function EntryCard({ entry }: EntryCardProps) {
                 wordWrap: "break-word",
               }}
             >
-              {entry.competition.type === "instant_win"
-                ? "Instant win"
-                : `Drawer date: ${formatDate(
-                    entry.competition.end_date || entry.created_at
-                  )}`}
+              {`Drawer date: ${formatDate(
+                entry.competition.end_date || entry.created_at
+              )}`}
             </div>
           </div>
 

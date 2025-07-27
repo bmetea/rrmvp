@@ -240,20 +240,6 @@ export default function CheckoutPage() {
                       {/* Product Name Section */}
                       <div className="flex-1">
                         <div className="flex flex-col gap-1.5">
-                          {/* Tag */}
-                          <div className="inline-flex w-fit">
-                            <Badge
-                              className="bg-green-100 text-green-700 font-semibold px-4 py-1 rounded text-sm"
-                              style={{
-                                backgroundColor: "#D7FFD5",
-                                color: "#151515",
-                              }}
-                            >
-                              {item.competition.type === "raffle"
-                                ? "Instant win"
-                                : item.competition.type}
-                            </Badge>
-                          </div>
                           {/* Title */}
                           <h3
                             className="font-medium text-[22px] leading-tight text-[#151515]"
@@ -276,7 +262,9 @@ export default function CheckoutPage() {
                           {item.quantity}
                         </span>
                         <span className="text-[#313131] text-sm leading-relaxed">
-                          {(item.competition.ticket_price || 0) === 0 ? "Entry" : "Tickets"}
+                          {(item.competition.ticket_price || 0) === 0
+                            ? "Entry"
+                            : "Tickets"}
                         </span>
                       </div>
                     </div>
@@ -287,10 +275,9 @@ export default function CheckoutPage() {
                         Price per entry
                       </span>
                       <span className="text-base text-[#151515]">
-                        {(item.competition.ticket_price || 0) === 0 
-                          ? "FREE" 
-                          : formatPrice(item.competition.ticket_price)
-                        }
+                        {(item.competition.ticket_price || 0) === 0
+                          ? "FREE"
+                          : formatPrice(item.competition.ticket_price)}
                       </span>
                     </div>
 
