@@ -17,9 +17,17 @@ const stageConfigs = {
     },
     domain: {
       name: "www.radiancerewards.co.uk",
-      aliases: ["www.radiancerewards.co.uk", "radiancerewards.co.uk"] as string[],
+      aliases: [
+        "www.radiancerewards.co.uk",
+        "radiancerewards.co.uk",
+      ] as string[],
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
+    },
+    email: {
+      createIdentity: false, // Use existing ppr identity
+      domain: "radiancerewards.co.uk",
+      fromAddress: "noreply@radiancerewards.co.uk",
     },
     warm: 1, // Keep 1 Lambda instance warm in production
   },
@@ -40,6 +48,11 @@ const stageConfigs = {
       cert: "arn:aws:acm:us-east-1:976193254361:certificate/21ef90b9-ef7c-4e87-87cb-3c777047f08b",
       dns: false,
     },
+    email: {
+      createIdentity: true, // Create separate identity for pre-production
+      domain: "radiancerewards.co.uk",
+      fromAddress: "noreply-ppr@radiancerewards.co.uk",
+    },
     warm: 0, // No warm instances for pre-production
   },
   bmetea: {
@@ -53,6 +66,11 @@ const stageConfigs = {
       proxy: false,
     },
     domain: undefined,
+    email: {
+      createIdentity: false, // Reference pre-production identity for local development
+      domain: "radiancerewards.co.uk",
+      fromAddress: "dev@radiancerewards.co.uk",
+    },
     warm: 0, // No warm instances for development
   },
 } as const;
@@ -102,9 +120,17 @@ export default $config({
       proxy: config.aurora.proxy,
     });
 
+    // Configure SES Email for sending emails - use single PPR identity for all stages
+    const email = config.email.createIdentity
+      ? new sst.aws.Email("rr-email-ppr", {
+          sender: config.email.domain,
+          dns: false, // Manual DNS management via GoDaddy
+        })
+      : sst.aws.Email.get("rr-email-ppr", config.email.domain);
+
     // Deploy Next.js application with stage-specific name
     new sst.aws.Nextjs(`rr-${$app.stage}`, {
-      link: [rds],
+      link: [rds, email],
       vpc: vpc,
       server: {
         architecture: "arm64", // Using ARM for better cost/performance
@@ -131,6 +157,8 @@ export default $config({
           process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY || "",
         NEXT_PUBLIC_GA_TRACKING_ID:
           process.env.NEXT_PUBLIC_GA_TRACKING_ID || "G-TCT192NP1Q",
+        // Email configuration
+        EMAIL_FROM_ADDRESS: config.email.fromAddress,
       },
     });
 

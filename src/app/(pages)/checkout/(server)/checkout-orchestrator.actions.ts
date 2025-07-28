@@ -25,6 +25,7 @@ import {
   getOrderIdFromCheckoutId,
   type OrderSummary,
 } from "./order.actions";
+import { sendOrderCompletionEmail } from "./email.actions";
 
 interface CartItem {
   competition: {
@@ -212,6 +213,9 @@ export async function checkout(
       // Update order status to completed
       await updateOrderStatus(orderId, "completed");
 
+      // Send order completion email
+      await sendOrderCompletionEmail(orderId);
+
       return {
         success: true,
         shouldRedirect: true,
@@ -306,6 +310,9 @@ export async function checkout(
 
       // Update order status to completed
       await updateOrderStatus(orderId, "completed");
+      
+      // Send order completion email
+      await sendOrderCompletionEmail(orderId);
 
       return {
         success: true,

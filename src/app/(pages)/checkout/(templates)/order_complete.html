@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Complete - {{order_id}}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f8fafc;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background: #667eea; /* Fallback solid color */
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff !important;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff !important;
+    }
+    .header p {
+      margin: 8px 0 0;
+      font-size: 16px;
+      opacity: 0.9;
+      color: #ffffff !important;
+    }
+    .content {
+      padding: 30px;
+    }
+    .order-summary {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-left: 4px solid #667eea;
+    }
+    .order-summary h2 {
+      margin: 0 0 15px 0;
+      color: #1f2937;
+      font-size: 18px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .summary-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #059669;
+      border-top: 1px solid #d1d5db;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .competition-entries {
+      margin-bottom: 25px;
+    }
+    .competition-entries h3 {
+      margin: 0 0 15px 0;
+      color: #1f2937;
+      font-size: 18px;
+    }
+    .competition-entry {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 4px solid #10b981;
+    }
+    .competition-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 10px;
+    }
+    .ticket-numbers {
+      margin-bottom: 15px;
+    }
+    .ticket-numbers h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #374151;
+    }
+    .tickets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .ticket {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid #0ea5e9;
+    }
+    .winning-tickets {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 6px;
+      padding: 15px;
+    }
+    .winning-tickets h4 {
+      margin: 0 0 10px 0;
+      color: #92400e;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+    .winner-icon {
+      margin-right: 6px;
+    }
+    .winning-ticket {
+      background: white;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-left: 3px solid #f59e0b;
+    }
+    .winning-ticket:last-child {
+      margin-bottom: 0;
+    }
+    .prize-name {
+      font-weight: bold;
+      color: #92400e;
+      margin-bottom: 4px;
+    }
+    .ticket-won {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .wallet-credit {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+    .wallet-credit .prize-name {
+      color: #15803d;
+    }
+    .payment-breakdown {
+      margin-bottom: 25px;
+    }
+    .payment-breakdown h3 {
+      margin: 0 0 15px 0;
+      color: #1f2937;
+      font-size: 18px;
+    }
+    .payment-method {
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+    .payment-amounts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .payment-amount {
+      text-align: center;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    .amount-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1f2937;
+    }
+    .amount-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+      color: #6b7280;
+    }
+    .footer p {
+      margin: 0;
+    }
+    .footer-contact {
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .thank-you {
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .thank-you h3 {
+      margin: 0 0 10px 0;
+      color: #0369a1;
+    }
+    .thank-you p {
+      margin: 0;
+      color: #075985;
+    }
+    @media (max-width: 600px) {
+      .payment-amounts {
+        grid-template-columns: 1fr;
+      }
+      .tickets {
+        gap: 2px;
+      }
+      .ticket {
+        font-size: 11px;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎉 Order Complete!</h1>
+      <p>Thank you for your purchase - your order has been confirmed</p>
+    </div>
+
+    <div class="content">
+      <div class="order-summary">
+        <h2>📋 Order Summary</h2>
+        <div class="summary-row">
+          <span><strong>Order ID:</strong></span>
+          <span style="font-family: monospace;">{{order_id}}</span>
+        </div>
+        <div class="summary-row">
+          <span><strong>Date:</strong></span>
+          <span>{{formatted_date}}</span>
+        </div>
+        <div class="summary-row">
+          <span><strong>Total Tickets:</strong></span>
+          <span>{{total_tickets}}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total Paid:</span>
+          <span>{{currency_symbol}}{{formatted_total}}</span>
+        </div>
+      </div>
+
+      {{#has_competition_entries}}
+      <div class="competition-entries">
+        <h3>🎫 Your Competition Entries</h3>
+        {{#competition_entries}}
+        <div class="competition-entry">
+          <div class="competition-title">{{title}}</div>
+          
+          {{#has_tickets}}
+          <div class="ticket-numbers">
+            <h4>Your Ticket Numbers:</h4>
+            <div class="tickets">
+              {{#tickets}}
+              <span class="ticket">{{.}}</span>
+              {{/tickets}}
+            </div>
+          </div>
+          {{/has_tickets}}
+
+          {{#has_winning_tickets}}
+          <div class="winning-tickets {{#is_wallet_credit_prize}}wallet-credit{{/is_wallet_credit_prize}}">
+            <h4><span class="winner-icon">🏆</span>Congratulations! You've Won:</h4>
+            {{#winning_tickets}}
+            <div class="winning-ticket">
+              <div class="prize-name">
+                {{prize.name}}
+                {{#prize.is_wallet_credit}}
+                (£{{prize.credit_amount}} Wallet Credit)
+                {{/prize.is_wallet_credit}}
+              </div>
+              <div class="ticket-won">Winning Ticket: #{{ticket_number}}</div>
+            </div>
+            {{/winning_tickets}}
+          </div>
+          {{/has_winning_tickets}}
+        </div>
+        {{/competition_entries}}
+      </div>
+      {{/has_competition_entries}}
+
+      {{#payment_breakdown}}
+      <div class="payment-breakdown">
+        <h3>💳 Payment Details</h3>
+        <div class="payment-method">
+          <strong>Payment Method:</strong> {{formatted_payment_method}}
+        </div>
+        {{#is_hybrid_payment}}
+        <div class="payment-amounts">
+          <div class="payment-amount">
+            <div class="amount-value">{{currency_symbol}}{{formatted_wallet_amount}}</div>
+            <div class="amount-label">Wallet Credit</div>
+          </div>
+          <div class="payment-amount">
+            <div class="amount-value">{{currency_symbol}}{{formatted_card_amount}}</div>
+            <div class="amount-label">Card Payment</div>
+          </div>
+        </div>
+        {{/is_hybrid_payment}}
+      </div>
+      {{/payment_breakdown}}
+
+      <div class="thank-you">
+        <h3>🍀 Thank You!</h3>
+        <p>
+          Your order has been processed successfully and your tickets have been allocated. 
+          {{#has_winning_tickets}}
+          Congratulations on your wins! 
+          {{/has_winning_tickets}}
+          You will be notified by email if you win any additional prizes. Good luck!
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Thank you for choosing Radiance Rewards!</p>
+      <p class="footer-contact">Questions? Contact us at <a href="mailto:support@radiancerewards.co.uk" style="color: #667eea;">support@radiancerewards.co.uk</a></p>
+    </div>
+  </div>
+</body>
+</html>

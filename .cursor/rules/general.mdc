@@ -5,3 +5,4 @@ alwaysApply: true
 - always use branding colors and typography
 - when implementing design changes we want to implement them for both mobile and desktop
 - stop running commands, prompt me first.
+- NEVER ATTEMPT TO DEPLOY THE APP
