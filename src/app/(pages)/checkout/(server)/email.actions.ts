@@ -236,8 +236,8 @@ export async function sendOrderCompletionEmail(orderId: string): Promise<void> {
 
     // Create subject line with win indication
     const subject = hasAnyWinningTickets
-      ? `🏆 Order Complete - You Won! - ${orderId}`
-      : `✅ Order Complete - ${orderId}`;
+      ? `🏆 Order Complete - You Won!`
+      : `✅ Order Complete`;
 
     await sendEmail({
       to: orderData.email,
