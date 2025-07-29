@@ -16,6 +16,7 @@ interface CompetitionEntry {
   competition_id: string;
   entry_id: string;
   title: string;
+  ticket_price: number;
   tickets: number[];
   winning_tickets: WinningTicket[];
 }
@@ -74,6 +75,7 @@ export async function getOrderDetails(
         "ce.id as entry_id",
         "c.title",
         "ce.tickets",
+        "c.ticket_price",
       ])
       .where("ce.order_id", "=", orderId)
       .execute();
@@ -121,6 +123,7 @@ export async function getOrderDetails(
         competition_id: entry.competition_id,
         entry_id: entry.entry_id,
         title: entry.title,
+        ticket_price: entry.ticket_price,
         tickets: entry.tickets || [],
         winning_tickets: winningTicketsByEntry[entry.entry_id] || [],
       })

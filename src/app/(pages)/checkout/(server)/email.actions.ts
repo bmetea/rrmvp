@@ -14,6 +14,7 @@ interface TemplateWinningTicket {
 
 interface TemplateCompetitionEntry {
   title: string;
+  ticket_price: string;
   has_tickets: boolean;
   tickets: number[];
   has_winning_tickets: boolean;
@@ -186,6 +187,7 @@ export async function sendOrderCompletionEmail(orderId: string): Promise<void> {
 
         return {
           title: entry.title,
+          ticket_price: formatPrice(entry.ticket_price),
           has_tickets: entry.tickets.length > 0,
           tickets: entry.tickets,
           has_winning_tickets: hasWinningTickets,
