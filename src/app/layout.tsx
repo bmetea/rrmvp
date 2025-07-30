@@ -13,6 +13,7 @@ import PageViewTracker from "@/shared/components/analytics/PageViewTracker";
 import MetaPixel from "@/shared/components/analytics/MetaPixel";
 import MetaPixelPageTracker from "@/shared/components/analytics/MetaPixelPageTracker";
 import AffiliateCodeTracker from "@/shared/components/analytics/AffiliateCodeTracker";
+import Hotjar from "@/shared/components/analytics/Hotjar";
 import KlaviyoTest from "@/shared/components/debug/KlaviyoTest";
 
 const crimsonPro = Crimson_Pro({
@@ -106,6 +107,7 @@ export default async function RootLayout({
           <MetaPixel />
           <MetaPixelPageTracker />
           <AffiliateCodeTracker />
+          <Hotjar />
           <CartProvider>
             <div className="flex min-h-screen flex-col">
               <Navbar />
