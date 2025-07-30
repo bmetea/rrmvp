@@ -47,8 +47,8 @@ export function PaymentForm({
           applePay: {
             buttonStyle: "black",
             buttonSource: "js",
-            displayName: "MyStore",
-            total: { label: "COMPANY, INC." },
+            displayName: "Radiance Rewards",
+            total: { label: "Claravue Ltd" },
           },
           onReady: function() {
             if (window.$) {
