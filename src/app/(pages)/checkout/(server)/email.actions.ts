@@ -92,8 +92,25 @@ function processArraySections(template: string, data: any): string {
 }
 
 function processConditionals(template: string, data: any): string {
-  // Handle boolean conditionals that aren't arrays
-  return template.replace(
+  // First handle inverted sections {{^section}}...{{/section}} (render if falsy)
+  let result = template.replace(
+    /\{\{\^([^}]+?)\}\}([\s\S]*?)\{\{\/\1\}\}/g,
+    (match, sectionKey, content) => {
+      const sectionData = getNestedValue(data, sectionKey.trim());
+
+      if (
+        !sectionData ||
+        (Array.isArray(sectionData) && sectionData.length === 0)
+      ) {
+        return populateTemplate(content, data);
+      }
+
+      return "";
+    }
+  );
+
+  // Then handle positive sections {{#section}}...{{/section}} (render if truthy)
+  result = result.replace(
     /\{\{#([^}]+?)\}\}([\s\S]*?)\{\{\/\1\}\}/g,
     (match, sectionKey, content) => {
       const sectionData = getNestedValue(data, sectionKey.trim());
@@ -105,6 +122,8 @@ function processConditionals(template: string, data: any): string {
       return "";
     }
   );
+
+  return result;
 }
 
 function processVariables(template: string, data: any): string {

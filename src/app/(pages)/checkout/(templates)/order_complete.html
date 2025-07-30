@@ -4,409 +4,168 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order Complete - {{order_id}}</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f8fafc;
-    }
-    .container {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .header {
-      background: #f7f7f7;
-      border-bottom: 1px solid #e7e7e7;
-      padding: 31px 20px;
-      text-align: center;
-    }
-    .header img {
-      max-width: 300px;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    }
-    .content {
-      padding: 30px;
-    }
-    .order-summary {
-      margin-bottom: 25px;
-    }
-    .order-summary h3 {
-      margin: 0 0 8px 0;
-      color: #151515;
-      font-family: Arial;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 1.5em;
-    }
-    .order-summary-card {
-      background: #f7f7f7;
-      border: 1px solid #e7e7e7;
-      border-radius: 16px;
-      padding: 24px;
-    }
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .summary-row:last-child {
-      margin-bottom: 0;
-    }
-    .summary-label {
-      font-family: 'Open Sans';
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 1.5em;
-      color: #151515;
-    }
-    .summary-value {
-      font-family: 'Open Sans';
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 1.5em;
-      color: #151515;
-    }
-    .summary-value.monospace {
-      font-family: monospace;
-    }
-    .summary-thank-you {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e7e7e7;
-      text-align: center;
-    }
-    .summary-thank-you h4 {
-      margin: 0 0 8px 0;
-      color: #151515;
-      font-family: Arial;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 1.5em;
-    }
-    .summary-thank-you p {
-      margin: 0;
-      color: #151515;
-      font-family: Arial;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 1.5em;
-    }
-    .competition-entries {
-      margin-bottom: 25px;
-    }
-    .competition-entries h3 {
-      margin: 0 0 8px 0;
-      color: #151515;
-      font-family: Arial;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 1.5em;
-    }
-    .competition-entry {
-      background: #f7f7f7;
-      border: 1px solid #e7e7e7;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 15px;
-    }
-    .competition-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .competition-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .competition-title {
-      font-family: 'Crimson Pro';
-      font-weight: 500;
-      font-size: 22px;
-      line-height: 1.11em;
-      color: #151515;
-      margin: 0;
-    }
-    .competition-price {
-      font-family: 'Open Sans';
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.5em;
-      color: #313131;
-      margin: 0;
-    }
-    .ticket-count-badge {
-      width: 60px;
-      padding: 8px 4px;
-      background: #feca8d;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      min-height: 60px;
-    }
-    .ticket-count-number {
-      font-family: 'Crimson Pro';
-      font-weight: 500;
-      font-size: 26px;
-      line-height: 26px;
-      color: #151515;
-      text-align: center;
-      margin: 0;
-    }
-    .ticket-count-label {
-      font-family: 'Open Sans';
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 21px;
-      color: #313131;
-      text-align: center;
-      margin: 0;
-    }
-
-    .ticket-numbers {
-      margin-bottom: 15px;
-    }
-    .ticket-numbers h4 {
-      margin: 0 0 8px 0;
-      font-size: 14px;
-      color: #374151;
-    }
-    .tickets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .ticket {
-      background: #f3f0ff;
-      color: #6b46c1;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid #8b5cf6;
-    }
-    .winning-tickets {
-      background: #fff8ef;
-      border: 1px solid #f59e0b;
-      border-radius: 8px;
-      padding: 32px;
-      margin-top: 16px;
-    }
-    .winning-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .winning-title {
-      font-family: Arial;
-      font-weight: 700;
-      font-size: 22px;
-      line-height: 1.5em;
-      color: #151515;
-      margin: 0 0 8px 0;
-    }
-
-
-    .winning-prizes {
-      margin-top: 24px;
-    }
-    .winning-ticket {
-      background: #feca8d;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-left: 3px solid #e19841;
-    }
-    .winning-ticket:last-child {
-      margin-bottom: 0;
-    }
-    .prize-name {
-      font-weight: bold;
-      color: #151515;
-      margin-bottom: 4px;
-    }
-    .ticket-won {
-      font-size: 12px;
-      color: #6b7280;
-    }
-    .wallet-credit {
-      background: #fff8ef;
-      border-color: #f59e0b;
-    }
-    .wallet-credit .prize-name {
-      color: #151515;
-    }
-    .wallet-credit .winning-ticket {
-      background: #feca8d;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 48px 20px;
-      border-top: 1px solid #e7e7e7;
-      background: #f7f7f7;
-      color: #333333;
-    }
-    .footer img {
-      width: 56px;
-      height: 80px;
-      display: block;
-      margin: 0 auto 18px auto;
-    }
-    .footer p {
-      margin: 0;
-      font-family: Arial;
-      font-size: 12px;
-      line-height: 1.6em;
-    }
-
-
-    @media (max-width: 600px) {
-      .header img {
-        max-width: 250px;
-      }
-      .competition-content {
-        flex-direction: column;
-        gap: 12px;
-      }
-      .ticket-count-badge {
-        align-self: flex-end;
-      }
-      .competition-title {
-        font-size: 20px;
-      }
-      .competition-price {
-        font-size: 14px;
-      }
-      .winning-tickets {
-        padding: 24px;
-      }
-      .winning-title {
-        font-size: 20px;
-      }
-      .tickets {
-        gap: 2px;
-      }
-      .ticket {
-        font-size: 11px;
-        padding: 3px 6px;
-      }
-    }
-  </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <img src="https://i.postimg.cc/sgfVDByz/RR-Logo-Text-Centre-Black-3x.png" alt="Radiance Rewards" />
-    </div>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #ffffff; color: #151515;">
+  
+  <!-- Main Container -->
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff;">
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%;">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #f7f7f7; padding: 31px 20px; text-align: center;">
+              <img src="https://i.postimg.cc/sgfVDByz/RR-Logo-Text-Centre-Black-3x.png" alt="Radiance Rewards" style="width: 177px; height: 45px; display: block; margin: 0 auto;" width="177" height="45" />
+            </td>
+          </tr>
 
-    <div class="content">
-      {{#has_competition_entries}}
-      <div class="competition-entries">
-        <h3>Your Competition Entries</h3>
-        {{#competition_entries}}
-        <div class="competition-entry">
-          <div class="competition-content">
-            <div class="competition-info">
-              <div class="competition-title">{{title}}</div>
-              <div class="competition-price">£{{ticket_price}} per ticket</div>
-            </div>
-            <div class="ticket-count-badge">
-              <div class="ticket-count-number">{{tickets.length}}</div>
-              <div class="ticket-count-label">Tickets</div>
-            </div>
-          </div>
+                     <!-- Email Content -->
+           <tr>
+             <td style="padding: 30px;">
+               
+               <!-- Top Message Section -->
+               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 48px;">
+                 <tr>
+                   <td>
+                     {{#has_winning_tickets}}
+                     <h1 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 18px; line-height: 1.5; color: #151515;">🎉 Congratulations, You have WON!</h1>
+                     <p style="margin: 0; font-family: Arial, sans-serif; font-weight: 400; font-size: 18px; line-height: 1.5; color: #313131;">We're thrilled to announce that you've won! Your winning details are shown below. You may be contacted with further information if required.</p>
+                     {{/has_winning_tickets}}
+                     {{^has_winning_tickets}}
+                     <h1 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 18px; line-height: 1.5; color: #151515;">Thank You!</h1>
+                     <p style="margin: 0; font-family: Arial, sans-serif; font-weight: 400; font-size: 18px; line-height: 1.5; color: #313131;">Your order has been processed successfully and your tickets have been allocated. You will be notified by email if you win any additional prizes. Good luck!</p>
+                     {{/has_winning_tickets}}
+                   </td>
+                 </tr>
+               </table>
 
-          {{#has_tickets}}
-          <div class="ticket-numbers">
-            <h4>Your Ticket Numbers:</h4>
-            <div class="tickets">
-              {{#tickets}}
-              <span class="ticket">{{.}}</span>
-              {{/tickets}}
-            </div>
-          </div>
-          {{/has_tickets}}
+              {{#has_competition_entries}}
+              <!-- Competition Entries Section -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 48px;">
+                <tr>
+                  <td>
+                    <h2 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 18px; line-height: 1.5; color: #151515;">Your Competition Entries</h2>
+                  </td>
+                </tr>
+                {{#competition_entries}}
+                <tr>
+                  <td style="padding-top: 8px;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="16" style="background-color: #f7f7f7; border-radius: 8px;">
+                      <tr>
+                        <td>
+                          <h3 style="margin: 0 0 4px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.15; color: #151515;">{{title}}</h3>
+                          <p style="margin: 0; font-family: Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; color: #313131;">{{tickets.length}} Tickets at £{{ticket_price}} per ticket</p>
+                          
+                          {{#has_winning_tickets}}
+                          <table width="100%" border="0" cellspacing="0" cellpadding="16" style="background-color: #fff8ef; border-radius: 8px; margin-top: 16px;">
+                            <tr>
+                              <td>
+                                <h4 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 16px; line-height: 1.5; color: #151515; text-align: center;">🎉 You Won!</h4>
+                                {{#winning_tickets}}
+                                <div style="background-color: #feca8d; border-radius: 4px; padding: 10px; margin-bottom: 8px;">
+                                  <div style="font-weight: bold; color: #151515; margin-bottom: 4px;">{{prize.name}}</div>
+                                  <div style="font-size: 12px; color: #6b7280;">Winning Ticket: #{{ticket_number}}</div>
+                                </div>
+                                {{/winning_tickets}}
+                              </td>
+                            </tr>
+                          </table>
+                          {{/has_winning_tickets}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                {{/competition_entries}}
+              </table>
+              {{/has_competition_entries}}
 
-          {{#has_winning_tickets}}
-          <div class="winning-tickets {{#is_wallet_credit_prize}}wallet-credit{{/is_wallet_credit_prize}}">
-            <div class="winning-header">
-              <div class="winning-title">Congratulations you WON! 🎉</div>
-            </div>
-            <div class="winning-prizes">
-              {{#winning_tickets}}
-              <div class="winning-ticket">
-                <div class="prize-name">
-                  {{prize.name}}
-                </div>
-                <div class="ticket-won">Winning Ticket: #{{ticket_number}}</div>
-              </div>
-              {{/winning_tickets}}
-            </div>
-          </div>
-          {{/has_winning_tickets}}
-        </div>
-        {{/competition_entries}}
-      </div>
-      {{/has_competition_entries}}
+              <!-- Order Summary Section -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <h2 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 18px; line-height: 1.5; color: #151515;">Order Summary</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="24" style="background-color: #f7f7f7; border-radius: 8px;">
+                      <tr>
+                        <td>
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td style="padding: 4px 0; border-bottom: 1px solid #e7e7e7;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td style="font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.5; color: #151515;">Total Tickets</td>
+                                    <td align="right" style="font-family: Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; color: #151515;">{{total_tickets}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 4px 0; border-bottom: 1px solid #e7e7e7;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td style="font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.5; color: #151515;">Total cost</td>
+                                    <td align="right" style="font-family: Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; color: #151515;">{{currency_symbol}}{{formatted_total}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 4px 0; border-bottom: 1px solid #e7e7e7;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td style="font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.5; color: #151515;">Date</td>
+                                    <td align="right" style="font-family: Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; color: #151515;">{{formatted_date}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 4px 0;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td style="font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.5; color: #151515;">Order ID</td>
+                                    <td align="right" style="font-family: Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; color: #151515; font-family: monospace;">{{order_id}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
 
-      <div class="order-summary">
-        <h3>Order Summary</h3>
-        <div class="order-summary-card">
-          <div class="summary-row">
-            <span class="summary-label">Order ID</span>
-            <span class="summary-value monospace">{{order_id}}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Total Tickets</span>
-            <span class="summary-value">{{total_tickets}}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Date</span>
-            <span class="summary-value">{{formatted_date}}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Total cost</span>
-            <span class="summary-value">{{currency_symbol}}{{formatted_total}}</span>
-          </div>
-          <div class="summary-thank-you">
-            <h4>Thank You!</h4>
-            <p>
-              Your order has been processed successfully and your tickets have been allocated. 
-              {{#has_winning_tickets}}
-              Congratulations on your wins! 
-              {{/has_winning_tickets}}
-              You will be notified by email if you win any additional prizes. Good luck!
-            </p>
-          </div>
-        </div>
-      </div>
+                          
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
 
+            </td>
+          </tr>
 
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f7f7f7; padding: 48px 20px; text-align: center;">
+              <img src="https://i.postimg.cc/65yNT0Kc/RR-Logomark-Border-Black-3x.png" alt="Radiance Rewards Logo" style="width: 56px; height: 80px; display: block; margin: 0 auto 18px auto;" width="56" height="80" />
+            </td>
+          </tr>
 
+          <!-- Footer Text -->
+          <tr>
+            <td style="background-color: #f7f7f7; padding: 0 20px 48px; text-align: center;">
+              <p style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #344054;">©2025 Radiance Rewards. All rights reserved.</p>
+              <p style="margin: 0; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #344054;">You must be over 18 to enter. If you are under 18 your ticket will be void and refunded. www.gambleaware.org. Our prize draws are in no way sponsored or endorsed by Facebook or Instagram. Draws will be made using independent verification software.</p>
+            </td>
+          </tr>
 
-    </div>
+        </table>
+      </td>
+    </tr>
+  </table>
 
-    <div class="footer">
-      <img src="https://i.postimg.cc/65yNT0Kc/RR-Logomark-Border-Black-3x.png" alt="Radiance Rewards Logo" />
-      <p>©2025 Radiance Rewards. All rights reserved.</p>
-      <p>You must be over 18 to enter. If you are under 18 your ticket will be void and refunded. www.gambleaware.org. Our prize draws are in no way sponsored or endorsed by Facebook or Instagram. Draws will be made using independent verification software.</p>
-
-    </div>
-  </div>
 </body>
 </html>
