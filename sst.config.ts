@@ -27,7 +27,7 @@ const stageConfigs = {
     email: {
       createIdentity: false, // Use existing ppr identity
       domain: "radiancerewards.co.uk",
-      fromAddress: "noreply@radiancerewards.co.uk",
+      fromAddress: "Radiance Rewards <noreply@radiancerewards.co.uk>",
     },
     warm: 1, // Keep 1 Lambda instance warm in production
   },
@@ -51,7 +51,7 @@ const stageConfigs = {
     email: {
       createIdentity: true, // Create separate identity for pre-production
       domain: "radiancerewards.co.uk",
-      fromAddress: "noreply-ppr@radiancerewards.co.uk",
+      fromAddress: "Radiance Rewards PPR <noreply-ppr@radiancerewards.co.uk>",
     },
     warm: 0, // No warm instances for pre-production
   },
@@ -69,7 +69,7 @@ const stageConfigs = {
     email: {
       createIdentity: false, // Reference pre-production identity for local development
       domain: "radiancerewards.co.uk",
-      fromAddress: "dev@radiancerewards.co.uk",
+      fromAddress: "Radiance Rewards DEV <dev@radiancerewards.co.uk>",
     },
     warm: 0, // No warm instances for development
   },

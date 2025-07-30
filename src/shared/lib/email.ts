@@ -59,7 +59,9 @@ export async function sendEmail({
   from,
 }: SendEmailOptions) {
   const fromAddress =
-    from || process.env.EMAIL_FROM_ADDRESS || "noreply@radiancerewards.co.uk";
+    from ||
+    process.env.EMAIL_FROM_ADDRESS ||
+    "Radiance Rewards <noreply@radiancerewards.co.uk>";
   const toAddresses = Array.isArray(to) ? to : [to];
 
   // Log email attempt details
