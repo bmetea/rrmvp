@@ -47,8 +47,19 @@ export function PaymentForm({
           applePay: {
             buttonStyle: "black",
             buttonSource: "js",
-            displayName: "MyStore",
-            total: { label: "COMPANY, INC." },
+            displayName: "Radiance Rewards",
+            total: { label: "Claravue Ltd" },
+            submitOnPaymentAuthorized: ["customer", "billing"],
+            requiredBillingContactFields: ["postalAddress", "name", "phoneNumber", "emailAddress"],
+            requiredShippingContactFields: ["postalAddress", "name", "phoneNumber", "emailAddress"],
+            onPaymentAuthorized: function(payment) {
+              console.log('Apple Pay payment authorized:', payment);
+              console.log('Billing Contact:', payment.billingContact);
+              console.log('Shipping Contact:', payment.shippingContact);
+              // The contact details will be automatically submitted with the payment
+              // due to submitOnPaymentAuthorized parameter
+              return { status: "SUCCESS" };
+            }
           },
           onReady: function() {
             if (window.$) {
