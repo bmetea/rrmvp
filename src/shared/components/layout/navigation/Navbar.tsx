@@ -16,6 +16,7 @@ import {
   Instagram,
   Facebook,
   List,
+  ShoppingCart,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -204,9 +205,21 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             {/* Mobile Nav Icons - Match Figma Design */}
             <SignedIn>
               <CustomUserButton />
+              <CompetitionCartDialog />
             </SignedIn>
 
-            <CompetitionCartDialog />
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white text-xs px-3 py-1"
+                  onClick={() => handleSignInClick(true)}
+                >
+                  Sign up
+                </Button>
+              </SignUpButton>
+            </SignedOut>
 
             <Button
               ref={burgerButtonRef}
@@ -395,21 +408,16 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               </Link>
             )}
 
-            {/* Sign Up Button for Non-Authenticated Users */}
-            <SignedOut>
-              <div className="pt-2">
-                <SignUpButton mode="modal">
-                  <Button
-                    className="w-full bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white border-2 border-[#3D2C8D] rounded-full py-2 px-5 text-[16px] font-semibold font-open-sans"
-                    variant="default"
-                    onClick={() => handleSignInClick(true)}
-                  >
-                    Sign up
-                  </Button>
-                </SignUpButton>
-              </div>
-            </SignedOut>
           </div>
+          
+          {/* Cart Extension Bar for Non-Authenticated Users */}
+          <SignedOut>
+            <div className="border-t border-gray-200 bg-white px-5 py-3">
+              <div className="flex items-center justify-center">
+                <CompetitionCartDialog />
+              </div>
+            </div>
+          </SignedOut>
         </div>
       </div>
     </nav>
