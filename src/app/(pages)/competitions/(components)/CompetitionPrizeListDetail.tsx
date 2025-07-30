@@ -16,6 +16,7 @@ interface CompetitionPrizeDetailProps {
   description: string;
   totalPrizes: number;
   prizeName: string;
+  isWalletCredit?: boolean;
 }
 
 export function CompetitionPrizeDetail({
@@ -24,8 +25,9 @@ export function CompetitionPrizeDetail({
   description,
   totalPrizes,
   prizeName,
+  isWalletCredit = false,
 }: CompetitionPrizeDetailProps) {
-  const [tab, setTab] = useState("tickets");
+  const [tab, setTab] = useState(isWalletCredit ? "description" : "tickets");
   const [page, setPage] = useState(1);
   const perPage = 30;
   const totalPages = Math.ceil(
@@ -43,30 +45,32 @@ export function CompetitionPrizeDetail({
   return (
     <div className="bg-white">
       {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        <button
-          className={`flex-1 py-3 font-bold text-base transition-colors ${
-            tab === "tickets"
-              ? "border-b-2 border-[#E19841] text-black"
-              : "text-gray-500"
-          }`}
-          onClick={() => setTab("tickets")}
-        >
-          TICKETS
-        </button>
-        <button
-          className={`flex-1 py-3 font-bold text-base transition-colors ${
-            tab === "description"
-              ? "border-b-2 border-[#E19841] text-black"
-              : "text-gray-500"
-          }`}
-          onClick={() => setTab("description")}
-        >
-          DESCRIPTION
-        </button>
-      </div>
+      {!isWalletCredit && (
+        <div className="flex border-b border-gray-200">
+          <button
+            className={`flex-1 py-3 font-bold text-base transition-colors ${
+              tab === "tickets"
+                ? "border-b-2 border-[#E19841] text-black"
+                : "text-gray-500"
+            }`}
+            onClick={() => setTab("tickets")}
+          >
+            TICKETS
+          </button>
+          <button
+            className={`flex-1 py-3 font-bold text-base transition-colors ${
+              tab === "description"
+                ? "border-b-2 border-[#E19841] text-black"
+                : "text-gray-500"
+            }`}
+            onClick={() => setTab("description")}
+          >
+            DESCRIPTION
+          </button>
+        </div>
+      )}
 
-      {tab === "tickets" && (
+      {tab === "tickets" && !isWalletCredit && (
         <div className="p-4">
           {/* Mobile Grid */}
           <div className="grid grid-cols-5 gap-3">
@@ -195,7 +199,7 @@ export function CompetitionPrizeDetail({
         </div>
       )}
 
-      {tab === "description" && (
+      {(tab === "description" || isWalletCredit) && (
         <div className="p-4">
           <div className="prose prose-zinc prose-sm max-w-none">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>

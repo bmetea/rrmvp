@@ -384,6 +384,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         }
                         totalPrizes={prize.total_quantity}
                         prizeName={prize.product?.name || "Prize"}
+                        isWalletCredit={
+                          prize.product?.is_wallet_credit || false
+                        }
                       />
                     )}
                   </div>
@@ -628,6 +631,9 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
                         }
                         totalPrizes={prize.total_quantity}
                         prizeName={prize.product?.name || "Prize"}
+                        isWalletCredit={
+                          prize.product?.is_wallet_credit || false
+                        }
                       />
                     )}
                   </div>
