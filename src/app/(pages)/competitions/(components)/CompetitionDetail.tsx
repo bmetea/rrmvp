@@ -275,7 +275,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
           {/* Add to Cart Button (Mobile) */}
           <Button
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
+            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
             style={{
               fontWeight: 600,
               fontFamily: "Open Sans, sans-serif",
@@ -299,7 +299,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
           {/* Free Postal Entry */}
           <Link
             href="/free-postal-entry"
-            className="block text-center text-cta hover:text-cta-hover"
+            className="block text-center text-cta hover:text-cta-hover mt-4"
             onClick={() =>
               trackEvent("Free Postal Entry Clicked", {
                 competition_id: competitionWithPrizes.id,
@@ -517,7 +517,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
 
               {/* Add to Cart Button (Desktop) */}
               <Button
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] font-open-sans font-semibold text-[16px] leading-6 text-white transition"
                 style={{
                   fontWeight: 600,
                   fontFamily: "Open Sans, sans-serif",
@@ -541,7 +541,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               {/* Free Postal Entry */}
               <Link
                 href="/free-postal-entry"
-                className="block text-center text-cta hover:text-cta-hover font-medium"
+                className="block text-center text-cta hover:text-cta-hover font-medium mt-4"
                 onClick={() =>
                   trackEvent("Free Postal Entry Clicked", {
                     competition_id: competitionWithPrizes.id,
@@ -653,7 +653,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
               </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           {competitionWithPrizes.faq && (
             <AccordionItem value="faq">
               <AccordionTrigger className="text-xl font-bold">
