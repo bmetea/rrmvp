@@ -19,7 +19,7 @@ export function CompetitionList({
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 lg:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-16">
           {competitions.map((competition) => (
             <CompetitionCard
               key={competition.id.toString()}
