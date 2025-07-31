@@ -10,6 +10,14 @@ import {
   useCallback,
 } from "react";
 import { useAnalytics } from "@/shared/hooks";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/shared/components/ui/dialog";
+import { Button } from "@/shared/components/ui/button";
 
 interface Competition {
   id: string;
@@ -50,6 +58,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isPaymentFormActive, setIsPaymentFormActive] = useState(false);
+  const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+  const [duplicateCompetition, setDuplicateCompetition] =
+    useState<Competition | null>(null);
   const { trackAddToCart, trackRemoveFromCart, trackCartViewed } =
     useAnalytics();
 
@@ -102,6 +113,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (!competition.id) {
         console.error("Cannot add competition to cart: missing competition ID");
         return;
+      }
+
+      // Check for duplicate free tickets (price = 0)
+      const isFreeCompetition = (competition.ticket_price || 0) === 0;
+      if (isFreeCompetition) {
+        const existingFreeItem = safeItems.find(
+          (item) => item.competition.id === competition.id
+        );
+        if (existingFreeItem) {
+          setDuplicateCompetition(competition);
+          setDuplicateDialogOpen(true);
+          return;
+        }
       }
 
       let addedItem: CartItem | null = null;
@@ -238,7 +262,38 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsPaymentFormActive,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+
+      {/* Duplicate Free Ticket Dialog */}
+      <Dialog
+        open={duplicateDialogOpen}
+        onOpenChange={(open) => {
+          setDuplicateDialogOpen(open);
+          if (!open) setDuplicateCompetition(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Free Entry Already Added</DialogTitle>
+            <DialogDescription>
+              You can only have one free entry per competition. "
+              {duplicateCompetition?.title}" is already in your basket.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end pt-4">
+            <Button
+              onClick={() => setDuplicateDialogOpen(false)}
+              className="w-full"
+            >
+              Understood
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {
