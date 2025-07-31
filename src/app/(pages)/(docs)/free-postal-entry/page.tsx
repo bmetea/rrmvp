@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import Link from "next/link";
 
 export default function FreePostalEntryPage() {
@@ -15,8 +20,8 @@ export default function FreePostalEntryPage() {
             <p>To enter for free, send a stamped, unenclosed postcard to:</p>
             <div className="bg-muted p-4 rounded-lg">
               <p className="font-medium">Claravue Ltd</p>
-              <p>Oakfields Farm, Kingsland,</p>
-              <p>Herefordshire, HR6 9QU</p>
+              <p>128 City Road, London,</p>
+              <p>EC1 2NX</p>
             </div>
           </div>
 
@@ -50,7 +55,10 @@ export default function FreePostalEntryPage() {
               <li>We do not confirm receipt of postal entries</li>
               <li>
                 Your entry is subject to our{" "}
-                <Link href="/terms-and-conditions" className="text-primary hover:underline">
+                <Link
+                  href="/terms-and-conditions"
+                  className="text-primary hover:underline"
+                >
                   Terms & Conditions
                 </Link>
               </li>
