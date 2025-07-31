@@ -112,7 +112,7 @@ export default function CheckoutPage() {
   const amountNeededToReachMinimum =
     remainingToPay > 0 ? Math.max(0, MINIMUM_CARD_PAYMENT - remainingToPay) : 0;
 
-  // Check if cart contains only free items (prevent free-only checkout)
+  // Check if cart contains only free items
   const isFreeOnlyCart = totalPrice === 0;
 
   const handlePayButtonClick = async () => {
@@ -481,7 +481,7 @@ export default function CheckoutPage() {
 
                       <p className="text-[16px] md:text-[18px] leading-[150%] text-muted-foreground mb-4">
                         {isFreeOnlyCart
-                          ? "Add a paid competition to your basket to complete your purchase. Free entries are processed automatically when you purchase paid tickets."
+                          ? "These are free entries. Click below to complete your entry."
                           : remainingToPay === 0
                           ? "Your wallet credit covers the full amount. Click below to complete your purchase."
                           : remainingToPay < totalPrice
@@ -499,22 +499,23 @@ export default function CheckoutPage() {
                           </Button>
                         </SignUpButton>
                       ) : isFreeOnlyCart ? (
-                        <div className="space-y-3">
-                          <Button
-                            disabled={true}
-                            className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold bg-gray-100 text-gray-500 cursor-not-allowed border-2 border-dashed border-gray-300 hover:bg-gray-100"
-                          >
-                            <CreditCard className="h-5 w-5" />
-                            Add Paid Items to Checkout
-                          </Button>
-                          <Button
-                            onClick={() => router.push("/competitions")}
-                            variant="outline"
-                            className="w-full h-12 flex items-center justify-center gap-2 text-base font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white"
-                          >
-                            Browse Competitions
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={handlePayButtonClick}
+                          disabled={isProcessingCheckout}
+                          className="w-full h-12 bg-primary hover:bg-primary/90 flex items-center justify-center gap-2 text-base font-semibold"
+                        >
+                          {isProcessingCheckout ? (
+                            <>
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="h-5 w-5" />
+                              Complete Free Entry
+                            </>
+                          )}
+                        </Button>
                       ) : canProceedWithPayment ? (
                         <Button
                           onClick={handlePayButtonClick}
@@ -553,7 +554,7 @@ export default function CheckoutPage() {
                         {!isSignedIn
                           ? "You need to sign up to complete your purchase"
                           : isFreeOnlyCart
-                          ? "Free competitions are automatically entered when you purchase any paid competition"
+                          ? "Complete your entry for free competitions"
                           : !canProceedWithPayment
                           ? `Add ${formatPrice(
                               amountNeededToReachMinimum
