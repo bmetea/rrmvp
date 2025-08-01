@@ -28,7 +28,7 @@ import { useAnalytics } from "@/shared/hooks";
 
 // Main component implementation
 function CompetitionDetailImpl({ competitionWithPrizes }) {
-  const [ticketCount, setTicketCount] = useState(25);
+  const [ticketCount, setTicketCount] = useState(5);
   const [expandedPrize, setExpandedPrize] = useState(null);
   const { addItem } = useCart();
   const { trackCompetitionViewed, trackEvent } = useAnalytics();
@@ -50,7 +50,7 @@ function CompetitionDetailImpl({ competitionWithPrizes }) {
     minute: "2-digit",
   });
 
-  const quickSelect = [5, 10, 15, 20, 25, 50];
+  const quickSelect = [1, 5, 10, 15, 25, 50];
   const maxTickets = 2500;
   const effectiveTicketCount = isFreeCompetition ? 1 : ticketCount;
   const totalPrice = ticketPrice * effectiveTicketCount;
