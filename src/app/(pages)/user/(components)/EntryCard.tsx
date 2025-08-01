@@ -373,6 +373,10 @@ export function EntryCard({ entry }: EntryCardProps) {
                         );
                       }
 
+                      // For raffle competitions, only show ticket number without "NO WIN"
+                      const isRaffle =
+                        entry.competition.type?.toLowerCase() === "raffle";
+
                       return (
                         <div
                           key={ticketNumber}
@@ -386,23 +390,27 @@ export function EntryCard({ entry }: EntryCardProps) {
                             borderRadius: 4,
                           }}
                         >
-                          <div
-                            style={{
-                              color: "#151515",
-                              fontSize: 22,
-                              fontFamily: "Crimson Pro",
-                              fontWeight: "500",
-                              wordWrap: "break-word",
-                            }}
-                          >
-                            NO WIN
-                          </div>
+                          {!isRaffle && (
+                            <div
+                              style={{
+                                color: "#151515",
+                                fontSize: 22,
+                                fontFamily: "Crimson Pro",
+                                fontWeight: "500",
+                                wordWrap: "break-word",
+                              }}
+                            >
+                              NO WIN
+                            </div>
+                          )}
                           <div
                             style={{
                               color: "#313131",
-                              fontSize: 14,
-                              fontFamily: "Open Sans",
-                              fontWeight: "400",
+                              fontSize: isRaffle ? 22 : 14,
+                              fontFamily: isRaffle
+                                ? "Crimson Pro"
+                                : "Open Sans",
+                              fontWeight: isRaffle ? "500" : "400",
                               lineHeight: "1.5em",
                               wordWrap: "break-word",
                             }}
