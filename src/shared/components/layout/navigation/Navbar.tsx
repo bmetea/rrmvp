@@ -209,16 +209,28 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             </SignedIn>
 
             <SignedOut>
-              <SignUpButton mode="modal">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white text-xs px-3 py-1"
-                  onClick={() => handleSignInClick(true)}
-                >
-                  Sign up
-                </Button>
-              </SignUpButton>
+              <div className="flex items-center gap-2">
+                <SignInButton mode="modal">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#3D2C8D] text-[#3D2C8D] hover:bg-[#3D2C8D]/10 text-xs px-3 py-1"
+                    onClick={() => handleSignInClick(true)}
+                  >
+                    Sign in
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white text-xs px-3 py-1"
+                    onClick={() => handleSignInClick(false)}
+                  >
+                    Sign up
+                  </Button>
+                </SignUpButton>
+              </div>
             </SignedOut>
 
             <Button
@@ -293,15 +305,26 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <CustomUserButton />
             </SignedIn>
             <SignedOut>
-              <SignUpButton mode="modal">
-                <Button
-                  variant="default"
-                  className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white hover:scale-105 transition-all duration-200"
-                  onClick={() => handleSignInClick(false)}
-                >
-                  Sign up
-                </Button>
-              </SignUpButton>
+              <div className="flex items-center space-x-3">
+                <SignInButton mode="modal">
+                  <Button
+                    variant="outline"
+                    className="border-[#3D2C8D] text-[#3D2C8D] hover:bg-[#3D2C8D]/10 hover:scale-105 transition-all duration-200"
+                    onClick={() => handleSignInClick(true)}
+                  >
+                    Sign in
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button
+                    variant="default"
+                    className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white hover:scale-105 transition-all duration-200"
+                    onClick={() => handleSignInClick(false)}
+                  >
+                    Sign up
+                  </Button>
+                </SignUpButton>
+              </div>
             </SignedOut>
           </div>
         </div>
@@ -407,12 +430,33 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </span>
               </Link>
             )}
-
           </div>
-          
-          {/* Cart Extension Bar for Non-Authenticated Users */}
+
+          {/* Authentication Section for Non-Authenticated Users */}
           <SignedOut>
             <div className="border-t border-gray-200 bg-white px-5 py-3">
+              <div className="flex items-center space-x-3 mb-3">
+                <SignInButton mode="modal">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 border-[#3D2C8D] text-[#3D2C8D] hover:bg-[#3D2C8D]/10 font-semibold"
+                    onClick={() => handleSignInClick(true)}
+                  >
+                    Sign in
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white font-semibold"
+                    onClick={() => handleSignInClick(false)}
+                  >
+                    Sign up
+                  </Button>
+                </SignUpButton>
+              </div>
               <div className="flex items-center justify-center">
                 <CompetitionCartDialog />
               </div>
