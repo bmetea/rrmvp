@@ -162,10 +162,10 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               <Image
                 src="/svg/text-logo-black.svg"
                 alt="Radiance Rewards"
-                width={150}
-                height={40}
+                width={120}
+                height={32}
                 priority
-                className="h-8 w-auto"
+                className="h-6 w-auto"
               />
             </Link>
             <div className="flex items-center gap-2">
@@ -209,26 +209,22 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
             </SignedIn>
 
             <SignedOut>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <SignInButton mode="modal">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-[#3D2C8D] text-[#3D2C8D] hover:bg-[#3D2C8D]/10 text-xs px-3 py-1"
+                  <span
+                    className="text-sm font-medium text-[#3D2C8D] hover:text-[#3D2C8D]/80 transition-colors cursor-pointer"
                     onClick={() => handleSignInClick(true)}
                   >
                     Sign in
-                  </Button>
+                  </span>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 text-white text-xs px-3 py-1"
+                  <span
+                    className="text-sm font-medium text-[#3D2C8D] hover:text-[#3D2C8D]/80 transition-colors cursor-pointer"
                     onClick={() => handleSignInClick(false)}
                   >
-                    Sign up
-                  </Button>
+                    Register
+                  </span>
                 </SignUpButton>
               </div>
             </SignedOut>
