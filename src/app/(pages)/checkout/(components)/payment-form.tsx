@@ -29,6 +29,10 @@ export function PaymentForm({
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
 
+  // Note: Enhanced payment processing includes customer.email and customer.ip
+  // parameters automatically sent to NomuPay for improved authorization rates
+  // and fraud prevention. These are added server-side during checkout preparation.
+
   useEffect(() => {
     if (checkoutId) {
       // Inject jQuery first

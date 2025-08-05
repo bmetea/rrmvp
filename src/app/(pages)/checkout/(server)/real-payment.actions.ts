@@ -1,6 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
 import { db } from "@/db";
 import { oppwaLogger } from "@/shared/lib/logger";
 import { logCheckoutError } from "@/shared/lib/logger";
@@ -12,6 +13,40 @@ const OPPWA_ENTITY_ID = process.env.OPPWA_ENTITY_ID;
 const OPPWA_ACCESS_TOKEN = process.env.OPPWA_ACCESS_TOKEN;
 
 // --- Internal Helper Functions (previously in payment.actions.ts) ---
+
+// Helper function to get client IP address
+async function getClientIpAddress(): Promise<string | null> {
+  try {
+    const headersList = await headers();
+    // Check various headers for IP address (common in proxied environments)
+    const ip =
+      headersList.get("x-forwarded-for")?.split(",")[0] ||
+      headersList.get("x-real-ip") ||
+      headersList.get("x-client-ip") ||
+      headersList.get("cf-connecting-ip") || // Cloudflare
+      headersList.get("x-forwarded") ||
+      headersList.get("forwarded-for") ||
+      headersList.get("forwarded") ||
+      null;
+
+    return ip;
+  } catch (error) {
+    console.warn("Failed to get client IP:", error);
+    return null;
+  }
+}
+
+// Helper function to get user email from Clerk
+async function getUserEmail(userId: string): Promise<string | null> {
+  try {
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    return user.primaryEmailAddress?.emailAddress || null;
+  } catch (error) {
+    console.warn("Failed to get user email:", error);
+    return null;
+  }
+}
 
 async function _prepareCheckout(input: {
   amount: string;
@@ -27,15 +62,43 @@ async function _prepareCheckout(input: {
 }> {
   try {
     const path = "/v1/checkouts";
-    const data = new URLSearchParams({
+
+    // Get additional transaction data for improved success rates
+    const clientIp = await getClientIpAddress();
+    const userEmail = input.userId ? await getUserEmail(input.userId) : null;
+
+    // Prepare base parameters
+    const baseParams = {
       entityId: OPPWA_ENTITY_ID!,
       amount: input.amount,
       currency: input.currency,
       paymentType: input.paymentType,
       integrity: "true",
-    }).toString();
+    };
 
-    oppwaLogger.logRequest(path, "POST", data);
+    // Add customer data if available (helps with verification and fraud checks)
+    if (userEmail) {
+      (baseParams as any)["customer.email"] = userEmail;
+    }
+
+    if (clientIp) {
+      (baseParams as any)["customer.ip"] = clientIp;
+    }
+
+    const data = new URLSearchParams(baseParams).toString();
+
+    // Log additional parameters being sent for improved tracking
+    if (userEmail || clientIp) {
+      oppwaLogger.logRequest(
+        path,
+        "POST",
+        `${data} | Additional params: customerEmail=${
+          userEmail ? "present" : "missing"
+        }, customerIp=${clientIp ? "present" : "missing"}`
+      );
+    } else {
+      oppwaLogger.logRequest(path, "POST", data);
+    }
 
     const response = await fetch(`${OPPWA_BASE_URL}${path}`, {
       method: "POST",
