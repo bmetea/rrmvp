@@ -17,8 +17,8 @@ import { checkout } from "./(server)/checkout-orchestrator.actions";
 import { useAnalytics } from "@/shared/hooks";
 import { logCheckoutError } from "@/shared/lib/logger";
 
-// Minimum card payment threshold (199 pence = £1.99)
-const MINIMUM_CARD_PAYMENT = 199;
+// Minimum card payment threshold (99 pence = £0.99)
+const MINIMUM_CARD_PAYMENT = 99;
 
 interface CartItem {
   competition: {
