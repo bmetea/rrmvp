@@ -75,6 +75,7 @@ export async function fetchCompetitionsServer() {
       .where("status", "=", "active")
       .where("start_date", "<=", new Date())
       .where("end_date", ">=", new Date())
+      .orderBy("end_date", "asc")
       .execute();
 
     // Parse media_info for each competition
