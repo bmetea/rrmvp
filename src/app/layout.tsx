@@ -3,6 +3,7 @@ import { Crimson_Pro, Open_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/shared/components/layout/navigation/Navbar";
 import Footer from "@/shared/components/layout/navigation/Footer";
+import SponsorshipBanner from "@/shared/components/sections/SponsorshipBanner";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/shared/lib/context/cart-context";
@@ -111,7 +112,10 @@ export default async function RootLayout({
           <CartProvider>
             <div className="flex min-h-screen flex-col">
               <Navbar />
-              <main className="flex-1 pt-16">{children}</main>
+              <div className="pt-16">
+                <SponsorshipBanner />
+                <main className="flex-1">{children}</main>
+              </div>
               <Footer />
             </div>
             <KlaviyoTest />
