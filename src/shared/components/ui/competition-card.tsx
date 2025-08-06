@@ -6,6 +6,7 @@ import { generateAvatar } from "@/shared/lib/utils/avatar";
 import { Competition } from "@/(pages)/competitions/(server)/competition.service";
 import { ArrowRight, Clock } from "lucide-react";
 import { formatPrice } from "@/shared/lib/utils/price";
+import { Progress } from "@/shared/components/ui/progress";
 
 function formatEndDate(dateString: string | Date) {
   const date =
@@ -90,32 +91,42 @@ export function CompetitionCard({ competition }: { competition: Competition }) {
 
           {/* Button */}
           <div className="w-full pt-2 flex flex-col items-start gap-2 mt-auto">
-            {/* Progress bar - desktop only - positioned above button */}
-            <div className="hidden md:flex flex-col gap-2 w-full">
-              {/* Ticket Price */}
-              <div className="text-center">
-                <span className="text-zinc-800 text-2xl font-bold">
-                  {(competition.ticket_price || 0) === 0
-                    ? "FREE"
-                    : formatPrice(competition.ticket_price || 0)}
-                </span>
-              </div>
-              <div className="w-full h-5 flex items-center gap-3">
-                <div className="flex-1 h-2 relative rounded-lg">
-                  <div className="absolute left-0 top-0 w-full h-2 bg-neutral-200 rounded-full" />
-                  <div
-                    className="absolute left-0 top-0 h-2 bg-[#3D2C8D] rounded-full"
-                    style={{ width: `${soldPercentage}%` }}
-                  />
+            {/* Progress bar - visible on both mobile and desktop */}
+            <div className="flex flex-col gap-2 w-full">
+              {/* Progress section */}
+              <div className="w-full">
+                {/* Mobile: simplified labels */}
+                <div className="flex justify-between text-[10px] md:text-xs mb-1">
+                  <span className="text-gray-500 truncate">
+                    {competition.total_tickets && competition.tickets_sold
+                      ? `${
+                          Number(competition.total_tickets) -
+                          Number(competition.tickets_sold)
+                        } Left`
+                      : "Available"}
+                  </span>
+                  <span className="text-gray-500 text-right">
+                    {competition.tickets_sold && competition.total_tickets
+                      ? `${competition.tickets_sold}/${competition.total_tickets}`
+                      : ""}
+                  </span>
                 </div>
-                <div className="text-zinc-800 text-[14px] leading-[150%] font-normal">
+                <Progress
+                  value={soldPercentage}
+                  className="h-1.5 md:h-3 [&>div]:bg-[#3D2C8D] bg-gray-200 rounded-full"
+                  ariaLabel={`Competition progress: ${soldPercentage}% sold`}
+                />
+                <div className="text-gray-500 font-bold text-[10px] md:text-xs mt-0.5 md:mt-1 text-center md:text-right">
                   {soldPercentage}% sold
                 </div>
               </div>
             </div>
             <div className="w-full px-3 py-1.5 md:px-5 md:py-2 bg-[#3D2C8D] hover:bg-[#3D2C8D]/90 rounded-[200px] outline outline-2 outline-offset-[-2px] outline-[#3D2C8D] flex justify-center items-center gap-1 md:gap-2 cursor-pointer transition">
               <span className="text-white text-[14px] md:text-[16px] leading-[150%] font-semibold font-open-sans">
-                Enter Now
+                Enter for{" "}
+                {(competition.ticket_price || 0) === 0
+                  ? "FREE"
+                  : formatPrice(competition.ticket_price || 0)}
               </span>
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
