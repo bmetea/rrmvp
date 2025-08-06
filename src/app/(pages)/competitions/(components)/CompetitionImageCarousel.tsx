@@ -20,6 +20,7 @@ export default function CompetitionImageCarousel({
   title,
 }: CompetitionImageCarouselProps) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [swiperLoaded, setSwiperLoaded] = useState(false);
 
   // Fallback to placeholder if no images
   const displayImages =
@@ -29,6 +30,27 @@ export default function CompetitionImageCarousel({
     <div className="w-full">
       {/* Main Carousel */}
       <div className="relative mb-4">
+        {/* Show first image immediately for LCP, then overlay with Swiper */}
+        {!swiperLoaded && displayImages[0] && (
+          <div className="w-full aspect-square rounded-2xl overflow-hidden shadow-lg">
+            <div className="w-full h-full relative">
+              <Image
+                src={displayImages[0]}
+                alt={`${title} - Image 1`}
+                fill
+                className="object-cover"
+                priority={true}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={75}
+                loading="eager"
+                fetchPriority="high"
+                onLoad={() => setSwiperLoaded(true)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Swiper loads after first image or if only one image */}
         <Swiper
           spaceBetween={10}
           loop={displayImages.length > 1}
@@ -38,7 +60,12 @@ export default function CompetitionImageCarousel({
           }}
           thumbs={{ swiper: thumbsSwiper }}
           modules={[Thumbs, Navigation]}
-          className="w-full aspect-square rounded-2xl overflow-hidden shadow-lg"
+          className={`w-full aspect-square rounded-2xl overflow-hidden shadow-lg ${
+            !swiperLoaded && displayImages.length > 1
+              ? "opacity-0"
+              : "opacity-100"
+          } transition-opacity duration-300`}
+          onSwiper={() => setSwiperLoaded(true)}
         >
           {displayImages.map((image, index) => (
             <SwiperSlide key={index}>
@@ -49,8 +76,10 @@ export default function CompetitionImageCarousel({
                   fill
                   className="object-cover"
                   priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  quality={90}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 512px"
+                  quality={index === 0 ? 75 : 60}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "low"}
                 />
               </div>
             </SwiperSlide>

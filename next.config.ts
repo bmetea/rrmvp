@@ -39,6 +39,11 @@ const nextConfig: NextConfig = {
         hostname: "postimages.org",
       },
     ],
+    // Optimize for LCP
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ["image/webp"],
+    minimumCacheTTL: 31536000, // 1 year cache
   },
   async headers() {
     return [
@@ -109,6 +114,41 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Add chunk loading retry configuration
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks?.cacheGroups,
+            // Separate heavy libraries into their own chunks
+            swiper: {
+              name: "swiper",
+              test: /[\\/]node_modules[\\/]swiper[\\/]/,
+              chunks: "all",
+              priority: 20,
+            },
+            markdown: {
+              name: "markdown",
+              test: /[\\/]node_modules[\\/](react-markdown|remark-gfm)[\\/]/,
+              chunks: "all",
+              priority: 20,
+            },
+            vendor: {
+              name: "vendor",
+              test: /[\\/]node_modules[\\/]/,
+              chunks: "all",
+              priority: 10,
+              maxSize: 244000, // 244KB chunks
+            },
+          },
+        },
+      };
+    }
+    return config;
   },
 };
 
