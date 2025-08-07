@@ -5,14 +5,14 @@
 
 declare module "sst" {
   export interface Resource {
+    "rr-bmetea": {
+      "type": "sst.aws.Nextjs"
+      "url": string
+    }
     "rr-email-ppr": {
       "configSet": string
       "sender": string
       "type": "sst.aws.Email"
-    }
-    "rr-ppr": {
-      "type": "sst.aws.Nextjs"
-      "url": string
     }
     "rrdb": {
       "clusterArn": string

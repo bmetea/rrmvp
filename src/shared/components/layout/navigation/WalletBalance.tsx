@@ -5,11 +5,13 @@ import { useAuth } from "@clerk/nextjs";
 import { getUserWalletBalance } from "@/app/(pages)/checkout/(server)/wallet-payment.actions";
 import { formatPrice } from "@/shared/lib/utils/price";
 import { Wallet } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function WalletBalance() {
   const { userId, isSignedIn } = useAuth();
   const [balance, setBalance] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -35,7 +37,7 @@ export function WalletBalance() {
     };
 
     fetchBalance();
-  }, [isSignedIn, userId]);
+  }, [isSignedIn, userId, pathname]);
 
   if (!isSignedIn || isLoading) {
     return null;
