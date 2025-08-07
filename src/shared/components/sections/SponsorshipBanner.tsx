@@ -7,7 +7,7 @@ const SponsorshipBanner = () => {
       style={{ backgroundColor: "#663399" }}
     >
       <span className="font-medium text-sm">
-        This month we proudly sponsor{" "}
+        This month we proudly donate to{" "}
         <a
           href="https://www.cancerresearchuk.org/"
           target="_blank"
