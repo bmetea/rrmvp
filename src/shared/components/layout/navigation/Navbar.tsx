@@ -13,6 +13,8 @@ import {
   Info,
   Users,
   User,
+  Instagram,
+  Facebook,
   List,
   ShoppingCart,
 } from "lucide-react";
@@ -60,6 +62,16 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
 
     trackEvent("Mobile Menu Toggled", {
       action: newState ? "opened" : "closed",
+      current_page: activePath,
+    });
+  };
+
+  // Track social media clicks
+  const handleSocialClick = (platform: string, url: string) => {
+    trackEvent("Social Media Link Clicked", {
+      platform,
+      url,
+      location: "navbar",
       current_page: activePath,
     });
   };
@@ -141,8 +153,8 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background font-open-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+          {/* Logo and Social Icons */}
+          <div className="flex items-center gap-4">
             <Link
               href="/"
               className="flex items-center"
@@ -157,6 +169,38 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 className="h-6 w-auto"
               />
             </Link>
+            <SignedOut>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.instagram.com/radiance.rewards"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent transition-colors"
+                  onClick={() =>
+                    handleSocialClick(
+                      "Instagram",
+                      "https://www.instagram.com/radiance.rewards"
+                    )
+                  }
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61573382340671"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent transition-colors"
+                  onClick={() =>
+                    handleSocialClick(
+                      "Facebook",
+                      "https://www.facebook.com/profile.php?id=61573382340671"
+                    )
+                  }
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              </div>
+            </SignedOut>
           </div>
 
           {/* Mobile menu button and right side items */}
