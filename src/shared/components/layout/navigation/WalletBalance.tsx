@@ -37,7 +37,27 @@ export function WalletBalance() {
     };
 
     fetchBalance();
-  }, [isSignedIn, userId, pathname]);
+  }, [isSignedIn, userId]);
+
+  useEffect(() => {
+    if (!isSignedIn || !userId) return;
+    if (pathname !== "/checkout/summary") return;
+
+    const refreshBalance = async () => {
+      try {
+        const result = await getUserWalletBalance();
+        if (result.success && result.balance !== undefined) {
+          setBalance(result.balance);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error refreshing wallet balance:", error);
+      }
+    };
+
+    refreshBalance();
+  }, [pathname, isSignedIn, userId]);
 
   if (!isSignedIn || isLoading) {
     return null;
