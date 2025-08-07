@@ -6,6 +6,14 @@ import { getUserWalletBalance } from "@/app/(pages)/checkout/(server)/wallet-pay
 import { formatPrice } from "@/shared/lib/utils/price";
 import { Wallet } from "lucide-react";
 import { usePathname } from "next/navigation";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/shared/components/ui/dialog";
 
 export function WalletBalance() {
   const { userId, isSignedIn } = useAuth();
@@ -64,45 +72,60 @@ export function WalletBalance() {
   }
 
   return (
-    <div
-      className="inline-flex justify-center items-center gap-1 rounded-lg"
-      style={{
-        paddingLeft: 8,
-        paddingRight: 8,
-        paddingTop: 6,
-        paddingBottom: 6,
-        background: "#FFF8EF",
-        outline: "2px #E19841 solid",
-        outlineOffset: "-2px",
-      }}
-    >
-      <div
-        className="flex items-center justify-center rounded-full"
-        style={{
-          width: 20,
-          height: 20,
-          backgroundColor: "#E19841",
-          border: "1px solid #E19841",
-        }}
-      >
-        <Wallet
-          className="w-3 h-3"
-          style={{ color: "#FFF8EF" }}
-          strokeWidth={2}
-        />
-      </div>
-      <div
-        style={{
-          color: "#151515",
-          fontSize: 14,
-          fontFamily: "Open Sans",
-          fontWeight: "600",
-          lineHeight: "21px",
-          wordWrap: "break-word",
-        }}
-      >
-        {formatPrice(balance || 0)}
-      </div>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          aria-label="Wallet balance"
+          className="inline-flex justify-center items-center gap-1 rounded-lg"
+          style={{
+            paddingLeft: 8,
+            paddingRight: 8,
+            paddingTop: 6,
+            paddingBottom: 6,
+            background: "#FFF8EF",
+            outline: "2px #E19841 solid",
+            outlineOffset: "-2px",
+          }}
+        >
+          <div
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: 20,
+              height: 20,
+              backgroundColor: "#E19841",
+              border: "1px solid #E19841",
+            }}
+          >
+            <Wallet
+              className="w-3 h-3"
+              style={{ color: "#FFF8EF" }}
+              strokeWidth={2}
+            />
+          </div>
+          <div
+            style={{
+              color: "#151515",
+              fontSize: 14,
+              fontFamily: "Open Sans",
+              fontWeight: "600",
+              lineHeight: "21px",
+              wordWrap: "break-word",
+            }}
+          >
+            {formatPrice(balance || 0)}
+          </div>
+        </button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Wallet Balance</DialogTitle>
+          <DialogDescription>
+            This is your wallet balance, it will be used towards your next
+            purchase.
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 }
