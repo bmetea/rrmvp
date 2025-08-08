@@ -32,6 +32,7 @@ import { CompetitionCartDialog } from "@/app/(pages)/competitions/(components)/c
 import { useAdmin } from "@/shared/hooks/use-admin";
 import { CustomUserButton } from "@/app/(pages)/user/(components)/CustomUserButton";
 import { useAnalytics } from "@/shared/hooks";
+import { WalletBalance } from "./WalletBalance";
 
 interface NavbarProps {
   activePath?: string;
@@ -168,43 +169,45 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 className="h-6 w-auto"
               />
             </Link>
-            <div className="flex items-center gap-2">
-              <a
-                href="https://www.instagram.com/radiance.rewards"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-accent transition-colors"
-                onClick={() =>
-                  handleSocialClick(
-                    "Instagram",
-                    "https://www.instagram.com/radiance.rewards"
-                  )
-                }
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="https://www.facebook.com/profile.php?id=61573382340671"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-accent transition-colors"
-                onClick={() =>
-                  handleSocialClick(
-                    "Facebook",
-                    "https://www.facebook.com/profile.php?id=61573382340671"
-                  )
-                }
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-            </div>
+            <SignedOut>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.instagram.com/radiance.rewards"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent transition-colors"
+                  onClick={() =>
+                    handleSocialClick(
+                      "Instagram",
+                      "https://www.instagram.com/radiance.rewards"
+                    )
+                  }
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61573382340671"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent transition-colors"
+                  onClick={() =>
+                    handleSocialClick(
+                      "Facebook",
+                      "https://www.facebook.com/profile.php?id=61573382340671"
+                    )
+                  }
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              </div>
+            </SignedOut>
           </div>
 
           {/* Mobile menu button and right side items */}
           <div className="md:hidden flex items-center gap-2">
             {/* Mobile Nav Icons - Match Figma Design */}
             <SignedIn>
-              <CustomUserButton />
+              <WalletBalance />
               <CompetitionCartDialog />
             </SignedIn>
 
@@ -296,12 +299,13 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <CompetitionCartDialog />
             <SignedIn>
-              <CustomUserButton />
+              <WalletBalance />
+              <CompetitionCartDialog />
             </SignedIn>
             <SignedOut>
               <div className="flex items-center space-x-3">
+                <CompetitionCartDialog />
                 <SignInButton mode="modal">
                   <Button
                     variant="outline"
@@ -322,6 +326,9 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
                 </SignUpButton>
               </div>
             </SignedOut>
+            <SignedIn>
+              <CustomUserButton />
+            </SignedIn>
           </div>
         </div>
 
@@ -427,6 +434,15 @@ const Navbar = ({ activePath = "/" }: NavbarProps) => {
               </Link>
             )}
           </div>
+
+          {/* User Profile Section for Authenticated Users */}
+          <SignedIn>
+            <div className="border-t border-gray-200 bg-white px-5 py-3">
+              <div className="flex items-center justify-center">
+                <CustomUserButton />
+              </div>
+            </div>
+          </SignedIn>
 
           {/* Authentication Section for Non-Authenticated Users */}
           <SignedOut>
